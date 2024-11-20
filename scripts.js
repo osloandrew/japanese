@@ -56,11 +56,28 @@ document.addEventListener("DOMContentLoaded", () => {
   // Display the list of stories
   function displayStories(stories) {
     filterContainer.style.display = "flex"; // Show filters on the list page
-    storyList.innerHTML = "";
+    storyList.innerHTML = ""; // Clear previous stories
     stories.forEach((story) => {
       const listItem = document.createElement("li");
-      listItem.innerHTML = `<strong>${story.titleJapanese}</strong><br>${story.titleEnglish}`;
+
+      // Title container
+      const titleDiv = document.createElement("div");
+      titleDiv.innerHTML = `<strong>${story.titleJapanese}</strong><br>${story.titleEnglish}`;
+      titleDiv.style.flex = "1"; // Allow the title to take most of the space
+
+      // CEFR container
+      const cefrDiv = document.createElement("div");
+      cefrDiv.classList.add("cefr-value");
+      cefrDiv.textContent = story.CEFR || "N/A"; // Display CEFR or "N/A"
+
+      // Append title and CEFR to list item
+      listItem.appendChild(titleDiv);
+      listItem.appendChild(cefrDiv);
+
+      // Add click event to navigate to the story
       listItem.addEventListener("click", () => showStory(story));
+
+      // Append list item to the story list
       storyList.appendChild(listItem);
     });
   }

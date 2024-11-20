@@ -32,9 +32,13 @@ button {
 
 #filter-container {
   display: flex;
-  align-items: center;
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
   gap: 10px;
-  margin-bottom: 20px;
+  margin: 0 auto; /* Ensure it's centered relative to its parent */
+  width: 100%; /* Make it span the width of its container */
+  max-width: 800px; /* Optional: Limit the width for better design */
+  padding: 1em 0; /* Add padding for spacing */
 }
 
 #filter-container input,
@@ -42,6 +46,7 @@ button {
   width: 80%;
   max-width: 400px;
   padding: 8px;
+  font-family: "Noto Sans", sans-serif;
   font-size: 1em;
 }
 
@@ -64,17 +69,27 @@ header {
 }
 
 li {
-  background: #fff; /* White background for story list items */
+  display: flex; /* Flexbox for alignment */
+  justify-content: space-between; /* Space between title and CEFR */
+  align-items: center; /* Vertical alignment */
+  background: #fff;
   margin: 0.5em 0;
   padding: 1em;
-  border: 1px solid #ddd; /* Light border for separation */
-  border-radius: 5px; /* Rounded corners */
+  border: 1px solid #ddd;
+  border-radius: 5px;
   cursor: pointer;
   font-family: "Noto Sans", sans-serif;
 }
 
 li:hover {
-  background-color: #f1f1f1; /* Slightly darker off-white on hover */
+  background-color: #f1f1f1;
+}
+
+li .cefr-value {
+  text-align: center;
+  font-weight: bold;
+  color: #555; /* Subtle color for contrast */
+  width: 50px; /* Fixed width for consistent alignment */
 }
 
 main {
