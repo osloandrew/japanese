@@ -59,23 +59,27 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Check if an audio file exists
-  function checkAudio(titleEnglish) {
-    return new Promise((resolve) => {
-      const audioPath = `Audio/${titleEnglish}.m4a`;
-      const audio = new Audio(audioPath);
+  async function checkAudio(titleEnglish) {
+    const encodedTitleEnglish = encodeURIComponent(titleEnglish);
+    const audioPath = `Audio/${encodedTitleEnglish}.m4a`;
+    console.log(`Checking audio at path: ${audioPath}`);
 
-      console.log(`Checking audio at path: ${audioPath}`); // Log the path being checked
-
-      // Try to load the audio file
-      audio.oncanplaythrough = () => {
-        console.log(`Audio found for: ${titleEnglish}`); // Log if audio is found
-        resolve(audio);
-      };
-      audio.onerror = () => {
-        console.warn(`Audio not found for: ${titleEnglish}`); // Log if audio is missing
-        resolve(null);
-      };
-    });
+    try {
+      const response = await fetch(audioPath, {
+        method: "HEAD",
+        cache: "no-cache",
+      });
+      if (response.ok) {
+        console.log(`Audio found for: ${audioPath}`);
+        return audioPath;
+      } else {
+        console.warn(`No audio found for: ${audioPath}`);
+        return null;
+      }
+    } catch (error) {
+      console.error(`Error checking audio for ${audioPath}:`, error);
+      return null;
+    }
   }
 
   // Show the selected story
@@ -84,16 +88,12 @@ document.addEventListener("DOMContentLoaded", () => {
     storyViewer.style.display = "block";
     storyContent.innerHTML = "";
 
-    // Check for audio and display a play button if audio exists
-    const audio = await checkAudio(story.titleEnglish);
-    if (audio) {
-      const audioButton = document.createElement("button");
-      audioButton.textContent = "Play Audio";
-      audioButton.style.marginBottom = "1em"; // Adjust margin for spacing below the button
-      audioButton.addEventListener("click", () => {
-        audio.play();
-      });
-      storyContent.appendChild(audioButton); // Append the button at the top
+    const audioPath = await checkAudio(story.titleEnglish);
+    if (audioPath) {
+      const audioPlayer = document.createElement("audio");
+      audioPlayer.controls = true;
+      audioPlayer.src = audioPath;
+      storyContent.appendChild(audioPlayer);
     }
 
     const japaneseSentences = story.japanese
@@ -103,20 +103,15 @@ document.addEventListener("DOMContentLoaded", () => {
       .split(".")
       .filter((sentence) => sentence.trim());
 
-    // Add sentences to the story content
     japaneseSentences.forEach((japaneseSentence, index) => {
-      if (japaneseSentence.trim()) {
-        // Add Japanese sentence
-        const japaneseDiv = document.createElement("div");
-        japaneseDiv.textContent = japaneseSentence.trim() + "。";
-        storyContent.appendChild(japaneseDiv);
-
-        // Add corresponding English sentence if it exists
-        if (englishSentences[index]) {
-          const englishDiv = document.createElement("div");
-          englishDiv.textContent = englishSentences[index].trim() + ".";
-          storyContent.appendChild(englishDiv);
-        }
+      const japaneseDiv = document.createElement("div");
+      japaneseDiv.textContent = japaneseSentence.trim() + "。";
+      storyContent.appendChild(japaneseDiv);
+      // Add corresponding English sentence if it exists
+      if (englishSentences[index]) {
+        const englishDiv = document.createElement("div");
+        englishDiv.textContent = englishSentences[index].trim() + ".";
+        storyContent.appendChild(englishDiv);
       }
     });
   }
