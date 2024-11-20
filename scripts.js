@@ -88,12 +88,20 @@ document.addEventListener("DOMContentLoaded", () => {
     storyViewer.style.display = "block";
     storyContent.innerHTML = "";
 
+    // Check if there's existing audio and stop it by finding it in the DOM
+    const existingAudio = storyViewer.querySelector("audio");
+    if (existingAudio) {
+      existingAudio.pause();
+      existingAudio.currentTime = 0; // Reset playback position
+      existingAudio.remove(); // Remove the audio element
+    }
+
     const audioPath = await checkAudio(story.titleEnglish);
     if (audioPath) {
       const audioPlayer = document.createElement("audio");
       audioPlayer.controls = true;
       audioPlayer.src = audioPath;
-      storyContent.appendChild(audioPlayer);
+      storyContent.appendChild(audioPlayer); // Append it to the story viewer
     }
 
     const japaneseSentences = story.japanese
@@ -107,7 +115,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const japaneseDiv = document.createElement("div");
       japaneseDiv.textContent = japaneseSentence.trim() + "。";
       storyContent.appendChild(japaneseDiv);
-      // Add corresponding English sentence if it exists
       if (englishSentences[index]) {
         const englishDiv = document.createElement("div");
         englishDiv.textContent = englishSentences[index].trim() + ".";
@@ -120,6 +127,14 @@ document.addEventListener("DOMContentLoaded", () => {
   backButton.addEventListener("click", () => {
     storyViewer.style.display = "none";
     storyListSection.style.display = "block";
+
+    // Stop any currently playing audio by querying it directly
+    const existingAudio = storyViewer.querySelector("audio");
+    if (existingAudio) {
+      existingAudio.pause();
+      existingAudio.currentTime = 0; // Reset playback position
+      existingAudio.remove(); // Remove the audio element
+    }
   });
 
   // Initialize the app
