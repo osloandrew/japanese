@@ -4,8 +4,8 @@ body {
   line-height: 1.6;
   margin: 0;
   padding: 0;
-  background-color: #f9f9f9;
-  color: #333;
+  background-color: #f9f9f9; /* Off-white background */
+  color: #333; /* Dark text color */
 }
 
 header {
@@ -37,22 +37,29 @@ ul {
 }
 
 li {
-  background: #fff;
+  background: #fff; /* White background for story list items */
   margin: 0.5em 0;
   padding: 1em;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  border: 1px solid #ddd; /* Light border for separation */
+  border-radius: 5px; /* Rounded corners */
   cursor: pointer;
 }
 
 li:hover {
-  background-color: #f1f1f1;
+  background-color: #f1f1f1; /* Slightly darker off-white on hover */
 }
 
+/* Style for the story content */
 #story-content {
+  background: #fff; /* Same white background as story list items */
   margin-top: 1em;
+  padding: 1em;
+  border: 1px solid #ddd; /* Light border for separation */
+  border-radius: 5px; /* Rounded corners for consistency */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
+/* Back button styling */
 #back-button {
   background-color: #3b5d50;
   color: white;
@@ -60,10 +67,11 @@ li:hover {
   padding: 0.5em 1em;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 #back-button:hover {
-  background-color: #3b5d50;
+  background-color: #3b5d50; /* Slightly darker purple on hover */
 }
 
 /* Add margins for wide screens */
