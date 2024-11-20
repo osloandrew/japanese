@@ -1,6 +1,8 @@
 audio {
   display: block;
   margin: 0 auto;
+  margin-bottom: 20px;
+  width: 100%;
 }
 
 #back-button {
@@ -99,13 +101,16 @@ main {
 /* Style for the story content */
 #story-content {
   background: #fff; /* Same white background as story list items */
-  margin-top: 1em;
-  padding: 1em;
-  font-family: "Noto Serif", serif;
   border: 1px solid #ddd; /* Light border for separation */
   border-radius: 5px; /* Rounded corners for consistency */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-  line-height: 2;
+  margin: 1em 0 0 0;
+  padding: 1em 2em 0 2em;
+  font-family: "Noto Serif", serif;
+}
+
+#story-content > div {
+  margin-bottom: 20px; /* Margin for each sentence couplet */
 }
 
 /* Story list and story content */

@@ -164,14 +164,20 @@ document.addEventListener("DOMContentLoaded", () => {
       .filter((sentence) => sentence.trim());
 
     japaneseSentences.forEach((japaneseSentence, index) => {
+      const coupletContainer = document.createElement("div"); // Wrapper for the couplet
+
       const japaneseDiv = document.createElement("div");
       japaneseDiv.textContent = japaneseSentence.trim() + "。";
-      storyContent.appendChild(japaneseDiv);
+
+      coupletContainer.appendChild(japaneseDiv);
+
       if (englishSentences[index]) {
         const englishDiv = document.createElement("div");
         englishDiv.textContent = englishSentences[index].trim() + ".";
-        storyContent.appendChild(englishDiv);
+        coupletContainer.appendChild(englishDiv);
       }
+
+      storyContent.appendChild(coupletContainer);
     });
   }
 
