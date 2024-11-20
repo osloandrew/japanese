@@ -1,6 +1,5 @@
 /* General styling */
 body {
-  font-family: Arial, sans-serif;
   line-height: 1.6;
   margin: 0;
   padding: 0;
@@ -26,8 +25,14 @@ main {
   margin: 0 auto; /* Center align */
 }
 
-h1,
+h1 {
+  font-family: "Grenze Gotisch", serif !important;
+  font-size: 44px;
+  margin: 0.5em 0;
+}
+
 h2 {
+  font-family: "Noto Sans", sans-serif;
   margin: 0.5em 0;
 }
 
@@ -43,6 +48,7 @@ li {
   border: 1px solid #ddd; /* Light border for separation */
   border-radius: 5px; /* Rounded corners */
   cursor: pointer;
+  font-family: "Noto Sans", sans-serif;
 }
 
 li:hover {
@@ -54,9 +60,11 @@ li:hover {
   background: #fff; /* Same white background as story list items */
   margin-top: 1em;
   padding: 1em;
+  font-family: "Noto Serif", serif;
   border: 1px solid #ddd; /* Light border for separation */
   border-radius: 5px; /* Rounded corners for consistency */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  line-height: 2;
 }
 
 /* Back button styling */
@@ -64,10 +72,15 @@ li:hover {
   background-color: #3b5d50;
   color: white;
   border: none;
+  font-family: "Noto Sans", sans-serif;
   padding: 0.5em 1em;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+}
+
+button {
+  font-family: "Noto Sans", sans-serif;
 }
 
 #back-button:hover {
