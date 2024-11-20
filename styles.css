@@ -70,6 +70,16 @@ header {
   text-align: center;
 }
 
+.japanese-sentence {
+  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
+  color: black; /* Set a color for Japanese text */
+}
+
+.english-sentence {
+  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
+  color: gray; /* Set a different color for English text */
+}
+
 li {
   display: flex; /* Flexbox for alignment */
   justify-content: space-between; /* Space between title and CEFR */

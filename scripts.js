@@ -167,12 +167,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const coupletContainer = document.createElement("div"); // Wrapper for the couplet
 
       const japaneseDiv = document.createElement("div");
+      japaneseDiv.classList.add("japanese-sentence"); // Add class for Japanese sentences
       japaneseDiv.textContent = japaneseSentence.trim() + "。";
-
       coupletContainer.appendChild(japaneseDiv);
 
       if (englishSentences[index]) {
         const englishDiv = document.createElement("div");
+        englishDiv.classList.add("english-sentence"); // Add class for English sentences
         englishDiv.textContent = englishSentences[index].trim() + ".";
         coupletContainer.appendChild(englishDiv);
       }
