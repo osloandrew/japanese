@@ -33,23 +33,36 @@ button {
 }
 
 #filter-container {
-  display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center; /* Center vertically */
+  justify-content: center; /* Center items vertically */
+  align-items: center; /* Center items horizontally */
   gap: 10px;
-  margin: 0 auto; /* Ensure it's centered relative to its parent */
-  width: 90%; /* Make it span the width of its container */
-  max-width: 800px; /* Optional: Limit the width for better design */
-  padding: 1em 0 0 0; /* Add padding for spacing */
+  width: 100%; /* Full-width container */
+  padding: 10px 0 10px 0; /* Add padding for a spacious feel */
+  background: #ffffff; /* White background */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
 }
 
 #filter-container input,
 #filter-container select {
-  width: 80%;
-  max-width: 400px;
-  padding: 8px;
+  width: 100%; /* Take full width of the container */
+  max-width: 400px; /* Limit width for large screens */
+  padding: 10px 12px; /* Comfortable padding */
   font-family: "Noto Sans", sans-serif;
   font-size: 1em;
+  border: 1px solid #d0d0d0; /* Light border for structure */
+  border-radius: 5px; /* Rounded corners for sleek look */
+  background: #f9f9f9; /* Subtle off-white background */
+  box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.05); /* Inner shadow for depth */
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#filter-container select {
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='%23666' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px 6px;
+  cursor: pointer;
 }
 
 h1 {
