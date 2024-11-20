@@ -12,6 +12,15 @@ document.addEventListener("DOMContentLoaded", () => {
   const toggleEnglish = document.getElementById("toggle-english");
   let stories = []; // Global array to store all stories
 
+  // Utility function to shuffle an array
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
   // Function to update the visibility of English sentences
   function updateEnglishVisibility() {
     const englishSentences = document.querySelectorAll(".english-sentence");
@@ -71,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .then((response) => response.text())
       .then((data) => {
         const parsedStories = parseCSV(data);
-        stories = parsedStories; // Populate the global stories array
+        stories = shuffleArray(parsedStories); // Shuffle the stories array
         callback(stories); // Display all stories initially
       })
       .catch((err) => console.error("Error loading CSV:", err));
