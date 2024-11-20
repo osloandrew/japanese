@@ -1,3 +1,4 @@
+/* General styling */
 body {
   font-family: Arial, sans-serif;
   line-height: 1.6;
@@ -8,7 +9,7 @@ body {
 }
 
 header {
-  background-color: #6200ea;
+  background-color: #3b5d50;
   color: white;
   padding: 1em 0;
   text-align: center;
@@ -16,6 +17,13 @@ header {
 
 main {
   padding: 1em;
+}
+
+/* Story list and story content */
+#story-list,
+#story-viewer {
+  max-width: 800px; /* Limit the width */
+  margin: 0 auto; /* Center align */
 }
 
 h1,
@@ -46,7 +54,7 @@ li:hover {
 }
 
 #back-button {
-  background-color: #6200ea;
+  background-color: #3b5d50;
   color: white;
   border: none;
   padding: 0.5em 1em;
@@ -55,5 +63,14 @@ li:hover {
 }
 
 #back-button:hover {
-  background-color: #3700b3;
+  background-color: #3b5d50;
+}
+
+/* Add margins for wide screens */
+@media (min-width: 1200px) {
+  #story-list,
+  #story-viewer {
+    margin: 0 auto; /* Center the content */
+    padding: 0 2rem; /* Add standard padding */
+  }
 }
