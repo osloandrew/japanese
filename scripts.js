@@ -58,11 +58,43 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Check if an audio file exists
+  function checkAudio(titleEnglish) {
+    return new Promise((resolve) => {
+      const audioPath = `Audio/${titleEnglish}.m4a`;
+      const audio = new Audio(audioPath);
+
+      console.log(`Checking audio at path: ${audioPath}`); // Log the path being checked
+
+      // Try to load the audio file
+      audio.oncanplaythrough = () => {
+        console.log(`Audio found for: ${titleEnglish}`); // Log if audio is found
+        resolve(audio);
+      };
+      audio.onerror = () => {
+        console.warn(`Audio not found for: ${titleEnglish}`); // Log if audio is missing
+        resolve(null);
+      };
+    });
+  }
+
   // Show the selected story
-  function showStory(story) {
+  async function showStory(story) {
     storyListSection.style.display = "none";
     storyViewer.style.display = "block";
     storyContent.innerHTML = "";
+
+    // Check for audio and display a play button if audio exists
+    const audio = await checkAudio(story.titleEnglish);
+    if (audio) {
+      const audioButton = document.createElement("button");
+      audioButton.textContent = "Play Audio";
+      audioButton.style.marginBottom = "1em"; // Adjust margin for spacing below the button
+      audioButton.addEventListener("click", () => {
+        audio.play();
+      });
+      storyContent.appendChild(audioButton); // Append the button at the top
+    }
 
     const japaneseSentences = story.japanese
       .split("。")
@@ -71,6 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
       .split(".")
       .filter((sentence) => sentence.trim());
 
+    // Add sentences to the story content
     japaneseSentences.forEach((japaneseSentence, index) => {
       if (japaneseSentence.trim()) {
         // Add Japanese sentence
