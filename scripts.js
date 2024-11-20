@@ -3,12 +3,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const storyViewer = document.getElementById("story-viewer");
   const storyContent = document.getElementById("story-content");
   const backButton = document.getElementById("back-button");
+  const stickyHeader = document.getElementById("sticky-header");
   const storyListSection = document.getElementById("story-list");
   const filterContainer = document.getElementById("filter-container"); // Filters wrapper
   const searchBar = document.getElementById("search-bar");
   const genreFilter = document.getElementById("genre-filter");
   const cefrFilter = document.getElementById("cefr-filter");
+  const toggleEnglish = document.getElementById("toggle-english");
   let stories = []; // Global array to store all stories
+
+  // Function to update the visibility of English sentences
+  function updateEnglishVisibility() {
+    const englishSentences = document.querySelectorAll(".english-sentence");
+    if (toggleEnglish.checked) {
+      // Show English sentences
+      englishSentences.forEach((sentence) => {
+        sentence.style.display = "block";
+      });
+    } else {
+      // Hide English sentences
+      englishSentences.forEach((sentence) => {
+        sentence.style.display = "none";
+      });
+    }
+  }
+
+  // Set default toggle state (checked means English is visible)
+  toggleEnglish.checked = true;
+
+  // Event listener for toggle switch
+  toggleEnglish.addEventListener("change", updateEnglishVisibility);
 
   // CSV Parsing Function
   function parseCSV(csvText) {
@@ -138,6 +162,7 @@ document.addEventListener("DOMContentLoaded", () => {
     filterContainer.style.display = "none"; // Hide filters in the story viewer
     storyListSection.style.display = "none";
     storyViewer.style.display = "block";
+    stickyHeader.classList.remove("hidden"); // Show sticky header
     storyContent.innerHTML = "";
 
     // Check if there's existing audio and stop it by finding it in the DOM
@@ -180,6 +205,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       storyContent.appendChild(coupletContainer);
     });
+
+    // Ensure visibility state matches toggle
+    updateEnglishVisibility();
   }
 
   // Back button functionality
@@ -187,6 +215,7 @@ document.addEventListener("DOMContentLoaded", () => {
     filterContainer.style.display = "flex"; // Show filters when returning to the list page
     storyViewer.style.display = "none";
     storyListSection.style.display = "block";
+    stickyHeader.classList.add("hidden"); // Hide sticky header
 
     // Stop any currently playing audio by querying it directly
     const existingAudio = storyViewer.querySelector("audio");
