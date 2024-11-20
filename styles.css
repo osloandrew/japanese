@@ -33,19 +33,24 @@ button {
 }
 
 #filter-container {
-  justify-content: center; /* Center items vertically */
   align-items: center; /* Center items horizontally */
-  gap: 10px;
-  width: 100%; /* Full-width container */
-  padding: 10px 0 10px 0; /* Add padding for a spacious feel */
   background: #ffffff; /* White background */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  display: flex;
+  gap: 10px;
+  justify-content: center; /* Center items vertically */
+  margin: auto;
+  position: sticky;
+  text-align: center;
+  top: 0;
+  z-index: 100;
+  padding: 10px 20px 10px 20px;
 }
 
 #filter-container input,
 #filter-container select {
   width: 100%; /* Take full width of the container */
-  max-width: 400px; /* Limit width for large screens */
+  max-width: 250px; /* Limit width for large screens */
   padding: 10px 12px; /* Comfortable padding */
   font-family: "Noto Sans", sans-serif;
   font-size: 1em;
