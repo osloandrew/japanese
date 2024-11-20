@@ -126,10 +126,8 @@ ul {
 }
 
 /* Add margins for wide screens */
-@media (min-width: 1200px) {
-  #story-list,
-  #story-viewer {
-    margin: 0 auto; /* Center the content */
-    padding: 0 2rem; /* Add standard padding */
+@media (max-width: 1200px) {
+  #story-content {
+    padding: 1em 1em 0em 1em;
   }
 }
