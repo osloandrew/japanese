@@ -4,6 +4,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const storyContent = document.getElementById("story-content");
   const backButton = document.getElementById("back-button");
   const storyListSection = document.getElementById("story-list");
+  const filterContainer = document.getElementById("filter-container"); // Filters wrapper
+  const searchBar = document.getElementById("search-bar");
+  const genreFilter = document.getElementById("genre-filter");
+  const cefrFilter = document.getElementById("cefr-filter");
+  let stories = []; // Global array to store all stories
 
   // CSV Parsing Function
   function parseCSV(csvText) {
@@ -41,14 +46,16 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch(url)
       .then((response) => response.text())
       .then((data) => {
-        const stories = parseCSV(data);
-        callback(stories);
+        const parsedStories = parseCSV(data);
+        stories = parsedStories; // Populate the global stories array
+        callback(stories); // Display all stories initially
       })
       .catch((err) => console.error("Error loading CSV:", err));
   }
 
   // Display the list of stories
   function displayStories(stories) {
+    filterContainer.style.display = "flex"; // Show filters on the list page
     storyList.innerHTML = "";
     stories.forEach((story) => {
       const listItem = document.createElement("li");
@@ -82,8 +89,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Filter stories based on search and dropdowns
+  function filterStories() {
+    const searchText = searchBar.value.toLowerCase();
+    const selectedGenre = genreFilter.value.toLowerCase().trim(); // Trim whitespace
+    const selectedCefr = cefrFilter.value.toUpperCase().trim(); // Trim whitespace
+
+    // Filter stories using all criteria
+    const filteredStories = stories.filter((story) => {
+      const matchesSearch =
+        !searchText || // If search bar is empty, match everything
+        story.titleJapanese.toLowerCase().includes(searchText) ||
+        story.titleEnglish.toLowerCase().includes(searchText);
+
+      const matchesGenre =
+        !selectedGenre || // If no genre selected, match everything
+        (story.genre && story.genre.toLowerCase().trim() === selectedGenre);
+
+      const matchesCefr =
+        !selectedCefr || // If no CEFR selected, match everything
+        (story.CEFR && story.CEFR.trim().toUpperCase() === selectedCefr);
+
+      return matchesSearch && matchesGenre && matchesCefr;
+    });
+
+    displayStories(filteredStories);
+  }
+
   // Show the selected story
   async function showStory(story) {
+    filterContainer.style.display = "none"; // Hide filters in the story viewer
     storyListSection.style.display = "none";
     storyViewer.style.display = "block";
     storyContent.innerHTML = "";
@@ -125,6 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Back button functionality
   backButton.addEventListener("click", () => {
+    filterContainer.style.display = "flex"; // Show filters when returning to the list page
     storyViewer.style.display = "none";
     storyListSection.style.display = "block";
 
@@ -136,6 +172,11 @@ document.addEventListener("DOMContentLoaded", () => {
       existingAudio.remove(); // Remove the audio element
     }
   });
+
+  // Event Listeners for Filters
+  searchBar.addEventListener("input", filterStories);
+  genreFilter.addEventListener("change", filterStories);
+  cefrFilter.addEventListener("change", filterStories);
 
   // Initialize the app
   loadCSV("japaneseStories.csv", displayStories);

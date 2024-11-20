@@ -30,6 +30,21 @@ button {
   font-family: "Noto Sans", sans-serif;
 }
 
+#filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#filter-container input,
+#filter-container select {
+  width: 80%;
+  max-width: 400px;
+  padding: 8px;
+  font-size: 1em;
+}
+
 h1 {
   font-family: "Grenze Gotisch", serif !important;
   font-size: 44px;
