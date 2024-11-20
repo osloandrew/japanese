@@ -190,11 +190,14 @@ document.addEventListener("DOMContentLoaded", () => {
       storyContent.appendChild(audioPlayer); // Append it to the story viewer
     }
 
+    // Regular expressions for splitting sentences
+    const sentenceEndings = /[。！？!.?]+(?="|」|')?|[。！？!.?]+/g;
+
     const japaneseSentences = story.japanese
-      .split("。")
+      .split(sentenceEndings) // Split by sentence-ending punctuation
       .filter((sentence) => sentence.trim());
     const englishSentences = story.english
-      .split(".")
+      .split(sentenceEndings) // Split by sentence-ending punctuation
       .filter((sentence) => sentence.trim());
 
     japaneseSentences.forEach((japaneseSentence, index) => {
