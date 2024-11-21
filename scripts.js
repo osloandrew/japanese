@@ -172,14 +172,13 @@ document.addEventListener("DOMContentLoaded", () => {
     storyListSection.style.display = "none";
     storyViewer.style.display = "block";
     stickyHeader.classList.remove("hidden"); // Show sticky header
-    storyContent.innerHTML = "";
+    storyContent.innerHTML = ""; // Clear previous content
 
-    // Check if there's existing audio and stop it by finding it in the DOM
     const existingAudio = storyViewer.querySelector("audio");
     if (existingAudio) {
       existingAudio.pause();
-      existingAudio.currentTime = 0; // Reset playback position
-      existingAudio.remove(); // Remove the audio element
+      existingAudio.currentTime = 0;
+      existingAudio.remove();
     }
 
     const audioPath = await checkAudio(story.titleEnglish);
@@ -187,38 +186,48 @@ document.addEventListener("DOMContentLoaded", () => {
       const audioPlayer = document.createElement("audio");
       audioPlayer.controls = true;
       audioPlayer.src = audioPath;
-      storyContent.appendChild(audioPlayer); // Append it to the story viewer
+      storyContent.appendChild(audioPlayer);
     }
 
-    // Regular expressions for splitting sentences
-    const sentenceEndings = /[。！？!.?]+(?="|」|')?|[。！？!.?]+/g;
+    // Updated regex for sentence splitting
+    const sentenceEndings = /([。！？.!?]+)/g;
 
     const japaneseSentences = story.japanese
-      .split(sentenceEndings) // Split by sentence-ending punctuation
+      .split(sentenceEndings)
+      .reduce((acc, cur, i) => {
+        if (i % 2 === 0) acc.push(cur); // Add sentence content
+        else acc[acc.length - 1] += cur; // Append punctuation
+        return acc;
+      }, [])
       .filter((sentence) => sentence.trim());
+
     const englishSentences = story.english
-      .split(sentenceEndings) // Split by sentence-ending punctuation
+      .split(sentenceEndings)
+      .reduce((acc, cur, i) => {
+        if (i % 2 === 0) acc.push(cur); // Add sentence content
+        else acc[acc.length - 1] += cur; // Append punctuation
+        return acc;
+      }, [])
       .filter((sentence) => sentence.trim());
 
     japaneseSentences.forEach((japaneseSentence, index) => {
-      const coupletContainer = document.createElement("div"); // Wrapper for the couplet
+      const coupletContainer = document.createElement("div");
 
       const japaneseDiv = document.createElement("div");
-      japaneseDiv.classList.add("japanese-sentence"); // Add class for Japanese sentences
-      japaneseDiv.textContent = japaneseSentence.trim() + "。";
+      japaneseDiv.classList.add("japanese-sentence");
+      japaneseDiv.textContent = japaneseSentence.trim();
       coupletContainer.appendChild(japaneseDiv);
 
       if (englishSentences[index]) {
         const englishDiv = document.createElement("div");
-        englishDiv.classList.add("english-sentence"); // Add class for English sentences
-        englishDiv.textContent = englishSentences[index].trim() + ".";
+        englishDiv.classList.add("english-sentence");
+        englishDiv.textContent = englishSentences[index].trim();
         coupletContainer.appendChild(englishDiv);
       }
 
       storyContent.appendChild(coupletContainer);
     });
 
-    // Ensure visibility state matches toggle
     updateEnglishVisibility();
   }
 
