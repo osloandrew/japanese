@@ -13,8 +13,10 @@ audio {
   cursor: pointer;
   font-family: "Noto Sans", sans-serif;
   padding: 0.5em 1em;
+  position: relative;
   border-radius: 5px;
   transition: background-color 0.3s ease;
+  z-index: 1;
 }
 
 #back-button:hover,
@@ -144,8 +146,10 @@ footer p a:hover {
 }
 
 footer .copyright {
-  color: #555;
-  font-size: 12px;
+  color: #4e342e;
+  font-size: 14px;
+  font-weight: 500;
+  user-select: none;
 }
 
 h1 {
@@ -160,9 +164,10 @@ h2 {
 
 header {
   background-color: #d2e2dc;
-  color: black;
+  color: #4e342e;
   padding: 10px 0;
   text-align: center;
+  user-select: none;
 }
 
 .hidden {
@@ -267,7 +272,7 @@ main {
   font-family: "Noto Sans", sans-serif;
   white-space: nowrap;
   user-select: none;
-  color: #4f4f4f; /* Default text color */
+  color: #4f4f4f;
 }
 
 .sticky-cefr-label.easy {
@@ -289,8 +294,10 @@ main {
 /* Flex container for genre and CEFR */
 .sticky-detail-container {
   display: flex;
-  align-items: center; /* Align vertically */
-  gap: 10px; /* Add spacing between genre and CEFR */
+  align-items: center;
+  gap: 10px; /* Spacing between genre and CEFR */
+  margin-left: auto; /* Push to the far right */
+  margin-right: 10px;
 }
 
 /* Ensure sticky header genre matches list page */
@@ -315,6 +322,7 @@ main {
 }
 
 #sticky-header {
+  align-items: stretch; /* Let header height adjust with content */
   position: sticky;
   top: 0;
   background-color: white;
@@ -325,27 +333,41 @@ main {
   padding: 0.5em 1em;
   z-index: 1000; /* Ensure it stays on top */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden; /* Prevent content from overflowing */
+  min-height: 60px; /* Ensure enough height for wrapping content */
 }
 
 .sticky-header-content {
+  position: relative;
+  width: 100%; /* Allow flex to distribute space evenly */
   display: flex;
-  justify-content: space-between;
+  justify-content: center; /* Center titles horizontally */
   align-items: center;
-  padding: 10px;
 }
 
 .sticky-title-container {
+  position: absolute; /* Keep titles centered */
+  left: 50%;
+  transform: translateX(-50%);
   text-align: center;
+  max-width: 70%; /* Restrict width to prevent overflow */
+  white-space: normal; /* Allow text wrapping */
+  word-break: break-word; /* Break long words if necessary */
+  user-select: none;
 }
 
 .sticky-title-japanese {
   font-size: 1.5em;
-  margin: 0;
+  font-family: "Noto Sans JP", sans; /* Adjust to the appropriate English font */
+  font-weight: 400;
+  line-height: 0.5;
 }
 
 .sticky-title-english {
   font-size: 1em;
   color: #666;
+  line-height: 1.2; /* Adjust line height */
+  margin: 0px;
 }
 
 .stories-detail-container {
