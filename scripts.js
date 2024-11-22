@@ -301,25 +301,28 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
 
     // Updated regex for splitting sentences
-    const sentenceEndings = /([。！？.!?]+)/g;
+    const sentenceEndings =
+      /((?<!\d):(?=\s*[“"\w])|(?<=\d)\.|(?<!\d)\.(?=\s*[A-Za-z])|[。！？!?])/g;
 
-    const japaneseSentences = story.japanese
-      .split(sentenceEndings)
-      .reduce((acc, cur, i) => {
-        if (i % 2 === 0) acc.push(cur);
-        else acc[acc.length - 1] += cur;
+    // Updated splitting logic to avoid undefined values
+    function splitSentences(text) {
+      return text.split(sentenceEndings).reduce((acc, cur) => {
+        if (cur && cur.trim()) {
+          // Check if the current part is punctuation
+          if (/^[。！？.!?:]$/.test(cur)) {
+            if (acc.length > 0) {
+              acc[acc.length - 1] += cur; // Append punctuation to the previous sentence
+            }
+          } else {
+            acc.push(cur.trim()); // Add the new sentence
+          }
+        }
         return acc;
-      }, [])
-      .filter((sentence) => sentence.trim());
+      }, []);
+    }
 
-    const englishSentences = story.english
-      .split(sentenceEndings)
-      .reduce((acc, cur, i) => {
-        if (i % 2 === 0) acc.push(cur);
-        else acc[acc.length - 1] += cur;
-        return acc;
-      }, [])
-      .filter((sentence) => sentence.trim());
+    const japaneseSentences = splitSentences(story.japanese);
+    const englishSentences = splitSentences(story.english);
 
     japaneseSentences.forEach((japaneseSentence, index) => {
       const coupletContainer = document.createElement("div");
