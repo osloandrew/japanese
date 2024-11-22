@@ -412,7 +412,8 @@ document.addEventListener("DOMContentLoaded", () => {
   genreFilter.addEventListener("change", filterStories);
   cefrFilter.addEventListener("change", filterStories);
 
-  // Initialize the app
-  loadCSV("japaneseStories.csv", displayStories);
-  loadStoryFromURL();
+  loadCSV("japaneseStories.csv", (loadedStories) => {
+    displayStories(loadedStories);
+    loadStoryFromURL(); // Ensure this runs after stories are loaded
+  });
 });
