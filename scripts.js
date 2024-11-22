@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function updateEnglishVisibility() {
     const englishSentences = document.querySelectorAll(".english-sentence");
+    const toggleEnglishBtn = document.getElementById("toggle-english-btn"); // Dynamically find the button
     if (isEnglishVisible) {
       // Show English sentences
       englishSentences.forEach((sentence) => {
@@ -307,14 +308,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Update the sticky header dynamically
     stickyHeader.innerHTML = `
-    <button id="back-button" class="back-button">
-      <i class="fas fa-chevron-left"></i> Back
-    </button>
-    <div class="sticky-title-container">
-      <h2 class="sticky-title-japanese">${story.titleJapanese}</h2>
-      <p class="sticky-title-english">${story.titleEnglish}</p>
-    </div>
-    <div class="sticky-detail-container">
+  <div class="sticky-detail-container">
+    <div class="sticky-row">
       <div class="sticky-genre">
         ${genreIcons[story.genre.toLowerCase()] || ""}
       </div>
@@ -322,10 +317,18 @@ document.addEventListener("DOMContentLoaded", () => {
         ${story.CEFR || "N/A"}
       </div>
     </div>
-    <button id="toggle-english-btn" class="toggle-english-btn">
-      ${isEnglishVisible ? "Hide English" : "Show English"}
+    <button id="back-button" class="back-button">
+      <i class="fas fa-chevron-left"></i> Back
     </button>
-  `;
+  </div>
+  <div class="sticky-title-container">
+    <h2 class="sticky-title-japanese">${story.titleJapanese}</h2>
+    <p class="sticky-title-english">${story.titleEnglish}</p>
+  </div>
+  <button id="toggle-english-btn" class="toggle-english-btn">
+    ${isEnglishVisible ? "Hide English" : "Show English"}
+  </button>
+`;
 
     // Separate regex for English and Japanese sentence splitting
     const englishSentenceEndings =

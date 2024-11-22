@@ -294,9 +294,10 @@ main {
 /* Flex container for genre and CEFR */
 .sticky-detail-container {
   display: flex;
-  align-items: center;
-  gap: 10px; /* Spacing between genre and CEFR */
-  margin-right: 10px;
+  flex-direction: column; /* Stack rows vertically */
+  align-items: flex-start; /* Align everything to the left */
+  gap: 10px; /* Space between rows */
+  align-self: flex-start; /* Align to the left */
 }
 
 /* Ensure sticky header genre matches list page */
@@ -304,7 +305,6 @@ main {
   align-self: flex-start;
   background-color: #f0f0f0; /* Light background for genre badge */
   padding: 3px 7px;
-  font-size: 12px;
   color: #4f4f4f;
   font-weight: bold;
   border-radius: 4px;
@@ -344,6 +344,12 @@ main {
   align-items: center;
 }
 
+.sticky-row {
+  display: flex;
+  gap: 10px; /* Space between genre and CEFR */
+  align-items: center; /* Align items vertically within the row */
+}
+
 .sticky-title-container {
   text-align: center; /* Center the text inside */
   max-width: 70%; /* Restrict width to prevent overflow */
@@ -358,9 +364,11 @@ main {
   font-size: 1.5em;
   font-family: "Noto Sans JP", sans; /* Adjust to the appropriate English font */
   font-weight: 400;
+  margin: 0px;
 }
 
 .sticky-title-english {
+  font-family: "Noto Sans", sans;
   font-size: 1em;
   color: #666;
   line-height: 1.2; /* Adjust line height */
