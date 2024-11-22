@@ -5,7 +5,8 @@ audio {
   width: 100%;
 }
 
-#back-button {
+#back-button,
+#toggle-english-btn {
   background-color: white;
   border: #333 1px solid;
   color: #3b5d50;
@@ -16,7 +17,8 @@ audio {
   transition: background-color 0.3s ease;
 }
 
-#back-button:hover {
+#back-button:hover,
+#toggle-english-btn:hover {
   background-color: gainsboro; /* Slightly darker purple on hover */
 }
 

@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchBar = document.getElementById("search-bar");
   const genreFilter = document.getElementById("genre-filter");
   const cefrFilter = document.getElementById("cefr-filter");
-  const toggleEnglish = document.getElementById("toggle-english");
+  const toggleEnglishBtn = document.getElementById("toggle-english-btn");
+  let isEnglishVisible = true; // Default state
   let stories = []; // Global array to store all stories
 
   // Utility function to shuffle an array
@@ -21,27 +22,31 @@ document.addEventListener("DOMContentLoaded", () => {
     return array;
   }
 
-  // Function to update the visibility of English sentences
   function updateEnglishVisibility() {
     const englishSentences = document.querySelectorAll(".english-sentence");
-    if (toggleEnglish.checked) {
+    if (isEnglishVisible) {
       // Show English sentences
       englishSentences.forEach((sentence) => {
         sentence.style.display = "block";
       });
+      toggleEnglishBtn.textContent = "Hide English";
     } else {
       // Hide English sentences
       englishSentences.forEach((sentence) => {
         sentence.style.display = "none";
       });
+      toggleEnglishBtn.textContent = "Show English";
     }
   }
 
-  // Set default toggle state (checked means English is visible)
-  toggleEnglish.checked = true;
+  // Event listener for the toggle button
+  toggleEnglishBtn.addEventListener("click", () => {
+    isEnglishVisible = !isEnglishVisible;
+    updateEnglishVisibility();
+  });
 
-  // Event listener for toggle switch
-  toggleEnglish.addEventListener("change", updateEnglishVisibility);
+  // Set default visibility on page load
+  updateEnglishVisibility();
 
   // CSV Parsing Function
   function parseCSV(csvText) {
