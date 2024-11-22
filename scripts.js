@@ -306,7 +306,7 @@ document.addEventListener("DOMContentLoaded", () => {
       storyContent.appendChild(audioPlayer);
     }
 
-    // Update the sticky header dynamically
+    // Add sticky header content dynamically
     stickyHeader.innerHTML = `
   <div class="sticky-detail-container">
     <div class="sticky-row">
@@ -325,9 +325,16 @@ document.addEventListener("DOMContentLoaded", () => {
     <h2 class="sticky-title-japanese">${story.titleJapanese}</h2>
     <p class="sticky-title-english">${story.titleEnglish}</p>
   </div>
-  <button id="toggle-english-btn" class="toggle-english-btn">
-    ${isEnglishVisible ? "Hide English" : "Show English"}
-  </button>
+  <div class="toggle-buttons-container">
+    <button id="toggle-english-btn" class="toggle-english-btn">
+      ${isEnglishVisible ? "Hide English" : "Show English"}
+    </button>
+    ${
+      story.hiragana
+        ? `<button id="toggle-kanji-btn" class="toggle-kanji-btn">Hide Kanji</button>`
+        : ""
+    }
+  </div>
 `;
 
     // Separate regex for English and Japanese sentence splitting
@@ -354,13 +361,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // Split sentences for English and Japanese text
     const japaneseSentences = splitJapaneseSentences(story.japanese);
     const englishSentences = splitEnglishSentences(story.english);
+    const hiraganaSentences = story.hiragana
+      ? splitJapaneseSentences(story.hiragana)
+      : null;
 
-    japaneseSentences.forEach((japaneseSentence, index) => {
+    // Display sentences
+    japaneseSentences.forEach((sentence, index) => {
       const coupletContainer = document.createElement("div");
 
       const japaneseDiv = document.createElement("div");
       japaneseDiv.classList.add("japanese-sentence");
-      japaneseDiv.textContent = japaneseSentence.trim();
+      japaneseDiv.textContent = sentence.trim();
       coupletContainer.appendChild(japaneseDiv);
 
       if (englishSentences[index]) {
@@ -372,6 +383,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
       storyContent.appendChild(coupletContainer);
     });
+
+    // Add toggle Kanji button functionality
+    if (story.hiragana) {
+      const toggleKanjiBtn = document.getElementById("toggle-kanji-btn");
+      let isKanjiVisible = true;
+
+      toggleKanjiBtn.addEventListener("click", () => {
+        isKanjiVisible = !isKanjiVisible;
+        const japaneseDivs = document.querySelectorAll(".japanese-sentence");
+
+        japaneseDivs.forEach((div, index) => {
+          div.textContent = isKanjiVisible
+            ? japaneseSentences[index]
+            : hiraganaSentences[index];
+        });
+
+        toggleKanjiBtn.textContent = isKanjiVisible
+          ? "Hide Kanji"
+          : "Show Kanji";
+      });
+    }
 
     updateEnglishVisibility();
 
