@@ -258,6 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stickyHeader.classList.remove("hidden"); // Show sticky header
     storyContent.innerHTML = ""; // Clear previous content
 
+    // Check for audio and add it to the storyContent
     const existingAudio = storyViewer.querySelector("audio");
     if (existingAudio) {
       existingAudio.pause();
@@ -273,14 +274,36 @@ document.addEventListener("DOMContentLoaded", () => {
       storyContent.appendChild(audioPlayer);
     }
 
-    // Updated regex for sentence splitting
+    // Update the sticky header dynamically
+    stickyHeader.innerHTML = `
+    <button id="back-button" class="back-button">
+      <i class="fas fa-chevron-left"></i> Back
+    </button>
+    <div class="sticky-title-container">
+      <h2 class="sticky-title-japanese">${story.titleJapanese}</h2>
+      <p class="sticky-title-english">${story.titleEnglish}</p>
+    </div>
+    <div class="sticky-detail-container">
+      <div class="sticky-genre">
+        ${genreIcons[story.genre.toLowerCase()] || ""}
+      </div>
+      <div class="sticky-cefr-label ${getCefrClass(story.CEFR)}">
+        ${story.CEFR || "N/A"}
+      </div>
+    </div>
+    <button id="toggle-english-btn" class="toggle-english-btn">
+      ${isEnglishVisible ? "Hide English" : "Show English"}
+    </button>
+  `;
+
+    // Updated regex for splitting sentences
     const sentenceEndings = /([。！？.!?]+)/g;
 
     const japaneseSentences = story.japanese
       .split(sentenceEndings)
       .reduce((acc, cur, i) => {
-        if (i % 2 === 0) acc.push(cur); // Add sentence content
-        else acc[acc.length - 1] += cur; // Append punctuation
+        if (i % 2 === 0) acc.push(cur);
+        else acc[acc.length - 1] += cur;
         return acc;
       }, [])
       .filter((sentence) => sentence.trim());
@@ -288,8 +311,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const englishSentences = story.english
       .split(sentenceEndings)
       .reduce((acc, cur, i) => {
-        if (i % 2 === 0) acc.push(cur); // Add sentence content
-        else acc[acc.length - 1] += cur; // Append punctuation
+        if (i % 2 === 0) acc.push(cur);
+        else acc[acc.length - 1] += cur;
         return acc;
       }, [])
       .filter((sentence) => sentence.trim());
@@ -313,23 +336,34 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     updateEnglishVisibility();
+
+    // Reattach event listeners for back and toggle buttons
+    document
+      .getElementById("back-button")
+      .addEventListener("click", backButtonHandler);
+    document
+      .getElementById("toggle-english-btn")
+      .addEventListener("click", () => {
+        isEnglishVisible = !isEnglishVisible;
+        updateEnglishVisibility();
+      });
   }
 
-  // Back button functionality
-  backButton.addEventListener("click", () => {
+  // Back button handler
+  function backButtonHandler() {
     filterContainer.style.display = "flex"; // Show filters when returning to the list page
     storyViewer.style.display = "none";
     storyListSection.style.display = "block";
     stickyHeader.classList.add("hidden"); // Hide sticky header
 
-    // Stop any currently playing audio by querying it directly
+    // Stop any currently playing audio
     const existingAudio = storyViewer.querySelector("audio");
     if (existingAudio) {
       existingAudio.pause();
       existingAudio.currentTime = 0; // Reset playback position
       existingAudio.remove(); // Remove the audio element
     }
-  });
+  }
 
   // Event Listeners for Filters
   searchBar.addEventListener("input", filterStories);

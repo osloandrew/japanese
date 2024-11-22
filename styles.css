@@ -256,17 +256,96 @@ main {
   min-height: 100vh;
 }
 
+/* Ensure sticky header CEFR label matches list page */
+.sticky-cefr-label {
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Noto Sans", sans-serif;
+  white-space: nowrap;
+  user-select: none;
+  color: #4f4f4f; /* Default text color */
+}
+
+.sticky-cefr-label.easy {
+  background-color: #c7e3b6; /* Green for 'A1, A2' */
+}
+
+.sticky-cefr-label.medium {
+  background-color: #f2d96b; /* Yellow for 'B1, B2' */
+}
+
+.sticky-cefr-label.hard {
+  background-color: #e9a895; /* Red for 'C1, C2' */
+}
+
+.sticky-cefr-label.cefr-unknown {
+  background-color: #e0e0e0; /* Gray for unknown levels */
+}
+
+/* Flex container for genre and CEFR */
+.sticky-detail-container {
+  display: flex;
+  align-items: center; /* Align vertically */
+  gap: 10px; /* Add spacing between genre and CEFR */
+}
+
+/* Ensure sticky header genre matches list page */
+.sticky-genre {
+  align-self: flex-start;
+  background-color: #f0f0f0; /* Light background for genre badge */
+  padding: 3px 7px;
+  font-size: 12px;
+  color: #4f4f4f;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Noto Sans", sans-serif;
+  white-space: nowrap;
+  min-width: 17.5px;
+  user-select: none;
+}
+
+.sticky-genre i {
+  color: #333; /* Icon color */
+}
+
 #sticky-header {
   position: sticky;
   top: 0;
   background-color: white;
-  color: white;
+  color: black;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0.5em 1em;
   z-index: 1000; /* Ensure it stays on top */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.sticky-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.sticky-title-container {
+  text-align: center;
+}
+
+.sticky-title-japanese {
+  font-size: 1.5em;
+  margin: 0;
+}
+
+.sticky-title-english {
+  font-size: 1em;
+  color: #666;
 }
 
 .stories-detail-container {
