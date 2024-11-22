@@ -34,6 +34,20 @@ button {
   font-family: "Noto Sans", sans-serif;
 }
 
+.coffee-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent; /* No visible border but ensures alignment */
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.coffee-img {
+  max-height: 30px; /* Adjust the height of the image to align with the LinkedIn button */
+  width: auto;
+}
+
 #filter-container {
   align-items: center; /* Center items horizontally */
   background: #ffffff; /* White background */
@@ -72,6 +86,38 @@ button {
   cursor: pointer;
 }
 
+footer {
+  background-color: #d2e2dc;
+  bottom: 0;
+  color: #0d3a69;
+  font-family: "Noto Sans", sans-serif;
+  padding: 20px 0;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+footer p {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+footer p a {
+  color: #3c88d4;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+footer p a:hover {
+  color: #0d3a69;
+  text-decoration: underline;
+}
+
+footer .copyright {
+  color: #555;
+  font-size: 12px;
+}
+
 h1 {
   font-family: "Grenze Gotisch", serif !important;
   margin: 0.5em 0;
@@ -83,8 +129,8 @@ h2 {
 }
 
 header {
-  background-color: #3b5d50;
-  color: white;
+  background-color: #d2e2dc;
+  color: black;
   padding: 10px 0;
   text-align: center;
 }
@@ -93,14 +139,14 @@ header {
   display: none !important;
 }
 
-.japanese-sentence {
-  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
-  color: black; /* Set a color for Japanese text */
-}
-
 .english-sentence {
   font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
   color: gray; /* Set a different color for English text */
+}
+
+.japanese-sentence {
+  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
+  color: black; /* Set a color for Japanese text */
 }
 
 label {
@@ -131,6 +177,41 @@ li .cefr-value {
   font-weight: bold;
   color: #555; /* Subtle color for contrast */
   width: 50px; /* Fixed width for consistent alignment */
+}
+
+.linkedin-btn {
+  align-items: center;
+  background-color: white;
+  border: 1px solid #0a66c2;
+  border-radius: 4px;
+  color: #0a66c2;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 13px;
+  padding: 2px 15px;
+  text-decoration: none;
+  height: 30px; /* Match height to the BuyMeACoffee image */
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.linkedin-btn:hover {
+  background-color: #f0f0f0;
+  color: #0a66c2;
+}
+
+.linkedin-icon {
+  height: auto;
+  margin-right: 8px;
+  width: 18px;
+}
+
+.links {
+  display: flex;
+  gap: 10px; /* Space between the buttons */
+  margin: 10px 0 10px 0;
+  align-items: center; /* Vertically align both buttons */
+  justify-content: center;
 }
 
 main {
