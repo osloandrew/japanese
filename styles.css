@@ -296,7 +296,6 @@ main {
   display: flex;
   align-items: center;
   gap: 10px; /* Spacing between genre and CEFR */
-  margin-left: auto; /* Push to the far right */
   margin-right: 10px;
 }
 
@@ -346,14 +345,13 @@ main {
 }
 
 .sticky-title-container {
-  position: absolute; /* Keep titles centered */
-  left: 50%;
-  transform: translateX(-50%);
-  text-align: center;
+  text-align: center; /* Center the text inside */
   max-width: 70%; /* Restrict width to prevent overflow */
   white-space: normal; /* Allow text wrapping */
   word-break: break-word; /* Break long words if necessary */
   user-select: none;
+  margin-right: auto;
+  margin-left: auto;
 }
 
 .sticky-title-japanese {

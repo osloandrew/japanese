@@ -254,6 +254,23 @@ document.addEventListener("DOMContentLoaded", () => {
     displayStories(filteredStories);
   }
 
+  function loadStoryFromURL() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const storyTitle = urlParams.get("story"); // Extract the 'story' query parameter
+    if (storyTitle) {
+      const decodedTitle = decodeURIComponent(storyTitle).toLowerCase(); // Normalize to lowercase for comparison
+      const story = stories.find(
+        (s) => s.titleEnglish.toLowerCase() === decodedTitle
+      ); // Compare in lowercase
+      if (story) {
+        showStory(story); // Show the story if it's found
+      } else {
+        console.error("Story not found:", decodedTitle);
+        backButtonHandler(); // If story not found, show the story list or handle it
+      }
+    }
+  }
+
   // Show the selected story
   async function showStory(story) {
     filterContainer.style.display = "none"; // Hide filters in the story viewer
@@ -261,6 +278,16 @@ document.addEventListener("DOMContentLoaded", () => {
     storyViewer.style.display = "block";
     stickyHeader.classList.remove("hidden"); // Show sticky header
     storyContent.innerHTML = ""; // Clear previous content
+
+    // Update URL and page title
+    const encodedTitle = encodeURIComponent(story.titleEnglish);
+    history.replaceState(
+      // Use replaceState instead of pushState
+      { title: story.titleEnglish },
+      "",
+      `?story=${encodedTitle}` // Update the URL with the `story` parameter
+    );
+    document.title = story.titleEnglish; // Set the page title to the story's title
 
     // Check for audio and add it to the storyContent
     const existingAudio = storyViewer.querySelector("audio");
@@ -371,6 +398,10 @@ document.addEventListener("DOMContentLoaded", () => {
       existingAudio.currentTime = 0; // Reset playback position
       existingAudio.remove(); // Remove the audio element
     }
+
+    // Reset URL and page title
+    history.replaceState({}, "", window.location.pathname); // Reset URL without query parameters
+    document.title = "Japanese Stories"; // Reset the page title
   }
 
   // Event Listeners for Filters
@@ -380,4 +411,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initialize the app
   loadCSV("japaneseStories.csv", displayStories);
+  loadStoryFromURL();
 });
