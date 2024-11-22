@@ -302,24 +302,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Separate regex for English and Japanese sentence splitting
     const englishSentenceEndings =
-      /(?<!\d):(?=\s*[“"\w])|(?<!\d)(?<=\.|\?|!)(?=\s*[A-Za-z“"])/g;
+      /(?<=[.!?])(?=\s+[“"A-Z])|(?<=[.!?]["”])(?=\s+[A-Z])|(?<=[a-zA-Z]):(?=\s*[A-Za-z])/g;
     const japaneseSentenceEndings = /(?<=[。！？])/g;
 
     // Function to split English sentences
     function splitEnglishSentences(text) {
-      return text.split(englishSentenceEndings).reduce((acc, cur) => {
-        if (cur && cur.trim()) {
-          // Append punctuation or quotes to the last sentence
-          if (/^[.!?:”]$/.test(cur)) {
-            if (acc.length > 0) {
-              acc[acc.length - 1] += cur;
-            }
-          } else {
-            acc.push(cur.trim());
-          }
-        }
-        return acc;
-      }, []);
+      return text
+        .split(englishSentenceEndings)
+        .map((sentence) => sentence.trim())
+        .filter(Boolean); // Remove empty sentences
     }
 
     // Function to split Japanese sentences
