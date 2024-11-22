@@ -1,3 +1,40 @@
+const genreIcons = {
+  action: '<i class="fas fa-bolt"></i>', // Action genre icon
+  adventure: '<i class="fas fa-compass"></i>', // Adventure genre icon
+  art: '<i class="fas fa-paint-brush"></i>', // Art genre icon
+  biography: '<i class="fas fa-user"></i>', // Biography genre icon
+  business: '<i class="fas fa-briefcase"></i>', // Business genre icon
+  children: '<i class="fas fa-child"></i>', // Children’s genre icon
+  comedy: '<i class="fas fa-laugh"></i>', // Comedy genre icon
+  crime: '<i class="fas fa-gavel"></i>', // Crime genre icon
+  culture: '<i class="fas fa-globe"></i>', // Culture genre icon
+  dialogue: '<i class="fas fa-comments"></i>', // Dialogue genre icon
+  drama: '<i class="fas fa-theater-masks"></i>', // Drama genre icon
+  economics: '<i class="fas fa-chart-line"></i>', // Economics genre icon
+  education: '<i class="fas fa-book-reader"></i>', // Education genre icon
+  fantasy: '<i class="fas fa-dragon"></i>', // Fantasy genre icon
+  food: '<i class="fas fa-utensils"></i>', // Food genre icon
+  health: '<i class="fas fa-heartbeat"></i>', // Health genre icon
+  history: '<i class="fas fa-landmark"></i>', // History genre icon
+  horror: '<i class="fas fa-ghost"></i>', // Horror genre icon
+  mystery: '<i class="fas fa-search"></i>', // Mystery genre icon
+  music: '<i class="fas fa-music"></i>', // Music genre icon
+  nature: '<i class="fas fa-leaf"></i>', // Nature genre icon
+  philosophy: '<i class="fas fa-brain"></i>', // Philosophy genre icon
+  poetry: '<i class="fas fa-feather-alt"></i>', // Poetry genre icon
+  politics: '<i class="fas fa-balance-scale"></i>', // Politics genre icon
+  psychology: '<i class="fas fa-brain"></i>', // Psychology genre icon
+  religion: '<i class="fas fa-praying-hands"></i>', // Religion genre icon
+  romance: '<i class="fas fa-heart"></i>', // Romance genre icon
+  science: '<i class="fas fa-flask"></i>', // Science genre icon
+  "science fiction": '<i class="fas fa-rocket"></i>', // Sci-Fi genre icon
+  "self-help": '<i class="fas fa-hands-helping"></i>', // Self-help genre icon
+  sports: '<i class="fas fa-football-ball"></i>', // Sports genre icon
+  technology: '<i class="fas fa-microchip"></i>', // Technology genre icon
+  thriller: '<i class="fas fa-skull"></i>', // Thriller genre icon
+  travel: '<i class="fas fa-plane"></i>', // Travel genre icon
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   const storyList = document.getElementById("stories");
   const storyViewer = document.getElementById("story-viewer");
@@ -129,9 +166,20 @@ document.addEventListener("DOMContentLoaded", () => {
       cefrDiv.classList.add("cefr-value", getCefrClass(story.CEFR)); // Add CEFR level class
       cefrDiv.textContent = story.CEFR || "N/A"; // Display CEFR or "N/A"
 
-      // Append title container and CEFR to list item
+      // Genre container with Font Awesome icon
+      const genreDiv = document.createElement("div");
+      genreDiv.classList.add("stories-genre");
+      genreDiv.innerHTML = genreIcons[story.genre.toLowerCase()] || ""; // Use English genre for icons
+
+      // Detail container to wrap CEFR and genre divs
+      const detailContainer = document.createElement("div");
+      detailContainer.classList.add("stories-detail-container");
+      detailContainer.appendChild(genreDiv); // Add genre to detail container
+      detailContainer.appendChild(cefrDiv); // Add CEFR to detail container
+
+      // Append title container and detail container to list item
       listItem.appendChild(titleContainer); // Titles on the left
-      listItem.appendChild(cefrDiv); // CEFR on the right
+      listItem.appendChild(detailContainer); // CEFR and Genre on the right
 
       // Add click event to navigate to the story
       listItem.addEventListener("click", () => showStory(story));

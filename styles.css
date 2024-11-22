@@ -187,7 +187,7 @@ header {
 
 .japanese-title {
   font-family: "Noto Sans JP", sans-serif; /* Japanese-specific font */
-  font-size: 16px;
+  font-size: 18px;
   color: #333;
 }
 
@@ -251,6 +251,7 @@ li:hover {
 
 main {
   padding: 0 1em 0 1em;
+  min-height: 100vh;
 }
 
 #sticky-header {
@@ -264,6 +265,32 @@ main {
   padding: 0.5em 1em;
   z-index: 1000; /* Ensure it stays on top */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stories-detail-container {
+  display: flex;
+  align-items: center; /* Align CEFR and genre vertically */
+  gap: 10px; /* Add spacing between genre and CEFR */
+}
+
+.stories-genre {
+  align-self: flex-start;
+  background-color: #f0f0f0;
+  padding: 3px 7px;
+  font-size: 12px;
+  color: #4f4f4f;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Noto Sans", sans-serif;
+  white-space: nowrap;
+  min-width: 17.5px;
+  user-select: none;
+}
+
+.stories-genre i {
+  color: #333;
 }
 
 /* Style for the story content */
