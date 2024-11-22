@@ -95,22 +95,43 @@ document.addEventListener("DOMContentLoaded", () => {
   function displayStories(stories) {
     filterContainer.style.display = "flex"; // Show filters on the list page
     storyList.innerHTML = ""; // Clear previous stories
-    stories.forEach((story) => {
-      const listItem = document.createElement("li");
 
-      // Title container
-      const titleDiv = document.createElement("div");
-      titleDiv.innerHTML = `<strong>${story.titleJapanese}</strong><br>${story.titleEnglish}`;
-      titleDiv.style.flex = "1"; // Allow the title to take most of the space
+    stories.forEach((story, index) => {
+      const listItem = document.createElement("li");
+      listItem.style.display = "flex";
+      listItem.style.justifyContent = "space-between";
+      listItem.style.alignItems = "center";
+
+      // Title container (Japanese and English stacked)
+      const titleContainer = document.createElement("div");
+      titleContainer.id = `story-title-container-${index}`;
+      titleContainer.classList.add("title-container");
+
+      // Japanese title
+      const japaneseTitleDiv = document.createElement("div");
+      japaneseTitleDiv.id = `story-japanese-title-${index}`;
+      japaneseTitleDiv.classList.add("japanese-title");
+      japaneseTitleDiv.textContent = story.titleJapanese;
+
+      // English title
+      const englishTitleDiv = document.createElement("div");
+      englishTitleDiv.id = `story-english-title-${index}`;
+      englishTitleDiv.classList.add("english-title");
+      englishTitleDiv.textContent = story.titleEnglish;
+
+      // Append Japanese and English titles to title container
+      titleContainer.appendChild(japaneseTitleDiv);
+      titleContainer.appendChild(englishTitleDiv);
 
       // CEFR container
       const cefrDiv = document.createElement("div");
-      cefrDiv.classList.add("cefr-value");
+      cefrDiv.id = `story-cefr-${index}`;
+      cefrDiv.classList.add("cefr-value", getCefrClass(story.CEFR)); // Add CEFR level class
       cefrDiv.textContent = story.CEFR || "N/A"; // Display CEFR or "N/A"
 
-      // Append title and CEFR to list item
-      listItem.appendChild(titleDiv);
-      listItem.appendChild(cefrDiv);
+      // Append title container and CEFR to list item
+      listItem.appendChild(titleContainer); // Titles on the left
+      listItem.appendChild(cefrDiv); // CEFR on the right
 
       // Add click event to navigate to the story
       listItem.addEventListener("click", () => showStory(story));
@@ -118,6 +139,16 @@ document.addEventListener("DOMContentLoaded", () => {
       // Append list item to the story list
       storyList.appendChild(listItem);
     });
+  }
+
+  // Helper function to determine CEFR class
+  function getCefrClass(cefrLevel) {
+    if (!cefrLevel) return "cefr-unknown"; // Fallback for missing CEFR levels
+    const level = cefrLevel.toUpperCase();
+    if (["A1", "A2"].includes(level)) return "easy";
+    if (["B1", "B2"].includes(level)) return "medium";
+    if (["C1", "C2"].includes(level)) return "hard";
+    return "cefr-unknown"; // Default
   }
 
   // Check if an audio file exists

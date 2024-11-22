@@ -34,6 +34,35 @@ button {
   font-family: "Noto Sans", sans-serif;
 }
 
+.cefr-value {
+  padding: 3px 7px;
+  font-size: 12px;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Noto Sans", sans-serif;
+  white-space: nowrap;
+  user-select: none;
+  color: #4f4f4f; /* Default text color */
+}
+
+.cefr-value.easy {
+  background-color: #c7e3b6; /* Green for 'A1, A2' */
+}
+
+.cefr-value.medium {
+  background-color: #f2d96b; /* Yellow for 'B1, B2' */
+}
+
+.cefr-value.hard {
+  background-color: #e9a895; /* Red for 'C1, C2' */
+}
+
+.cefr-value.cefr-unknown {
+  background-color: #e0e0e0; /* Gray for unknown levels */
+}
+
 .coffee-btn {
   display: inline-flex;
   align-items: center;
@@ -52,6 +81,7 @@ button {
   align-items: center; /* Center items horizontally */
   background: #ffffff; /* White background */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+
   display: flex;
   gap: 10px;
   justify-content: center; /* Center items vertically */
@@ -71,7 +101,7 @@ button {
   font-family: "Noto Sans", sans-serif;
   font-size: 1em;
   border: 1px solid #d0d0d0; /* Light border for structure */
-  border-radius: 5px; /* Rounded corners for sleek look */
+  border-radius: 15px;
   background: #f9f9f9; /* Subtle off-white background */
   box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.05); /* Inner shadow for depth */
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
@@ -144,9 +174,21 @@ header {
   color: gray; /* Set a different color for English text */
 }
 
+.english-title {
+  font-family: "Noto Sans", sans-serif; /* English-specific font */
+  font-size: 14px;
+  color: #666;
+}
+
 .japanese-sentence {
-  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
+  font-family: "Noto Sans JP", sans; /* Adjust to the appropriate English font */
   color: black; /* Set a color for Japanese text */
+}
+
+.japanese-title {
+  font-family: "Noto Sans JP", sans-serif; /* Japanese-specific font */
+  font-size: 16px;
+  color: #333;
 }
 
 label {
@@ -170,13 +212,6 @@ li {
 
 li:hover {
   background-color: #f1f1f1;
-}
-
-li .cefr-value {
-  text-align: center;
-  font-weight: bold;
-  color: #555; /* Subtle color for contrast */
-  width: 50px; /* Fixed width for consistent alignment */
 }
 
 .linkedin-btn {
