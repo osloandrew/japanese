@@ -300,29 +300,39 @@ document.addEventListener("DOMContentLoaded", () => {
     </button>
   `;
 
-    // Updated regex for splitting sentences
-    const sentenceEndings =
-      /((?<!\d):(?=\s*[“"\w])|(?<=\d)\.|(?<!\d)\.(?=\s*[A-Za-z])|[。！？!?])/g;
+    // Separate regex for English and Japanese sentence splitting
+    const englishSentenceEndings =
+      /(?<!\d):(?=\s*[“"\w])|(?<!\d)(?<=\.|\?|!)(?=\s*[A-Za-z“"])/g;
+    const japaneseSentenceEndings = /(?<=[。！？])/g;
 
-    // Updated splitting logic to avoid undefined values
-    function splitSentences(text) {
-      return text.split(sentenceEndings).reduce((acc, cur) => {
+    // Function to split English sentences
+    function splitEnglishSentences(text) {
+      return text.split(englishSentenceEndings).reduce((acc, cur) => {
         if (cur && cur.trim()) {
-          // Check if the current part is punctuation
-          if (/^[。！？.!?:]$/.test(cur)) {
+          // Append punctuation or quotes to the last sentence
+          if (/^[.!?:”]$/.test(cur)) {
             if (acc.length > 0) {
-              acc[acc.length - 1] += cur; // Append punctuation to the previous sentence
+              acc[acc.length - 1] += cur;
             }
           } else {
-            acc.push(cur.trim()); // Add the new sentence
+            acc.push(cur.trim());
           }
         }
         return acc;
       }, []);
     }
 
-    const japaneseSentences = splitSentences(story.japanese);
-    const englishSentences = splitSentences(story.english);
+    // Function to split Japanese sentences
+    function splitJapaneseSentences(text) {
+      return text
+        .split(japaneseSentenceEndings)
+        .map((sentence) => sentence.trim())
+        .filter(Boolean);
+    }
+
+    // Split sentences for English and Japanese text
+    const japaneseSentences = splitJapaneseSentences(story.japanese);
+    const englishSentences = splitEnglishSentences(story.english);
 
     japaneseSentences.forEach((japaneseSentence, index) => {
       const coupletContainer = document.createElement("div");
