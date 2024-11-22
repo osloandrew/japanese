@@ -202,25 +202,29 @@ document.addEventListener("DOMContentLoaded", () => {
   // Check if an audio file exists
   async function checkAudio(titleEnglish) {
     const encodedTitleEnglish = encodeURIComponent(titleEnglish);
-    const audioPath = `Audio/${encodedTitleEnglish}.m4a`;
-    console.log(`Checking audio at path: ${audioPath}`);
+    const audioPaths = [
+      `Audio/${encodedTitleEnglish}.m4a`,
+      `Audio/${encodedTitleEnglish}.mp3`,
+    ];
 
-    try {
-      const response = await fetch(audioPath, {
-        method: "HEAD",
-        cache: "no-cache",
-      });
-      if (response.ok) {
-        console.log(`Audio found for: ${audioPath}`);
-        return audioPath;
-      } else {
-        console.warn(`No audio found for: ${audioPath}`);
-        return null;
+    for (const audioPath of audioPaths) {
+      console.log(`Checking audio at path: ${audioPath}`);
+      try {
+        const response = await fetch(audioPath, {
+          method: "HEAD",
+          cache: "no-cache",
+        });
+        if (response.ok) {
+          console.log(`Audio found for: ${audioPath}`);
+          return audioPath;
+        }
+      } catch (error) {
+        console.error(`Error checking audio for ${audioPath}:`, error);
       }
-    } catch (error) {
-      console.error(`Error checking audio for ${audioPath}:`, error);
-      return null;
     }
+
+    console.warn(`No audio found for: ${encodedTitleEnglish}`);
+    return null;
   }
 
   // Filter stories based on search and dropdowns
