@@ -440,7 +440,19 @@ ul {
 }
 
 /* Add margins for wide screens */
-@media (max-width: 1200px) {
+@media (max-width: 1024px) {
+  .linkedin-btn span {
+    font-size: 0.8em;
+  }
+  .links {
+    margin: 10px;
+  }
+  .sticky-title-english {
+    font-size: 0.8em;
+  }
+  .sticky-title-japanese {
+    font-size: 1em;
+  }
   #story-content {
     padding: 1em 1em 0em 1em;
   }
