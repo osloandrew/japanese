@@ -308,6 +308,7 @@ main {
   background-color: #f0f0f0; /* Light background for genre badge */
   padding: 3px 7px;
   color: #4f4f4f;
+  font-size: 12px !important;
   font-weight: bold;
   border-radius: 4px;
   text-align: center;
