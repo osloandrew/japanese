@@ -203,11 +203,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Check if an audio file exists
   async function checkAudio(titleEnglish) {
-    const encodedTitleEnglish = encodeURIComponent(titleEnglish);
-    const audioPaths = [
-      `Audio/${encodedTitleEnglish}.m4a`,
-      `Audio/${encodedTitleEnglish}.mp3`,
+    const sanitizedTitleEnglish = titleEnglish.endsWith("?")
+      ? titleEnglish.slice(0, -1) // Remove the question mark at the end
+      : titleEnglish;
+
+    const encodedTitles = [
+      encodeURIComponent(titleEnglish), // Original title
+      encodeURIComponent(sanitizedTitleEnglish), // Title without question mark
     ];
+
+    const audioPaths = encodedTitles.flatMap((encodedTitle) => [
+      `Audio/${encodedTitle}.m4a`,
+      `Audio/${encodedTitle}.mp3`,
+    ]);
 
     for (const audioPath of audioPaths) {
       console.log(`Checking audio at path: ${audioPath}`);
@@ -225,7 +233,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    console.warn(`No audio found for: ${encodedTitleEnglish}`);
+    console.warn(`No audio found for: ${titleEnglish}`);
     return null;
   }
 
