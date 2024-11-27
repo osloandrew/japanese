@@ -337,17 +337,35 @@ document.addEventListener("DOMContentLoaded", () => {
   </div>
 `;
 
+    function combineEnglishSentences(sentences) {
+      return sentences.reduce((acc, sentence) => {
+        const trimmed = sentence.trim();
+        if (
+          acc.length > 0 &&
+          /^[a-z]/.test(trimmed) && // Starts with lowercase
+          /["”']$/.test(acc[acc.length - 1]) // Ends with a quote
+        ) {
+          acc[acc.length - 1] += " " + trimmed; // Append to the previous sentence
+        } else {
+          acc.push(trimmed); // Otherwise, add as a new sentence
+        }
+        return acc;
+      }, []);
+    }
+
     // Separate regex for English and Japanese sentence splitting
     const englishSentenceEndings =
-      /(?<=[.!?])(?=\s+[“"A-Z])|(?<=[.!?]["”])(?=\s+[A-Z])|(?<=[a-zA-Z]):(?=\s*[A-Za-z])/g;
+      /(?<=[.!?])(?=\s+["A-Z])|(?<=[.!?]["”])(?=\s+[A-Z])|(?<=[a-zA-Z]):(?=\s*[A-Za-z])/g;
     const japaneseSentenceEndings = /(?<=[。！？])/g;
 
     // Function to split English sentences
     function splitEnglishSentences(text) {
-      return text
-        .split(englishSentenceEndings)
+      const standardizedText = text.replace(/[“”«»]/g, '"'); // Standardize quotes
+      const sentences = standardizedText
+        .split(englishSentenceEndings) // Split sentences using regex
         .map((sentence) => sentence.trim())
         .filter(Boolean); // Remove empty sentences
+      return combineEnglishSentences(sentences); // Combine fragmented sentences
     }
 
     // Function to split Japanese sentences
