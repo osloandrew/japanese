@@ -353,10 +353,25 @@ document.addEventListener("DOMContentLoaded", () => {
       }, []);
     }
 
+    function combineJapaneseSentences(sentences) {
+      return sentences.reduce((acc, sentence) => {
+        const trimmed = sentence.trim();
+        if (
+          acc.length > 0 &&
+          (/^[」]/.test(trimmed) || /[「]$/.test(acc[acc.length - 1])) // Matches quotes
+        ) {
+          acc[acc.length - 1] += " " + trimmed; // Append to the previous sentence
+        } else {
+          acc.push(trimmed); // Otherwise, add as a new sentence
+        }
+        return acc;
+      }, []);
+    }
+
     // Separate regex for English and Japanese sentence splitting
     const englishSentenceEndings =
       /(?<=[.!?])(?=\s+["A-Z])|(?<=[.!?]["”])(?=\s+[A-Z])|(?<=[a-zA-Z]):(?=\s*[A-Za-z])/g;
-    const japaneseSentenceEndings = /(?<=[。！？])/g;
+    const japaneseSentenceEndings = /(?<=[。！？]|。」)/g;
 
     // Function to split English sentences
     function splitEnglishSentences(text) {
@@ -370,10 +385,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to split Japanese sentences
     function splitJapaneseSentences(text) {
-      return text
-        .split(japaneseSentenceEndings)
+      const sentences = text
+        .split(japaneseSentenceEndings) // Split using regex for Japanese punctuation
         .map((sentence) => sentence.trim())
-        .filter(Boolean);
+        .filter(Boolean); // Remove empty sentences
+      return combineJapaneseSentences(sentences); // Combine fragmented sentences
     }
 
     // Split sentences for English and Japanese text
