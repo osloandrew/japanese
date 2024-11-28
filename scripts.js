@@ -386,7 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Separate regex for English and Japanese sentence splitting
     const englishSentenceEndings =
-      /(?<!\b(?:Mr|Mrs|Ms|Mt|Dr|Prof|Sr|St|Jr|Lt|Gen|Col|Capt|Cmdr|Sgt)\.)(?<=[.!?]["”]?)\s+(?=["”]?[A-Z])/g;
+      /(?<!\b(?:Mr|Mrs|Ms|Mt|Dr|Prof|Sr|St|Jr|Lt|Gen|Col|Capt|Cmdr|Sgt)\.)(?<=[.!?:]["”]?)\s+(?=["”]?[A-Z])/g;
     const japaneseSentenceEndings = /(?<=[。！？」]|[」][？！」])/g;
 
     // Function to split English sentences
