@@ -96,9 +96,16 @@ document.addEventListener("DOMContentLoaded", () => {
       let current = "";
       let insideQuotes = false;
 
-      for (let char of row) {
+      for (let i = 0; i < row.length; i++) {
+        const char = row[i];
         if (char === '"' && insideQuotes) {
-          insideQuotes = false;
+          if (row[i + 1] === '"') {
+            // Escaped quote, add to current value
+            current += '"';
+            i++; // Skip next character
+          } else {
+            insideQuotes = false;
+          }
         } else if (char === '"' && !insideQuotes) {
           insideQuotes = true;
         } else if (char === "," && !insideQuotes) {
