@@ -387,7 +387,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Separate regex for English and Japanese sentence splitting
     const englishSentenceEndings =
       /(?<!\b(?:Mr|Mrs|Ms|Mt|Dr|Prof|Sr|St|Jr|Lt|Gen|Col|Capt|Cmdr|Sgt)\.)(?<=[.!?:]["”]?)\s+(?=["”]?[A-Z])/g;
-    const japaneseSentenceEndings = /(?<=[。！？])」?(?!と)|(?<=。)」/g;
+    const japaneseSentenceEndings =
+      /(?<=[。！？])(?!(?<=。」|？」)と\s)|(?<=。」|？」)(?!と\s)|(?<=[。！？])/g;
     // Function to split English sentences
     function splitEnglishSentences(text) {
       const standardizedText = text.replace(/[“”«»]/g, '"'); // Standardize quotes
