@@ -17,6 +17,7 @@ const genreIcons = {
   health: '<i class="fas fa-heartbeat"></i>', // Health genre icon
   history: '<i class="fas fa-landmark"></i>', // History genre icon
   horror: '<i class="fas fa-ghost"></i>', // Horror genre icon
+  language: '<i class="fas fa-language"></i>', // Language genre icon
   monologue: '<i class="fas fa-microphone-alt"></i>', // Monologue genre icon
   music: '<i class="fas fa-music"></i>', // Music genre icon
   mystery: '<i class="fas fa-search"></i>', // Mystery genre icon
