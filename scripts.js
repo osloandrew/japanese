@@ -492,7 +492,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Reset filters
     searchBar.value = ""; // Clear the search bar
     genreFilter.selectedIndex = 0; // Reset genre filter to default
-    cefrFilter.selectedIndex = 0; // Reset CEFR filter to default
 
     // Re-shuffle stories
     stories = shuffleArray(stories); // Shuffle the stories array
