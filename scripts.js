@@ -488,6 +488,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // Reset URL and page title
     history.replaceState({}, "", window.location.pathname); // Reset URL without query parameters
     document.title = "Japanese Stories"; // Reset the page title
+
+    // Reset filters
+    searchBar.value = ""; // Clear the search bar
+    genreFilter.selectedIndex = 0; // Reset genre filter to default
+    cefrFilter.selectedIndex = 0; // Reset CEFR filter to default
+
+    // Re-shuffle stories
+    stories = shuffleArray(stories); // Shuffle the stories array
+
+    // Reapply filter logic to show all stories
+    filterStories();
   }
 
   // Event Listeners for Filters
