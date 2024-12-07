@@ -143,7 +143,12 @@ document.addEventListener("DOMContentLoaded", () => {
     filterContainer.style.display = "flex"; // Show filters on the list page
     storyList.innerHTML = ""; // Clear previous stories
 
-    stories.forEach((story, index) => {
+    // Filter stories with a defined, non-empty genre
+    const validStories = stories.filter(
+      (story) => story.genre && story.genre.trim() !== ""
+    );
+
+    validStories.forEach((story, index) => {
       const listItem = document.createElement("li");
       listItem.style.display = "flex";
       listItem.style.justifyContent = "space-between";
@@ -489,9 +494,8 @@ document.addEventListener("DOMContentLoaded", () => {
     history.replaceState({}, "", window.location.pathname); // Reset URL without query parameters
     document.title = "Japanese Stories"; // Reset the page title
 
-    // Reset filters
+    // Reset search bar
     searchBar.value = ""; // Clear the search bar
-    genreFilter.selectedIndex = 0; // Reset genre filter to default
 
     // Re-shuffle stories
     stories = shuffleArray(stories); // Shuffle the stories array
