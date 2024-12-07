@@ -121,7 +121,7 @@ button {
 }
 
 footer {
-  background-color: #d2e2dc;
+  background-color: #cfa89a;
   bottom: 0;
   color: #0d3a69;
   font-family: "Noto Sans", sans-serif;
@@ -148,9 +148,11 @@ footer p a:hover {
 }
 
 footer .copyright {
-  color: #4e342e;
+  color: #2e2e2e;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
   user-select: none;
 }
 
@@ -165,8 +167,9 @@ h2 {
 }
 
 header {
-  background-color: #d2e2dc;
-  color: #4e342e;
+  background-color: #cfa89a;
+  color: #2e2e2e;
+  letter-spacing: 0.5px;
   padding: 10px 0;
   text-align: center;
   user-select: none;
