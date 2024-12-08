@@ -83,20 +83,23 @@ button {
 
 .feedback-btn {
   display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
+  margin: 15px auto; /* Increase margin slightly for better spacing */
+  padding: 7px 20px; /* Slightly larger padding for more emphasis */
   font-family: "Noto Sans", sans-serif;
-  font-size: 1em;
-  color: white;
-  background-color: #0d3a69;
-  border: none;
-  border-radius: 5px;
+  font-size: 0.85em; /* Slightly larger font size for better readability */
+  text-transform: uppercase; /* Keep text all caps */
+  color: #0d3a69; /* Slightly bolder color */
+  background-color: #f2f2f2; /* Slightly darker light gray background */
+  border: 1px solid #bbb; /* Darker border for a more defined edge */
+  border-radius: 4px; /* Keep corners slightly rounded */
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  letter-spacing: 0.8px; /* Increase letter spacing for better legibility */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .feedback-btn:hover {
-  background-color: #3c88d4;
+  background-color: #d9d9d9; /* More noticeable gray on hover */
+  color: #0d4a79; /* Slightly darker hover text color for emphasis */
 }
 
 #filter-container {
