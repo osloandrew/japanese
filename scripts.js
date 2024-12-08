@@ -513,7 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Reset URL and page title
     history.replaceState({}, "", window.location.pathname); // Reset URL without query parameters
-    document.title = "Japanese Stories"; // Reset the page title
+    document.title = "Learn Japanese with Stories | Culture & Language"; // Reset the page title
 
     // Reset search bar
     searchBar.value = ""; // Clear the search bar
