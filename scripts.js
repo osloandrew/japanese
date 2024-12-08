@@ -473,6 +473,27 @@ document.addEventListener("DOMContentLoaded", () => {
         isEnglishVisible = !isEnglishVisible;
         updateEnglishVisibility();
       });
+
+    // Add the feedback button
+    const feedbackButton = document.createElement("button");
+    feedbackButton.textContent = "Give Feedback on This Story";
+    feedbackButton.classList.add("feedback-btn");
+
+    // Construct the Google Form URL with the story title
+    const formBaseURL =
+      "https://docs.google.com/forms/d/e/1FAIpQLSeya8YI-xrDrMq2KkLY0k5zPVt6s2JYQkjMEgecCDWGQE05ZQ/viewform";
+    const entryID = "entry.471549006"; // ID for the "Story Title" field
+
+    const formURL = `${formBaseURL}?usp=pp_url&${entryID}=${encodeURIComponent(
+      story.titleEnglish
+    )}`;
+
+    feedbackButton.addEventListener("click", () => {
+      window.open(formURL, "_blank");
+    });
+
+    // Append button to story content
+    storyContent.appendChild(feedbackButton);
   }
 
   // Back button handler

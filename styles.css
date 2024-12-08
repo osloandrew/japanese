@@ -81,6 +81,24 @@ button {
   width: auto;
 }
 
+.feedback-btn {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1em;
+  color: white;
+  background-color: #0d3a69;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.feedback-btn:hover {
+  background-color: #3c88d4;
+}
+
 #filter-container {
   align-items: center; /* Center items horizontally */
   background: #ffffff; /* White background */
