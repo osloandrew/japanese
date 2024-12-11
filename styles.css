@@ -472,6 +472,11 @@ ul {
   .links {
     margin: 10px;
   }
+
+  #sticky-header {
+    gap: 0.5em;
+    padding: 0.5em;
+  }
   .sticky-title-english {
     font-size: 0.8em;
   }
