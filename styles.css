@@ -14,7 +14,7 @@ audio {
   color: #3b5d50;
   cursor: pointer;
   font-family: "Noto Sans", sans-serif;
-  min-width: 110px;
+  min-width: 115px;
   padding: 0.5em 1em;
   position: relative;
   transition: background-color 0.3s ease;
@@ -107,7 +107,6 @@ button {
   align-items: center; /* Center items horizontally */
   background: #ffffff; /* White background */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-
   display: flex;
   gap: 10px;
   justify-content: center; /* Center items vertically */
@@ -300,6 +299,11 @@ main {
   white-space: nowrap;
   user-select: none;
   color: #4f4f4f;
+  min-width: 25%;
+
+  flex: 1; /* Allows the children to take up equal and maximum space */
+  max-width: 100%; /* Ensures they don't exceed the parent container */
+  box-sizing: border-box; /* Includes padding and border in the width calculation */
 }
 
 .sticky-cefr-label.easy {
@@ -322,9 +326,7 @@ main {
 .sticky-detail-container {
   display: flex;
   flex-direction: column; /* Stack rows vertically */
-  align-items: center; /* Align everything to the left */
   gap: 10px; /* Space between rows */
-  align-self: flex-start; /* Align to the left */
 }
 
 /* Ensure sticky header genre matches list page */
@@ -339,9 +341,13 @@ main {
   text-align: center;
   text-transform: uppercase;
   font-family: "Noto Sans", sans-serif;
+  min-width: 25%;
   white-space: nowrap;
-  min-width: 17.5px;
   user-select: none;
+
+  flex: 1; /* Allows the children to take up equal and maximum space */
+  max-width: 100%; /* Ensures they don't exceed the parent container */
+  box-sizing: border-box; /* Includes padding and border in the width calculation */
 }
 
 .sticky-genre i {
@@ -375,7 +381,6 @@ main {
 .sticky-row {
   display: flex;
   gap: 10px; /* Space between genre and CEFR */
-  align-items: center; /* Align items vertically within the row */
 }
 
 .sticky-title-container {
