@@ -18,6 +18,7 @@ const genreIcons = {
   history: '<i class="fas fa-landmark"></i>', // History genre icon
   horror: '<i class="fas fa-ghost"></i>', // Horror genre icon
   language: '<i class="fas fa-language"></i>', // Language genre icon
+  "manga and anime": '<i class="fas fa-film"></i>',
   monologue: '<i class="fas fa-microphone-alt"></i>', // Monologue genre icon
   music: '<i class="fas fa-music"></i>', // Music genre icon
   mystery: '<i class="fas fa-search"></i>', // Mystery genre icon
