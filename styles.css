@@ -179,7 +179,7 @@ footer .copyright {
 
 h1 {
   font-family: "Grenze Gotisch", serif !important;
-  margin: 0.5em 0;
+  margin: 0em 0;
 }
 
 h2 {
@@ -206,20 +206,20 @@ header {
 }
 
 .english-title {
+  color: #666;
   font-family: "Noto Sans", sans-serif; /* English-specific font */
   font-size: 14px;
-  color: #666;
 }
 
 .japanese-sentence {
-  font-family: "Noto Sans JP", sans; /* Adjust to the appropriate English font */
   color: black; /* Set a color for Japanese text */
+  font-family: "Noto Sans JP", sans; /* Adjust to the appropriate English font */
 }
 
 .japanese-title {
-  font-family: "Noto Sans JP", sans-serif; /* Japanese-specific font */
-  font-size: 18px;
   color: #333;
+  font-family: "Noto Sans JP", sans-serif; /* Japanese-specific font */
+  font-size: 16px;
 }
 
 label {
@@ -238,7 +238,6 @@ li {
   align-items: center;
   cursor: pointer;
   padding: 7.5px 15px;
-  min-height: 60px;
   transition: background-color 0.2s ease, border-color 0.2s ease,
     transform 0.2s ease;
 }
