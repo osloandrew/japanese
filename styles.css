@@ -220,6 +220,11 @@ header {
   color: #333;
   font-family: "Noto Sans JP", sans-serif; /* Japanese-specific font */
   font-size: 16px;
+  display: -webkit-box; /* Creates a block-level flex container */
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  overflow: hidden; /* Hides the overflowing text */
+  text-overflow: ellipsis; /* Adds ellipses when text overflows */
+  -webkit-line-clamp: 1; /* Limits the text to 2 lines */
 }
 
 label {
@@ -282,7 +287,7 @@ li:hover {
 }
 
 main {
-  padding: 0 1em 0 1em;
+  padding: 0 1em;
   min-height: 100vh;
 }
 
@@ -408,6 +413,7 @@ main {
 }
 
 #stories {
+  align-items: start; /* Ensures consistent alignment */
   column-gap: 10px;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -445,7 +451,7 @@ main {
   border: 1px solid #ddd; /* Light border for separation */
   border-radius: 12px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
-  margin: 1em 0 1em 0;
+  margin: 1em 0;
   padding: 1em 2em 0 2em;
   font-family: "Noto Serif", serif;
 }
@@ -477,6 +483,9 @@ ul {
 
 /* Add margins for wide screens */
 @media (max-width: 1024px) {
+  audio {
+    margin-bottom: 10px;
+  }
   #back-button,
   #toggle-english-btn,
   .toggle-kanji-btn {
@@ -487,6 +496,9 @@ ul {
   }
   .links {
     margin: 10px;
+  }
+  main {
+    padding: 0 0.75em;
   }
   #sticky-header {
     gap: 0.5em;
@@ -503,6 +515,10 @@ ul {
     grid-template-columns: 1fr;
   }
   #story-content {
+    margin: 0.75em 0;
     padding: 1em 1em 0em 1em;
+  }
+  #story-content > div {
+    margin-bottom: 10px; /* Margin for each sentence couplet */
   }
 }
