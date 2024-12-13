@@ -237,7 +237,7 @@ li {
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  padding: 15px;
+  padding: 7.5px 15px;
   min-height: 60px;
   transition: background-color 0.2s ease, border-color 0.2s ease,
     transform 0.2s ease;
