@@ -484,7 +484,7 @@ ul {
 /* Add margins for wide screens */
 @media (max-width: 1024px) {
   audio {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
   #back-button,
   #toggle-english-btn,
@@ -519,6 +519,6 @@ ul {
     padding: 1em 1em 0em 1em;
   }
   #story-content > div {
-    margin-bottom: 10px; /* Margin for each sentence couplet */
+    margin-bottom: 15px; /* Margin for each sentence couplet */
   }
 }
