@@ -407,6 +407,12 @@ main {
   margin: 0px;
 }
 
+#stories {
+  column-gap: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
 .stories-detail-container {
   display: flex;
   align-items: center; /* Align CEFR and genre vertically */
@@ -482,7 +488,6 @@ ul {
   .links {
     margin: 10px;
   }
-
   #sticky-header {
     gap: 0.5em;
     padding: 0.5em;
@@ -492,6 +497,10 @@ ul {
   }
   .sticky-title-japanese {
     font-size: 1em;
+  }
+  #stories {
+    display: grid;
+    grid-template-columns: 1fr;
   }
   #story-content {
     padding: 1em 1em 0em 1em;
