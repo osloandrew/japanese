@@ -491,6 +491,9 @@ ul {
   .toggle-kanji-btn {
     min-width: auto;
   }
+  #filter-container {
+    padding: 0.75em;
+  }
   .linkedin-btn span {
     font-size: 0.8em;
   }
@@ -500,9 +503,15 @@ ul {
   main {
     padding: 0 0.75em;
   }
+  .sticky-detail-container {
+    gap: 5px; /* Space between rows */
+  }
   #sticky-header {
     gap: 0.5em;
     padding: 0.5em;
+  }
+  .sticky-row {
+    gap: 5px; /* Space between genre and CEFR */
   }
   .sticky-title-english {
     font-size: 0.8em;
