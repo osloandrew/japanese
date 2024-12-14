@@ -52,19 +52,38 @@ button {
   color: #4f4f4f; /* Default text color */
 }
 
-.cefr-value.easy {
-  background-color: #c7e3b6; /* Green for 'A1, A2' */
+.cefr-value.a1,
+.sticky-cefr-label.a1 {
+  background-color: #cfe5c0; /* Soft olive green for A1 (new grass) */
 }
 
-.cefr-value.medium {
-  background-color: #f2d96b; /* Yellow for 'B1, B2' */
+.cefr-value.a2,
+.sticky-cefr-label.a2 {
+  background-color: #b3d8a3; /* Bright meadow green for A2 (spring leaves) */
 }
 
-.cefr-value.hard {
-  background-color: #e9a895; /* Red for 'C1, C2' */
+.cefr-value.b1,
+.sticky-cefr-label.b1 {
+  background-color: #f7e3b0; /* Gentle wheat yellow for B1 (warm sunlight) */
 }
 
-.cefr-value.cefr-unknown {
+.cefr-value.b2,
+.sticky-cefr-label.b2 {
+  background-color: #f0d39a; /* Brighter golden yellow for B2 (ripe fields) */
+}
+
+.cefr-value.c1,
+.sticky-cefr-label.c1 {
+  background-color: #e9c3b4; /* Muted rose pink for C1 (wild roses) */
+}
+
+.cefr-value.c2,
+.sticky-cefr-label.c2 {
+  background-color: #e0af92; /* Bright terracotta orange for C2 (sunlit clay) */
+}
+
+.cefr-value.cefr-unknown,
+.sticky-cefr-label.cefr-unknown {
   background-color: #e0e0e0; /* Gray for unknown levels */
 }
 
@@ -308,22 +327,6 @@ main {
   flex: 1; /* Allows the children to take up equal and maximum space */
   max-width: 100%; /* Ensures they don't exceed the parent container */
   box-sizing: border-box; /* Includes padding and border in the width calculation */
-}
-
-.sticky-cefr-label.easy {
-  background-color: #c7e3b6; /* Green for 'A1, A2' */
-}
-
-.sticky-cefr-label.medium {
-  background-color: #f2d96b; /* Yellow for 'B1, B2' */
-}
-
-.sticky-cefr-label.hard {
-  background-color: #e9a895; /* Red for 'C1, C2' */
-}
-
-.sticky-cefr-label.cefr-unknown {
-  background-color: #e0e0e0; /* Gray for unknown levels */
 }
 
 /* Flex container for genre and CEFR */

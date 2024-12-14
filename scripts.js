@@ -209,9 +209,13 @@ document.addEventListener("DOMContentLoaded", () => {
   function getCefrClass(cefrLevel) {
     if (!cefrLevel) return "cefr-unknown"; // Fallback for missing CEFR levels
     const level = cefrLevel.toUpperCase();
-    if (["A1", "A2"].includes(level)) return "easy";
-    if (["B1", "B2"].includes(level)) return "medium";
-    if (["C1", "C2"].includes(level)) return "hard";
+    if (["A1"].includes(level)) return "a1";
+    if (["A2"].includes(level)) return "a2";
+    if (["B1"].includes(level)) return "b1";
+    if (["B2"].includes(level)) return "b2";
+    if (["C1"].includes(level)) return "c1";
+    if (["C2"].includes(level)) return "c2";
+
     return "cefr-unknown"; // Default
   }
 
