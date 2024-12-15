@@ -497,6 +497,9 @@ ul {
   #filter-container {
     padding: 0.75em;
   }
+  li:hover {
+    background-color: #ffffff;
+  }
   .linkedin-btn span {
     font-size: 0.8em;
   }
