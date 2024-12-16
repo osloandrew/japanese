@@ -468,9 +468,9 @@ main {
   border: 1px solid gray; /* Adds a subtle border around the image */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2); /* Adds a realistic shadow */
   display: block; /* Makes the image behave like a block element */
-  height: 250px;
   margin: 0 auto; /* Centers the image horizontally */
   margin-bottom: 1em;
+  max-height: 250px;
   max-width: 100%; /* Ensures the image is responsive */
 }
 
