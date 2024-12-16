@@ -396,6 +396,7 @@ main {
   display: flex;
   flex-direction: column;
   gap: 7.5px; /* Adjust to desired spacing */
+  margin-bottom: 0.75em !important;
   margin-left: auto;
   margin-right: auto;
   text-align: center; /* Center the text inside */
@@ -415,8 +416,10 @@ main {
   color: #666;
   font-family: "Noto Sans", sans;
   font-size: 1em;
+  letter-spacing: 0.75px;
   line-height: 1.2; /* Adjust line height */
   margin: 0 auto;
+  text-transform: uppercase;
 }
 
 #stories {
