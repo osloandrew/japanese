@@ -257,21 +257,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Check for image and add it above the audio player
   async function checkImage(titleEnglish) {
+    const sanitizedTitleEnglish = titleEnglish.endsWith("?")
+      ? titleEnglish.slice(0, -1) // Remove the question mark at the end
+      : titleEnglish;
+
+    const encodedTitles = [
+      encodeURIComponent(titleEnglish), // Original title
+      encodeURIComponent(sanitizedTitleEnglish), // Title without question mark
+    ];
+
     const imageExtensions = ["webp", "jpg"]; // Array of allowed extensions
-    for (const extension of imageExtensions) {
-      const imagePath = `Images/${titleEnglish}.${extension}`;
+    const imagePaths = encodedTitles.flatMap((encodedTitle) =>
+      imageExtensions.map((extension) => `Images/${encodedTitle}.${extension}`)
+    );
+
+    for (const imagePath of imagePaths) {
+      console.log(`Checking image at path: ${imagePath}`);
       try {
         const response = await fetch(imagePath, {
           method: "HEAD",
           cache: "no-cache",
         });
         if (response.ok) {
+          console.log(`Image found for: ${imagePath}`);
           return imagePath; // Return the first valid image path
         }
       } catch (error) {
         console.warn(`Error checking image for ${imagePath}:`, error);
       }
     }
+
+    console.warn(`No image found for: ${titleEnglish}`);
     return null; // No valid image found
   }
 
