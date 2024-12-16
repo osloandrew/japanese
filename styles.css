@@ -465,7 +465,6 @@ main {
 
 .story-image {
   border-radius: 10px; /* Rounds the corners for a soft photograph effect */
-  border: 1px solid gray; /* Adds a subtle border around the image */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.2); /* Adds a realistic shadow */
   display: block; /* Makes the image behave like a block element */
   margin: 0 auto; /* Centers the image horizontally */
