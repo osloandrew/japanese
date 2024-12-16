@@ -577,7 +577,7 @@ document.addEventListener("DOMContentLoaded", () => {
     stickyHeader.classList.add("hidden"); // Hide sticky header
 
     // Stop any currently playing audio
-    const existingAudio = storyViewer.querySelector("audio");
+    const existingAudio = stickyHeader.querySelector("audio"); // Updated for stickyHeader
     if (existingAudio) {
       existingAudio.pause();
       existingAudio.currentTime = 0; // Reset playback position
