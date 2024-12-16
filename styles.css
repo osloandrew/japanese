@@ -398,10 +398,15 @@ main {
 }
 
 .sticky-title-japanese {
+  display: -webkit-box; /* Creates a block-level flex container */
   font-size: 1.5em;
   font-family: "Noto Sans JP", sans; /* Adjust to the appropriate English font */
   font-weight: 400;
   margin: 0px;
+  overflow: hidden; /* Hides the overflowing text */
+  text-overflow: ellipsis; /* Adds ellipses when text overflows */
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 1; /* Limits the text to 1 line */
 }
 
 .sticky-title-english {
@@ -499,7 +504,9 @@ ul {
   #back-button,
   #toggle-english-btn,
   .toggle-kanji-btn {
+    font-size: 10px;
     min-width: 80px;
+    padding: 0.5em;
   }
   #filter-container {
     padding: 0.75em;
