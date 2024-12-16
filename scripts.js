@@ -371,6 +371,15 @@ document.addEventListener("DOMContentLoaded", () => {
       storyContent.appendChild(imageElement); // Add the image to the storyContent
     }
 
+    // Add the sticky-title-container to the main story body
+    const titleContainer = document.createElement("div");
+    titleContainer.classList.add("sticky-title-container");
+    titleContainer.innerHTML = `
+    <h2 class="sticky-title-japanese">${story.titleJapanese}</h2>
+    <p class="sticky-title-english">${story.titleEnglish}</p>
+  `;
+    storyContent.insertBefore(titleContainer, storyContent.firstChild); // Place above the image
+
     // Check for audio and add it to the storyContent
     const existingAudio = storyViewer.querySelector("audio");
     if (existingAudio) {
@@ -384,11 +393,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const audioPlayer = document.createElement("audio");
       audioPlayer.controls = true;
       audioPlayer.src = audioPath;
-      storyContent.appendChild(audioPlayer);
-    }
-
-    // Add sticky header content dynamically
-    stickyHeader.innerHTML = `
+      // Add sticky header content dynamically
+      stickyHeader.innerHTML = `
   <div class="sticky-detail-container">
     <div class="sticky-row">
       <div class="sticky-genre">
@@ -402,11 +408,15 @@ document.addEventListener("DOMContentLoaded", () => {
       <i class="fas fa-chevron-left"></i> Back
     </button>
   </div>
-  <div class="sticky-title-container">
-    <h2 class="sticky-title-japanese">${story.titleJapanese}</h2>
-    <p class="sticky-title-english">${story.titleEnglish}</p>
-  </div>
-  <div class="toggle-buttons-container">
+  `;
+      // Insert the audio player between sections
+      if (audioPath) {
+        stickyHeader.appendChild(audioPlayer);
+      }
+
+      const toggleButtonsContainer = document.createElement("div");
+      toggleButtonsContainer.classList.add("toggle-buttons-container");
+      toggleButtonsContainer.innerHTML = `
     <button id="toggle-english-btn" class="toggle-english-btn">
       ${isEnglishVisible ? "Hide English" : "Show English"}
     </button>
@@ -415,8 +425,10 @@ document.addEventListener("DOMContentLoaded", () => {
         ? `<button id="toggle-kanji-btn" class="toggle-kanji-btn">Hide Kanji</button>`
         : ""
     }
-  </div>
-`;
+  `;
+      // Append the toggle buttons after the audio player
+      stickyHeader.appendChild(toggleButtonsContainer);
+    }
 
     function combineEnglishSentences(sentences) {
       return sentences.reduce((acc, sentence) => {

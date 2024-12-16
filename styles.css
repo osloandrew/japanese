@@ -1,7 +1,6 @@
 audio {
   display: block;
   margin: 0 auto;
-  margin-bottom: 20px;
   width: 100%;
 }
 
@@ -370,6 +369,7 @@ main {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   color: black;
   display: flex;
+  gap: 0.5em;
   position: sticky;
   justify-content: space-between;
   min-height: 60px; /* Ensure enough height for wrapping content */
@@ -398,7 +398,6 @@ main {
   gap: 7.5px; /* Adjust to desired spacing */
   margin-left: auto;
   margin-right: auto;
-  max-width: 70%; /* Restrict width to prevent overflow */
   text-align: center; /* Center the text inside */
   user-select: none;
   white-space: normal; /* Allow text wrapping */
@@ -406,32 +405,18 @@ main {
 }
 
 .sticky-title-japanese {
-  display: -webkit-box; /* Creates a block-level flex container */
   font-size: 1.5em;
   font-family: "Noto Sans JP", sans; /* Adjust to the appropriate English font */
   font-weight: 400;
-  margin: 0px;
-  overflow: hidden; /* Hides the overflowing text */
-  text-overflow: ellipsis; /* Adds ellipses when text overflows */
-  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
-  -webkit-line-clamp: 1; /* Limits the text to 1 line */
-  word-wrap: break-word; /* Allows breaking of long words */
-  word-break: break-word; /* Adds additional word-break rules */
+  margin: 0 auto;
 }
 
 .sticky-title-english {
   color: #666;
-  display: -webkit-box; /* Creates a block-level flex container */
   font-family: "Noto Sans", sans;
   font-size: 1em;
   line-height: 1.2; /* Adjust line height */
-  margin: 0px;
-  overflow: hidden; /* Hides the overflowing text */
-  text-overflow: ellipsis; /* Adds ellipses when text overflows */
-  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
-  -webkit-line-clamp: 1; /* Limits the text to 1 line */
-  word-wrap: break-word; /* Allows breaking of long words */
-  word-break: break-word; /* Adds additional word-break rules */
+  margin: 0 auto;
 }
 
 #stories {
@@ -515,9 +500,6 @@ ul {
 
 /* Add margins for wide screens */
 @media (max-width: 1024px) {
-  audio {
-    margin-bottom: 15px;
-  }
   #back-button,
   #toggle-english-btn,
   .toggle-kanji-btn {
@@ -548,7 +530,6 @@ ul {
     gap: 5px; /* Space between rows */
   }
   #sticky-header {
-    gap: 0.5em;
     padding: 0.5em;
   }
   .sticky-row {
@@ -556,12 +537,6 @@ ul {
   }
   .sticky-title-container {
     gap: 5px; /* Adjust to desired spacing */
-  }
-  .sticky-title-english {
-    font-size: 12px;
-  }
-  .sticky-title-japanese {
-    font-size: 16px;
   }
   #stories {
     display: grid;
