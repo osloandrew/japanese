@@ -317,6 +317,24 @@ document.addEventListener("DOMContentLoaded", () => {
     );
     document.title = story.titleEnglish; // Set the page title to the story's title
 
+    // Check for and add the image above the audio player
+    const imagePath = `Images/${story.titleEnglish}.webp`;
+    try {
+      const response = await fetch(imagePath, {
+        method: "HEAD",
+        cache: "no-cache",
+      });
+      if (response.ok) {
+        const imageElement = document.createElement("img");
+        imageElement.src = imagePath;
+        imageElement.alt = story.titleEnglish;
+        imageElement.classList.add("story-image");
+        storyContent.appendChild(imageElement); // Add the image to the storyContent
+      }
+    } catch (error) {
+      console.warn(`No image found for: ${story.titleEnglish}`);
+    }
+
     // Check for audio and add it to the storyContent
     const existingAudio = storyViewer.querySelector("audio");
     if (existingAudio) {
