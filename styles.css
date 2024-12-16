@@ -28,11 +28,11 @@ audio {
 }
 
 body {
+  background-color: #f4f4f4; /* Off-white background */
+  color: #333; /* Dark text color */
   line-height: 1.6;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4; /* Off-white background */
-  color: #333; /* Dark text color */
 }
 
 button {
@@ -40,16 +40,16 @@ button {
 }
 
 .cefr-value {
-  padding: 3px 7px;
+  border-radius: 4px;
+  color: #4f4f4f; /* Default text color */
+  font-family: "Noto Sans", sans-serif;
   font-size: 12px;
   font-weight: bold;
-  border-radius: 4px;
+  padding: 3px 7px;
   text-align: center;
   text-transform: uppercase;
-  font-family: "Noto Sans", sans-serif;
-  white-space: nowrap;
   user-select: none;
-  color: #4f4f4f; /* Default text color */
+  white-space: nowrap;
 }
 
 .cefr-value.a1,
@@ -88,11 +88,11 @@ button {
 }
 
 .coffee-btn {
-  display: inline-flex;
   align-items: center;
-  justify-content: center;
   border: 1px solid transparent; /* No visible border but ensures alignment */
   border-radius: 4px;
+  display: inline-flex;
+  justify-content: center;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -102,17 +102,17 @@ button {
 }
 
 .feedback-btn {
-  display: block;
-  margin: 15px auto; /* Increase margin slightly for better spacing */
-  padding: 7px 20px; /* Slightly larger padding for more emphasis */
-  font-family: "Noto Sans", sans-serif;
-  font-size: 0.85em; /* Slightly larger font size for better readability */
-  text-transform: uppercase; /* Keep text all caps */
-  color: #0d3a69; /* Slightly bolder color */
   background-color: #f2f2f2; /* Slightly darker light gray background */
   border: 1px solid #bbb; /* Darker border for a more defined edge */
   border-radius: 4px; /* Keep corners slightly rounded */
+  color: #0d3a69; /* Slightly bolder color */
   cursor: pointer;
+  display: block;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.85em; /* Slightly larger font size for better readability */
+  margin: 15px auto; /* Increase margin slightly for better spacing */
+  padding: 7px 20px; /* Slightly larger padding for more emphasis */
+  text-transform: uppercase; /* Keep text all caps */
   letter-spacing: 0.8px; /* Increase letter spacing for better legibility */
   transition: background-color 0.3s ease, color 0.3s ease;
 }
@@ -133,22 +133,22 @@ button {
   position: sticky;
   text-align: center;
   top: 0;
-  z-index: 100;
   padding: 10px 20px 10px 20px;
+  z-index: 100;
 }
 
 #filter-container input,
 #filter-container select {
-  width: 100%; /* Take full width of the container */
+  background: #f9f9f9; /* Subtle off-white background */
+  border: 1px solid #d0d0d0; /* Light border for structure */
+  border-radius: 15px;
+  box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.05); /* Inner shadow for depth */
   max-width: 250px; /* Limit width for large screens */
   padding: 10px 12px; /* Comfortable padding */
   font-family: "Noto Sans", sans-serif;
   font-size: 1em;
-  border: 1px solid #d0d0d0; /* Light border for structure */
-  border-radius: 15px;
-  background: #f9f9f9; /* Subtle off-white background */
-  box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.05); /* Inner shadow for depth */
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%; /* Take full width of the container */
 }
 
 #filter-container select {
@@ -220,8 +220,8 @@ header {
 }
 
 .english-sentence {
-  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
   color: gray; /* Set a different color for English text */
+  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
 }
 
 .english-title {
@@ -237,30 +237,30 @@ header {
 
 .japanese-title {
   color: #333;
+  display: -webkit-box; /* Creates a block-level flex container */
   font-family: "Noto Sans JP", sans-serif; /* Japanese-specific font */
   font-size: 16px;
-  display: -webkit-box; /* Creates a block-level flex container */
-  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
   overflow: hidden; /* Hides the overflowing text */
   text-overflow: ellipsis; /* Adds ellipses when text overflows */
-  -webkit-line-clamp: 1; /* Limits the text to 2 lines */
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 1; /* Limits the text to 1 line */
 }
 
 label {
+  color: #3b5d50 !important; /* Earthy green to match your theme */
   font-family: "Noto Sans", sans-serif; /* Ensure consistent font style */
   font-size: 12px !important;
-  color: #3b5d50 !important; /* Earthy green to match your theme */
 }
 
 li {
+  align-items: center;
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   cursor: pointer;
+  display: flex;
+  margin-bottom: 10px;
+  justify-content: space-between;
   padding: 7.5px 15px;
   transition: background-color 0.2s ease, border-color 0.2s ease,
     transform 0.2s ease;
@@ -280,9 +280,9 @@ li:hover {
   display: inline-flex;
   font-family: "Noto Sans", sans-serif;
   font-size: 13px;
+  height: 30px; /* Match height to the BuyMeACoffee image */
   padding: 2px 15px;
   text-decoration: none;
-  height: 30px; /* Match height to the BuyMeACoffee image */
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -298,35 +298,34 @@ li:hover {
 }
 
 .links {
+  align-items: center; /* Vertically align both buttons */
   display: flex;
   gap: 10px; /* Space between the buttons */
-  margin: 10px 0 10px 0;
-  align-items: center; /* Vertically align both buttons */
   justify-content: center;
+  margin: 10px 0 10px 0;
 }
 
 main {
-  padding: 0 1em;
   min-height: 100vh;
+  padding: 0 1em;
 }
 
 /* Ensure sticky header CEFR label matches list page */
 .sticky-cefr-label {
-  padding: 3px 7px;
+  border-radius: 4px;
+  box-sizing: border-box; /* Includes padding and border in the width calculation */
+  color: #4f4f4f;
+  flex: 1; /* Allows the children to take up equal and maximum space */
+  font-family: "Noto Sans", sans-serif;
   font-size: 12px;
   font-weight: bold;
-  border-radius: 4px;
   text-align: center;
   text-transform: uppercase;
-  font-family: "Noto Sans", sans-serif;
-  white-space: nowrap;
-  user-select: none;
-  color: #4f4f4f;
-  min-width: 25%;
-
-  flex: 1; /* Allows the children to take up equal and maximum space */
   max-width: 100%; /* Ensures they don't exceed the parent container */
-  box-sizing: border-box; /* Includes padding and border in the width calculation */
+  min-width: 25%;
+  padding: 3px 7px;
+  user-select: none;
+  white-space: nowrap;
 }
 
 /* Flex container for genre and CEFR */
@@ -340,21 +339,20 @@ main {
 .sticky-genre {
   align-self: flex-start;
   background-color: #f0f0f0; /* Light background for genre badge */
-  padding: 3px 7px;
+  border-radius: 4px;
+  box-sizing: border-box; /* Includes padding and border in the width calculation */
   color: #4f4f4f;
+  flex: 1; /* Allows the children to take up equal and maximum space */
+  font-family: "Noto Sans", sans-serif;
   font-size: 12px !important;
   font-weight: bold;
-  border-radius: 4px;
   text-align: center;
   text-transform: uppercase;
-  font-family: "Noto Sans", sans-serif;
-  min-width: 25%;
-  white-space: nowrap;
-  user-select: none;
-
-  flex: 1; /* Allows the children to take up equal and maximum space */
   max-width: 100%; /* Ensures they don't exceed the parent container */
-  box-sizing: border-box; /* Includes padding and border in the width calculation */
+  min-width: 25%;
+  padding: 3px 7px;
+  user-select: none;
+  white-space: nowrap;
 }
 
 .sticky-genre i {
@@ -362,27 +360,26 @@ main {
 }
 
 #sticky-header {
-  align-items: stretch; /* Let header height adjust with content */
-  position: sticky;
-  top: 0;
+  align-items: center;
   background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   color: black;
   display: flex;
+  position: sticky;
   justify-content: space-between;
-  align-items: center;
-  padding: 0.5em 1em;
-  z-index: 1000; /* Ensure it stays on top */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  overflow: hidden; /* Prevent content from overflowing */
   min-height: 60px; /* Ensure enough height for wrapping content */
+  overflow: hidden; /* Prevent content from overflowing */
+  padding: 0.5em 1em;
+  top: 0;
+  z-index: 1000; /* Ensure it stays on top */
 }
 
 .sticky-header-content {
-  position: relative;
-  width: 100%; /* Allow flex to distribute space evenly */
+  align-items: center;
   display: flex;
   justify-content: center; /* Center titles horizontally */
-  align-items: center;
+  position: relative;
+  width: 100%; /* Allow flex to distribute space evenly */
 }
 
 .sticky-row {
@@ -391,13 +388,13 @@ main {
 }
 
 .sticky-title-container {
-  text-align: center; /* Center the text inside */
+  margin-left: auto;
+  margin-right: auto;
   max-width: 70%; /* Restrict width to prevent overflow */
+  text-align: center; /* Center the text inside */
+  user-select: none;
   white-space: normal; /* Allow text wrapping */
   word-break: break-word; /* Break long words if necessary */
-  user-select: none;
-  margin-right: auto;
-  margin-left: auto;
 }
 
 .sticky-title-japanese {
@@ -408,9 +405,9 @@ main {
 }
 
 .sticky-title-english {
+  color: #666;
   font-family: "Noto Sans", sans;
   font-size: 1em;
-  color: #666;
   line-height: 1.2; /* Adjust line height */
   margin: 0px;
 }
@@ -423,25 +420,25 @@ main {
 }
 
 .stories-detail-container {
-  display: flex;
   align-items: center; /* Align CEFR and genre vertically */
+  display: flex;
   gap: 10px; /* Add spacing between genre and CEFR */
 }
 
 .stories-genre {
   align-self: flex-start;
   background-color: #f0f0f0;
-  padding: 3px 7px;
-  font-size: 12px;
-  color: #4f4f4f;
-  font-weight: bold;
   border-radius: 4px;
+  color: #4f4f4f;
+  padding: 3px 7px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 17.5px;
   text-align: center;
   text-transform: uppercase;
-  font-family: "Noto Sans", sans-serif;
-  white-space: nowrap;
-  min-width: 17.5px;
   user-select: none;
+  white-space: nowrap;
 }
 
 .stories-genre i {
@@ -454,9 +451,9 @@ main {
   border: 1px solid #ddd; /* Light border for separation */
   border-radius: 12px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
+  font-family: "Noto Serif", serif;
   margin: 1em 0;
   padding: 1em 2em 0 2em;
-  font-family: "Noto Serif", serif;
 }
 
 #story-content > div {
@@ -481,11 +478,11 @@ main {
 }
 
 .toggle-buttons-container {
+  color: white;
   display: flex;
+  flex-direction: column;
   font-family: "Noto Sans", sans-serif;
   font-size: 1em;
-  color: white;
-  flex-direction: column;
   gap: 5px; /* Space between buttons */
 }
 
