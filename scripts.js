@@ -393,6 +393,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const audioPlayer = document.createElement("audio");
       audioPlayer.controls = true;
       audioPlayer.src = audioPath;
+
       // Add sticky header content dynamically
       stickyHeader.innerHTML = `
   <div class="sticky-detail-container">
