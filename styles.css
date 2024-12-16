@@ -388,6 +388,9 @@ main {
 }
 
 .sticky-title-container {
+  display: flex;
+  flex-direction: column;
+  gap: 7.5px; /* Adjust to desired spacing */
   margin-left: auto;
   margin-right: auto;
   max-width: 70%; /* Restrict width to prevent overflow */
@@ -532,6 +535,9 @@ ul {
   }
   .sticky-row {
     gap: 5px; /* Space between genre and CEFR */
+  }
+  .sticky-title-container {
+    gap: 5px; /* Adjust to desired spacing */
   }
   .sticky-title-english {
     font-size: 0.8em;
