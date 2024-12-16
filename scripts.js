@@ -255,6 +255,26 @@ document.addEventListener("DOMContentLoaded", () => {
     return null;
   }
 
+  // Check for image and add it above the audio player
+  async function checkImage(titleEnglish) {
+    const imageExtensions = ["webp", "jpg"]; // Array of allowed extensions
+    for (const extension of imageExtensions) {
+      const imagePath = `Images/${titleEnglish}.${extension}`;
+      try {
+        const response = await fetch(imagePath, {
+          method: "HEAD",
+          cache: "no-cache",
+        });
+        if (response.ok) {
+          return imagePath; // Return the first valid image path
+        }
+      } catch (error) {
+        console.warn(`Error checking image for ${imagePath}:`, error);
+      }
+    }
+    return null; // No valid image found
+  }
+
   // Filter stories based on search and dropdowns
   function filterStories() {
     const searchText = searchBar.value.toLowerCase();
@@ -318,21 +338,13 @@ document.addEventListener("DOMContentLoaded", () => {
     document.title = story.titleEnglish; // Set the page title to the story's title
 
     // Check for and add the image above the audio player
-    const imagePath = `Images/${story.titleEnglish}.webp`;
-    try {
-      const response = await fetch(imagePath, {
-        method: "HEAD",
-        cache: "no-cache",
-      });
-      if (response.ok) {
-        const imageElement = document.createElement("img");
-        imageElement.src = imagePath;
-        imageElement.alt = story.titleEnglish;
-        imageElement.classList.add("story-image");
-        storyContent.appendChild(imageElement); // Add the image to the storyContent
-      }
-    } catch (error) {
-      console.warn(`No image found for: ${story.titleEnglish}`);
+    const imagePath = await checkImage(story.titleEnglish);
+    if (imagePath) {
+      const imageElement = document.createElement("img");
+      imageElement.src = imagePath;
+      imageElement.alt = story.titleEnglish;
+      imageElement.classList.add("story-image");
+      storyContent.appendChild(imageElement); // Add the image to the storyContent
     }
 
     // Check for audio and add it to the storyContent
