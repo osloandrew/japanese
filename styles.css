@@ -158,6 +158,11 @@ button {
   background-position: right 10px center;
   background-size: 10px 6px;
   cursor: pointer;
+  display: -webkit-box; /* Creates a block-level flex container */
+  overflow: hidden; /* Hides the overflowing text */
+  text-overflow: ellipsis; /* Adds ellipses when text overflows */
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 1; /* Limits the text to 1 line */
 }
 
 footer {
@@ -410,14 +415,23 @@ main {
   text-overflow: ellipsis; /* Adds ellipses when text overflows */
   -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
   -webkit-line-clamp: 1; /* Limits the text to 1 line */
+  word-wrap: break-word; /* Allows breaking of long words */
+  word-break: break-word; /* Adds additional word-break rules */
 }
 
 .sticky-title-english {
   color: #666;
+  display: -webkit-box; /* Creates a block-level flex container */
   font-family: "Noto Sans", sans;
   font-size: 1em;
   line-height: 1.2; /* Adjust line height */
   margin: 0px;
+  overflow: hidden; /* Hides the overflowing text */
+  text-overflow: ellipsis; /* Adds ellipses when text overflows */
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 1; /* Limits the text to 1 line */
+  word-wrap: break-word; /* Allows breaking of long words */
+  word-break: break-word; /* Adds additional word-break rules */
 }
 
 #stories {
@@ -512,7 +526,11 @@ ul {
     padding: 0.5em;
   }
   #filter-container {
-    padding: 0.75em;
+    padding: 12px;
+  }
+  #filter-container input,
+  #filter-container select {
+    padding: 7.5px 20px 7.5px 10px; /* Comfortable padding */
   }
   li:hover {
     background-color: #ffffff;
@@ -524,7 +542,7 @@ ul {
     margin: 10px;
   }
   main {
-    padding: 0 0.75em;
+    padding: 0 12px;
   }
   .sticky-detail-container {
     gap: 5px; /* Space between rows */
@@ -540,10 +558,10 @@ ul {
     gap: 5px; /* Adjust to desired spacing */
   }
   .sticky-title-english {
-    font-size: 0.8em;
+    font-size: 12px;
   }
   .sticky-title-japanese {
-    font-size: 1em;
+    font-size: 16px;
   }
   #stories {
     display: grid;
