@@ -335,6 +335,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function normalizeText(text) {
+    // Replace non-breaking spaces, zero-width spaces, and similar characters with regular space
+    return text
+      .replace(/[\u00A0\u200B\u200C\u200D\u202F\u2060\uFEFF]/g, " ")
+      .replace(/\s+/g, " ") // Collapse multiple spaces into one
+      .trim(); // Remove leading and trailing spaces
+  }
+
   // Show the selected story
   async function showStory(story) {
     filterContainer.style.display = "none"; // Hide filters in the story viewer
@@ -446,6 +454,7 @@ document.addEventListener("DOMContentLoaded", () => {
       /(?<!\b(?:Mr|Mrs|Ms|Mt|Dr|Prof|Sr|St|Jr|Lt|Gen|Col|Capt|Cmdr|Sgt)\.)(?<=[.!?:]["”]?)\s+(?=["”]?[A-Z])/g;
     const japaneseSentenceEndings =
       /(?<=[。！？])(?!(?<=。」|？」)と\s)|(?<=。」|？」)(?!と\s)|(?<=[。！？])/g;
+
     // Function to split English sentences
     function splitEnglishSentences(text) {
       const standardizedText = text.replace(/[“”«»]/g, '"'); // Standardize quotes
@@ -458,7 +467,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Function to split Japanese sentences
     function splitJapaneseSentences(text) {
-      const sentences = text
+      const normalizedText = normalizeText(text); // Normalize input text
+      const sentences = normalizedText
         .split(japaneseSentenceEndings) // Split using regex for Japanese punctuation
         .map((sentence) => sentence.trim())
         .filter(Boolean); // Remove empty sentences
