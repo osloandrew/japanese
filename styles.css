@@ -546,6 +546,9 @@ ul {
   main {
     padding: 0 12px;
   }
+  .sticky-genre {
+    height: 27px;
+  }
   #sticky-header {
     border: none;
     padding: 0.5em;
