@@ -552,4 +552,7 @@ ul {
   #story-content > div {
     margin-bottom: 15px; /* Margin for each sentence couplet */
   }
+  .story-image {
+    margin-bottom: 1.25em;
+  }
 }
