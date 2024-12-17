@@ -524,6 +524,7 @@ ul {
     padding: 0.5em;
   }
   #filter-container {
+    border: none;
     gap: 8px;
     padding: 8px;
   }
@@ -546,6 +547,7 @@ ul {
     padding: 0 12px;
   }
   #sticky-header {
+    border: none;
     padding: 0.5em;
     gap: 0.5em;
   }
