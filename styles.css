@@ -126,6 +126,7 @@ button {
 #filter-container {
   align-items: center; /* Center items horizontally */
   background: #ffffff; /* White background */
+  border-top: 1px solid #ccc; /* Subtle gray border at the top */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   display: flex;
   gap: 10px;
@@ -215,7 +216,6 @@ h2 {
 
 header {
   background-color: #dbe3c9;
-  border-bottom: 1px solid #ccc; /* Subtle gray border at the bottom */
   color: #2e2e2e;
   letter-spacing: 0.5px;
   padding: 10px 0;
@@ -379,6 +379,7 @@ main {
 #sticky-header {
   align-items: center;
   background-color: white;
+  border-top: 1px solid #ccc; /* Subtle gray border at the top */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   color: black;
   display: flex;
