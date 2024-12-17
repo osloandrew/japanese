@@ -143,7 +143,7 @@ button {
 #filter-container select {
   background: #f9f9f9; /* Subtle off-white background */
   border: 1px solid #d0d0d0; /* Light border for structure */
-  border-radius: 15px;
+  border-radius: 10px;
   box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.05); /* Inner shadow for depth */
   max-width: 250px; /* Limit width for large screens */
   padding: 10px 12px; /* Comfortable padding */
@@ -530,7 +530,6 @@ ul {
   }
   #filter-container input,
   #filter-container select {
-    border-radius: 10px;
     padding: 7.5px 20px 7.5px 10px; /* Comfortable padding */
   }
 
@@ -546,8 +545,11 @@ ul {
   main {
     padding: 0 12px;
   }
+  .sticky-cefr-label {
+    height: 25px !important;
+  }
   .sticky-genre {
-    height: 27px;
+    height: 25px;
   }
   #sticky-header {
     border: none;
