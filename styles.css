@@ -7,7 +7,7 @@ audio {
 #back-button,
 #toggle-english-btn,
 .toggle-kanji-btn {
-  background-color: #f0f8f1; /* A very light greenish-gray */
+  background-color: #f4f4f4; /* Neutral light gray */
   border: #bbb 1px solid;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -168,6 +168,7 @@ button {
 
 footer {
   background-color: #dbe3c9;
+  border-top: 1px solid #ccc; /* Subtle gray border at the top */
   bottom: 0;
   color: #0d3a69;
   font-family: "Noto Sans", sans-serif;
@@ -214,6 +215,7 @@ h2 {
 
 header {
   background-color: #dbe3c9;
+  border-bottom: 1px solid #ccc; /* Subtle gray border at the bottom */
   color: #2e2e2e;
   letter-spacing: 0.5px;
   padding: 10px 0;
