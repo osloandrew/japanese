@@ -320,18 +320,22 @@ main {
 
 /* Ensure sticky header CEFR label matches list page */
 .sticky-cefr-label {
+  align-items: center; /* Center vertically */
+  border: 1px solid #ddd; /* Lighter gray for a subtler border */
   border-radius: 4px;
   box-sizing: border-box; /* Includes padding and border in the width calculation */
   color: #4f4f4f;
+  display: flex; /* Add Flexbox */
   flex: 1; /* Allows the children to take up equal and maximum space */
   font-family: "Noto Sans", sans-serif;
   font-size: 12px;
   font-weight: bold;
-  text-align: center;
-  text-transform: uppercase;
+  justify-content: center; /* Center horizontally */
   max-width: 100%; /* Ensures they don't exceed the parent container */
   min-width: 25%;
   padding: 3px 7px;
+  text-align: center;
+  text-transform: uppercase;
   user-select: none;
   white-space: nowrap;
 }
@@ -340,20 +344,25 @@ main {
 .sticky-detail-container {
   display: flex;
   flex-direction: column; /* Stack rows vertically */
-  gap: 10px; /* Space between rows */
+  gap: 5px; /* Space between rows */
 }
 
 /* Ensure sticky header genre matches list page */
 .sticky-genre {
+  align-items: center; /* Center vertically */
   align-self: flex-start;
   background-color: #f0f0f0; /* Light background for genre badge */
+  border: 1px solid #ddd; /* Lighter gray for a subtler border */
   border-radius: 4px;
   box-sizing: border-box; /* Includes padding and border in the width calculation */
   color: #4f4f4f;
+  display: flex; /* Add Flexbox */
   flex: 1; /* Allows the children to take up equal and maximum space */
   font-family: "Noto Sans", sans-serif;
   font-size: 12px !important;
   font-weight: bold;
+  height: 30px;
+  justify-content: center; /* Center horizontally */
   text-align: center;
   text-transform: uppercase;
   max-width: 100%; /* Ensures they don't exceed the parent container */
@@ -373,12 +382,12 @@ main {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   color: black;
   display: flex;
-  gap: 1em;
+  gap: 1.5em;
   position: sticky;
   justify-content: space-between;
   min-height: 60px; /* Ensure enough height for wrapping content */
   overflow: hidden; /* Prevent content from overflowing */
-  padding: 0.5em 1em;
+  padding: 0.5em 1.5em;
   top: 0;
   z-index: 1000; /* Ensure it stays on top */
 }
@@ -393,7 +402,7 @@ main {
 
 .sticky-row {
   display: flex;
-  gap: 10px; /* Space between genre and CEFR */
+  gap: 5px; /* Space between genre and CEFR */
 }
 
 .sticky-title-container {
@@ -535,15 +544,9 @@ ul {
   main {
     padding: 0 12px;
   }
-  .sticky-detail-container {
-    gap: 5px; /* Space between rows */
-  }
   #sticky-header {
     padding: 0.5em;
     gap: 0.5em;
-  }
-  .sticky-row {
-    gap: 5px; /* Space between genre and CEFR */
   }
   .sticky-title-container {
     gap: 5px; /* Adjust to desired spacing */
