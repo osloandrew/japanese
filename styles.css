@@ -56,36 +56,43 @@ button {
 .cefr-value.a1,
 .sticky-cefr-label.a1 {
   background-color: #cfe5c0; /* Soft olive green for A1 (new grass) */
+  color: #2a4d14; /* Dark forest green for high contrast */
 }
 
 .cefr-value.a2,
 .sticky-cefr-label.a2 {
   background-color: #b3d8a3; /* Bright meadow green for A2 (spring leaves) */
+  color: #2f4f17; /* Deep moss green for high contrast */
 }
 
 .cefr-value.b1,
 .sticky-cefr-label.b1 {
   background-color: #f7e3b0; /* Gentle wheat yellow for B1 (warm sunlight) */
+  color: #5c4b11; /* Warm brown for legibility and contrast */
 }
 
 .cefr-value.b2,
 .sticky-cefr-label.b2 {
   background-color: #f0d39a; /* Brighter golden yellow for B2 (ripe fields) */
+  color: #604b0e; /* Rich amber brown for sharp contrast */
 }
 
 .cefr-value.c1,
 .sticky-cefr-label.c1 {
   background-color: #e9c3b4; /* Muted rose pink for C1 (wild roses) */
+  color: #5a2d25; /* Deep reddish-brown for readability and aesthetic balance */
 }
 
 .cefr-value.c2,
 .sticky-cefr-label.c2 {
   background-color: #e0af92; /* Bright terracotta orange for C2 (sunlit clay) */
+  color: #5a2e18; /* Burnt sienna for clear contrast */
 }
 
 .cefr-value.cefr-unknown,
 .sticky-cefr-label.cefr-unknown {
   background-color: #e0e0e0; /* Gray for unknown levels */
+  color: #444444; /* Dark charcoal gray for readability */
 }
 
 .coffee-btn {
