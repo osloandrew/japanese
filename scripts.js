@@ -266,7 +266,7 @@ document.addEventListener("DOMContentLoaded", () => {
       encodeURIComponent(sanitizedTitleEnglish), // Title without question mark
     ];
 
-    const imageExtensions = ["webp", "jpg", "jpeg", "avif", "png"]; // Array of allowed extensions
+    const imageExtensions = ["webp", "jpg", "jpeg", "avif", "png", "gif"]; // Array of allowed extensions
     const imagePaths = encodedTitles.flatMap((encodedTitle) =>
       imageExtensions.map((extension) => `Images/${encodedTitle}.${extension}`)
     );
