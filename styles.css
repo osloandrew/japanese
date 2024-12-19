@@ -242,19 +242,19 @@ header {
 .english-title {
   color: #666;
   font-family: "Noto Sans", sans-serif; /* English-specific font */
-  font-size: 14px;
+  font-size: 12.5px;
 }
 
 .japanese-sentence {
   color: black; /* Set a color for Japanese text */
-  font-family: "Noto Sans JP", sans; /* Adjust to the appropriate English font */
+  font-family: "Noto Sans JP", sans-serif; /* Adjust to the appropriate English font */
 }
 
 .japanese-title {
   color: #333;
   display: -webkit-box; /* Creates a block-level flex container */
   font-family: "Noto Sans JP", sans-serif; /* Japanese-specific font */
-  font-size: 16px;
+  font-size: 18px;
   overflow: hidden; /* Hides the overflowing text */
   text-overflow: ellipsis; /* Adds ellipses when text overflows */
   -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
@@ -274,7 +274,7 @@ li {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   justify-content: space-between;
   padding: 7.5px 15px;
   transition: background-color 0.2s ease, border-color 0.2s ease,
@@ -444,7 +444,7 @@ main {
 
 #stories {
   align-items: start; /* Ensures consistent alignment */
-  column-gap: 10px;
+  column-gap: 15px;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }
@@ -538,6 +538,9 @@ ul {
   #filter-container input,
   #filter-container select {
     padding: 7.5px 20px 7.5px 10px; /* Comfortable padding */
+  }
+  li {
+    margin-bottom: 10px;
   }
 
   li:hover {
