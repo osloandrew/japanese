@@ -524,7 +524,7 @@ ul {
 }
 
 /* Add margins for wide screens */
-@media (max-width: 1024px) {
+@media (max-width: 767px) {
   #back-button,
   #toggle-english-btn,
   .toggle-kanji-btn {
