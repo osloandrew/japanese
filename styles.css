@@ -284,7 +284,7 @@ li {
 
 li:hover {
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Lighter shadow for hover */
-  transform: scale(1.02);
+  transform: scale(1.01);
 }
 
 .linkedin-btn {
