@@ -202,7 +202,23 @@
         </select>
       </div>
     </footer>
+    <script>
+      // Language site switcher -> navigates to https://osloandrew.github.io/{slug}/
+      document.addEventListener("DOMContentLoaded", () => {
+        const switcher = document.getElementById("site-switcher");
+        if (!switcher) return;
 
+        // Always start on the default (blank) option
+        switcher.value = "";
+
+        switcher.addEventListener("change", () => {
+          const slug = switcher.value;
+          if (!slug) return;
+          // Always go to the root-level language folder
+          location.href = `${location.origin}/${slug}/`;
+        });
+      });
+    </script>
     <script src="scripts.js"></script>
   </body>
 </html>
