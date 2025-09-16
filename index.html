@@ -2,95 +2,78 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Learn Japanese with Stories | Culture & Language</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <title>Japanese Dictionary | Search in Japanese or English</title>
 
     <!-- Meta Description -->
     <meta
       name="description"
-      content="Explore Japanese culture and language through curated stories for all proficiency levels (A1 to C2). Learn while enjoying engaging content."
+      content="Japanese Dictionary is your resource for finding words in both Japanese and English. Search, filter by part of speech, and discover new words."
     />
 
-    <!-- Open Graph Tags -->
-    <meta property="og:title" content="Learn Japanese with Stories" />
+    <!-- Meta Keywords -->
+    <meta
+      name="keywords"
+      content="Japanese dictionary, Japanese to English, English to Japanese, word search, language learning, part of speech filter, random words"
+    />
+
+    <!-- Open Graph for Social Media Sharing -->
+    <meta
+      property="og:title"
+      content="Japanese Dictionary | Search in Japanese or English"
+    />
     <meta
       property="og:description"
-      content="Engage with Japanese language and culture through curated stories for learners of all levels."
+      content="Use the Japanese Dictionary to find translations and definitions for words in Japanese and English."
     />
-    <meta property="og:image" content="Icons/apple-touch-icon.png" />
-    <meta property="og:url" content="https://osloandrew.github.io/japanese" />
+    <meta
+      property="og:image"
+      content="Resources/Icons/android-chrome-512x512.png"
+    />
+    <meta property="og:url" content="https://osloandrew.github.io/Japanese/" />
 
-    <!-- Structured Data -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "EducationalOrganization",
-        "name": "Japanese Stories",
-        "url": "https://osloandrew.github.io/japanese",
-        "logo": "Icons/apple-touch-icon.png",
-        "description": "Learn Japanese language and culture through curated stories for all proficiency levels.",
-        "sameAs": [
-          "https://www.linkedin.com/in/afeinberg1/",
-          "https://www.buymeacoffee.com/afeinberg4l"
-        ]
-      }
-    </script>
-
-    <!-- Favicon -->
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css" />
     <link
-      rel="icon"
-      type="image/png"
-      sizes="16x16"
-      href="Icons/favicon-16x16.png"
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="Resources/Icons/apple-touch-icon.png"
     />
     <link
       rel="icon"
       type="image/png"
       sizes="32x32"
-      href="Icons/favicon-32x32.png"
-    />
-
-    <!-- Apple Touch Icon -->
-    <link
-      rel="apple-touch-icon"
-      sizes="180x180"
-      href="Icons/apple-touch-icon.png"
-    />
-
-    <!-- Android Chrome Icons -->
-    <link
-      rel="icon"
-      type="image/png"
-      sizes="192x192"
-      href="Icons/android-chrome-192x192.png"
+      href="Resources/Icons/favicon-32x32.png"
     />
     <link
       rel="icon"
       type="image/png"
-      sizes="512x512"
-      href="Icons/android-chrome-512x512.png"
+      sizes="16x16"
+      href="Resources/Icons/favicon-16x16.png"
     />
-    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Google Fonts -->
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&display=swap");
+    </style>
+
+    <!-- External Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+    <!-- Font Awesome CDN -->
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap"
-      rel="stylesheet"
-    />
-    <!-- Google tag (gtag.js) -->
+
+    <!-- Google Analytics -->
     <script
       async
-      src="https://www.googletagmanager.com/gtag/js?id=G-VDZE3P8Z5W"
+      src="https://www.googletagmanager.com/gtag/js?id=G-M5H81RF3DT"
     ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -98,50 +81,17 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-
-      gtag("config", "G-VDZE3P8Z5W");
+      gtag("config", "G-M5H81RF3DT");
     </script>
   </head>
+
   <body>
     <header>
-      <h1>Japanese Stories</h1>
+      <h1 id="site-title" onclick="returnToLandingPage()">
+        Japanese Dictionary
+      </h1>
+      <p id="site-subtitle">Search in Japanese or English</p>
     </header>
-    <!-- Search Bar and Filters -->
-    <div id="filter-container">
-      <input type="text" id="search-bar" placeholder="SEARCH" />
-      <select id="genre-filter">
-        <option value="">GENRE</option>
-        <option value="biography">BIOGRAPHY</option>
-        <option value="culture">CULTURE</option>
-        <option value="dialogue">DIALOGUE</option>
-        <option value="drama">DRAMA</option>
-        <option value="fantasy">FANTASY</option>
-        <option value="food">FOOD</option>
-        <option value="health">HEALTH</option>
-        <option value="history">HISTORY</option>
-        <option value="horror">HORROR</option>
-        <option value="language">LANGUAGE</option>
-        <option value="manga and anime">MANGA AND ANIME</option>
-        <option value="monologue">MONOLOGUE</option>
-        <option value="philosophy">PHILOSOPHY</option>
-        <option value="politics">POLITICS</option>
-        <option value="psychology">PSYCHOLOGY</option>
-        <option value="science">SCIENCE</option>
-        <option value="science fiction">SCIENCE FICTION</option>
-        <option value="technology">TECHNOLOGY</option>
-        <option value="travel">TRAVEL</option>
-        <!-- Add more genres as needed -->
-      </select>
-      <select id="cefr-filter">
-        <option value="">LEVEL</option>
-        <option value="A1">A1</option>
-        <option value="A2">A2</option>
-        <option value="B1">B1</option>
-        <option value="B2">B2</option>
-        <option value="C1">C1</option>
-        <option value="C2">C2</option>
-      </select>
-    </div>
 
     <div id="sticky-header" class="hidden">
       <button id="back-button">← Back to Stories</button>
@@ -149,13 +99,433 @@
     </div>
 
     <main>
-      <section id="story-list">
-        <ul id="stories"></ul>
+      <!-- Search container with full-width background -->
+      <section id="search-container">
+        <div id="search-container-inner">
+          <!-- Grouped Selectors (Type and POS) -->
+          <div class="selectors-wrapper">
+            <!-- Words/Sentences Selector -->
+            <div class="type-filter">
+              <select
+                id="type-select"
+                aria-label="Search by words or sentences"
+                onchange="handleTypeChange(this.value)"
+              >
+                <option value="words">Words</option>
+                <option value="sentences">Sentences</option>
+                <option value="stories">Stories</option>
+                <option value="word-game">Word Game</option>
+              </select>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+
+            <!-- POS Selector -->
+            <div class="pos-filter">
+              <select
+                id="pos-select"
+                onchange="search()"
+                aria-label="Filter by part of speech"
+              >
+                <option value="">Word Class</option>
+                <option value="noun">Noun</option>
+                <option value="adjective">Adjective</option>
+                <option value="verb">Verb</option>
+                <option value="adverb">Adverb</option>
+                <option value="preposition">Preposition</option>
+                <option value="numeral">Numeral</option>
+                <option value="conjunction">Conjunction</option>
+                <option value="interjection">Interjection</option>
+                <option value="pronoun">Pronoun</option>
+              </select>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+
+            <!-- Genre Selector -->
+            <div
+              class="genre-filter"
+              id="genre-filter"
+              aria-label="Filter by genre"
+              style="display: none"
+            >
+              <select id="genre-select" onchange="handleGenreChange()">
+                <option value="">GENRE</option>
+                <option value="biography">BIOGRAPHY</option>
+                <option value="culture">CULTURE</option>
+                <option value="dialogue">DIALOGUE</option>
+                <option value="drama">DRAMA</option>
+                <option value="fantasy">FANTASY</option>
+                <option value="food">FOOD</option>
+                <option value="health">HEALTH</option>
+                <option value="history">HISTORY</option>
+                <option value="horror">HORROR</option>
+                <option value="language">LANGUAGE</option>
+                <option value="manga and anime">MANGA & ANIME</option>
+                <option value="monologue">MONOLOGUE</option>
+                <option value="philosophy">PHILOSOPHY</option>
+                <option value="politics">POLITICS</option>
+                <option value="psychology">PSYCHOLOGY</option>
+                <option value="science">SCIENCE</option>
+                <option value="science fiction">SCIENCE FICTION</option>
+                <option value="technology">TECHNOLOGY</option>
+                <option value="travel">TRAVEL</option>
+              </select>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+
+            <!-- Game-English Selector -->
+            <div
+              class="game-english-filter"
+              id="game-english-filter"
+              aria-label="Show or hide English"
+              style="display: none"
+            >
+              <select id="game-english-select" onchange="toggleGameEnglish()">
+                <option value="show-english">Show English</option>
+                <option value="hide-english">Hide English</option>
+              </select>
+              <i class="fas fa-chevron-down"></i>
+            </div>
+
+            <!-- CEFR Level Selector -->
+            <div class="cefr-filter">
+              <select
+                id="cefr-select"
+                onchange="search()"
+                aria-label="Filter by CEFR level"
+              >
+                <option value="">Level</option>
+                <option value="A1">A1</option>
+                <option value="A2">A2</option>
+                <option value="B1">B1</option>
+                <option value="B2">B2</option>
+                <option value="C">C</option>
+              </select>
+              <i class="fas fa-chevron-down"></i>
+              <i
+                id="lock-icon"
+                class="fas fa-lock-open"
+                title="Toggle level lock"
+                onclick="toggleLevelLock()"
+              ></i>
+            </div>
+          </div>
+
+          <!-- Grouped Search Bar and Random Button -->
+          <div class="search-and-random-wrapper">
+            <!-- Search Bar -->
+            <div id="search-bar-wrapper" class="search-bar-wrapper">
+              <input
+                type="text"
+                id="search-bar"
+                placeholder=" "
+                onkeydown="handleKey(event)"
+                aria-label="Search for Japanese or English words"
+              />
+              <button
+                id="clear-btn"
+                class="clear-btn"
+                aria-label="Clear search field"
+                onclick="clearInput()"
+              >
+                <i class="fas fa-xmark"></i>
+              </button>
+              <button
+                id="search-btn"
+                class="search-btn"
+                aria-label="Search for the word"
+                onclick="search()"
+              >
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+
+            <!-- Random Button -->
+            <button
+              id="random-btn"
+              class="random-btn"
+              aria-label="Generate a random word"
+              onclick="randomWord(),popChime.currentTime = 0, popChime.play()"
+              title="Generate a random word"
+            >
+              <i class="fas fa-dice"></i>
+            </button>
+          </div>
+        </div>
       </section>
+
+      <div id="loading-spinner" class="spinner" style="display: none"></div>
+      <!-- Moved outside the results-container -->
+      <div id="landing-card" class="definition">
+        <h2>
+          Welcome to the <br />
+          Japanese Dictionary
+        </h2>
+        <p style="text-align: center">
+          Explore Japanese vocabulary interactively. <br />
+          Click on one of the buttons below to get started.
+        </p>
+
+        <div class="landing-card-button-grid">
+          <!-- Dictionary Search Button -->
+          <div class="button-container">
+            <img
+              class="landing-card-image"
+              src="Resources/Photos/words.svg"
+              alt="Words"
+            />
+            <button class="landing-card-btn" onclick="selectType('words')">
+              Dictionary Search
+            </button>
+            <p>Discover words and their meanings with detailed examples.</p>
+          </div>
+
+          <!-- Sentence Search Button -->
+          <div class="button-container">
+            <img
+              class="landing-card-image"
+              src="Resources/Photos/sentences.svg"
+              alt="Sentences"
+            />
+            <button class="landing-card-btn" onclick="selectType('sentences')">
+              Sentence Search
+            </button>
+            <p>Explore real sentences in context using your chosen words.</p>
+          </div>
+
+          <!-- Japanese Stories Button -->
+          <div class="button-container">
+            <img
+              class="landing-card-image"
+              src="Resources/Photos/stories.svg"
+              alt="Stories"
+            />
+            <button class="landing-card-btn" onclick="selectType('stories')">
+              Japanese Stories
+            </button>
+            <p>
+              Immerse yourself in fiction and non-fiction to deepen your
+              language skills.
+            </p>
+          </div>
+
+          <!-- Word Game Button -->
+          <div class="button-container">
+            <img
+              class="landing-card-image"
+              src="Resources/Photos/word-game.svg"
+              alt="Word Games"
+            />
+            <button class="landing-card-btn" onclick="selectType('word-game')">
+              Word Game
+            </button>
+            <p>
+              Master vocabulary with an interactive game that adapts to your
+              skill level.
+            </p>
+          </div>
+
+          <!-- Pronunciation Guide Button -->
+          <div class="button-container">
+            <img
+              class="landing-card-image"
+              src="Resources/Photos/pronunciation.svg"
+              alt="Pronunciation"
+            />
+            <button
+              class="landing-card-btn"
+              id="toggle-pronunciation"
+              onclick="togglePronunciationGuide()"
+            >
+              Pronunciation Guide
+            </button>
+            <p>Perfect your pronunciation by learning Japanese sounds.</p>
+          </div>
+
+          <!-- Support Button -->
+          <div class="button-container">
+            <img
+              class="landing-card-image"
+              src="Resources/Photos/support.svg"
+              alt="Support the Project"
+            />
+            <a
+              href="https://www.buymeacoffee.com/afeinberg4l"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="text-decoration: none"
+            >
+              <button class="landing-card-btn">Support the Project</button>
+            </a>
+            <p>
+              Help keep this resource free and growing — every little bit makes
+              a difference!
+            </p>
+          </div>
+        </div>
+        <div class="pronunciation-wrapper hidden">
+          <h3>Japanese Pronunciation Guide for English Speakers</h3>
+          <p>
+            Japanese has five steady vowel phonemes and a relatively small set
+            of consonant patterns. Vowels are short and even, without the
+            diphthong glides common in English. Consonant variation across
+            regions is minimal compared to Spanish, though pitch accent differs
+            by dialect. This guide uses IPA and examples in Hepburn romanization
+            and kana.
+          </p>
+
+          <table class="pronunciation-table">
+            <thead>
+              <tr>
+                <th>Japanese Sound</th>
+                <th>Pronunciation Symbol</th>
+                <th>Example (Japanese)</th>
+                <th>Similar English Sound</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- VOWELS -->
+              <tr>
+                <td data-label="Japanese Sound">a</td>
+                <td data-label="Pronunciation Symbol">/a/</td>
+                <td data-label="Example (Japanese)">さか saka</td>
+                <td data-label="Similar English Sound">
+                  Like the first vowel in "father" but shorter and steadier
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">i</td>
+                <td data-label="Pronunciation Symbol">/i/</td>
+                <td data-label="Example (Japanese)">いし ishi</td>
+                <td data-label="Similar English Sound">
+                  "ee" in "machine" but shorter
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">u</td>
+                <td data-label="Pronunciation Symbol">/ɯ/</td>
+                <td data-label="Example (Japanese)">ふゆ fuyu</td>
+                <td data-label="Similar English Sound">
+                  Close to "oo" in "food," but unrounded; lips are relaxed
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">e</td>
+                <td data-label="Pronunciation Symbol">/e/</td>
+                <td data-label="Example (Japanese)">てん ten</td>
+                <td data-label="Similar English Sound">
+                  Between "bet" and "bait" but without a glide
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">o</td>
+                <td data-label="Pronunciation Symbol">/o/</td>
+                <td data-label="Example (Japanese)">とき toki</td>
+                <td data-label="Similar English Sound">
+                  "o" in "story" but shorter and purer
+                </td>
+              </tr>
+
+              <!-- CONSONANTS -->
+              <tr>
+                <td data-label="Japanese Sound">r (らりるれろ)</td>
+                <td data-label="Pronunciation Symbol">/ɾ/ (tap)</td>
+                <td data-label="Example (Japanese)">らく raku</td>
+                <td data-label="Similar English Sound">
+                  A single flap, like the quick "tt" in American "butter"
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">f (ふ)</td>
+                <td data-label="Pronunciation Symbol">/ɸ/</td>
+                <td data-label="Example (Japanese)">ふじ Fuji</td>
+                <td data-label="Similar English Sound">
+                  Between English "f" and "h," lips lightly rounded
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">tsu (つ)</td>
+                <td data-label="Pronunciation Symbol">/t͡s/</td>
+                <td data-label="Example (Japanese)">つき tsuki</td>
+                <td data-label="Similar English Sound">"ts" in "cats"</td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">shi (し)</td>
+                <td data-label="Pronunciation Symbol">/ɕi/</td>
+                <td data-label="Example (Japanese)">しろ shiro</td>
+                <td data-label="Similar English Sound">
+                  Like "she" in English but softer, with spread lips
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">chi (ち)</td>
+                <td data-label="Pronunciation Symbol">/t͡ɕi/</td>
+                <td data-label="Example (Japanese)">ちいさい chiisai</td>
+                <td data-label="Similar English Sound">
+                  "chee" in "cheese" but with tongue closer to "sh"
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">g intervocalic</td>
+                <td data-label="Pronunciation Symbol">/ŋ/ ~ /ɡ/ variation</td>
+                <td data-label="Example (Japanese)">
+                  かぐ kagu → [kaŋɯ] in some dialects
+                </td>
+                <td data-label="Similar English Sound">
+                  "ng" in "song" or "g" in "go," depending on region
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">long consonants</td>
+                <td data-label="Pronunciation Symbol">[kk], [ss], etc.</td>
+                <td data-label="Example (Japanese)">がっこう gakkō</td>
+                <td data-label="Similar English Sound">
+                  Like holding the consonant slightly longer than in English
+                </td>
+              </tr>
+              <tr>
+                <td data-label="Japanese Sound">long vowels</td>
+                <td data-label="Pronunciation Symbol">
+                  [aa], [ii], [uu], [ee], [oo]
+                </td>
+                <td data-label="Example (Japanese)">おばあさん obāsan</td>
+                <td data-label="Similar English Sound">
+                  Simply prolong the vowel, no change in quality
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4>Pitch Accent</h4>
+          <p>
+            Japanese does not use word stress like English or Spanish. Instead,
+            it has pitch accent: one syllable (or mora) is pronounced with a
+            higher pitch, and following syllables may drop. For example,
+            <strong>はし</strong> can mean "chopsticks" (HAshi, high–low) or
+            "bridge" (haSHI, low–high). Pitch accent patterns differ between
+            Tokyo and Kansai dialects.
+          </p>
+
+          <h4>Helpful Notes</h4>
+          <p>
+            Japanese is mora-timed: rhythm is based on equal units (morae)
+            rather than stress. Double consonants and long vowels count as extra
+            morae. The syllabic
+            <strong>ん</strong> /N/ can assimilate to [m], [n], [ŋ], or [ɴ]
+            depending on what follows. Geminate stops (っ) cause a pause before
+            the consonant.
+          </p>
+        </div>
+      </div>
       <section id="story-viewer" style="display: none">
         <div id="story-content"></div>
       </section>
+      <section id="results-container">
+        <ul id="stories" class="stories-list"></ul>
+      </section>
     </main>
+
+    <audio id="audio-player" style="display: none" controls></audio>
+
     <footer>
       <div class="links">
         <a
@@ -165,7 +535,7 @@
           class="linkedin-btn"
         >
           <img
-            src="Icons/linkedin-icon.png"
+            src="Resources/Icons/linkedin-icon.png"
             alt="LinkedIn Logo"
             class="linkedin-icon"
           /><span>Connect with me on LinkedIn</span>
@@ -200,7 +570,7 @@
           <option value="spanish">Spanish</option>
         </select>
       </div>
-      <p class="copyright">© 2025 Japanese Stories</p>
+      <p class="copyright">© 2025 Japanese Dictionary</p>
     </footer>
     <script>
       // Language site switcher -> navigates to https://osloandrew.github.io/{slug}/
@@ -219,6 +589,9 @@
         });
       });
     </script>
-    <script src="scripts.js"></script>
+    <script src="noRandom.js" defer></script>
+    <script src="scripts.js" defer></script>
+    <script src="wordGame.js" defer></script>
+    <script src="stories.js" defer></script>
   </body>
 </html>

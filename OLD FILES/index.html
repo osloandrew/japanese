@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Learn Japanese with Stories | Culture & Language</title>
+
+    <!-- Meta Description -->
+    <meta
+      name="description"
+      content="Explore Japanese culture and language through curated stories for all proficiency levels (A1 to C2). Learn while enjoying engaging content."
+    />
+
+    <!-- Open Graph Tags -->
+    <meta property="og:title" content="Learn Japanese with Stories" />
+    <meta
+      property="og:description"
+      content="Engage with Japanese language and culture through curated stories for learners of all levels."
+    />
+    <meta property="og:image" content="Icons/apple-touch-icon.png" />
+    <meta property="og:url" content="https://osloandrew.github.io/japanese" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "Japanese Stories",
+        "url": "https://osloandrew.github.io/japanese",
+        "logo": "Icons/apple-touch-icon.png",
+        "description": "Learn Japanese language and culture through curated stories for all proficiency levels.",
+        "sameAs": [
+          "https://www.linkedin.com/in/afeinberg1/",
+          "https://www.buymeacoffee.com/afeinberg4l"
+        ]
+      }
+    </script>
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="Icons/favicon-16x16.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="Icons/favicon-32x32.png"
+    />
+
+    <!-- Apple Touch Icon -->
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="Icons/apple-touch-icon.png"
+    />
+
+    <!-- Android Chrome Icons -->
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="192x192"
+      href="Icons/android-chrome-192x192.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href="Icons/android-chrome-512x512.png"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-VDZE3P8Z5W"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-VDZE3P8Z5W");
+    </script>
+  </head>
+  <body>
+    <header>
+      <h1>Japanese Stories</h1>
+    </header>
+    <!-- Search Bar and Filters -->
+    <div id="filter-container">
+      <input type="text" id="search-bar" placeholder="SEARCH" />
+      <select id="genre-filter">
+        <option value="">GENRE</option>
+        <option value="biography">BIOGRAPHY</option>
+        <option value="culture">CULTURE</option>
+        <option value="dialogue">DIALOGUE</option>
+        <option value="drama">DRAMA</option>
+        <option value="fantasy">FANTASY</option>
+        <option value="food">FOOD</option>
+        <option value="health">HEALTH</option>
+        <option value="history">HISTORY</option>
+        <option value="horror">HORROR</option>
+        <option value="language">LANGUAGE</option>
+        <option value="manga and anime">MANGA AND ANIME</option>
+        <option value="monologue">MONOLOGUE</option>
+        <option value="philosophy">PHILOSOPHY</option>
+        <option value="politics">POLITICS</option>
+        <option value="psychology">PSYCHOLOGY</option>
+        <option value="science">SCIENCE</option>
+        <option value="science fiction">SCIENCE FICTION</option>
+        <option value="technology">TECHNOLOGY</option>
+        <option value="travel">TRAVEL</option>
+        <!-- Add more genres as needed -->
+      </select>
+      <select id="cefr-filter">
+        <option value="">LEVEL</option>
+        <option value="A1">A1</option>
+        <option value="A2">A2</option>
+        <option value="B1">B1</option>
+        <option value="B2">B2</option>
+        <option value="C1">C1</option>
+        <option value="C2">C2</option>
+      </select>
+    </div>
+
+    <div id="sticky-header" class="hidden">
+      <button id="back-button">← Back to Stories</button>
+      <button id="toggle-english-btn" class="toggle-btn">Show English</button>
+    </div>
+
+    <main>
+      <section id="story-list">
+        <ul id="stories"></ul>
+      </section>
+      <section id="story-viewer" style="display: none">
+        <div id="story-content"></div>
+      </section>
+    </main>
+    <footer>
+      <div class="links">
+        <a
+          href="https://www.linkedin.com/in/afeinberg1/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="linkedin-btn"
+        >
+          <img
+            src="Icons/linkedin-icon.png"
+            alt="LinkedIn Logo"
+            class="linkedin-icon"
+          /><span>Connect with me on LinkedIn</span>
+        </a>
+        <a href="https://www.buymeacoffee.com/afeinberg4l" class="coffee-btn">
+          <img
+            src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=afeinberg4l&button_colour=0d3a69&font_colour=ffffff&font_family=Lato&outline_colour=ffffff&coffee_colour=FFDD00"
+            class="coffee-img"
+          />
+        </a>
+
+        <!-- Site switcher -->
+        <select
+          id="site-switcher"
+          aria-label="Go to another site"
+          style="
+            background: #fff;
+            border: 1px solid #052242;
+            border-radius: 6px;
+            cursor: pointer;
+            font: inherit;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+            padding: 5px;
+            text-transform: uppercase;
+          "
+        >
+          <option value="">Other Languages</option>
+          <option value="hebrew">Hebrew</option>
+          <option value="japanese">Japanese</option>
+          <option value="norwegian">Norwegian</option>
+          <option value="spanish">Spanish</option>
+        </select>
+      </div>
+      <p class="copyright">© 2025 Japanese Stories</p>
+    </footer>
+    <script>
+      // Language site switcher -> navigates to https://osloandrew.github.io/{slug}/
+      document.addEventListener("DOMContentLoaded", () => {
+        const switcher = document.getElementById("site-switcher");
+        if (!switcher) return;
+
+        // Always start on the default (blank) option
+        switcher.value = "";
+
+        switcher.addEventListener("change", () => {
+          const slug = switcher.value;
+          if (!slug) return;
+          // Always go to the root-level language folder
+          location.href = `${location.origin}/${slug}/`;
+        });
+      });
+    </script>
+    <script src="scripts.js"></script>
+  </body>
+</html>

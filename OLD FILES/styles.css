@@ -1,0 +1,595 @@
+audio {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+}
+
+#back-button,
+#toggle-english-btn,
+.toggle-kanji-btn {
+  background-color: #f4f4f4; /* Neutral light gray */
+  border: #bbb 1px solid;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #2a3a2f;
+  cursor: pointer;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 500;
+  min-width: 115px;
+  padding: 0.5em 1em;
+  position: relative;
+  transition: background-color 0.3s ease;
+  z-index: 1;
+}
+
+#back-button:hover,
+#toggle-english-btn:hover,
+.toggle-kanji-btn:hover {
+  background-color: gainsboro; /* Slightly darker purple on hover */
+}
+
+body {
+  background-color: #f4f4f4; /* Off-white background */
+  color: #333; /* Dark text color */
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  font-family: "Noto Sans", sans-serif;
+}
+
+.cefr-value {
+  border-radius: 4px;
+  color: #4f4f4f; /* Default text color */
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 3px 7px;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.cefr-value.a1,
+.sticky-cefr-label.a1 {
+  background-color: #cfe5c0; /* Soft olive green for A1 (new grass) */
+  color: #2a4d14; /* Dark forest green for high contrast */
+}
+
+.cefr-value.a2,
+.sticky-cefr-label.a2 {
+  background-color: #b3d8a3; /* Bright meadow green for A2 (spring leaves) */
+  color: #2f4f17; /* Deep moss green for high contrast */
+}
+
+.cefr-value.b1,
+.sticky-cefr-label.b1 {
+  background-color: #f7e3b0; /* Gentle wheat yellow for B1 (warm sunlight) */
+  color: #5c4b11; /* Warm brown for legibility and contrast */
+}
+
+.cefr-value.b2,
+.sticky-cefr-label.b2 {
+  background-color: #f0d39a; /* Brighter golden yellow for B2 (ripe fields) */
+  color: #604b0e; /* Rich amber brown for sharp contrast */
+}
+
+.cefr-value.c1,
+.sticky-cefr-label.c1 {
+  background-color: #e9c3b4; /* Muted rose pink for C1 (wild roses) */
+  color: #5a2d25; /* Deep reddish-brown for readability and aesthetic balance */
+}
+
+.cefr-value.c2,
+.sticky-cefr-label.c2 {
+  background-color: #e0af92; /* Bright terracotta orange for C2 (sunlit clay) */
+  color: #5a2e18; /* Burnt sienna for clear contrast */
+}
+
+.cefr-value.cefr-unknown,
+.sticky-cefr-label.cefr-unknown {
+  background-color: #e0e0e0; /* Gray for unknown levels */
+  color: #444444; /* Dark charcoal gray for readability */
+}
+
+.coffee-btn {
+  align-items: center;
+  border: 1px solid transparent; /* No visible border but ensures alignment */
+  border-radius: 4px;
+  display: inline-flex;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.coffee-img {
+  max-height: 30px; /* Adjust the height of the image to align with the LinkedIn button */
+  width: auto;
+}
+
+.feedback-btn {
+  background-color: #f2f2f2; /* Slightly darker light gray background */
+  border: 1px solid #bbb; /* Darker border for a more defined edge */
+  border-radius: 4px; /* Keep corners slightly rounded */
+  color: #0d3a69; /* Slightly bolder color */
+  cursor: pointer;
+  display: block;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 0.85em; /* Slightly larger font size for better readability */
+  margin: 15px auto; /* Increase margin slightly for better spacing */
+  padding: 7px 20px; /* Slightly larger padding for more emphasis */
+  text-transform: uppercase; /* Keep text all caps */
+  letter-spacing: 0.8px; /* Increase letter spacing for better legibility */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.feedback-btn:hover {
+  background-color: #d9d9d9; /* More noticeable gray on hover */
+  color: #0d4a79; /* Slightly darker hover text color for emphasis */
+}
+
+#filter-container {
+  align-items: center; /* Center items horizontally */
+  background: #ffffff; /* White background */
+  border-top: 1px solid #ccc; /* Subtle gray border at the top */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  display: flex;
+  gap: 10px;
+  justify-content: center; /* Center items vertically */
+  margin: auto;
+  position: sticky;
+  text-align: center;
+  top: 0;
+  padding: 10px 20px 10px 20px;
+  z-index: 100;
+}
+
+#filter-container input,
+#filter-container select {
+  background: #f9f9f9; /* Subtle off-white background */
+  border: 1px solid #d0d0d0; /* Light border for structure */
+  border-radius: 10px;
+  box-shadow: inset 0px 1px 2px rgba(0, 0, 0, 0.05); /* Inner shadow for depth */
+  letter-spacing: 0.25px;
+  max-width: 250px; /* Limit width for large screens */
+  padding: 10px 12px; /* Comfortable padding */
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  width: 100%; /* Take full width of the container */
+}
+
+#filter-container select {
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath fill='%23666' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px 6px;
+  cursor: pointer;
+  display: -webkit-box; /* Creates a block-level flex container */
+  overflow: hidden; /* Hides the overflowing text */
+  text-overflow: ellipsis; /* Adds ellipses when text overflows */
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 1; /* Limits the text to 1 line */
+}
+
+footer {
+  background-color: #dbe3c9;
+  border-top: 1px solid #ccc; /* Subtle gray border at the top */
+  bottom: 0;
+  color: #0d3a69;
+  font-family: "Noto Sans", sans-serif;
+  padding: 5px 0;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+footer p {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+footer p a {
+  color: #3c88d4;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+footer p a:hover {
+  color: #0d3a69;
+  text-decoration: underline;
+}
+
+footer .copyright {
+  color: #2e2e2e;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+h1 {
+  font-family: "Grenze Gotisch", serif !important;
+  margin: 0em 0;
+}
+
+h2 {
+  font-family: "Noto Sans", sans-serif;
+  margin: 0.5em 0;
+}
+
+header {
+  background-color: #dbe3c9;
+  color: #2e2e2e;
+  letter-spacing: 0.5px;
+  padding: 10px 0;
+  text-align: center;
+  user-select: none;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.english-sentence {
+  color: gray; /* Set a different color for English text */
+  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
+}
+
+.english-title {
+  color: #666;
+  font-family: "Noto Sans", sans-serif; /* English-specific font */
+  font-size: 12.5px;
+}
+
+.japanese-sentence {
+  color: black; /* Set a color for Japanese text */
+  font-family: "Noto Sans JP", sans-serif; /* Adjust to the appropriate English font */
+}
+
+.japanese-title {
+  color: #333;
+  display: -webkit-box; /* Creates a block-level flex container */
+  font-family: "Noto Sans JP", sans-serif; /* Japanese-specific font */
+  font-size: 18px;
+  overflow: hidden; /* Hides the overflowing text */
+  text-overflow: ellipsis; /* Adds ellipses when text overflows */
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 1; /* Limits the text to 1 line */
+}
+
+label {
+  color: #3b5d50 !important; /* Earthy green to match your theme */
+  font-family: "Noto Sans", sans-serif; /* Ensure consistent font style */
+  font-size: 12px !important;
+}
+
+li {
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  margin-bottom: 15px;
+  justify-content: space-between;
+  padding: 7.5px 15px;
+  transition: background-color 0.3s ease, border-color 0.3s ease,
+    transform 0.3s ease;
+}
+
+li:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Lighter shadow for hover */
+  transform: scale(1.01);
+}
+
+.linkedin-btn {
+  align-items: center;
+  background-color: white;
+  border: 1px solid #0a66c2;
+  border-radius: 4px;
+  color: #0a66c2;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 13px;
+  height: 30px; /* Match height to the BuyMeACoffee image */
+  padding: 2px 15px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.linkedin-btn:hover {
+  background-color: #f0f0f0;
+  color: #0a66c2;
+}
+
+.linkedin-icon {
+  height: auto;
+  margin-right: 8px;
+  width: 18px;
+}
+
+.links {
+  align-items: center; /* Vertically align both buttons */
+  display: flex;
+  gap: 10px; /* Space between the buttons */
+  justify-content: center;
+  margin: 10px 0 10px 0;
+}
+
+main {
+  min-height: 100vh;
+  padding: 0 1em;
+}
+
+/* Ensure sticky header CEFR label matches list page */
+.sticky-cefr-label {
+  align-items: center; /* Center vertically */
+  border: 1px solid #ddd; /* Lighter gray for a subtler border */
+  border-radius: 4px;
+  box-sizing: border-box; /* Includes padding and border in the width calculation */
+  color: #4f4f4f;
+  display: flex; /* Add Flexbox */
+  flex: 1; /* Allows the children to take up equal and maximum space */
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  justify-content: center; /* Center horizontally */
+  max-width: 100%; /* Ensures they don't exceed the parent container */
+  min-width: 25%;
+  padding: 3px 7px;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Flex container for genre and CEFR */
+.sticky-detail-container {
+  display: flex;
+  flex-direction: column; /* Stack rows vertically */
+  gap: 5px; /* Space between rows */
+}
+
+/* Ensure sticky header genre matches list page */
+.sticky-genre {
+  align-items: center; /* Center vertically */
+  align-self: flex-start;
+  background-color: #f0f0f0; /* Light background for genre badge */
+  border: 1px solid #ddd; /* Lighter gray for a subtler border */
+  border-radius: 4px;
+  box-sizing: border-box; /* Includes padding and border in the width calculation */
+  color: #4f4f4f;
+  display: flex; /* Add Flexbox */
+  flex: 1; /* Allows the children to take up equal and maximum space */
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12px !important;
+  font-weight: bold;
+  height: 30px;
+  justify-content: center; /* Center horizontally */
+  text-align: center;
+  text-transform: uppercase;
+  max-width: 100%; /* Ensures they don't exceed the parent container */
+  min-width: 25%;
+  padding: 3px 7px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.sticky-genre i {
+  color: #333; /* Icon color */
+}
+
+#sticky-header {
+  align-items: center;
+  background-color: white;
+  border-top: 1px solid #ccc; /* Subtle gray border at the top */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: black;
+  display: flex;
+  gap: 1.5em;
+  position: sticky;
+  justify-content: space-between;
+  min-height: 60px; /* Ensure enough height for wrapping content */
+  overflow: hidden; /* Prevent content from overflowing */
+  padding: 0.5em 1.5em;
+  top: 0;
+  z-index: 1000; /* Ensure it stays on top */
+}
+
+.sticky-header-content {
+  align-items: center;
+  display: flex;
+  justify-content: center; /* Center titles horizontally */
+  position: relative;
+  width: 100%; /* Allow flex to distribute space evenly */
+}
+
+.sticky-row {
+  display: flex;
+  gap: 5px; /* Space between genre and CEFR */
+}
+
+.sticky-title-container {
+  display: flex;
+  flex-direction: column;
+  gap: 7.5px; /* Adjust to desired spacing */
+  margin-bottom: 0.75em !important;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center; /* Center the text inside */
+  white-space: normal; /* Allow text wrapping */
+  word-break: break-word; /* Break long words if necessary */
+}
+
+.sticky-title-japanese {
+  font-size: 1.5em;
+  font-family: "Noto Sans JP", sans; /* Adjust to the appropriate English font */
+  font-weight: 400;
+  margin: 0 auto;
+}
+
+.sticky-title-english {
+  color: #666;
+  font-family: "Noto Sans", sans;
+  font-size: 1em;
+  letter-spacing: 0.75px;
+  line-height: 1.2; /* Adjust line height */
+  margin: 0 auto;
+  text-transform: uppercase;
+}
+
+#stories {
+  align-items: start; /* Ensures consistent alignment */
+  column-gap: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.stories-detail-container {
+  align-items: center; /* Align CEFR and genre vertically */
+  display: flex;
+  gap: 10px; /* Add spacing between genre and CEFR */
+}
+
+.stories-genre {
+  align-self: flex-start;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  color: #4f4f4f;
+  padding: 3px 7px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  min-width: 17.5px;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.stories-genre i {
+  color: #333;
+}
+
+/* Style for the story content */
+#story-content {
+  background: #fff; /* Same white background as story list items */
+  border: 1px solid #ddd; /* Light border for separation */
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
+  font-family: "Noto Serif", serif;
+  margin: 1em 0;
+  padding: 1em 5em 0 5em;
+}
+
+#story-content > div {
+  margin-bottom: 20px; /* Margin for each sentence couplet */
+}
+
+.story-image {
+  border-radius: 10px; /* Rounds the corners for a soft photograph effect */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15); /* Adjusted vertical spread and blur */
+  display: block; /* Makes the image behave like a block element */
+  margin: 0 auto; /* Centers the image horizontally */
+  margin-bottom: 3em;
+  max-height: 250px;
+  max-width: 100%; /* Ensures the image is responsive */
+}
+
+/* Story list and story content */
+#story-list,
+#story-viewer {
+  max-width: 800px; /* Limit the width */
+  margin: 0 auto; /* Center align */
+}
+
+.toggle-buttons-container {
+  color: white;
+  display: flex;
+  flex-direction: column;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1em;
+  gap: 5px; /* Space between buttons */
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+/* Add margins for wide screens */
+@media (max-width: 767px) {
+  #back-button,
+  #toggle-english-btn,
+  .toggle-kanji-btn {
+    font-size: 10px;
+    min-width: 80px;
+    padding: 0.5em;
+  }
+  #filter-container {
+    border: none;
+    gap: 8px;
+    padding: 8px;
+  }
+  #filter-container input,
+  #filter-container select {
+    padding: 7.5px 20px 7.5px 10px; /* Comfortable padding */
+  }
+  li {
+    margin-bottom: 10px;
+  }
+
+  li:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transform: none;
+  }
+  .linkedin-btn span {
+    font-size: 0.8em;
+  }
+  .links {
+    margin: 10px;
+  }
+  main {
+    padding: 0 12px;
+  }
+  .sticky-cefr-label {
+    height: 25px !important;
+  }
+  .sticky-genre {
+    height: 25px;
+  }
+  #sticky-header {
+    border: none;
+    padding: 0.25em 0.5em;
+    gap: 0.5em;
+  }
+  .sticky-title-container {
+    gap: 5px; /* Adjust to desired spacing */
+  }
+  .sticky-title-japanese {
+    font-size: 1.3em;
+  }
+  .sticky-title-english {
+    font-size: 0.8em;
+  }
+  #stories {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  #story-content {
+    margin: 0.75em 0;
+    padding: 1em 1em 0em 1em;
+  }
+  #story-content > div {
+    margin-bottom: 15px; /* Margin for each sentence couplet */
+  }
+  .story-image {
+    margin-bottom: 1.25em;
+  }
+}
