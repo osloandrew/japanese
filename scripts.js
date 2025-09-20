@@ -1504,7 +1504,7 @@ function displaySearchResults(results, query = "") {
                   </div>
 
                     ${
-                      result.gender
+                      result.gender && result.gender !== result.ord
                         ? `<div class="gender ${multipleResultsgenderClass}">${result.gender}</div>`
                         : ""
                     }
