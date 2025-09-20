@@ -535,11 +535,19 @@ async function search(queryOverride = null) {
           .toLowerCase()
           .split(",")
           .map((s) => s.trim());
-        const engelskList = r.engelsk
+        const kanaList = (r.gender || "")
+          .toLowerCase()
+          .split(",")
+          .map((s) => s.trim()); // 👈 add this
+        const engList = r.engelsk
           .toLowerCase()
           .split(",")
           .map((s) => s.trim());
-        return ordList.includes(base) || engelskList.includes(base);
+        return (
+          ordList.includes(base) ||
+          kanaList.includes(base) ||
+          engList.includes(base)
+        ); // 👈 add kanaList
       })
     ) || originalQuery;
   const isInexactMatch = originalQuery !== query;
@@ -668,14 +676,21 @@ async function search(queryOverride = null) {
       const matchesQuery = normalizedQueries.some((variation) => {
         const exactRegex = new RegExp(`\\b${variation}\\b`, "i"); // Exact match regex for whole word
         const partialRegex = new RegExp(variation, "i"); // Partial match for larger words like "bevegelsesfrihet"
-        const wordMatch =
-          exactRegex.test(r.ord.toLowerCase()) ||
-          partialRegex.test(r.ord.toLowerCase());
-        const englishValues = r.engelsk
+
+        const ordText = (r.ord || "").toLowerCase();
+        const kanaText = (r.gender || "").toLowerCase(); // 👈 kana
+        const engVals = (r.engelsk || "")
           .toLowerCase()
           .split(",")
           .map((e) => e.trim());
-        const englishMatch = englishValues.some(
+
+        const wordMatch =
+          exactRegex.test(ordText) ||
+          partialRegex.test(ordText) ||
+          exactRegex.test(kanaText) ||
+          partialRegex.test(kanaText); // 👈 include kana
+
+        const englishMatch = engVals.some(
           (eng) => exactRegex.test(eng) || partialRegex.test(eng)
         );
         return wordMatch || englishMatch;
@@ -724,11 +739,14 @@ async function search(queryOverride = null) {
 
       // Now search for results using these inexact queries
       let inexactWordMatches = results.filter((r) => {
-        const matchesInexact = inexactWordQueries.some(
-          (inexactQuery) =>
-            r.ord.toLowerCase().includes(inexactQuery) ||
-            r.engelsk.toLowerCase().includes(inexactQuery)
-        );
+        const matchesInexact = inexactWordQueries.some((inexactQuery) => {
+          const q = inexactQuery.toLowerCase();
+          return (
+            (r.ord || "").toLowerCase().includes(q) ||
+            (r.gender || "").toLowerCase().includes(q) || // 👈 include kana
+            (r.engelsk || "").toLowerCase().includes(q)
+          );
+        });
         return (
           matchesInexact &&
           (!selectedPOS ||
@@ -829,20 +847,35 @@ async function search(queryOverride = null) {
         a.ord
           .toLowerCase()
           .split(",")
-          .map((str) => str.trim())
+          .map((s) => s.trim())
           .includes(queryLower) ||
-        a.engelsk
+        (a.engelsk || "")
           .toLowerCase()
           .split(",")
-          .map((str) => str.trim())
-          .includes(queryLower);
+          .map((s) => s.trim())
+          .includes(queryLower) ||
+        (a.gender || "")
+          .toLowerCase()
+          .split(",")
+          .map((s) => s.trim())
+          .includes(queryLower); // 👈
+
       const isExactMatchB =
-        b.ord.toLowerCase() === queryLower ||
-        b.engelsk
+        b.ord
           .toLowerCase()
           .split(",")
-          .map((str) => str.trim())
-          .includes(queryLower);
+          .map((s) => s.trim())
+          .includes(queryLower) ||
+        (b.engelsk || "")
+          .toLowerCase()
+          .split(",")
+          .map((s) => s.trim())
+          .includes(queryLower) ||
+        (b.gender || "")
+          .toLowerCase()
+          .split(",")
+          .map((s) => s.trim())
+          .includes(queryLower); // 👈
       if (isExactMatchA && !isExactMatchB) {
         return -1;
       }
