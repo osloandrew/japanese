@@ -394,6 +394,39 @@ async function displayStory(titleJapanese) {
     applyRate(rates[i]);
   })();
 
+  (function addKanjiButton() {
+    const rc = document.getElementById("right-controls");
+    const engBtn = document.getElementById("toggle-english-btn");
+    if (!rc || !engBtn) return;
+
+    // Only show toggle if Hiragana column is available
+    const hasHiragana =
+      typeof selectedStory.hiragana === "string" &&
+      selectedStory.hiragana.trim().length > 0;
+    if (!hasHiragana) return;
+
+    const kjBtn = document.createElement("button");
+    kjBtn.id = "toggle-kanji-btn";
+    kjBtn.type = "button";
+    kjBtn.className = engBtn.className;
+    kjBtn.textContent = isKanjiVisible ? "Hide Kanji" : "Show Kanji";
+
+    // Place directly under English button
+    engBtn.insertAdjacentElement("afterend", kjBtn);
+
+    kjBtn.addEventListener("click", () => {
+      isKanjiVisible = !isKanjiVisible;
+      const jpNodes = document.querySelectorAll(".japanese-sentence");
+      const src = isKanjiVisible
+        ? japaneseSentences
+        : japaneseSentencesHiragana;
+      jpNodes.forEach((node, i) => {
+        node.textContent = src[i] || "";
+      });
+      kjBtn.textContent = isKanjiVisible ? "Hide Kanji" : "Show Kanji";
+    });
+  })();
+
   document
     .getElementById("toggle-english-btn")
     ?.addEventListener("click", () => {
@@ -451,7 +484,11 @@ async function displayStory(titleJapanese) {
     }
 
     for (let i = 0; i < japaneseSentences.length; i++) {
-      const japaneseSentence = japaneseSentences[i].trim();
+      const src = isKanjiVisible
+        ? japaneseSentences
+        : japaneseSentencesHiragana;
+
+      const japaneseSentence = (src[i] || "").trim();
       const englishSentence = englishSentences[i]
         ? englishSentences[i].trim()
         : "";
@@ -496,6 +533,10 @@ async function displayStory(titleJapanese) {
 
   // Process story text into sentences
   const standardizedJapanese = selectedStory.japanese.replace(/[“”«»]/g, '"');
+  const standardizedHiragana = (selectedStory.hiragana || "").replace(
+    /[“”«»]/g,
+    '"'
+  );
   const standardizedEnglish = selectedStory.english.replace(/[“”«»]/g, '"');
   const englishSentenceEndings =
     /(?:(["]?.+?(?<!\bMr)(?<!\bMrs)(?<!\bMs)(?<!\bDr)(?<!\bProf)(?<!\bJr)(?<!\bSr)(?<!\bSt)(?<!\bMt)[.!?]["]?)(?=\s|$)|(?:\.\.\."))/g;
@@ -504,6 +545,9 @@ async function displayStory(titleJapanese) {
   let japaneseSentences = standardizedJapanese.match(
     japaneseSentenceEndings
   ) || [standardizedJapanese];
+  let japaneseSentencesHiragana = standardizedHiragana.match(
+    japaneseSentenceEndings
+  ) || [standardizedHiragana];
   let englishSentences = standardizedEnglish.match(englishSentenceEndings) || [
     standardizedEnglish,
   ];
@@ -531,7 +575,19 @@ async function displayStory(titleJapanese) {
   };
 
   japaneseSentences = combineSentences(japaneseSentences);
+  japaneseSentencesHiragana = combineSentences(japaneseSentencesHiragana);
   englishSentences = combineSentences(englishSentences, /\basked\b/i);
+
+  // Keep arrays the same length to make swapping text safe
+  const maxLen = Math.max(
+    japaneseSentences.length,
+    japaneseSentencesHiragana.length,
+    englishSentences.length
+  );
+  while (japaneseSentences.length < maxLen) japaneseSentences.push("");
+  while (japaneseSentencesHiragana.length < maxLen)
+    japaneseSentencesHiragana.push("");
+  while (englishSentences.length < maxLen) englishSentences.push("");
 
   finalizeContent(false);
 }

@@ -1,6 +1,7 @@
 // Global Variables
 let results = [];
 let isEnglishVisible = true;
+let isKanjiVisible = true; // default: show Kanji
 let latestMultipleResults = null;
 const resultsContainer = document.getElementById("results-container");
 // Language + schema for Japanese

@@ -19,7 +19,7 @@ audio {
 #back-button,
 #speed-btn,
 #toggle-english-btn,
-.toggle-kanji-btn {
+#toggle-kanji-btn {
   background-color: #f4f4f4; /* Neutral light gray */
   border: #bbb 1px solid;
   border-radius: 5px;
@@ -38,7 +38,7 @@ audio {
 #back-button:hover,
 #speed-btn:hover,
 #toggle-english-btn:hover,
-.toggle-kanji-btn:hover {
+#toggle-kanji-btn:hover {
   background-color: gainsboro; /* Slightly darker purple on hover */
 }
 
@@ -1851,6 +1851,10 @@ ul {
   width: 40px;
 }
 
+#toggle-kanji-btn {
+  margin-top: 5px;
+}
+
 /* Gray out both the select text and the arrow when disabled */
 .cefr-filter.disabled select,
 .type-filter.disabled select,
@@ -1925,7 +1929,7 @@ ul {
   #back-button,
   #speed-btn,
   #toggle-english-btn,
-  .toggle-kanji-btn {
+  #toggle-kanji-btn {
     font-size: 10px;
     min-width: 80px;
     padding: 0.5em;
