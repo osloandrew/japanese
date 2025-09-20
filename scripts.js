@@ -1257,109 +1257,133 @@ function handleCEFRChange() {
 function makeDefinitionClickable(defText) {
   if (!defText) return "";
 
-  // Normalize: trim, lowercase first alpha, remove trailing sentence-ending punctuation
-  defText = defText
+  // Normalize lines; strip trailing sentence punctuation (incl. JP)
+  let text = defText
     .split(/\r?\n+/)
-    .map((line) => {
-      line = line.trim();
-      if (!line) return "";
-      // lowercase the first alphabetic char after any opening punctuation
-      line = line.replace(
-        /^([(\s"«“¡¿]*)?([A-ZÁÉÍÓÚÜÑÇÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÅÆØŒ])/u,
-        (m, pre = "", ch) => pre + ch.toLowerCase()
-      );
-      // strip trailing . ! ? …
-      line = line.replace(/\s*[.!?…]\s*$/u, "");
-      return line;
-    })
+    .map((s) => s.trim())
     .filter(Boolean)
-    .join(" ");
+    .join(" ")
+    .replace(/\s*[.!?…。、！？]\s*$/u, "");
+
+  // Build once: alternation of known JP headwords (kanji + kana)
+  if (!makeDefinitionClickable._rxBuilt) {
+    const set = new Set();
+    if (Array.isArray(results)) {
+      for (const r of results) {
+        if (r?.ord) {
+          r.ord
+            .split(",")
+            .map((s) => s.trim())
+            .forEach((w) => {
+              if (
+                /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(
+                  w
+                )
+              )
+                set.add(w);
+            });
+        }
+        if (r?.gender) {
+          r.gender
+            .split(",")
+            .map((s) => s.trim())
+            .forEach((w) => {
+              if (/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(w))
+                set.add(w);
+            });
+        }
+      }
+    }
+    const words = Array.from(set)
+      .filter(Boolean)
+      .sort((a, b) => b.length - a.length);
+    const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const alt = words.map(esc).join("|") || "(?!)";
+    // Match headwords ANYWHERE (no JP boundary requirement)
+    makeDefinitionClickable._rx = new RegExp(`(${alt})`, "gu");
+    makeDefinitionClickable._rxBuilt = true;
+  }
+
+  // Wrap JP headwords found in the text + add a space if another JP char follows
+  text = text.replace(makeDefinitionClickable._rx, (m, _g1, offset, str) => {
+    const safe = m.replace(/["&<>]/g, (ch) =>
+      ch === "&"
+        ? "&amp;"
+        : ch === '"'
+        ? "&quot;"
+        : ch === "<"
+        ? "&lt;"
+        : "&gt;"
+    );
+
+    // Look at the next character in the *original* string
+    const nextChar = str.slice(offset + m.length, offset + m.length + 1);
+
+    // JP char class incl. long-vowel mark + halfwidth kana
+    const JP_NEXT =
+      /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u30FC\uFF66-\uFF9D]/u;
+
+    const needsSpace = JP_NEXT.test(nextChar);
+
+    return `<span class="clickable-definition-word" data-word="${safe}">${m}</span>${
+      needsSpace ? " " : ""
+    }`;
+  });
+
+  // Fallback wrapper for spaced languages — but SKIP any token that contains JP chars
+  const hasJP = (s) =>
+    /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(s);
 
   function wrapToken(token) {
-    // Håndter sammensatte ord med parentes, som (språk)gruppe eller språk(gruppe)
-    const complexParenMatch = token.match(
+    if (/<span[^>]*>/.test(token)) return token; // already wrapped by JP pass
+    if (hasJP(token)) return token; // don't wrap whole JP runs
+
+    // (foo)bar or foo(bar)baz
+    const complex = token.match(
       /^([\p{L}\-']*)\(([\p{L}\-']+)\)([\p{L}\-']*)([.,;!?]*)$/u
     );
-    if (complexParenMatch) {
-      const [, before, inside, after, punctuation] = complexParenMatch;
+    if (complex) {
+      const [, before, inside, after, punct] = complex;
       const parts = [];
-
-      if (before) {
+      if (before)
         parts.push(
           `<span class="clickable-definition-word" data-word="${before}">${before}</span>`
         );
-      }
-
       parts.push("(");
       parts.push(
         `<span class="clickable-definition-word" data-word="${inside}">${inside}</span>`
       );
       parts.push(")");
-
-      if (after) {
+      if (after)
         parts.push(
           `<span class="clickable-definition-word" data-word="${after}">${after}</span>`
         );
-      }
-
-      parts.push(punctuation || "");
+      parts.push(punct || "");
       return parts.join("");
     }
 
-    // Opprinnelig logikk for alt annet
-    const match = token.match(
+    const m = token.match(
       /^(\()?(?<prefix>[\p{L}\-']+)?(\))?(?<base>[\p{L}\-']+)?([:.,;!?]*)$/u
     );
+    if (!m || !m.groups) return token;
 
-    if (!match || !match.groups) return token;
-
-    const { prefix, base } = match.groups;
-    const punctuationMatch = token.match(/[:.,;!?]+$/);
-    const punctuation = punctuationMatch ? punctuationMatch[0] : "";
+    const { prefix, base } = m.groups;
+    const punct = (token.match(/[:.,;!?]+$/) || [""])[0];
     const open = token.startsWith("(") ? "(" : "";
     const close = token.includes(")") ? ")" : "";
-
-    const parts = [];
-
-    // 👇 Check for trailing hyphen outside the word
     const endsWithHyphen = token.endsWith("-");
-
     const word = (prefix || base || "").replace(/-$/, "");
-
-    if (word) {
-      parts.push(
-        `${open}<span class="clickable-definition-word" data-word="${word}">${word}</span>${
-          endsWithHyphen ? "-" : ""
-        }${close}`
-      );
-    } else if (open || close) {
-      parts.push(`${open}${close}`);
-    }
-
-    return parts.join("") + punctuation;
+    if (!word) return `${open}${close}${punct}`;
+    return `${open}<span class="clickable-definition-word" data-word="${word}">${word}</span>${
+      endsWithHyphen ? "-" : ""
+    }${close}${punct}`;
   }
 
-  if (defText.includes(";")) {
-    const items = defText
+  if (text.includes(";")) {
+    const items = text
       .split(";")
-      .map((item) =>
-        item
-          .split(/\r?\n+/)
-          .map((s) => {
-            s = s.trim();
-            if (!s) return "";
-            s = s.replace(
-              /^([(\s"«“¡¿]*)?([A-ZÁÉÍÓÚÜÑÇÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÅÆØŒ])/u,
-              (m, pre = "", ch) => pre + ch.toLowerCase()
-            );
-            s = s.replace(/\s*[.!?…]\s*$/u, "");
-            return s;
-          })
-          .filter(Boolean)
-          .join(" ")
-      )
+      .map((s) => s.trim())
       .filter(Boolean);
-
     return (
       `<ul class="definition-list">` +
       items
@@ -1369,17 +1393,15 @@ function makeDefinitionClickable(defText) {
     );
   }
 
-  return defText
+  return text
     .split(/\s+/)
     .map((token) => {
+      if (/<span[^>]*>/.test(token)) return token; // preserve JP matches
+      if (hasJP(token)) return token; // don't wrap whole JP tokens
       if (token.includes("/") && !token.startsWith("http")) {
-        return token
-          .split("/")
-          .map((subToken) => wrapToken(subToken))
-          .join("/");
-      } else {
-        return wrapToken(token);
+        return token.split("/").map(wrapToken).join("/");
       }
+      return wrapToken(token);
     })
     .join(" ");
 }
