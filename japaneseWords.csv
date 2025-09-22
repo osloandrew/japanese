@@ -1361,7 +1361,7 @@ toilet seat,,便座,べんざ,,,
 toilet,B2,便所,べんじょ,,,
 constipation,,便秘,べんぴ,,,
 stationery,B2,便箋,びんせん,,,
-being in charge,B1,係,かかり,係わりを持つ人。,,
+being in charge,B1,係,かかり,係わりを持つ人。,係としてイベントを管理しています。,I am managing the event as the person in charge.
 person in charge,,係員,かかりいん,,,
 "urge, encourage",C,促す,うながす,,,
 acceleration,C,促進,そくしん,,,
@@ -1370,30 +1370,30 @@ cutting board,,俎板,まないた,,,
 slang,,俗語,ぞくご,,,
 "keep, maintain",C,保つ,たもつ,,,
 healthcare,B2,保健,ほけん,,,
-preservation,B1,保存,ほぞん,保存すること。,,
+preservation,B1,保存,ほぞん,保存すること。,古い書類を保存する必要があります。,It is necessary to preserve old documents.
 conservatism,C,保守,ほしゅ,,,
 "retention, maintenance",,保持,ほじ,,,
 possession,,保有,ほゆう,,,
 "nursing, rearing",C,保育,ほいく,,,
 incubator,,保育器,ほいくき,,,
 nursery school,,保育園,ほいくえん,,,
-guarantee,B1,保証,ほしょう,保証すること。,,
+guarantee,B1,保証,ほしょう,保証すること。,この製品は一年間の保証があります。,This product has a one-year guarantee.
 "protection, conservation",C,保護,ほご,,,
 guardian,,保護者,ほごしゃ,,,
 insurance,C,保険,ほけん,,,
 insurance company,,保険会社,ほけんがいしゃ,,,
 insurance card,,保険証,ほけんしょう,,,
-believe,B1,信じる,しんじる,正しいと信じること。,,
-faith,B1,信仰,しんこう,信じて崇めること。,,
-signal,B1,信号,しんごう,交通を制御する合図。,,
+believe,B1,信じる,しんじる,正しいと信じること。,友達の言葉を信じています。,I believe my friend’s words.
+faith,B1,信仰,しんこう,信じて崇めること。,彼は強い信仰を持っています。,He has strong faith.
+signal,B1,信号,しんごう,交通を制御する合図。,交差点で信号を守りましょう。,Let’s obey the traffic signal at the intersection.
 belief,,信念,しんねん,,,
-credit,B1,信用,しんよう,取引や信用。,,
-trust,B1,信頼,しんらい,人を信じること。,,
+credit,B1,信用,しんよう,取引や信用。,彼の言葉を信用しています。,I trust his words.
+trust,B1,信頼,しんらい,人を信じること。,私は彼に大きな信頼を置いています。,I place great trust in him.
 "study, master, repair",,修める,おさめる,,,
 completion of a course,C,修了,しゅうりょう,,,
 master's degree,C,修士,しゅうし,,,
-"correction, revision",B1,修正,しゅうせい,内容を修正すること。,,
-"repair, fixing",B1,修理,しゅうり,壊れたものを直すこと。,,
+"correction, revision",B1,修正,しゅうせい,内容を修正すること。,文章に小さな修正を加えました。,I made a small correction to the text.
+"repair, fixing",B1,修理,しゅうり,壊れたものを直すこと。,時計を修理に出しました。,I sent my watch for repair.
 "repair, mending",B2,修繕,しゅうぜん,,,
 rhetoric,,修辞学,しゅうじがく,,,
 monk,,修道士,しゅうどうし,,,
@@ -1401,62 +1401,62 @@ nun,,修道女,しゅうどうじょ,,,
 abbey,,修道院,しゅうどういん,,,
 modification,C,修飾,しゅうしょく,,,
 haiku poet,,俳人,はいじん,,,
-actor,B1,俳優,はいゆう,演技を仕事にする人。,,
+actor,B1,俳優,はいゆう,演技を仕事にする人。,その俳優は映画で有名になりました。,That actor became famous in movies.
 haiku,B2,俳句,はいく,,,
 "I, me",C,俺,おれ,,,
 "we, us",,俺達,おれたち,,,
 warehouse,B2,倉庫,そうこ,,,
 one by one,C,個々,ここ,,,
-individual,B1,個人,こじん,一人の人。,,
+individual,B1,個人,こじん,一人の人。,個人の意見を大切にしてください。,Please value personal opinions.
 individually,,個人的,こじんてき,,,
 private room,,個室,こしつ,,,
 personality,C,個性,こせい,,,
 unique,,個性的,こせいてき,,,
 "twice, double, times",A2,倍,ばい,二倍を表す言葉。,会員は去年の倍になりました。,Membership doubled compared to last year.
 double,,倍増,ばいぞう,,,
-"knock down, defeat",B1,倒す,たおす,倒すこと。,,
+"knock down, defeat",B1,倒す,たおす,倒すこと。,彼は試合で相手を倒しました。,He defeated his opponent in the match.
 "fall down, be defeated",A2,倒れる,たおれる,倒れること。,木が風で倒れました。,The tree fell in the wind.
 bankruptcy,C,倒産,とうさん,,,
 "season, weather",,候,こう,,,
-candidacy,B1,候補,こうほ,立候補。,,
+candidacy,B1,候補,こうほ,立候補。,彼は市長の候補になりました。,He became a candidate for mayor.
 candidate,,候補者,こうほしゃ,,,
 borrowing,C,借り,かり,,,
 borrow,A1,借りる,かりる,他人の物を一時的に使うこと。,本を借ります。,I will borrow a book.
 renting a house,,借家,しゃくや,,,
-"debt, loan",B1,借金,しゃっきん,借りた金。,,
+"debt, loan",B1,借金,しゃっきん,借りた金。,彼は借金を返すために働いています。,He is working to repay his debt.
 "follow, emulate, imitate",B2,倣う,ならう,,,
-"merit, worth",B1,値,あたい,物の値打ち。,,
+"merit, worth",B1,値,あたい,物の値打ち。,この本には読む値があります。,This book is worth reading.
 be worth it,C,値する,あたいする,,,
 discount,C,値引き,ねびき,,,
 price,A2,値段,ねだん,商品の値。,値段が高いです。,The price is high.
 ethics,,倫理,りんり,,,
 great,B2,偉い,えらい,,,
 great person,,偉人,いじん,,,
-great,B1,偉大,いだい,非常に優れていること。,,
+great,B1,偉大,いだい,非常に優れていること。,彼は偉大な科学者でした。,He was a great scientist.
 great achievement,,偉業,いぎょう,,,
 "lean, be unbalanced",B2,偏る,かたよる,,,
 prejudice,C,偏見,へんけん,,,
 migraine,,偏頭痛,へんずつう,,,
-then,B1,偖,さて,話を進めるときのつなぎ言葉。,,
+then,B1,偖,さて,話を進めるときのつなぎ言葉。,偖、次の話題に移りましょう。,"Well then, let’s move on to the next topic."
 ceasefire,,停戦,ていせん,,,
 "suspension, stoppage",B2,停止,ていし,,,
 stagnation,C,停滞,ていたい,,,
-transit stop,B1,停留所,ていりゅうじょ,乗り物が止まる所。,,
+transit stop,B1,停留所,ていりゅうじょ,乗り物が止まる所。,停留所でバスを待っています。,I am waiting for the bus at the stop.
 coming to a halt,B2,停車,ていしゃ,,,
 power outage,B2,停電,ていでん,,,
 vigorous,C,健やか,すこやか,,,
 healthy,C,健全,けんぜん,,,
-health,B1,健康,けんこう,心身の健やかさ。,,
+health,B1,健康,けんこう,心身の健やかさ。,毎日の運動は健康に良いです。,Daily exercise is good for health.
 healthy,,健康的,けんこうてき,,,
 beside,A1,側,そば,横の位置。,先生のそばに座ります。,I sit beside the teacher.
 aide,,側近,そっきん,,,
 "side, aspect",C,側面,そくめん,,,
 scouting,,偵察,ていさつ,,,
 spy satellite,,偵察衛星,ていさつえいせい,,,
-by chance,B1,偶々,たまたま,偶然に起こること。,,
+by chance,B1,偶々,たまたま,偶然に起こること。,偶々友達に駅で会いました。,By chance I met a friend at the station.
 occasionally,A2,偶に,たまに,時々起こること。,たまに映画を見ます。,I occasionally watch movies.
 even number,B2,偶数,ぐうすう,,,
-coincidence,B1,偶然,ぐうぜん,思いがけない一致。,,
+coincidence,B1,偶然,ぐうぜん,思いがけない一致。,それは偶然の出会いでした。,That was a chance encounter.
 disinformation,,偽情報,にせじょうほう,,,
 forgery,C,偽物,にせもの,,,
 counterfeiting,C,偽造,ぎぞう,,,
@@ -1464,7 +1464,7 @@ beside,C,傍ら,かたわら,,,
 looking on,,傍観,ぼうかん,,,
 umbrella,A1,傘,かさ,雨を防ぐ道具。,傘をさします。,I open an umbrella.
 umbrella stand,,傘立て,かさたて,,,
-"furnish with, equip with",B1,備える,そなえる,必要な備えをすること。,,
+"furnish with, equip with",B1,備える,そなえる,必要な備えをすること。,非常時に備えて水を用意します。,I prepare water in case of emergencies.
 stockpile,,備蓄,びちく,,,
 "meeting, event, ceremony",B2,催し,もよおし,,,
 "hold, give, have an event",C,催す,もよおす,,,
@@ -1476,17 +1476,17 @@ hypnosis,,催眠,さいみん,,,
 "pride, arrogance",,傲慢,ごうまん,,,
 debt,,債務,さいむ,,,
 debtor,,債務者,さいむしゃ,,,
-"wound, injury",B1,傷,きず,体や物の傷。,,
+"wound, injury",B1,傷,きず,体や物の傷。,足に傷を負いました。,I suffered a wound on my leg.
 be wounded,C,傷つく,きずつく,,,
 "wound, injure",,傷つける,きずつける,,,
 scar,,傷跡,きずあと,,,
 "tilt, slant, inclanation",,傾き,かたむき,,,
 lean,B2,傾く,かたむく,,,
 "tilt, incline",C,傾ける,かたむける,,,
-"tendency, trend",B1,傾向,けいこう,ある傾向。,,
+"tendency, trend",B1,傾向,けいこう,ある傾向。,若者にスマホを使う傾向があります。,Young people have a tendency to use smartphones.
 "slant, slope",C,傾斜,けいしゃ,,,
 attentive listening,,傾聴,けいちょう,,,
-"only, merely",B1,僅か,わずか,ごくわずか。,,
+"only, merely",B1,僅か,わずか,ごくわずか。,会場には僅かな人しかいませんでした。,There were only a few people at the venue.
 work,A1,働く,はたらく,生活のために働くこと。,毎日会社で働きます。,I work at a company every day.
 "statue, image",C,像,ぞう,,,
 "I, me",A2,僕,ぼく,男性が自分を指す言葉。,僕は学生です。,I am a student.
@@ -1499,14 +1499,14 @@ ceremony,B2,儀式,ぎしき,,,
 hundred million,A2,億,おく,数字の「100000000」。,日本の人口は一億以上です。,Japan’s population is over 100 million.
 as it is,,儘,まま,,,
 "nice, kind",A2,優しい,やさしい,優しく親切な様子。,彼女はやさしい人です。,She is a kind person.
-"surpass, excel",B1,優れる,すぐれる,人より優れること。,,
+"surpass, excel",B1,優れる,すぐれる,人より優れること。,彼女は音楽に優れた才能を持っています。,She has excellent talent in music.
 predominance,C,優位,ゆうい,,,
 "priority, preference",C,優先,ゆうせん,,,
-"victory, winning a prize",B1,優勝,ゆうしょう,競技などで勝つこと。,,
-excellence,B1,優秀,ゆうしゅう,能力が優れていること。,,
+"victory, winning a prize",B1,優勝,ゆうしょう,競技などで勝つこと。,そのチームが大会で優勝しました。,That team won the championship.
+excellence,B1,優秀,ゆうしゅう,能力が優れていること。,彼は優秀な学生です。,He is an excellent student.
 superiority,,優越,ゆうえつ,,,
 superiority complex,,優越感,ゆうえつかん,,,
-origin,B1,元,もと,もとの状態。,,
+origin,B1,元,もと,もとの状態。,この町は元は小さな村でした。,This town was originally a small village.
 originally,B2,元々,もともと,,,
 era name,,元号,げんごう,,,
 New Year's Day,,元日,がんじつ,,,
@@ -1526,10 +1526,10 @@ charging,,充電,じゅうでん,,,
 "signs, indication, symptom",C,兆し,きざし,,,
 "sign, indication, omen",,兆候,ちょうこう,,,
 "previous, first, tip",A1,先,さき,前方や先端。,駅の先に学校があります。,There is a school ahead of the station.
-first of all,B1,先ず,まず,初めにを示す言葉。,,
+first of all,B1,先ず,まず,初めにを示す言葉。,先ず宿題を終えてください。,"First of all, finish your homework."
 precedent,,先例,せんれい,,,
 prejudice,,先入観,せんにゅうかん,,,
-a few days ago,B1,先日,せんじつ,数日前。,,
+a few days ago,B1,先日,せんじつ,数日前。,先日、先生に会いました。,I met my teacher a few days ago.
 last month,A1,先月,せんげつ,前の月。,先月は寒かったです。,It was cold last month.
 "teacher, professor",A1,先生,せんせい,学問を教える人。,先生に聞きます。,I ask the teacher.
 ancestor,B2,先祖,せんぞ,,,
@@ -1544,23 +1544,23 @@ light,A2,光,ひかり,光を放つもの。,光が強いです。,The light is 
 shine,A2,光る,ひかる,光を出すこと。,星が光っています。,The stars are shining.
 optics,,光学,こうがく,,,
 light year,,光年,こうねん,,,
-spectacle,B1,光景,こうけい,目に映る景色。,,
+spectacle,B1,光景,こうけい,目に映る景色。,富士山の朝日の光景は美しかったです。,The sight of Mt. Fuji at sunrise was beautiful.
 "honor, glory",,光栄,こうえい,,,
 "luster, brilliance",C,光沢,こうたく,,,
 light source,,光源,こうげん,,,
 "light ray, beam",B2,光線,こうせん,,,
-conquest,B1,克服,こくふく,困難を克服すること。,,
+conquest,B1,克服,こくふく,困難を克服すること。,彼は恐怖を克服しました。,He overcame his fear.
 dismissal,,免,めん,,,
 "avoid, be saved from",C,免れる,まぬがれる,,,
 immunity,,免疫,めんえき,,,
 immune system,,免疫系,めんえきけい,,,
 tax exemption,B2,免税,めんぜい,,,
 duty-free store,,免税店,めんぜいてん,,,
-license,B1,免許,めんきょ,許可証。,,
-rabbit,B1,兎,うさぎ,長い耳を持つ動物。,,
-anyway,B1,兎に角,とにかく,とにかくを示す言葉。,,
+license,B1,免許,めんきょ,許可証。,車を運転するには免許が必要です。,A license is necessary to drive a car.
+rabbit,B1,兎,うさぎ,長い耳を持つ動物。,森で兎を見ました。,I saw a rabbit in the forest.
+anyway,B1,兎に角,とにかく,とにかくを示す言葉。,兎に角、試してみましょう。,"Anyway, let’s give it a try."
 anyway,B2,兎も角,ともかく,,,
-political party,B1,党,とう,政治的な組織。,,
+political party,B1,党,とう,政治的な組織。,新しい党が設立されました。,A new political party was established.
 party leader,,党首,とうしゅ,,,
 "enter, go into",,入り込む,はいりこむ,,,
 enter,A1,入る,はいる,中に入ること。,教室に入ります。,I enter the classroom.
@@ -1570,7 +1570,7 @@ container,B2,入れ物,いれもの,,,
 input,,入力,にゅうりょく,,,
 entrance,A1,入口,いりぐち,建物などの入り口。,入口はここです。,The entrance is here.
 immigration,,入国,にゅうこく,,,
-admission,B1,入場,にゅうじょう,入場すること。,,
+admission,B1,入場,にゅうじょう,入場すること。,入場にはチケットが必要です。,A ticket is required for admission.
 matriculation,A2,入学,にゅうがく,学校に入ること。,四月に入学しました。,I entered school in April.
 acquisition,C,入手,にゅうしゅ,,,
 bidding,,入札,にゅうさつ,,,
@@ -1579,14 +1579,14 @@ joining a company,B2,入社,にゅうしゃ,,,
 entrance examination,,入試,にゅうし,,,
 entering an institution,,入門,にゅうもん,,,
 hospitalization,A2,入院,にゅういん,病院に入ること。,先月入院しました。,I was hospitalized last month.
-completely,B1,全く,まったく,完全にを示す言葉。,,
-everything,B1,全て,すべて,すべてを示す言葉。,,
-entirety,B1,全体,ぜんたい,全体。,,
+completely,B1,全く,まったく,完全にを示す言葉。,それは全くの誤解です。,That is a complete misunderstanding.
+everything,B1,全て,すべて,すべてを示す言葉。,全ての問題を解決しました。,I solved all the problems.
+entirety,B1,全体,ぜんたい,全体。,全体の計画を説明します。,I will explain the entire plan.
 overall,,全体的,ぜんたいてき,,,
 all one's power,,全力,ぜんりょく,,,
-everyone,B1,全員,ぜんいん,参加している人全員。,,
-nationwide,B1,全国,ぜんこく,全国的。,,
-not at all,B1,全然,ぜんぜん,まったく〜ないを示す言葉。,,
+everyone,B1,全員,ぜんいん,参加している人全員。,全員が会議に出席しました。,Everyone attended the meeting.
+nationwide,B1,全国,ぜんこく,全国的。,このニュースは全国に広がりました。,This news spread nationwide.
+not at all,B1,全然,ぜんぜん,まったく〜ないを示す言葉。,それは全然面白くありません。,That is not interesting at all.
 whole-grain,,全粒,ぜんりゅう,,,
 "whole body, whole system",B2,全身,ぜんしん,,,
 everything,A1,全部,ぜんぶ,全ての物事。,全部食べました。,I ate everything.
@@ -1602,7 +1602,7 @@ public,B2,公共,こうきょう,,,
 civil servant,A2,公務員,こうむいん,公共の仕事をする人。,父は公務員です。,My father is a civil servant.
 park,A1,公園,こうえん,遊ぶために整えられた場所。,公園で遊びます。,I play in the park.
 pollution,B2,公害,こうがい,,,
-fairness,B1,公平,こうへい,公平なこと。,,
+fairness,B1,公平,こうへい,公平なこと。,公平な判断が求められます。,Fair judgment is required.
 "formality, formula",B2,公式,こうしき,,,
 public performance,B2,公演,こうえん,,,
 publishing,B2,公表,こうひょう,,,
@@ -1613,9 +1613,9 @@ six people,,六人,ろくにん,,,
 sixth grade,,六年生,ろくねんせい,,,
 six days,A1,六日,むいか,六日間を示す語。,六日は月曜日です。,The sixth is Monday.
 "same, both",C,共,とも,,,
-together,B1,共に,ともに,いっしょに。,,
+together,B1,共に,ともに,いっしょに。,友達と共に旅行しました。,I traveled together with friends.
 dual income,C,共働き,ともばたらき,,,
-"doing together, cooperation",B1,共同,きょうどう,協力して行うこと。,,
+"doing together, cooperation",B1,共同,きょうどう,協力して行うこと。,二社が共同で研究しました。,Two companies cooperated on research.
 community,,共同体,きょうどうたい,,,
 republicanism,C,共和,きょうわ,,,
 Republican Party,,共和党,きょうわとう,,,
@@ -1628,7 +1628,7 @@ accomplice,,共犯者,きょうはんしゃ,,,
 communism,,共産主義,きょうさんしゅぎ,,,
 common use,,共用,きょうよう,,,
 conspiracy,,共謀,きょうぼう,,,
-common,B1,共通,きょうつう,共通していること。,,
+common,B1,共通,きょうつう,共通していること。,この言葉は共通の意味を持ちます。,This word has a common meaning.
 lingua franca,,共通語,きょうつうご,,,
 resonance,C,共鳴,きょうめい,,,
 "army, troops, soldiers",,兵,へい,,,
@@ -1643,19 +1643,19 @@ after that,A1,其れから,それから,その後を示す語。,ごはんを食
 and then,A2,其れで,それで,そのためを示す語。,雨が降りました。それで試合は中止になりました。,It rained. And then the game was canceled.
 well then,A1,其れでは,それでは,それならばを示す語。,それでは始めましょう。,"Well then, let’s begin."
 if that is so,,其れなら,それなら,,,
-or,B1,其れ共,それとも,それともを示す言葉。,,
+or,B1,其れ共,それとも,それともを示す言葉。,行くか其れ共残るかを選んでください。,Choose whether to go or stay.
 there,A1,其処,そこ,近くの場所を指す語。,そこに座ってください。,Please sit there.
 that guy,,其奴,そいつ,,,
 that way,A1,其方,そちら,その方向を指す語。,そちらへどうぞ。,"This way, please."
 "tool, ingredient, means",,具,ぐ,,,
-"concrete, tangible, material",B1,具体,ぐたい,具体的であること。,,
+"concrete, tangible, material",B1,具体,ぐたい,具体的であること。,具体的な例を挙げて説明してください。,Please explain with concrete examples.
 "materialization, taking form",,具体化,ぐたいか,,,
 specific,,具体的,ぐたいてき,,,
 condition,A2,具合,ぐあい,体や物の状態。,体の具合が悪いです。,My condition is bad.
 embodiment,,具現,ぐげん,,,
 "concrete, reprsentational",,具象,ぐしょう,,,
 solumn ceremony,,典,てい,,,
-"archetype, type",B1,典型,てんけい,典型的な例。,,
+"archetype, type",B1,典型,てんけい,典型的な例。,彼は努力家の典型です。,He is a typical hard worker.
 typical,,典型的,てんけいてき,,,
 "source, authority",,典拠,てんきょ,,,
 "ceremony, ritual",,典礼,てんれい,,,
@@ -1666,7 +1666,7 @@ serving two functions,C,兼用,けんよう,,,
 inside,A2,内,うち,内部。,うちに帰ります。,I go home.
 interior,,内側,うちがわ,,,
 introverted,,内向的,ないこうてき,,,
-content,B1,内容,ないよう,中身。,,
+content,B1,内容,ないよう,中身。,本の内容を説明します。,I will explain the content of the book.
 civil war,,内戦,ないせん,,,
 internal medicine,B2,内科,ないか,,,
 confidentiality,,内緒,ないしょ,,,
@@ -1674,7 +1674,7 @@ indoor wiring,B2,内線,ないせん,,,
 internal organs,C,内蔵,ないぞう,,,
 interior,C,内部,ないぶ,,,
 governmental cabinet,C,内閣,ないかく,,,
-circle,B1,円,えん,円形。,,
+circle,B1,円,えん,円形。,紙を丸めて円を作りました。,I rolled up the paper and made a circle.
 circumference,B2,円周,えんしゅう,,,
 arc,,円弧,えんこ,,,
 "harmonious, peaceful",C,円満,えんまん,,,
@@ -1683,7 +1683,7 @@ cone,,円錐,えんすい,,,
 "volume, tome",C,冊,さつ,,,
 "book, booklet",,冊子,さっし,,,
 "again, repeated",C,再,さい,,,
-again,B1,再び,ふたたび,再度を示す言葉。,,
+again,B1,再び,ふたたび,再度を示す言葉。,再び会えることを楽しみにしています。,I look forward to meeting you again.
 again and again,B2,再三,さいさん,,,
 reunion,C,再会,さいかい,,,
 "twice, again",,再度,さいど,,,
@@ -1699,9 +1699,9 @@ reopening,C,再開,さいかい,,,
 redevelopment,,再開発,さいかいはつ,,,
 "affect, attack",,冒す,おかす,,,
 blasphemy,,冒瀆,ぼうとく,,,
-adventure,B1,冒険,ぼうけん,危険を冒す行動。,,
+adventure,B1,冒険,ぼうけん,危険を冒す行動。,彼は冒険の旅に出ました。,He set out on an adventure.
 "beginning, start, opening",C,冒頭,ぼうとう,,,
-joke,B1,冗談,じょうだん,冗談を言うこと。,,
+joke,B1,冗談,じょうだん,冗談を言うこと。,冗談を言ってみんなを笑わせました。,He told a joke and made everyone laugh.
 wasteful expenses,,冗費,じょうひ,,,
 redundancy,,冗長,じょうちょう,,,
 "copy, take a photo",A2,写す,うつす,映すこと。,写真を写しました。,I took a photograph.
@@ -1730,17 +1730,17 @@ cold war,,冷戦,れいせん,,,
 air conditioning,A2,冷房,れいぼう,冷やす装置。,夏は冷房を使います。,We use air conditioning in summer.
 air conditioner,,冷房機,れいぼうき,,,
 refrigerator,A1,冷蔵庫,れいぞうこ,食べ物を冷やす箱。,冷蔵庫に牛乳があります。,There is milk in the refrigerator.
-calmness,B1,冷静,れいせい,落ち着いた様子。,,
+calmness,B1,冷静,れいせい,落ち着いた様子。,彼は冷静に問題を解決しました。,He solved the problem calmly.
 amazing,A2,凄い,すごい,驚くほど素晴らしいこと。,その映画はすごい人気です。,That movie is amazingly popular.
 "terrible, horrible",,凄まじい,すさまじい,,,
 weirdly beautiful,,凄艶,せいえん,,,
-freeze,B1,凍る,こおる,氷になること。,,
+freeze,B1,凍る,こおる,氷になること。,冬に湖が凍ります。,The lake freezes in winter.
 frostbite,,凍傷,とうしょう,,,
 freezing,,凍結,とうけつ,,,
 congeal something,C,凝らす,こごらす,,,
 congeal,C,凝る,こごる,,,
 grow stiff,,凝る,こる,,,
-motionlessness,B1,凝乎,じっと,じっと動かない様子。,,
+motionlessness,B1,凝乎,じっと,じっと動かない様子。,猫が凝乎として座っていました。,The cat sat motionless.
 "stare, gaze, fixation",,凝視,ぎょうし,,,
 methodical,C,几帳面,きちょうめん,,,
 "manage, deal with",,処する,しょする,,,
@@ -1748,7 +1748,7 @@ disposal,C,処分,しょぶん,,,
 virginity,,処女,しょじょ,,,
 prescription,,処方,しょほう,,,
 medical prescription,,処方箋,しょほうせん,,,
-"processing, treatment",B1,処理,しょり,処理すること。,,
+"processing, treatment",B1,処理,しょり,処理すること。,ゴミを正しく処理してください。,Please dispose of the garbage properly.
 treatment,C,処置,しょち,,,
 legal sanctions,C,処罰,しょばつ,,,
 dealing with a person,,処遇,しょぐう,,,
@@ -1760,55 +1760,55 @@ villainous,,凶悪,きょうあく,,,
 soup stock,,出し,だし,,,
 take out,A1,出す,だす,外へ取り出すこと。,かばんから本を出します。,I take a book out of the bag.
 leave,A1,出る,でる,外へ出ること。,駅を出ます。,I leave the station.
-encounter,B1,出会い,であい,偶然に人と会うこと。,,
-encounter,B1,出会う,であう,出会うこと。,,
+encounter,B1,出会い,であい,偶然に人と会うこと。,出会いは人生を変えることがあります。,Encounters can change your life.
+encounter,B1,出会う,であう,出会うこと。,昨日駅で友人に出会いました。,Yesterday I met a friend at the station.
 home delivery of food,,出前,でまえ,,,
 going to work,B2,出勤,しゅっきん,,,
 exit,A1,出口,でぐち,建物などの出口。,出口はこちらです。,The exit is this way.
 "exhibit, submit",C,出品,しゅっぴん,,,
 "exhibitor, seller",,出品者,しゅっぴんしゃ,,,
 "performance, participation",,出場,しゅつじょう,,,
-attendance,B1,出席,しゅっせき,出席すること。,,
+attendance,B1,出席,しゅっせき,出席すること。,会議に出席しました。,I attended the meeting.
 attendance rate,,出席率,しゅっせきりつ,,,
 business trip,B2,出張,しゅっちょう,,,
 "can, able to do",A1,出来る,できる,可能を表す語。,今すぐできるか？,Can you do this now?
-as much as possible,B1,出来るだけ,できるだけ,できる限りを示す言葉。,,
-event,B1,出来事,できごと,起こった出来事。,,
+as much as possible,B1,出来るだけ,できるだけ,できる限りを示す言葉。,出来るだけ早く来てください。,Please come as soon as possible.
+event,B1,出来事,できごと,起こった出来事。,面白い出来事がありました。,There was an interesting incident.
 performance,C,出演,しゅつえん,,,
 performer,,出演者,しゅつえんしゃ,,,
-publishing,B1,出版,しゅっぱん,本を出すこと。,,
+publishing,B1,出版,しゅっぱん,本を出すこと。,彼は出版社で出版の仕事をしています。,He works in publishing at a publishing company.
 birth,C,出生,しゅっせい,,,
 "childbirth, production",C,出産,しゅっさん,,,
-departure,B1,出発,しゅっぱつ,旅立つこと。,,
+departure,B1,出発,しゅっぱつ,旅立つこと。,列車は時間通りに出発しました。,The train departed on time.
 bleeding,C,出血,しゅっけつ,,,
-origin,B1,出身,しゅっしん,出身地。,,
+origin,B1,出身,しゅっしん,出身地。,彼は東京出身です。,He is from Tokyo.
 "meeting, reception",B2,出迎え,でむかえ,,,
 nonsense,B2,出鱈目,でたらめ,,,
-single-edged sword,B1,刀,かたな,片刃の武器。,,
+single-edged sword,B1,刀,かたな,片刃の武器。,侍が刀を使いました。,The samurai used a sword.
 swordsmith,,刀匠,とうしょう,,,
 swordsmith,,刀工,とうこう,,,
 blade of a sword,,刀身,とうしん,,,
 blade,C,刃,は,,,
 cutlery,,刃物,はもの,,,
-"part, portion",B1,分,ぶん,全体の一部分。,,
+"part, portion",B1,分,ぶん,全体の一部分。,ケーキを三つに分けました。,I divided the cake into three pieces.
 minute,C,分,ふん,,,
 understand,A1,分かる,わかる,理解すること。,意味が分かります。,I understand the meaning.
 diverge,B2,分かれる,わかれる,,,
-divide,B1,分ける,わける,分割すること。,,
+divide,B1,分ける,わける,分割すること。,リンゴを友達と分けました。,I shared the apple with my friend.
 childbirth,,分娩,ぶんべん,,,
 molecule,C,分子,ぶんし,,,
 distribution,B2,分布,ぶんぷ,,,
 allotment,C,分担,ぶんたん,,,
 "variance, scattering",C,分散,ぶんさん,,,
 fraction,B2,分数,ぶんすう,,,
-analysis,B1,分析,ぶんせき,物事を要素に分けて考えること。,,
+analysis,B1,分析,ぶんせき,物事を要素に分けて考えること。,データを分析しました。,I analyzed the data.
 division of labor,C,分業,ぶんぎょう,,,
 denominator,C,分母,ぶんぼ,,,
 secretion,,分泌,ぶんぴつ,,,
 equinox,,分点,ぶんてん,,,
 fission,C,分裂,ぶんれつ,,,
 "disassembly, decomposition",B2,分解,ぶんかい,,,
-field of expertise,B1,分野,ぶんや,専門とする領域。,,
+field of expertise,B1,分野,ぶんや,専門とする領域。,彼は経済の分野で働いています。,He works in the field of economics.
 "amount, quantity",B2,分量,ぶんりょう,,,
 partition,C,分離,ぶんり,,,
 category,B2,分類,ぶんるい,,,
@@ -1822,16 +1822,16 @@ cut,A1,切る,きる,刃物で切ること。,パンを切ります。,I cut bre
 postage stamp,A1,切手,きって,郵便に貼る小さな紙。,切手を買います。,I buy stamps.
 ticket,A1,切符,きっぷ,乗り物などの利用券。,切符をください。,Please give me a ticket.
 incision,C,切開,せっかい,,,
-"clip, trim",B1,刈る,かる,草を刈ること。,,
+"clip, trim",B1,刈る,かる,草を刈ること。,庭の草を刈りました。,I cut the grass in the garden.
 mowing,,刈除,がいじょ,,,
 penalty,C,刑,けい,,,
-detective,B1,刑事,けいじ,犯罪を扱う職業の人。,,
+detective,B1,刑事,けいじ,犯罪を扱う職業の人。,刑事が事件を調べています。,The detective investigated the case.
 prison,,刑務所,けいむしょ,,,
 criminal law,,刑法,けいほう,,,
 punishment,C,刑罰,けいばつ,,,
-"row, line",B1,列,れつ,横に並んだ列。,,
+"row, line",B1,列,れつ,横に並んだ列。,列に並んでください。,Please stand in line.
 archipelago,B2,列島,れっとう,,,
-train,B1,列車,れっしゃ,鉄道の車両。,,
+train,B1,列車,れっしゃ,鉄道の車両。,列車が駅に到着しました。,The train arrived at the station.
 first,C,初,はつ,,,
 "innocent, naive",,初々しい,ういういしい,,,
 beginning,A1,初め,はじめ,物事の最初。,初めからやりましょう。,Let’s do it from the beginning.
@@ -1846,19 +1846,19 @@ elementary,B2,初級,しょきゅう,,,
 seal,C,判,はん,,,
 "judge, justice",B2,判事,はんじ,,,
 seal,B2,判子,はんこ,,,
-judgment,B1,判断,はんだん,物事を評価して結論を出すこと。,,
+judgment,B1,判断,はんだん,物事を評価して結論を出すこと。,彼の判断は正しかったです。,His judgment was correct.
 make clear,,判明,はんめい,,,
 judicial decision,C,判決,はんけつ,,,
 separate,A2,別,べつ,異なること。,これは別の問題です。,This is a different problem.
 separately,B2,別々,べつべつ,,,
-not especially,B1,別に,べつに,特にを示す言葉。,,
-separation,B1,別れ,わかれ,人との別れ。,,
+not especially,B1,別に,べつに,特にを示す言葉。,今日は別に予定がありません。,I don’t especially have plans today.
+separation,B1,別れ,わかれ,人との別れ。,友達との別れが悲しかったです。,Parting from my friend was sad.
 be separated from,A2,別れる,わかれる,人と離れること。,友達と別れました。,I parted ways with my friend.
 vacation home,B2,別荘,べっそう,,,
-function,B1,利く,きく,機能すること。,,
+function,B1,利く,きく,機能すること。,この薬は風邪に良く利きます。,This medicine works well for colds.
 consideration of others,,利他,りた,,,
 altruism,,利他主義,りたしゅぎ,,,
-"smart, clever",B1,利口,りこう,頭がよく抜け目のない様子。,,
+"smart, clever",B1,利口,りこう,頭がよく抜け目のない様子。,その子は利口な答えをしました。,The child gave a clever answer.
 monetary interest,C,利子,りし,,,
 self-interest,,利己,りこ,,,
 egotism,,利己主義,りこしゅぎ,,,
@@ -1868,27 +1868,27 @@ monetary interest,C,利息,りそく,,,
 advantage,C,利点,りてん,,,
 usage,A2,利用,りよう,使用すること。,図書館を利用します。,I use the library.
 user,,利用者,りようしゃ,,,
-profit,B1,利益,りえき,利益やもうけ。,,
+profit,B1,利益,りえき,利益やもうけ。,会社の利益が増えました。,The company’s profit increased.
 by no means,C,到底,とうてい,,,
-arrival,B1,到着,とうちゃく,目的地に着くこと。,,
+arrival,B1,到着,とうちゃく,目的地に着くこと。,飛行機は到着しました。,The airplane arrived.
 "reaching, attaining",C,到達,とうたつ,,,
 at last,A2,到頭,とうとう,ついにの意。,到頭テストの日が来ました。,The day of the test finally came.
 control,C,制する,せいする,,,
 "work, production",B2,制作,せいさく,,,
 enactment,C,制定,せいてい,,,
-system,B1,制度,せいど,仕組みや組織。,,
+system,B1,制度,せいど,仕組みや組織。,新しい制度が始まりました。,A new system has started.
 uniform,C,制服,せいふく,,,
 restriction,C,制約,せいやく,,,
 sanctions,C,制裁,せいさい,,,
 conquest,,制覇,せいは,,,
-restriction,B1,制限,せいげん,制限すること。,,
+restriction,B1,制限,せいげん,制限すること。,時間に制限があります。,There is a restriction on time.
 printing,C,刷り,すり,,,
 print,B2,刷る,する,,,
 paintbrush,,刷毛,はけ,,,
 "thorn, splinter",C,刺,とげ,,,
 get stuck in,B2,刺さる,ささる,,,
 "stab, sting",B2,刺す,さす,,,
-stimulus,B1,刺激,しげき,外からの刺激となる作用。,,
+stimulus,B1,刺激,しげき,外からの刺激となる作用。,音楽は心に刺激を与えます。,Music gives stimulation to the heart.
 embroidery,C,刺繍,ししゅう,,,
 raw fish or meat,B2,刺身,さしみ,,,
 moment by moment,,刻々,こっこく,,,
@@ -1907,7 +1907,7 @@ assumption,C,前提,ぜんてい,,,
 the previous day,,前日,ぜんじつ,,,
 prostate,,前立腺,ぜんりつせん,,,
 preposition,,前置詞,ぜんちし,,,
-the former,B1,前者,ぜんしゃ,二つのうち前の方。,,
+the former,B1,前者,ぜんしゃ,二つのうち前の方。,前者の意見に賛成します。,I agree with the former opinion.
 appetizer,,前菜,ぜんさい,,,
 aforementioned,,前述,ぜんじゅつ,,,
 previous paragraph,,前項,ぜんこう,,,
@@ -1925,7 +1925,7 @@ sinuses,,副鼻腔,ふくびこう,,,
 "rate, ratio",,割,わり,,,
 "relatively, quite",B2,割と,わりと,,,
 cut in,C,割り込む,わりこむ,,,
-"break, smash",B1,割る,わる,物をこわすこと。,,
+"break, smash",B1,割る,わる,物をこわすこと。,コップを割ってしまいました。,I accidentally broke the cup.
 "be broken, be smashed",A2,割れる,われる,物が割れること。,コップが割れてしまいました。,The cup broke.
 percentage,A2,割合,わりあい,割合を示すこと。,この町は高齢者の割合が多いです。,This town has a high percentage of elderly people.
 percent-off discount,B2,割引,わりびき,,,
@@ -1936,46 +1936,46 @@ creation,C,創造,そうぞう,,,
 creativity,,創造力,そうぞうりょく,,,
 creative,,創造的,そうぞうてき,,,
 creator,,創造者,そうぞうしゃ,,,
-"drama, play",B1,劇,げき,舞台で演じられる作品。,,
+"drama, play",B1,劇,げき,舞台で演じられる作品。,その劇は感動的でした。,That play was moving.
 theatrical group,C,劇団,げきだん,,,
-theater,B1,劇場,げきじょう,演劇を行う建物。,,
+theater,B1,劇場,げきじょう,演劇を行う建物。,劇場で映画を見ました。,I watched a movie in the theater.
 dramatic,,劇的,げきてき,,,
 "ability, power",A2,力,ちから,力や能力。,力を入れてドアを押しました。,I pushed the door with strength.
 exert one's strength,,力む,りきむ,,,
 "powerful, strong",B2,力強い,ちからづよい,,,
-add,B1,加える,くわえる,付け加えること。,,
-be added,B1,加わる,くわわる,新しく入ること。,,
+add,B1,加える,くわえる,付け加えること。,塩を少し加えました。,I added a little salt.
+be added,B1,加わる,くわわる,新しく入ること。,私もその計画に加わりました。,I also joined that plan.
 "processing, process",C,加工,かこう,,,
-extent,B1,加減,かげん,程度や加減。,,
+extent,B1,加減,かげん,程度や加減。,彼の体調は天気で加減します。,His condition changes depending on the weather.
 humidifier,,加湿器,かしつき,,,
 heating,B2,加熱,かねつ,,,
 acceleration,B2,加速,かそく,,,
-be inferior,B1,劣る,おとる,劣っていること。,,
+be inferior,B1,劣る,おとる,劣っていること。,彼は兄より勉強で劣ります。,He is inferior to his older brother in studies.
 deterioration ,,劣化,れっか,,,
 recessiveness,,劣性,れっせい,,,
 inferiority,,劣等,れっとう,,,
 inferiority complex,,劣等感,"れっとうかん",,,
 "be helped, be saved",B2,助かる,たすかる,,,
 "assistance, aid",C,助け,たすけ,,,
-"help, save",B1,助ける,たすける,危険から救うこと。,,
-assistant,B1,助手,じょしゅ,補助をする人。,,
+"help, save",B1,助ける,たすける,危険から救うこと。,犬を助けることができました。,I was able to save the dog.
+assistant,B1,助手,じょしゅ,補助をする人。,助手が先生を手伝いました。,The assistant helped the teacher.
 assistant professor,B2,助教授,じょきょうじゅ,,,
 "supporting actor, co-star",,助演,じょえん,,,
 advice,C,助言,じょげん,,,
 grammatical particle,C,助詞,じょし,,,
 "diligently, as much as possible",C,努めて,つとめて,,,
 do one's best,B2,努める,つとめる,,,
-effort,B1,努力,どりょく,目標に向かって尽くすこと。,,
+effort,B1,努力,どりょく,目標に向かって尽くすこと。,彼は努力して合格しました。,He passed the exam through effort.
 encourage,C,励ます,はげます,,,
 "console, pity",C,労る,いたわる,,,
-labor,B1,労働,ろうどう,肉体を使って働くこと。,,
+labor,B1,労働,ろうどう,肉体を使って働くこと。,労働条件を改善する必要があります。,It is necessary to improve labor conditions.
 labor union,,労働組合,ろうどうくみあい,,,
 worker,,労働者,ろうどうしゃ,,,
 "labor, effort, trouble",C,労力,ろうりょく,,,
 effect,C,効き目,ききめ,,,
-"work, function",B1,効く,きく,作用すること。,,
+"work, function",B1,効く,きく,作用すること。,この薬はよく効きます。,This medicine works well.
 "effect, potency",B2,効力,こうりょく,,,
-"effect, effectiveness",B1,効果,こうか,結果として表れる働き。,,
+"effect, effectiveness",B1,効果,こうか,結果として表れる働き。,新しい方法は良い効果を出しました。,The new method produced good results.
 effective,,効果的,こうかてき,,,
 sound effect,,効果音,こうかおん,,,
 efficiency,C,効率,こうりつ,,,
@@ -1986,11 +1986,11 @@ rise,,勃興,ぼっこう,,,
 erection,,勃起,ぼっき,,,
 brave,B2,勇ましい,いさましい,,,
 "brave, heroic",C,勇敢,ゆうかん,,,
-courage,B1,勇気,ゆうき,危険に立ち向かう心。,,
+courage,B1,勇気,ゆうき,危険に立ち向かう心。,勇気を持って挑戦しました。,I challenged it with courage.
 hero,,勇者,ゆうしゃ,,,
 studying,A1,勉強,べんきょう,学ぶこと。,日本語を勉強します。,I study Japanese.
 study skills,,勉強法,べんきょうほう,,,
-move something,B1,動かす,うごかす,位置を変えること。,,
+move something,B1,動かす,うごかす,位置を変えること。,椅子を少し動かしました。,I moved the chair a little.
 "start to move, awaken",,動き出す,うごきだす,,,
 move,A2,動く,うごく,体を動かすこと。,電車が動きました。,The train moved.
 operation,B2,動作,どうさ,,,
@@ -2000,10 +2000,10 @@ animal,A1,動物,どうぶつ,生きているもの。,動物が好きです。,
 zoo,A2,動物園,どうぶつえん,動物を見せる施設。,子どもと動物園に行きました。,I went to the zoo with children.
 video,,動画,どうが,,,
 artery,,動脈,どうみゃく,,,
-verb,B1,動詞,どうし,動詞の文法上の品詞。,,
+verb,B1,動詞,どうし,動詞の文法上の品詞。,「食べる」は動詞です。,“Taberu” is a verb.
 transition,,動転,どうてん,,,
-"intuition, hunch",B1,勘,かん,直感的な感覚。,,
-"calculation, count, bill",B1,勘定,かんじょう,金銭の計算や勘定。,,
+"intuition, hunch",B1,勘,かん,直感的な感覚。,勘で道を選びました。,I chose the road by intuition.
+"calculation, count, bill",B1,勘定,かんじょう,金銭の計算や勘定。,食事代を勘定しました。,I paid the bill for the meal.
 "pardon, forgiveness",C,勘弁,かんべん,,,
 taking into consideration,,勘案,かんあん,,,
 "mistake, error",B2,勘違い,かんちがい,,,
@@ -2016,21 +2016,21 @@ being arbitrary,,勝手,かって,,,
 victory or defeat,B2,勝負,しょうぶ,,,
 "invite, beg the question",C,募る,つのる,,,
 recruitment,B2,募集,ぼしゅう,,,
-"impetus, energy",B1,勢い,いきおい,勢いのある力。,,
+"impetus, energy",B1,勢い,いきおい,勢いのある力。,若者の勢いが強いです。,The energy of young people is strong.
 "might, influence",C,勢力,せいりょく,,,
-"service, duty",B1,勤め,つとめ,職務に従事すること。,,
+"service, duty",B1,勤め,つとめ,職務に従事すること。,先生として学校に勤めています。,I work at school as a teacher.
 "work, serve",A1,勤める,つとめる,勤め先で働くこと。,会社に勤めます。,I work at a company.
 place of work,C,勤め先,つとめさき,,,
 "service, duty",C,勤務,きんむ,,,
 "advice, suggestion",C,勧め,すすめ,,,
-recommend,B1,勧める,すすめる,人にすすめること。,,
+recommend,B1,勧める,すすめる,人にすすめること。,本を勧めました。,I recommended a book.
 advice,C,勧告,かんこく,,,
 "recommendation, suggestion",,勧奨,かんしょう,,,
 wastefulness,B2,勿体ない,もったいない,,,
-of course,B1,勿論,もちろん,当然を示す言葉。,,
-"odor, scent",B1,匂い,におい,におい。,,
+of course,B1,勿論,もちろん,当然を示す言葉。,勿論、行きます。,"Of course, I will go."
+"odor, scent",B1,匂い,におい,におい。,花の匂いがします。,I smell the scent of flowers.
 smell good,B2,匂う,におう,,,
-package,B1,包み,つつみ,紙や布で包んだ物。,,
+package,B1,包み,つつみ,紙や布で包んだ物。,小さな包みを受け取りました。,I received a small package.
 wrapping paper,,包み紙,つつみがみ,,,
 wrap up,A2,包む,つつむ,包み込むこと。,プレゼントを紙で包みました。,I wrapped the present in paper.
 kitchen knife,B2,包丁,ほうちょう,,,
@@ -2041,10 +2041,10 @@ foreskin,,包皮,ほうひ,,,
 turn into,C,化ける,ばける,,,
 shapeshifter,,化け物,ばけもの,,,
 compound,,化合物,かごうぶつ,,,
-chemistry,B1,化学,かがく,物質の性質を研究する学問。,,
+chemistry,B1,化学,かがく,物質の性質を研究する学問。,化学の勉強をしています。,I am studying chemistry.
 chemist,,化学者,かがくしゃ,,,
 fossil,C,化石,かせき,,,
-makeup,B1,化粧,けしょう,顔に施す装飾。,,
+makeup,B1,化粧,けしょう,顔に施す装飾。,彼女は化粧が上手です。,She is good at makeup.
 toiletries,,化粧品,けしょうひん,,,
 restroom,,化粧室,けしょうしつ,,,
 north,A1,北,きた,方角の北。,北の空を見ます。,I look at the northern sky.
@@ -2064,12 +2064,12 @@ desire to be impressive​,,匠気,しょうき,,,
 "diverse, divergent, conflicting",C,区々,まちまち,,,
 "division, section",B2,区分,くぶん,,,
 partition,B2,区切る,くぎる,,,
-distinction,B1,区別,くべつ,区分して違いをはっきりさせること。,,
+distinction,B1,区別,くべつ,区分して違いをはっきりさせること。,動物と植物を区別してください。,Please distinguish between animals and plants.
 zone,B2,区域,くいき,,,
 "medicine, medical science",,医,は,,,
 medical school,,医大,いだい,,,
 medical science,A2,医学,いがく,医学の学問。,医学を勉強しています。,I am studying medical science.
-healthcare,B1,医療,いりょう,医療行為。,,
+healthcare,B1,医療,いりょう,医療行為。,医療の発展は大切です。,The development of medical care is important.
 doctor,A1,医者,いしゃ,病人を治療する人。,医者に会います。,I meet a doctor.
 "shelter, harbor",,匿う,かくまう,,,
 anonymity,,匿名,とくめい,,,
@@ -2089,7 +2089,7 @@ the Horse,,午,うま,,,
 AM,A1,午前,ごぜん,午前中の時間。,午前七時に起きます。,I wake up at 7 am.
 PM,A1,午後,ごご,午後の時間。,午後三時に行きます。,I go at 3 pm.
 "half, half-past",A1,半,はん,時間の三十分。,七時半に会います。,I will meet at 7:30.
-middle,B1,半ば,なかば,ちょうど真ん中。,,
+middle,B1,半ば,なかば,ちょうど真ん中。,一年の半ばに試験があります。,There is an exam in the middle of the year.
 half,A1,半分,はんぶん,全体を二つに分けた一方。,パンを半分食べました。,I ate half the bread.
 semiconductor,,半導体,はんどうたい,,,
 peninsula,B2,半島,はんとう,,,
@@ -2108,7 +2108,7 @@ graduation ceremony,,卒業式,そつぎょうしき,,,
 table,,卓子,たくし,,,
 table tennis,,卓球,たっきゅう,,,
 "association, society",C,協会,きょうかい,,,
-cooperation,B1,協力,きょうりょく,協力して働くこと。,,
+cooperation,B1,協力,きょうりょく,協力して働くこと。,友達と協力して掃除しました。,I cooperated with my friends to clean.
 "agreement, pact",C,協定,きょうてい,,,
 cooperation,C,協調,きょうちょう,,,
 "conference, discussion",C,協議,きょうぎ,,,
@@ -2120,28 +2120,28 @@ Antarctica,,南極大陸,なんきょくたいりく,,,
 pumpkin,,南瓜,かぼちゃ,,,
 South America,B2,南米,なんべい,,,
 southwest,,南西,なんせい,,,
-"mere, just",B1,単なる,たんなる,ただの、単なること。,,
-unit,B1,単位,たんい,学習の単位。,,
+"mere, just",B1,単なる,たんなる,ただの、単なること。,それは単なる冗談です。,That is just a joke.
+unit,B1,単位,たんい,学習の単位。,一つの単位は二時間です。,One unit is two hours.
 teaching unit,,単元,たんげん,,,
 unilateralism,,単独行動主義,たんどくこうどうしゅぎ,,,
-"simple, plain",B1,単純,たんじゅん,複雑でなく単純なこと。,,
-word,B1,単語,たんご,語彙の一つ。,,
+"simple, plain",B1,単純,たんじゅん,複雑でなく単純なこと。,問題は単純です。,The problem is simple.
+word,B1,単語,たんご,語彙の一つ。,新しい単語を覚えました。,I memorized a new word.
 "win, earn",,博する,はくする,,,
-"PhD, doctor",B1,博士,はかせ,学位を持つ人。,,
+"PhD, doctor",B1,博士,はかせ,学位を持つ人。,彼は博士です。,He is a doctor (PhD).
 polymath,,博学者,はくがくしゃ,,,
 philantropy,,博愛,はくあい,,,
 gambling,,博打,ばくち,,,
-museum,B1,博物館,はくぶつかん,資料を展示する施設。,,
+museum,B1,博物館,はくぶつかん,資料を展示する施設。,博物館に行きました。,I went to the museum.
 fortunetelling,,占い,うらない,,,
 tell a fortune,B2,占う,うらなう,,,
-"occupy, take up",B1,占める,しめる,一定の割合をしめること。,,
+"occupy, take up",B1,占める,しめる,一定の割合をしめること。,彼は会社で重要な役を占めています。,He occupies an important role in the company.
 occupation of property,,占拠,せんきょ,,,
 astrology,,占星術,せんせいじゅつ,,,
 occupation of territory,C,占領,せんりょう,,,
-mark,B1,印,しるし,目印。,,
-printing,B1,印刷,いんさつ,文字や絵を刷ること。,,
+mark,B1,印,しるし,目印。,紙に赤い印をつけました。,I put a red mark on the paper.
+printing,B1,印刷,いんさつ,文字や絵を刷ること。,本を印刷しました。,I printed the book.
 printing press,,印刷機,いんさつき,,,
-impression,B1,印象,いんしょう,心に残る感覚。,,
+impression,B1,印象,いんしょう,心に残る感覚。,彼女の第一印象は良かったです。,Her first impression was good.
 impressionism,,印象派,いんしょうは,,,
 impressive,,印象的,いんしょうてき,,,
 seal,C,印鑑,いんかん,,,
@@ -2151,7 +2151,7 @@ crisis,C,危機,きき,,,
 critical condition,,危篤,きとく,,,
 danger,A2,危険,きけん,危険なこと。,夜に一人で歩くのは危険です。,It is dangerous to walk alone at night.
 "risk, danger",,危険性,きけんせい,,,
-"that is to say, namely",B1,即ち,すなわち,すなわちを示す言葉。,,
+"that is to say, namely",B1,即ち,すなわち,すなわちを示す言葉。,彼は学生、即ち学ぶ人です。,"He is a student, that is to say, a person who learns."
 unplanned,,即席,そくせき,,,
 immediate,,即座,そくざ,,,
 immediately,C,即座に,そくざに,,,
@@ -2164,7 +2164,7 @@ human egg,,卵子,らんし,,,
 rolled egg,,卵焼き,たまごやき,,,
 egg white,,卵白,らんぱく,,,
 yolk,,卵黄,らんおう,,,
-"trouble, burden",B1,厄介,やっかい,扱いに困ること。,,
+"trouble, burden",B1,厄介,やっかい,扱いに困ること。,引っ越しは厄介な作業です。,Moving house is a troublesome task.
 calamity,,厄災,やくさい,,,
 thick,A1,厚い,あつい,厚みがあること。,この本は厚いです。,This book is thick.
 thick cloth,,厚地,あつじ,,,
@@ -2172,7 +2172,7 @@ kindness,,厚意,こうい,,,
 welfare,,厚生,こうせい,,,
 Ministry of Welfare,,厚生省,こうせいしょう,,,
 heavy clothing,,厚着,あつぎ,,,
-field,B1,原,はら,広い原っぱ。,,
+field,B1,原,はら,広い原っぱ。,原に花が咲いています。,Flowers are blooming in the field.
 principle,C,原則,げんそく,,,
 cause,A2,原因,げんいん,原因となるもの。,事故の原因を調べています。,They are investigating the cause of the accident.
 origin,B2,原始,げんし,,,
@@ -2194,17 +2194,17 @@ solemn,C,厳か,おごそか,,,
 strict order,,厳命,げんめい,,,
 strict prohibition,,厳禁,げんきん,,,
 "strictness, severeness",B2,厳重,げんじゅう,,,
-"leave, pass",B1,去る,さる,場所を去ること。,,
+"leave, pass",B1,去る,さる,場所を去ること。,国を去る決心をしました。,I decided to leave the country.
 castration,,去勢,きょせい,,,
 course of action,,去就,きょしゅう,,,
 last year,A1,去年,きょねん,前年を示す語。,去年は学生でした。,Last year I was a student.
 coming and going,,去来,きょらい,,,
 "go, come",A2,参る,まいる,行く、来るの謙譲語。,来週参ります。,I will come next week.
-participation,B1,参加,さんか,活動に加わること。,,
+participation,B1,参加,さんか,活動に加わること。,会議に参加しました。,I participated in the meeting.
 participant,,参加者,さんかしゃ,,,
 suffrage,,参政権,さんせいけん,,,
 reference,C,参照,さんしょう,,,
-consultation,B1,参考,さんこう,参考にすること。,,
+consultation,B1,参考,さんこう,参考にすること。,参考のためにこの本を読みました。,I read this book for reference.
 upper house of Parliament,C,参議院,さんぎいん,,,
 road approaching a shrine,,参道,さんどう,,,
 again,A1,又,また,繰り返すこと。,また同じ問題が起きた。,The same issue happened agian.
@@ -2214,13 +2214,13 @@ secondhand information,,又聞き,またぎき,,,
 as well as,C,及び,および,,,
 "amount to, reach",C,及ぶ,およぶ,,,
 passing an exam,,及第,きゅうだい,,,
-friend,B1,友,とも,親しい相手。,,
-friend,B1,友人,ゆうじん,友のこと。,,
+friend,B1,友,とも,親しい相手。,彼は長年の友です。,He has been my friend for many years.
+friend,B1,友人,ゆうじん,友のこと。,昨日友人と映画を見ました。,Yesterday I watched a movie with a friend.
 amity,B2,友好,ゆうこう,,,
-friendship,B1,友情,ゆうじょう,友情関係。,,
+friendship,B1,友情,ゆうじょう,友情関係。,友情は人生で大切です。,Friendship is important in life.
 friend,A1,友達,ともだち,親しい人。,友達と話します。,I talk with my friend.
 bilateral,,双務,そうむ,,,
-twins,B1,双子,ふたご,同じ日に生まれた兄弟姉妹。,,
+twins,B1,双子,ふたご,同じ日に生まれた兄弟姉妹。,双子の兄弟がいます。,I have twin brothers.
 both sides,,双方,そうほう,,,
 series of books,,双書,そうしょ,,,
 binoculars,,双眼鏡,そうがんきょう,,,
@@ -2236,7 +2236,7 @@ reflection,C,反射,はんしゃ,,,
 repetition,,反復,はんぷく,,,
 reaction,C,反応,はんのう,,,
 "antipathy, animosity",C,反感,はんかん,,,
-resistance,B1,反抗,はんこう,権力に逆らうこと。,,
+resistance,B1,反抗,はんこう,権力に逆らうこと。,学生たちは先生に反抗しました。,The students resisted the teacher.
 anti-Japanese,,反日,はんにち,,,
 reflection,B2,反映,はんえい,,,
 antimatter,,反物質,はんぶっしつ,,,
@@ -2246,10 +2246,10 @@ introspection,B2,反省,はんせい,,,
 anti-American,,反米,はんべい,,,
 counterargument,,反論,はんろん,,,
 echo,C,反響,はんきょう,,,
-supply,B1,収める,おさめる,納めること。,,
-income,B1,収入,しゅうにゅう,得た金。,,
+supply,B1,収める,おさめる,納めること。,店に税金を収めました。,I paid the store taxes.
+income,B1,収入,しゅうにゅう,得た金。,今年の収入は増えました。,My income increased this year.
 revenue,C,収益,しゅうえき,,,
-harvest,B1,収穫,しゅうかく,農作物を取り入れること。,,
+harvest,B1,収穫,しゅうかく,農作物を取り入れること。,秋に米を収穫しました。,We harvested rice in autumn.
 contraction,,収縮,しゅうしゅく,,,
 collection,C,収集,しゅうしゅう,,,
 handle,C,取っ手,とって,,,
@@ -2269,14 +2269,14 @@ deal with,C,取り組む,とりくむ,,,
 take in,,取り込む,とりこむ,,,
 "remove, take away",C,取り除く,とりのぞく,,,
 take,A1,取る,とる,自分のものにすること。,写真を取ります。,I take a photo.
-"be taken, come off",B1,取れる,とれる,自然に外れること。,,
+"be taken, come off",B1,取れる,とれる,自然に外れること。,ボタンが取れました。,The button came off.
 trade,C,取引,とりひき,,,
 acquisition,,取得,しゅとく,,,
 "coverage, gathering material",C,取材,しゅざい,,,
 receive,A2,受ける,うける,受け取ること。,先生の授業を受けます。,I will take the teacher’s class.
 "accept, receive",C,受け付ける,うけつける,,,
 accept,C,受け入れる,うけいれる,,,
-take in,B1,受け取る,うけとる,受け取ること。,,
+take in,B1,受け取る,うけとる,受け取ること。,荷物を受け取りました。,I received the package.
 take charge of,B2,受け持つ,うけもつ,,,
 "take, catch",C,受け止める,うけとめる,,,
 "inherit, take over",C,受け継ぐ,うけつぐ,,,
@@ -2305,33 +2305,33 @@ used book,,古本,ふるほん,,,
 "old paper, used paper",,古紙,こし,,,
 obsolete word,,古語,こご,,,
 "hit into, knock into",,叩き込む,たたきこむ,,,
-"hit, strike, pat, knock",B1,叩く,たたく,手でたたくこと。,,
-"free, just, only",B1,只,ただ,無料を示す言葉。,,
+"hit, strike, pat, knock",B1,叩く,たたく,手でたたくこと。,子供がおもちゃを叩きました。,The child hit the toy.
+"free, just, only",B1,只,ただ,無料を示す言葉。,それは只の夢です。,That is only a dream.
 presently,,只今,ただいま,,,
 "intently, single-mindedly",C,只管,ひたすら,,,
 "shout, yell, scream",C,叫び,さけび,,,
 "shout, yell",,叫び声,さけびごえ,,,
-shout,B1,叫ぶ,さけぶ,大声をあげること。,,
+shout,B1,叫ぶ,さけぶ,大声をあげること。,大声で叫びました。,I shouted loudly.
 "shout, scream",,叫喚,きょうかん,,,
-"passable, acceptable",B1,可,か,許されること。,,
+"passable, acceptable",B1,可,か,許されること。,それは可です。,That is acceptable.
 "must, should",,可し,べし,,,
-quite,B1,可也,かなり,かなりを示す言葉。,,
-"pitiful, sad, pathetic",B1,可哀想,かわいそう,気の毒である様子。,,
+quite,B1,可也,かなり,かなりを示す言葉。,今日は可也疲れました。,I am quite tired today.
+"pitiful, sad, pathetic",B1,可哀想,かわいそう,気の毒である様子。,その犬はとても可哀想です。,That dog is very pitiful.
 cute,A1,可愛い,かわいい,愛らしい様子。,猫は可愛いです。,The cat is cute.
 "love, cherish",B2,可愛がる,かわいがる,,,
-"lovely, sweet",B1,可愛らしい,かわいらしい,かわいらしい様子。,,
+"lovely, sweet",B1,可愛らしい,かわいらしい,かわいらしい様子。,赤ちゃんが可愛らしい笑顔をしました。,The baby gave a lovely smile.
 "passing a bill, approval",B2,可決,かけつ,,,
 strange,A2,可笑しい,おかしい,変な様子。,それはおかしい話です。,That is a strange story.
-be possible,B1,可能,かのう,実現できること。,,
+be possible,B1,可能,かのう,実現できること。,この計画は可能です。,This plan is possible.
 possibility,,可能性,かのうせい,,,
-"pedestal, stand, stage",B1,台,だい,物を置く台。,,
+"pedestal, stand, stage",B1,台,だい,物を置く台。,花を置く台があります。,There is a stand for placing flowers.
 plateau,,台地,だいち,,,
 kitchen,A1,台所,だいどころ,料理をする場所。,台所で料理します。,I cook in the kitchen.
 Taiwan,,台湾,たいわん,,,
 remark,,台詞,せりふ,,,
 gaining power,,台頭,たいとう,,,
 typhoon,A2,台風,たいふう,嵐の一種。,台風が日本に近づいています。,A typhoon is approaching Japan.
-scold,B1,叱る,しかる,子どもをしかること。,,
+scold,B1,叱る,しかる,子どもをしかること。,母に叱られました。,I was scolded by my mother.
 abusive criticism ,,叱罵,しつば,,,
 reprimanding,,叱責,しっせき,,,
 right,A1,右,みぎ,方角の右。,右に曲がります。,I turn right.
@@ -2350,7 +2350,7 @@ judiciary,C,司法,しほう,,,
 priest,,司祭,しさい,,,
 "stammer, stutter",,吃る,どもる,,,
 hiccup,B2,吃逆,しゃっくり,,,
-be surprised,B1,吃驚,びっくり,驚くこと。,,
+be surprised,B1,吃驚,びっくり,驚くこと。,大きな音に吃驚しました。,I was surprised by the loud sound.
 each,,各々,おのおの,,,
 each nation,,各国,かっこく,,,
 each place,B2,各地,かくち,,,
@@ -2358,12 +2358,12 @@ each kind,C,各種,かくしゅ,,,
 each person,B2,各自,かくじ,,,
 each station,,各駅,かくえき,,,
 fit together,A2,合う,あう,合致すること。,この靴は私の足に合います。,These shoes fit my feet.
-match,B1,合わせる,あわせる,一致させること。,,
+match,B1,合わせる,あわせる,一致させること。,答えを合わせてください。,Please match the answers.
 merger,C,合併,がっぺい,,,
 choir,C,合唱,がっしょう,,,
-cue,B1,合図,あいず,合図。,,
+cue,B1,合図,あいず,合図。,手で合図をしました。,I gave a hand signal.
 agreement,C,合意,ごうい,,,
-passing a test,B1,合格,ごうかく,試験に通ること。,,
+passing a test,B1,合格,ごうかく,試験に通ること。,試験に合格しました。,I passed the exam.
 legal,,合法,ごうほう,,,
 legal,,合法的,ごうほうてき,,,
 merging,B2,合流,ごうりゅう,,,
@@ -2372,7 +2372,7 @@ rational,,合理的,ごうりてき,,,
 assembly,,合衆,がっしゅう,,,
 United States,,合衆国,がっしゅうこく,,,
 password,,合言葉,あいことば,,,
-total,B1,合計,ごうけい,合計。,,
+total,B1,合計,ごうけい,合計。,合計は千円です。,"The total is 1,000 yen."
 "interval, pause",C,合間,あいま,,,
 "hang, suspend",B2,吊る,つる,,,
 hang up,B2,吊るす,つるす,,,
@@ -2380,8 +2380,8 @@ suspension bridge,,吊橋,つりばし,,,
 same,C,同,どう,,,
 same,A1,同じ,おなじ,等しいこと。,僕も同じ靴を持っているよ！,"Hey, I have the same shoes!"
 "likewise, as",,同じく,おなじく,,,
-"identical, same",B1,同一,どういつ,まったく同じこと。,,
-colleague,B1,同僚,どうりょう,同じ職場の人。,,
+"identical, same",B1,同一,どういつ,まったく同じこと。,二人の意見は同一です。,Their opinions are identical.
+colleague,B1,同僚,どうりょう,同じ職場の人。,彼は私の同僚です。,He is my colleague.
 at the same place,,同地,どうち,,,
 comrade,C,同志,どうし,,,
 same sex,,同性,どうせい,,,
@@ -2391,14 +2391,14 @@ homosexual,,同性愛者,どうせいあいしゃ,,,
 sympathy,C,同情,どうじょう,,,
 "agreement, consent",C,同意,どうい,,,
 "agreement, same opinion",C,同感,どうかん,,,
-same time,B1,同時,どうじ,同じ時刻。,,
+same time,B1,同時,どうじ,同じ時刻。,二つの事件は同時に起こりました。,The two incidents happened at the same time.
 "same period, synchronization",,同期,どうき,,,
-"similar, just like",B1,同様,どうよう,同じような様子。,,
+"similar, just like",B1,同様,どうよう,同じような様子。,彼は兄と同様に親切です。,He is kind just like his older brother.
 alliance,C,同盟,どうめい,,,
 classmate,,同級生,どうきゅうせい,,,
 conformity,C,同調,どうちょう,,,
-name,B1,名,な,個人を区別する名。,,
-"master, expert",B1,名人,めいじん,技芸に優れた人。,,
+name,B1,名,な,個人を区別する名。,彼の名は有名です。,His name is well known.
+"master, expert",B1,名人,めいじん,技芸に優れた人。,彼は将棋の名人です。,He is a master of shogi.
 "name, call, christen",C,名付ける,なづける,,,
 business card,B2,名刺,めいし,,,
 name,A1,名前,なまえ,人を区別する呼び名。,名前を書いてください。,Please write your name.
@@ -2416,14 +2416,14 @@ noun,B2,名詞,めいし,,,
 honor,C,名誉,めいよ,,,
 spit out,,吐き捨てる,はきすてる,,,
 nausea,B2,吐き気,はきけ,,,
-"vomit, throw up",B1,吐く,はく,口から吐き出すこと。,,
+"vomit, throw up",B1,吐く,はく,口から吐き出すこと。,気分が悪くて吐きました。,I vomited because I felt sick.
 "tell a lie, sigh",C,吐く,つく,,,
 sigh,,吐息,といき,,,
 "face, go towards",A2,向かう,むかう,目的に向かって進むこと。,駅に向かっています。,I am heading to the station.
 "orientation, direction",C,向き,むき,,,
-"turn towards, face",B1,向く,むく,方向を向くこと。,,
+"turn towards, face",B1,向く,むく,方向を向くこと。,北に向いて座りました。,I sat facing north.
 targeted at,C,向け,むけ,,,
-"turn towards, point",B1,向ける,むける,対象に向けること。,,
+"turn towards, point",B1,向ける,むける,対象に向けること。,彼女に注意を向けました。,I directed my attention to her.
 opposite side,A1,向こう,むこう,反対側。,川の向こうに山があります。,There is a mountain across the river.
 "elevation, progress",C,向上,こうじょう,,,
 sunflower,,向日葵,ひまわり,,,
@@ -2431,20 +2431,20 @@ you,A2,君,きみ,若い相手を呼ぶ言葉。,君は何をしているの？,
 "monarch, ruler",C,君主,くんしゅ,,,
 monarchy,,君主制,くんしゅせい,,,
 reign,,君臨,くんりん,,,
-howl,B1,吠える,ほえる,獣が声をあげること。,,
+howl,B1,吠える,ほえる,獣が声をあげること。,犬が吠えています。,The dog is barking.
 "bark, roar",,吠え声,ほえごえ,,,
 no,A1,否,いいえ,否定の言葉。,いいえ、知りません。,"No, I don’t know."
 no,,否,いな,,,
-"denial, ruling out",B1,否定,ひてい,打ち消すこと。,,
+"denial, ruling out",B1,否定,ひてい,打ち消すこと。,その考えを否定しました。,I denied that idea.
 negative,,否定的,ひていてき,,,
 rejection,C,否決,ひけつ,,,
-contain,B1,含む,ふくむ,含んで持つこと。,,
+contain,B1,含む,ふくむ,含んで持つこと。,このスープには塩が含まれています。,This soup contains salt.
 include,B2,含める,ふくめる,,,
 implication,,含意,がんい,,,
 water content,,含水率,がんすいりつ,,,
 breathe in,,吸い込む,すいこむ,,,
 "smoke, breathe in, inhale",A1,吸う,すう,息を吸い込むこと。,たばこを吸います。,I smoke a cigarette.
-absorption,B1,吸収,きゅうしゅう,取り込むこと。,,
+absorption,B1,吸収,きゅうしゅう,取り込むこと。,体は食べ物を吸収します。,The body absorbs food.
 burst out,,吹き出す,ふきだす,,,
 blow out,,吹き消す,ふきけす,,,
 blow,A1,吹く,ふく,息を外へ出すこと。,風が吹きます。,The wind blows.
@@ -2461,7 +2461,7 @@ accusation,,告訴,こくそ,,,
 "mutter, tweet",C,呟く,つぶやく,,,
 "perimeter, circumference",C,周,しゅう,,,
 circumference,A2,周り,まわり,周囲。,公園の周りを走りました。,I ran around the park.
-"circumference, surroundings",B1,周囲,しゅうい,周囲。,,
+"circumference, surroundings",B1,周囲,しゅうい,周囲。,学校の周囲を歩きました。,I walked around the school.
 "cycle, period",C,周期,しゅうき,,,
 frequency,,周波数,しゅうはすう,,,
 vicinity,B2,周辺,しゅうへん,,,
@@ -2472,18 +2472,18 @@ flavor,A2,味,あじ,食べ物の味。,このスープはいい味です。,Thi
 "flavor, charm, appeal",C,味わい,あじわい,,,
 taste,B2,味わう,あじわう,,,
 fermented soy paste,A2,味噌,みそ,大豆を発酵させた調味料。,味噌汁を飲みました。,I drank miso soup.
-ally,B1,味方,みかた,味方をする人。,,
+ally,B1,味方,みかた,味方をする人。,彼は強い味方です。,He is a strong ally.
 sense of taste,C,味覚,みかく,,,
 summon,B2,呼び出す,よびだす,,,
 doorbell,,呼び鈴,よびりん,,,
 call,A1,呼ぶ,よぶ,声をかけること。,先生を呼びます。,I call the teacher.
-breathing,B1,呼吸,こきゅう,息をすること。,,
+breathing,B1,呼吸,こきゅう,息をすること。,深呼吸をしてください。,Please take a deep breath.
 respiratory system,,呼吸器,こきゅうき,,,
-life,B1,命,いのち,人や動物の命。,,
-"command, appoint",B1,命じる,めいじる,命じること。,,
+life,B1,命,いのち,人や動物の命。,命を大切にしてください。,Value your life.
+"command, appoint",B1,命じる,めいじる,命じること。,彼は私に働くよう命じました。,He ordered me to work.
 "command, appoint",B2,命ずる,めいずる,,,
 direct hit,C,命中,めいちゅう,,,
-"order, command",B1,命令,めいれい,命令。,,
+"order, command",B1,命令,めいれい,命令。,上司から命令が出ました。,An order came from the boss.
 proposition,,命題,めいだい,,,
 harmony,C,和,わ,,,
 soften,C,和らげる,やわらげる,,,
@@ -2496,37 +2496,37 @@ native Japanese words,,和語,わご,,,
 Japanese style,C,和風,わふう,,,
 Japanese food,,和食,わしょく,,,
 "bloom, blossom",A1,咲く,さく,花が開くこと。,花が咲きます。,The flowers bloom.
-cough,B1,咳,せき,せき。,,
+cough,B1,咳,せき,せき。,咳が止まりません。,My cough won’t stop.
 coughing,,咳嗽,がいそう,,,
-goods,B1,品,しな,品物。,,
+goods,B1,品,しな,品物。,店に新しい品が入りました。,The store received new goods.
 "article, goods",A2,品物,しなもの,売買する物。,店で品物を買いました。,I bought goods at the shop.
 "race, breed",C,品種,ひんしゅ,,,
 part of speech,,品詞,ひんし,,,
 quality of goods,C,品質,ひんしつ,,,
 quality control,,品質管理,ひんしつかんり,,,
-philosophy,B1,哲学,てつがく,哲学的な学問。,,
+philosophy,B1,哲学,てつがく,哲学的な学問。,哲学を学びたいです。,I want to study philosophy.
 philosophical,,哲学的,てつがくてき,,,
 philosopher,,哲学者,てつがくしゃ,,,
 lips,B2,唇,くちびる,,,
 fried chicken,,唐揚げ,からあげ,,,
 "abrupt, sudden",,唐突,とうとつ,,,
 dumbfounded,,唖然,あぜん,,,
-"only, just",B1,唯,ただ,ただを示す言葉。,,
+"only, just",B1,唯,ただ,ただを示す言葉。,それは唯のうわさです。,That is just a rumor.
 obediently,,唯々諾々,いいだくだく,,,
-"sole, one and only",B1,唯一,ゆいいち,唯一の存在。,,
+"sole, one and only",B1,唯一,ゆいいち,唯一の存在。,彼は唯一の希望です。,He is the only hope.
 "advocate, preach",C,唱える,となえる,,,
 advocacy,,唱道,しょうどう,,,
 spit,C,唾,つば,,,
 saliva,,唾液,だえき,,,
 "trading, business",,商い,あきない,,,
-"merchant, trader",B1,商人,しょうにん,商業に従事する人。,,
-product,B1,商品,しょうひん,販売する品。,,
-"trade, business, commerce",B1,商売,しょうばい,商売。,,
+"merchant, trader",B1,商人,しょうにん,商業に従事する人。,彼は昔の商人の家族です。,He is from a family of old merchants.
+product,B1,商品,しょうひん,販売する品。,店で新しい商品を買いました。,I bought a new product at the store.
+"trade, business, commerce",B1,商売,しょうばい,商売。,父は商売をしています。,My father runs a business.
 store,B2,商店,しょうてん,,,
 commercial street,,商店街,しょうてんがい,,,
 "business, commercialism",B2,商業,しょうぎょう,,,
 trading company,B2,商社,しょうしゃ,,,
-"question, query",B1,問い,とい,質問すること。,,
+"question, query",B1,問い,とい,質問すること。,問いに答えてください。,Please answer the question.
 inquiry,B2,問い合わせ,といあわせ,,,
 inquire,C,問い合わせる,といあわせる,,,
 ask,C,問う,とう,,,
@@ -2534,11 +2534,11 @@ wholesale dealer,C,問屋,とんや,,,
 questions and answers,B2,問答,もんどう,,,
 medical history form,,問診票,もんしんひょう,,,
 problem,A1,問題,もんだい,解決すべき課題。,問題があります。,There is a problem.
-throat,B1,喉,のど,飲み物や食べ物を通す体の器官。,,
+throat,B1,喉,のど,飲み物や食べ物を通す体の器官。,喉が痛いです。,My throat hurts.
 Adam's apple,,喉仏,のどぼとけ,,,
 "larynx, voice box",,喉頭,こうとう,,,
 "talk, chat",,喋り,しゃべり,,,
-"talk, chat",B1,喋る,しゃべる,話すこと。,,
+"talk, chat",B1,喋る,しゃべる,話すこと。,友達と喋りました。,I chatted with my friend.
 "gasp, breathe hard",,喘ぐ,あえぐ,,,
 asthma,,喘息,ぜんそく,,,
 "be glad, rejoice",A2,喜ぶ,よろこぶ,嬉しく思うこと。,友達はとても喜びました。,My friend was very glad.
@@ -2548,21 +2548,21 @@ asthma,,喘息,ぜんそく,,,
 smoking,,喫煙,きつえん,,,
 "coffee shop, cafe",A1,喫茶店,きっさてん,飲み物を出す店。,喫茶店でコーヒーを飲みます。,I drink coffee at a café.
 "run, operate",C,営む,いとなむ,,,
-"business, operations",B1,営業,えいぎょう,営利活動。,,
+"business, operations",B1,営業,えいぎょう,営利活動。,彼は営業の仕事をしています。,He works in sales.
 ah,C,嗚呼,ああ,,,
 "sigh, grief",C,嘆,たん,,,
 vomiting,,嘔吐,おうと,,,
 nausea,,嘔気,おうき,,,
 "once, formerly",C,嘗て,かつて,,,
-lie,B1,嘘,うそ,虚偽のこと。,,
+lie,B1,嘘,うそ,虚偽のこと。,嘘をつかないでください。,Please don’t lie.
 "commission, temporary work",,嘱託,しょくたく,,,
 ridicule,,嘲る,あざける,,,
 "laugh at, make fun of",C,嘲笑う,あざわらう,,,
-rumor,B1,噂,うわさ,世間話として広まる話。,,
+rumor,B1,噂,うわさ,世間話として広まる話。,その噂を信じません。,I don’t believe that rumor.
 "bowl, container",C,器,うつわ,,,
 "utensil, device",B2,器具,きぐ,,,
 organ,C,器官,きかん,,,
-"clever, skillful",B1,器用,きよう,器用なこと。,,
+"clever, skillful",B1,器用,きよう,器用なこと。,彼女は器用に絵を描きます。,She skillfully draws pictures.
 gushing,C,噴出,ふんしゅつ,,,
 fountain,B2,噴水,ふんすい,,,
 eruption,B2,噴火,ふんか,,,
@@ -2577,12 +2577,12 @@ four years,,四年,よねん,,,
 four days,A1,四日,よっか,四日間を示す語。,四日は水曜日です。,The fourth is Wednesday.
 April,,四月,しがつ,,,
 four years old,,四歳,よんさい,,,
-turn,B1,回す,まわす,回転させること。,,
-rotation,B1,回り,まわり,回転すること。,,
+turn,B1,回す,まわす,回転させること。,ハンドルを回しました。,I turned the handle.
+rotation,B1,回り,まわり,回転すること。,駅の回りに店があります。,There are shops around the station.
 detour,B2,回り道,まわりみち,,,
 "turn, revolve",A2,回る,まわる,円を描いて動くこと。,地球は太陽の周りを回っています。,The Earth revolves around the Sun.
 collection,C,回収,かいしゅう,,,
-recovery,B1,回復,かいふく,健康を取り戻すこと。,,
+recovery,B1,回復,かいふく,健康を取り戻すこと。,病気から回復しました。,I recovered from my illness.
 "recollection, reflection",,回想,かいそう,,,
 frequency,B2,回数,かいすう,,,
 reply,B2,回答,かいとう,,,
@@ -2597,7 +2597,7 @@ factor,,因子,いんし,,,
 cause and effect,,因果,いんが,,,
 causality,,因果性,いんがせい,,,
 "body, group, party",,団,だん,,,
-"organization, group",B1,団体,だんたい,団体。,,
+"organization, group",B1,団体,だんたい,団体。,団体旅行に参加しました。,I joined a group trip.
 apartment complex,B2,団地,だんち,,,
 Japanese rice dumpling,,団子,だんご,,,
 rigid fan,C,団扇,うちわ,,,
@@ -2605,18 +2605,18 @@ acorn,,団栗,どんぐり,,,
 "unity, union",C,団結,だんけつ,,,
 be in trouble,A1,困る,こまる,困難に直面すること。,雨で困ります。,I am troubled by the rain.
 bewilderment,,困惑,こんわく,,,
-difficulty,B1,困難,こんなん,困難。,,
+difficulty,B1,困難,こんなん,困難。,困難を乗り越えました。,I overcame difficulties.
 enclosure,,囲い,かこい,,,
 siege,,囲み,かこみ,,,
-surround,B1,囲む,かこむ,囲むこと。,,
+surround,B1,囲む,かこむ,囲むこと。,庭を塀で囲みました。,I surrounded the garden with a fence.
 game of Go,,囲碁,いご,,,
-"drawing, diagram",B1,図,ず,物事を示す図形。,,
+"drawing, diagram",B1,図,ず,物事を示す図形。,図を見ながら説明しました。,I explained while looking at the diagram.
 "cheeky, shameless",B2,図々しい,ずうずうしい,,,
 "plan, plot",C,図る,はかる,,,
 bodily frame,,図体,ずうたい,,,
 icon,,図像,ずぞう,,,
 figure,B2,図形,ずけい,,,
-books,B1,図書,としょ,読むための書物。,,
+books,B1,図書,としょ,読むための書物。,図書館に行きました。,I went to the library.
 library,A1,図書館,としょかん,本を集めて貸し出す施設。,図書館で本を読みます。,I read books in the library.
 design,,図案,ずあん,,,
 designer,,図案家,ずあんか,,,
@@ -2632,22 +2632,22 @@ fixation,C,固定,こてい,,,
 landline,,固定電話,こていでんわ,,,
 proper noun,,固有名詞,こゆうめいし,,,
 country,A1,国,くに,領土を持つ共同体。,日本は国です。,Japan is a country.
-national Diet,B1,国会,こっかい,国の最高機関。,,
+national Diet,B1,国会,こっかい,国の最高機関。,国会で法律が決まりました。,A law was decided in the National Diet.
 domestic,,国内,こくない,,,
 state-run,,国営,こくえい,,,
 national territory,C,国土,こくど,,,
-border,B1,国境,こっきょう,国の境。,,
+border,B1,国境,こっきょう,国の境。,川が国境になっています。,The river forms the border.
 "overseas, outside the country",,国外,こくがい,,,
 national treasure,,国宝,こくほう,,,
-nation,B1,国家,こっか,国。,,
+nation,B1,国家,こっか,国。,日本は平和な国家です。,Japan is a peaceful nation.
 national flag,,国旗,こっき,,,
 state ownership,C,国有,こくゆう,,,
 nationalization,,国有化,こくゆうか,,,
 national anthem,,国歌,こっか,,,
-citizenry,B1,国民,こくみん,国民。,,
+citizenry,B1,国民,こくみん,国民。,国民は選挙に参加します。,The citizens participate in elections.
 national,B2,国立,こくりつ,,,
 nationality,B2,国籍,こくせき,,,
-"national language, Japanese",B1,国語,こくご,日本語を中心とした言語。,,
+"national language, Japanese",B1,国語,こくご,日本語を中心とした言語。,国語の授業を受けました。,I attended a Japanese language class.
 UN,C,国連,こくれん,,,
 national railway,,国鉄,こくてつ,,,
 international,A2,国際,こくさい,国と国の関係。,国際会議があります。,There is an international conference.
@@ -2655,18 +2655,18 @@ international,,国際的,こくさいてき,,,
 United Nations,,国際連合,こくさいれんごう,,,
 garden,C,園,その,,,
 gardening,B2,園芸,えんげい,,,
-soil,B1,土,つち,地面を作る成分。,,
+soil,B1,土,つち,地面を作る成分。,土を掘りました。,I dug the soil.
 "wrestling ring, forum",C,土俵,どひょう,,,
 "basis, foundation",C,土台,どだい,,,
 earthenware,,土器,どき,,,
-land,B1,土地,とち,耕作や建築に利用される場所。,,
+land,B1,土地,とち,耕作や建築に利用される場所。,土地を買いました。,I bought land.
 soil,,土壌,どじょう,,,
 embankment,C,土手,どて,,,
 Saturday and Sunday,,土日,どにち,,,
 Saturn,,土星,どせい,,,
 Saturday,A1,土曜日,どようび,週の六日目。,土曜日に映画を見ます。,I watch a movie on Saturday.
 public works,C,土木,どぼく,,,
-souvenir,B1,土産,みやげ,旅行先から持ち帰る贈り物。,,
+souvenir,B1,土産,みやげ,旅行先から持ち帰る贈り物。,旅行で土産を買いました。,I bought a souvenir on my trip.
 burial,,土葬,どそう,,,
 earthenware dish,,土鍋,どなべ,,,
 overwhelm,,圧する,あっする,,,
@@ -2683,44 +2683,44 @@ being at home,,在宅,ざいたく,,,
 inventory,C,在庫,ざいこ,,,
 abroad in Japan,,在日,ざいにち,,,
 "residence, existence",,在留,ざいりゅう,,,
-"place, earth, ground",B1,地,ち,地面。,,
+"place, earth, ground",B1,地,ち,地面。,地に足をつけて歩きます。,I walk with my feet firmly on the ground.
 above the ground,,地上,ちじょう,,,
-underground,B1,地下,ちか,地表の下。,,
+underground,B1,地下,ちか,地表の下。,地下鉄に乗りました。,I took the subway.
 basement,,地下室,ちかしつ,,,
 groundwater,B2,地下水,ちかすい,,,
 subway,A1,地下鉄,ちかてつ,地面の下を走る電車。,地下鉄に乗ります。,I ride the subway.
 landlord,C,地主,じぬし,,,
-status,B1,地位,ちい,社会的な立場。,,
+status,B1,地位,ちい,社会的な立場。,彼は高い地位にいます。,He holds a high status.
 local,C,地元,じもと,,,
-"area, district",B1,地区,ちく,小さな区域。,,
+"area, district",B1,地区,ちく,小さな区域。,この地区は静かです。,This district is quiet.
 place name,B2,地名,ちめい,,,
 "simple, down to earth",B2,地味,じみ,,,
 map,A1,地図,ちず,場所を示す図。,地図を見ます。,I look at the map.
-region,B1,地域,ちいき,一定の広がりを持つ地域。,,
-horizon,B1,地平線,ちへいせん,空と地面の境。,,
+region,B1,地域,ちいき,一定の広がりを持つ地域。,地域の祭りがあります。,There is a regional festival.
+horizon,B1,地平線,ちへいせん,空と地面の境。,地平線に太陽が見えます。,I can see the sun on the horizon.
 terrain,C,地形,ちけい,,,
-region,B1,地方,ちほう,国や地域の一部。,,
+region,B1,地方,ちほう,国や地域の一部。,地方に住んでいます。,I live in the countryside.
 local government,,地方公共団体,ちほうこうきょうだんたい,,,
 hell,C,地獄,じごく,,,
-earth,B1,地球,ちきゅう,人類が住む惑星。,,
+earth,B1,地球,ちきゅう,人類が住む惑星。,地球を守りましょう。,Let’s protect the Earth.
 geography,A2,地理,ちり,地球の地形を扱う学問。,学校で地理を学びます。,I study geography at school.
 earthquake,A2,地震,じしん,地面の揺れ。,大きな地震がありました。,There was a big earthquake.
 ground,,地面,じめん,,,
 dipping sauce,,垂れ,たれ,,,
 "droop, hang",C,垂れる,たれる,,,
 perpendicular,B2,垂直,すいちょく,,,
-"model, type",B1,型,かた,形のひな型。,,
+"model, type",B1,型,かた,形のひな型。,この型は新しいです。,This model is new.
 hedge,B2,垣根,かきね,,,
-dust,B1,埃,ほこり,舞い上がる微細なごみ。,,
+dust,B1,埃,ほこり,舞い上がる微細なごみ。,埃を払いました。,I wiped away the dust.
 be buried,C,埋まる,うまる,,,
 bury,B2,埋める,うめる,,,
 burial,,埋葬,まいそう,,,
 burying in the ground,C,埋蔵,まいぞう,,,
-castle,B1,城,しろ,堀に囲まれた建物。,,
+castle,B1,城,しろ,堀に囲まれた建物。,城を見学しました。,I visited a castle.
 "land near a castle, castle town",C,城下,じょうか,,,
-be based on,B1,基づく,もとづく,根拠にすること。,,
+be based on,B1,基づく,もとづく,根拠にすること。,事実に基づいて話します。,I speak based on facts.
 military base,B2,基地,きち,,,
-basics,B1,基本,きほん,基盤。,,
+basics,B1,基本,きほん,基盤。,基本を理解しましょう。,Let’s understand the basics.
 fundamental,,基本的,きほんてき,,,
 standard,B2,基準,きじゅん,,,
 "foundation, basis",B2,基盤,きばん,,,
@@ -2735,20 +2735,20 @@ pile of stones,,堆石,たいせき,,,
 compost,,堆肥,たいひ,,,
 "bank, dike",,堤,つつみ,,,
 levee,C,堤防,ていぼう,,,
-be unbearable,B1,堪らない,たまらない,耐えられないこと。,,
+be unbearable,B1,堪らない,たまらない,耐えられないこと。,暑くて堪らないです。,It is unbearably hot.
 "bear, endure",,堪る,たまる,,,
 "proficient, skillful",,堪能,たんのう,,,
 report,C,報じる,ほうじる,,,
-report,B1,報告,ほうこく,経過を知らせる文書や報告。,,
+report,B1,報告,ほうこく,経過を知らせる文書や報告。,先生に報告しました。,I reported to the teacher.
 journalism,C,報道,ほうどう,,,
 news media,,報道機関,ほうどうきかん,,,
-"place, spot",B1,場,ば,特定の場所。,,
+"place, spot",B1,場,ば,特定の場所。,この場で話しましょう。,Let’s talk here.
 case,A2,場合,ばあい,状況。,雨の場合は中止です。,"In case of rain, it will be canceled."
 place,A2,場所,ばしょ,ある位置。,場所を教えてください。,Please tell me the place.
-scene,B1,場面,ばめん,場面の様子。,,
+scene,B1,場面,ばめん,場面の様子。,映画の場面が印象的でした。,The movie scene was impressive.
 base in baseball,,塁,るい,,,
 plasticity,,塑性,そせい,,,
-tower,B1,塔,とう,高くそびえる建築物。,,
+tower,B1,塔,とう,高くそびえる建築物。,高い塔があります。,There is a tall tower.
 coloring book,,塗り絵,ぬりえ,,,
 spread,A2,塗る,ぬる,表面に塗ること。,壁に絵を塗ります。,I paint a picture on the wall.
 coating,,塗布,とふ,,,
@@ -2762,18 +2762,18 @@ dust,B1,塵,ちり,細かいごみ。,,
 trash,B1,塵,ごみ,不要なごみ。,,
 "toilet paper, tissue paper",B2,塵紙,ちりがみ,,,
 cram school,C,塾,じゅく,,,
-"border, boundary",B1,境,さかい,領域を分ける境目。,,
+"border, boundary",B1,境,さかい,領域を分ける境目。,塀の境に立っています。,He is standing at the boundary of the fence.
 boundary,B2,境界,きょうかい,,,
 one's environment,C,境遇,きょうぐう,,,
-tomb,B1,墓,はか,人を葬る場所。,,
+tomb,B1,墓,はか,人を葬る場所。,古い墓を見ました。,I saw an old grave.
 cemetery,C,墓地,ぼち,,,
 tombstone,,墓石,ぼせき,,,
 grave,,墓穴,ぼけつ,,,
 increase,A2,増える,ふえる,数が増えること。,人口が増えています。,The population is increasing.
 better,C,増し,まし,,,
-increase,B1,増す,ます,量が増えること。,,
+increase,B1,増す,ます,量が増えること。,人口が増します。,The population is increasing.
 "increase, add to",B2,増やす,ふやす,,,
-growth,B1,増加,ぞうか,人数や量の増加。,,
+growth,B1,増加,ぞうか,人数や量の増加。,今年は人口が増加しました。,This year the population has grown.
 augmentation,B2,増大,ぞうだい,,,
 reinforcement,C,増強,ぞうきょう,,,
 "promotion, advancement",C,増進,ぞうしん,,,
@@ -2801,7 +2801,7 @@ sold-out,B2,売り切れ,うりきれ,,,
 be sold out,B2,売り切れる,うりきれる,,,
 sales area,A2,売り場,うりば,販売を行う場所。,売り場でシャツを探しました。,I looked for a shirt at the sales area.
 sell,A1,売る,うる,商品を金と引き換えること。,本を売ります。,I sell books.
-be sold,B1,売れる,うれる,商品が買われること。,,
+be sold,B1,売れる,うれる,商品が買われること。,その本はよく売れます。,That book sells well.
 prostitution,,売春,ばいしゅん,,,
 prostitute,,売春婦,ばいしゅんふ,,,
 brothel,,売春宿,ばいしゅんやど,,,
@@ -2812,10 +2812,10 @@ change,A2,変える,かえる,変化させること。,古い本を電子本に�
 "change, alteration",,変わり,かわり,,,
 be changed,A2,変わる,かわる,変化すること。,天気が急に変わりました。,The weather suddenly changed.
 oddball,,変人,へんじん,,,
-change,B1,変化,へんか,状態が変わること。,,
+change,B1,変化,へんか,状態が変わること。,天気が変化しました。,The weather has changed.
 "metamorphosis, abnormality",,変態,へんたい,,,
 transformation,,変換,へんかん,,,
-"change, modify",B1,変更,へんこう,内容を改めること。,,
+"change, modify",B1,変更,へんこう,内容を改めること。,計画を変更しました。,I changed the plan.
 disguise,,変装,へんそう,,,
 reformation,C,変革,へんかく,,,
 summer,A1,夏,なつ,暑い季節。,夏は暑いです。,Summer is hot.
@@ -2828,11 +2828,11 @@ evening glow,C,夕焼け,ゆうやけ,,,
 dinner,,夕食,ゆうしょく,,,
 dinner,A1,夕飯,ゆうはん,夕方に食べる食事。,夕飯を食べます。,I eat dinner.
 outside,A1,外,そと,建物の外。,外で遊びます。,I play outside.
-remove,B1,外す,はずす,取り外すこと。,,
-diplomacy,B1,外交,がいこう,国家間の交渉。,,
+remove,B1,外す,はずす,取り外すこと。,メガネを外しました。,I took off my glasses.
+diplomacy,B1,外交,がいこう,国家間の交渉。,外交の会議があります。,There is a diplomatic meeting.
 diplomat,,外交官,がいこうかん,,,
 outside,,外側,そとがわ,,,
-going out,B1,外出,がいしゅつ,家から外に出ること。,,
+going out,B1,外出,がいしゅつ,家から外に出ること。,夜に外出しました。,I went out at night.
 Ministry of Foreign Affairs,,外務省,がいむしょう,,,
 extroverted,,外向的,がいこうてき,,,
 foreign country,A1,外国,がいこく,国外の場所。,外国へ行きます。,I go to a foreign country.
@@ -2851,42 +2851,42 @@ eating out,,外食,がいしょく,,,
 many,,多々,たた,,,
 many,A1,多い,おおい,数量が多いこと。,人が多いです。,There are many people.
 perhaps,A1,多分,たぶん,可能性を示す語。,たぶん行きます。,Perhaps I will go.
-"some, somewhat",B1,多少,たしょう,わずかな程度。,,
+"some, somewhat",B1,多少,たしょう,わずかな程度。,多少の違いがあります。,There are some differences.
 busyness,C,多忙,たぼう,,,
 majority,,多数,たすう,,,
 majority rule,C,多数決,たすうけつ,,,
 "diverse, various",C,多様,たよう,,,
 repeated occurrence,,多発,たはつ,,,
 night,A1,夜,よる,太陽が沈んで暗くなる時間。,夜は静かです。,The night is quiet.
-middle of the night,B1,夜中,よなか,夜の時間。,,
+middle of the night,B1,夜中,よなか,夜の時間。,夜中に目が覚めました。,I woke up in the middle of the night.
 bedding,C,夜具,やぐ,,,
-dawn,B1,夜明け,よあけ,太陽が昇る時刻。,,
+dawn,B1,夜明け,よあけ,太陽が昇る時刻。,夜明けに鳥が鳴きました。,"At dawn, birds sang."
 staying up late,C,夜更かし,よふかし,,,
 traveling at night,B2,夜行,やこう,,,
 nighttime,B2,夜間,やかん,,,
 dream,A2,夢,ゆめ,眠って見るもの。,夢を見ました。,I had a dream.
-crazy about,B1,夢中,むちゅう,一つのことに熱中する様子。,,
+crazy about,B1,夢中,むちゅう,一つのことに熱中する様子。,彼はサッカーに夢中です。,He is crazy about soccer.
 noctural emission,,夢精,むせい,,,
-greatly,B1,大いに,おおいに,大きく。,,
+greatly,B1,大いに,おおいに,大きく。,彼の話は大いに役立ちました。,His story was very useful.
 big,A1,大きい,おおきい,大きな様子。,大きい家です。,It is a big house.
 tablespoon,,大さじ,おおさじ,,,
-"considerable, great",B1,大した,たいした,立派であること。,,
+"considerable, great",B1,大した,たいした,立派であること。,それは大した問題ではありません。,That is not a big problem.
 "okay, alright",A1,大丈夫,だいじょうぶ,問題がないこと。,大丈夫です。,It is okay.
 "important, valuable",A2,大事,だいじ,重要なこと。,健康は大事です。,Health is important.
 adult,A1,大人,おとな,成人した人。,大人が話しています。,The adult is talking.
-quiet,B1,大人しい,おとなしい,静かな性格。,,
+quiet,B1,大人しい,おとなしい,静かな性格。,彼は大人しい性格です。,He has a quiet personality.
 large number of people,,大人数,おおにんずう,,,
 large company,,大企業,だいぎぎょう,,,
-tournament,B1,大会,たいかい,競技や学問の集まり。,,
+tournament,B1,大会,たいかい,競技や学問の集まり。,大会に参加しました。,I participated in the tournament.
 "outline, generality",A2,大体,だいたい,大まかなこと。,大体分かりました。,I mostly understood.
-ambassador,B1,大使,たいし,国を代表する外交官。,,
+ambassador,B1,大使,たいし,国を代表する外交官。,日本大使と会いました。,I met the Japanese ambassador.
 embassy,A1,大使館,たいしかん,他国にある外交機関。,大使館はここにあります。,The embassy is here.
 feces,C,大便,だいべん,,,
 "pretty, considerably",A2,大分,だいぶ,かなりの程度。,宿題は大分終わりました。,I have mostly finished the homework.
 important,A1,大切,たいせつ,価値が高いこと。,この本は大切です。,This book is important.
 aorta,,大動脈,だいどうみゃく,,,
 many people,A1,大勢,おおぜい,人が多いこと。,大勢の人が駅にいます。,Many people are at the station.
-"majority, more than half",B1,大半,たいはん,全体の過半数。,,
+"majority, more than half",B1,大半,たいはん,全体の過半数。,出席者の大半が賛成しました。,The majority of the attendees agreed.
 the vast earth,,大地,だいち,,,
 large-scale,,大型,おおがた,,,
 loud voice,,大声,おおごえ,,,
@@ -2894,25 +2894,25 @@ loud voice,,大声,おおごえ,,,
 love,A1,大好き,だいすき,強く好むこと。,私は犬が大好きです。,I love dogs.
 university,A1,大学,だいがく,高等教育の機関。,兄は大学に行きます。,My older brother goes to university.
 graduate school,B2,大学院,だいがくいん,,,
-landlord,B1,大家,おおや,家を所有して貸す人。,,
+landlord,B1,大家,おおや,家を所有して貸す人。,大家に会いました。,I met the landlord.
 the big picture,,大局,たいきょく,,,
 carpenter,B2,大工,だいく,,,
 substantial,C,大幅,おおはば,,,
-great war,B1,大戦,たいせん,国家間で行われる大規模な戦い。,,
+great war,B1,大戦,たいせん,国家間で行われる大規模な戦い。,大戦の歴史を学びました。,I studied the history of the great war.
 major company,,大手,おおて,,,
 "mostly, usually",A2,大抵,たいてい,ほとんどいつも。,休みの日はたいてい家にいます。,"On holidays, I usually stay home."
 daikon radish,,大根,だいこん,,,
 generally,C,大概,たいがい,,,
 Taisho era,,大正,たいしょう,,,
-atmosphere,B1,大気,たいき,大気を構成する空気。,,
+atmosphere,B1,大気,たいき,大気を構成する空気。,大気が汚れています。,The atmosphere is polluted.
 ocean,,大洋,たいよう,,,
 big man,,大男,おおおとこ,,,
 cannon,,大砲,たいほう,,,
 "outline, gist",C,大筋,おおすじ,,,
-president,B1,大統領,だいとうりょう,国家元首の職。,,
+president,B1,大統領,だいとうりょう,国家元首の職。,大統領が演説しました。,The president gave a speech.
 great cause,,大義,たいぎ,,,
 "bold, daring",C,大胆,だいたん,,,
-minister in government,B1,大臣,だいじん,行政を担当する高官。,,
+minister in government,B1,大臣,だいじん,行政を担当する高官。,大臣が発表しました。,The minister made an announcement.
 as soon as possible,,大至急,だいしきゅう,,,
 garlic,,大蒜,にんにく,,,
 populism,,大衆主義,たいしゅうしゅぎ,,,
@@ -2920,10 +2920,10 @@ exaggerated,C,大袈裟,おおげさ,,,
 Atlantic Ocean,,大西洋,たいせいよう,,,
 soybeans,,大豆,だいず,,,
 main street,B2,大通り,おおどおり,,,
-most part,B1,大部分,だいぶぶん,全体の大部分。,,
+most part,B1,大部分,だいぶぶん,全体の大部分。,参加者の大部分は学生です。,The majority of participants were students.
 large quantity,,大量,たいりょう,,,
 Osaka,,大阪,おおさか,,,
-continent,B1,大陸,たいりく,広大な陸地。,,
+continent,B1,大陸,たいりく,広大な陸地。,アジアは大陸です。,Asia is a continent.
 Asian giant hornet,,大雀蜂,おおすずめばち,,,
 heavy rain,,大雨,おおあめ,,,
 barley,,大麦,おおむぎ,,,
@@ -2933,7 +2933,7 @@ the whole world,,天下,てんか,,,
 ceiling,C,天井,てんじょう,,,
 astronomical object,C,天体,てんたい,,,
 angel,,天使,てんし,,,
-"weather, climate",B1,天候,てんこう,気象の状態。,,
+"weather, climate",B1,天候,てんこう,気象の状態。,天候が良いです。,The weather is good.
 "destiny, will of the devine",,天命,てんめい,,,
 heaven,C,天国,てんごく,,,
 genius,C,天才,てんさい,,,
@@ -2942,7 +2942,7 @@ astronomy,,天文学,てんもんがく,,,
 weather,A1,天気,てんき,空や気温の様子。,明日は天気がいいです。,Tomorrow the weather will be good.
 weather forecast,A2,天気予報,てんきよほう,天候を予想すること。,天気予報を見ました。,I watched the weather forecast.
 natural disaster,C,天災,てんさい,,,
-"naturalness, natural",B1,天然,てんねん,自然そのもの。,,
+"naturalness, natural",B1,天然,てんねん,自然そのもの。,それは天然の石です。,That is a natural stone.
 Uranus,,天王星,てんのうせい,,,
 Emperor of Japan,B2,天皇,てんのう,,,
 scale,,天秤,てんびん,,,
@@ -2950,27 +2950,27 @@ ladybug,,天道虫,てんとうむし,,,
 thick,A1,太い,ふとい,幅や太さが大きいこと。,太い木があります。,There is a thick tree.
 get fat,A2,太る,ふとる,体が太くなること。,彼は太ってきました。,He has gotten fat.
 Pacific Ocean,,太平洋,たいへいよう,,,
-sun,B1,太陽,たいよう,地球を照らす恒星。,,
+sun,B1,太陽,たいよう,地球を照らす恒星。,太陽が昇りました。,The sun rose.
 sunlight,,太陽光,たいようこう,,,
 solar system,,太陽系,たいようけい,,,
 drum,B2,太鼓,たいこ,,,
 seal of approval,,太鼓判,たいこばん,,,
 husband,A2,夫,おっと,結婚した男性。,夫は会社に行っています。,My husband is at work.
-"each, respectively",B1,夫々,それぞれ,それぞれ。,,
-"wife, madam",B1,夫人,ふじん,既婚女性に対する敬称。,,
-married couple,B1,夫婦,ふうふ,結婚している男女。,,
-lose,B1,失う,うしなう,持っていたものを失うこと。,,
+"each, respectively",B1,夫々,それぞれ,それぞれ。,夫々にプレゼントを渡しました。,I gave presents to each person.
+"wife, madam",B1,夫人,ふじん,既婚女性に対する敬称。,社長夫人と会いました。,I met the company president’s wife.
+married couple,B1,夫婦,ふうふ,結婚している男女。,夫婦は仲が良いです。,The married couple has a good relationship.
+lose,B1,失う,うしなう,持っていたものを失うこと。,財布を失いました。,I lost my wallet.
 broken heart,B2,失恋,しつれん,,,
 failure,A2,失敗,しっぱい,うまくいかないこと。,テストで失敗しました。,I failed the test.
 blindness,,失明,しつめい,,,
-hopelessness,B1,失望,しつぼう,望みが絶えること。,,
+hopelessness,B1,失望,しつぼう,望みが絶えること。,彼は失望しました。,He was disappointed.
 disqualification,C,失格,しっかく,,,
-unemployment,B1,失業,しつぎょう,職を失うこと。,,
+unemployment,B1,失業,しつぎょう,職を失うこと。,失業者が増えました。,The number of unemployed people increased.
 impoliteness,,失礼,しつれい,,,
 disappearance,,失踪,しっそう,,,
 "strangeness, eccentricity",,奇,き,,,
 extremely weird,,奇々怪々,ききかいかい,,,
-odd,B1,奇妙,きみょう,普通と違って変なこと。,,
+odd,B1,奇妙,きみょう,普通と違って変なこと。,奇妙な音がしました。,A strange sound was heard.
 deformity,,奇形,きけい,,,
 odd number,C,奇数,きすう,,,
 strange custom,,奇習,きしゅう,,,
@@ -2981,32 +2981,32 @@ musical performance,,奏楽,そうがく,,,
 "musician, player",,奏者,そうしゃ,,,
 pledge,C,契る,ちぎる,,,
 trigger,C,契機,けいき,,,
-contract,B1,契約,けいやく,取り決め。,,
-inside,B1,奥,おく,内部の奥まった場所。,,
+contract,B1,契約,けいやく,取り決め。,契約を結びました。,I signed a contract.
+inside,B1,奥,おく,内部の奥まった場所。,奥の部屋にいます。,I am in the back room.
 wife,A1,奥さん,おくさん,他人の妻を指す呼び方。,先生の奥さんに会いました。,I met the teacher’s wife.
 remote mountain,,奥山,おくやま,,,
 wife,,奥様,おくさま,,,
 molars,,奥歯,おくば,,,
-rob,B1,奪う,うばう,力ずくで奪い取ること。,,
+rob,B1,奪う,うばう,力ずくで奪い取ること。,彼は金を奪いました。,He stole money.
 "usurpation, taking back",,奪取,だっしゅ,,,
 hard struggle,C,奮闘,ふんとう,,,
 woman,A1,女,おんな,成人した女性。,女が公園にいます。,A woman is in the park.
 woman,B2,女の人,おんあのひと,,,
 girl,A1,女の子,おんあのこ,年少の女性。,女の子が笑っています。,The girl is laughing.
-actress,B1,女優,じょゆう,演技をする女性。,,
-girl,B1,女子,じょし,女性。,,
+actress,B1,女優,じょゆう,演技をする女性。,女優が舞台に立ちました。,An actress stood on the stage.
+girl,B1,女子,じょし,女性。,女子が集まりました。,Girls gathered.
 woman,A2,女性,じょせい,成人した女性。,その女性はきれいです。,That woman is beautiful.
 feminine,,女性的,じょせいてき,,,
 wife,B2,女房,にょうぼう,,,
-queen,B1,女王,じょおう,国を治める女性の君主。,,
+queen,B1,女王,じょおう,国を治める女性の君主。,女王が登場しました。,The queen appeared.
 goddess,,女神,めがみ,,,
 "guy, chap",,奴,やつ,,,
 "slave, servant",,奴隷,どれい,,,
 like,A1,好き,すき,好意を持つこと。,私は音楽が好きです。,I like music.
 likes and dislikes,B2,好き嫌い,すききらい,,,
 likeable,C,好ましい,このましい,,,
-liking,B1,好み,このみ,個人の好み。,,
-like,B1,好む,このむ,気に入ること。,,
+liking,B1,好み,このみ,個人の好み。,音楽の好みは人それぞれです。,Musical preferences differ from person to person.
+like,B1,好む,このむ,気に入ること。,私は肉を好みます。,I like meat.
 fine weather,,好天,こうてん,,,
 curiosity,,好奇心,こうきしん,,,
 goodwill,C,好意,こうい,,,
@@ -3016,7 +3016,7 @@ how,A1,如何,いかが,方法を尋ねる語。,お茶はいかがですか。,
 how,A1,如何,どう,程度や方法を尋ねる語。,これはどうですか。,How is this?
 "somehow, please",,如何か,どうか,,,
 why,A1,如何して,どうして,理由を尋ねる語。,どうして来ませんか。,Why don’t you come?
-at any cost,B1,如何しても,どうしても,どうしてもを示す言葉。,,
+at any cost,B1,如何しても,どうしても,どうしてもを示す言葉。,如何しても成功したいです。,I want to succeed at any cost.
 anyhow,B2,如何せ,どうせ,,,
 "please, by all means",A1,如何ぞ,どうぞ,勧めや願いを示す語。,どうぞ座ってください。,Please have a seat.
 any,,如何なる,いかなる,,,
@@ -3026,7 +3026,7 @@ how to get,,如何やって,どうやって,,,
 pregnancy,C,妊娠,にんしん,,,
 monster,,妖怪,ようかい,,,
 fairy,,妖精,ようせい,,,
-strangeness,B1,妙,みょう,普通でなく不思議な様子。,,
+strangeness,B1,妙,みょう,普通でなく不思議な様子。,妙な感じがします。,I feel something strange.
 "wonder drug, miracle cure",,妙薬,みょうやく,,,
 compromise,C,妥協,だきょう,,,
 "reasonable, valid, proper",B2,妥当,だとう,,,
@@ -3037,20 +3037,20 @@ wife,A2,妻,つま,結婚した女性。,妻は料理が上手です。,My wife 
 wife and children,,妻子,さいし,,,
 older sister,A1,姉,あね,年上の女の兄弟。,姉は会社員です。,My older sister is an office worker.
 older sister,A1,姉さん,ねえさん,年上の女の兄弟を呼ぶ言葉。,姉さんは料理が上手です。,My older sister is good at cooking.
-"origin, beginning",B1,始まり,はじまり,物事の始まり。,,
+"origin, beginning",B1,始まり,はじまり,物事の始まり。,話の始まりを聞きました。,I listened to the beginning of the story.
 begin,A1,始まる,はじまる,物事が始まること。,授業が始まります。,The class begins.
 beginning,A1,始め,はじめ,物事の最初。,始めから読みましょう。,Let’s read from the beginning.
 start,A2,始める,はじめる,物事を始めること。,授業を始めます。,I will start the class.
 dealing with,C,始末,しまつ,,,
 first departure,C,始発,しはつ,,,
 from beginning to end,B2,始終,しじゅう,,,
-committee member,B1,委員,いいん,委員会の構成員。,,
+committee member,B1,委員,いいん,委員会の構成員。,委員に選ばれました。,I was chosen as a committee member.
 committee,,委員会,いいんかい,,,
 commit adultery,,姦する,かんする,,,
 adultery,,姦通,かんつう,,,
 niece,B2,姪,めい,,,
 princess,,姫,ひめ,,,
-form,B1,姿,すがた,体の形。,,
+form,B1,姿,すがた,体の形。,山の姿が美しいです。,The figure of the mountain is beautiful.
 stance,B2,姿勢,しせい,,,
 "prestige, dignity",,威信,いしん,,,
 power,C,威力,いりょく,,,
@@ -3060,22 +3060,22 @@ daughter,A2,娘,むすめ,女性の子供。,娘は十歳です。,My daughter i
 son-in-law,,娘婿,むすめむこ,,,
 entertainment,B2,娯楽,ごらく,,,
 "marriage, matrimony",,婚姻,こんいん,,,
-engagement,B1,婚約,こんやく,結婚の約束。,,
+engagement,B1,婚約,こんやく,結婚の約束。,二人は婚約しました。,The two got engaged.
 fiancé,,婚約者,こんやくしゃ,,,
 son-in-law,C,婿,むこ,,,
-"bride, daughter-in-law",B1,嫁,よめ,結婚した女性や嫁いだ女性。,,
+"bride, daughter-in-law",B1,嫁,よめ,結婚した女性や嫁いだ女性。,彼女は嫁になりました。,She became a bride.
 "marry, become a bride",,嫁ぐ,とつぐ,,,
 envy,C,嫉妬,しっと,,,
 "disagreeable, unpleasant",A1,嫌,いや,好ましくないこと。,いやなにおいがします。,It has a disagreeable smell.
 hate,A1,嫌い,きらい,強く嫌うこと。,私は魚が嫌いです。,I dislike fish.
-"hate, loathe",B1,嫌う,きらう,強く嫌がること。,,
+"hate, loathe",B1,嫌う,きらう,強く嫌がること。,私は納豆を嫌います。,I dislike natto.
 "hate, dislike",B2,嫌がる,いやがる,,,
 "disagreeable, unpleasant",C,嫌らしい,いやらしい,,,
 "disgust, hatred",,嫌悪,けんお,,,
 dislike of smoking,,嫌煙,けんえん,,,
 suspicion,,嫌疑,けんぎ,,,
 "merry, joyful",,嬉々,きき,,,
-happy,B1,嬉しい,うれしい,喜びを感じること。,,
+happy,B1,嬉しい,うれしい,喜びを感じること。,今日はとても嬉しいです。,I am very happy today.
 seem happy,,嬉しがる,うれしがる,,,
 child,A2,子,こ,年少の人。,子どもが外で遊んでいます。,The children are playing outside.
 subsidiary,,子会社,こがいしゃ,,,
@@ -3100,7 +3100,7 @@ dictionary,A1,字引,じびき,言葉の意味を調べる本。,字引で言葉
 transliteration,,字訳,じやく,,,
 "think, feel, consider, know",B2,存じる,ぞんじる,,,
 "think, feel, consider, know",B2,存ずる,ぞんずる,,,
-existence,B1,存在,そんざい,存在していること。,,
+existence,B1,存在,そんざい,存在していること。,彼女の存在が大切です。,Her existence is important.
 ontology,,存在論,そんざいろん,,,
 duration,C,存続,そんぞく,,,
 "seasonal magazine, quarterly",C,季刊,きかん,,,
@@ -3110,41 +3110,41 @@ orphanage,,孤児院,こじいん,,,
 solitude,C,孤独,こどく,,,
 isolation,C,孤立,こりつ,,,
 isolationism,,孤立主義,こりつしゅぎ,,,
-"learning, scholarship",B1,学,がく,学びや知識。,,
-learn,B1,学ぶ,まなぶ,知識や技術を身につけること。,,
+"learning, scholarship",B1,学,がく,学びや知識。,学を積みたいです。,I want to build up learning.
+learn,B1,学ぶ,まなぶ,知識や技術を身につけること。,歴史を学びました。,I studied history.
 academic conference,B2,学会,がっかい,,,
 academic degree,,学位,がくい,,,
 academic ability,B2,学力,がくりょく,,,
-scholarship,B1,学問,がくもん,体系的な知識の研究。,,
+scholarship,B1,学問,がくもん,体系的な知識の研究。,学問は深いです。,Scholarship is profound.
 scholarly,,学問的,がくもんてき,,,
 academy,,学園,がくえん,,,
 bachelor's degree,C,学士,がくし,,,
 academic year,B2,学年,がくねん,,,
-academic term,B1,学期,がっき,学校の学期。,,
+academic term,B1,学期,がっき,学校の学期。,今学期は忙しいです。,This semester is busy.
 school,A1,学校,がっこう,学習するための施設。,学校へ行きます。,I go to school.
 academic background,C,学歴,がくれき,,,
 student,A1,学生,がくせい,学ぶ人。,学生が教室にいます。,The students are in the classroom.
 academic subject,B2,学科,がっか,,,
-learning,B1,学習,がくしゅう,知識を得る行為。,,
+learning,B1,学習,がくしゅう,知識を得る行為。,日本語を学習しています。,I am studying Japanese.
 learner,,学習者,がくしゅうしゃ,,,
-scholar,B1,学者,がくしゃ,学問を専門にする人。,,
+scholar,B1,学者,がくしゃ,学問を専門にする人。,彼は有名な学者です。,He is a famous scholar.
 academic pursuits,B2,学術,がくじゅつ,,,
 tuition,,学費,がくひ,,,
 academic department,B2,学部,がくぶ,,,
 "principal, headmaster",,学長,がくちょう,,,
 institute,,学院,がくいん,,,
-grandchild,B1,孫,まご,子の子。,,
+grandchild,B1,孫,まご,子の子。,孫と遊びました。,I played with my grandchild.
 granddaughter,,孫娘,まごむすめ,,,
 grandson,,孫息子,まごむすこ,,,
-"house, home",B1,宅,たく,人が住む家。,,
+"house, home",B1,宅,たく,人が住む家。,私の宅は駅の近くです。,My house is near the station.
 building lot,,宅地,たくち,,,
 home delivery,,宅配,たくはい,,,
-"outer space, universe",B1,宇宙,うちゅう,地球の外の広がり。,,
+"outer space, universe",B1,宇宙,うちゅう,地球の外の広がり。,宇宙について学びました。,I studied about the universe.
 space alien,,宇宙人,うちゅうじん,,,
 space suit,,宇宙服,うちゅうふく,,,
 spaceship,,宇宙船,うちゅうせん,,,
 astronaut,,宇宙飛行士,うちゅうひこうし,,,
-protect,B1,守る,まもる,危険から守ること。,,
+protect,B1,守る,まもる,危険から守ること。,約束を守るべきです。,You should keep promises.
 defense,C,守備,しゅび,,,
 security guard,C,守衛,しゅえい,,,
 cheap,A1,安い,やすい,値段が低いこと。,この本は安いです。,This book is cheap.
@@ -3153,18 +3153,18 @@ inexpensive,,安価,あんか,,,
 safety,A2,安全,あんぜん,危険がないこと。,この町は安全です。,This town is safe.
 "safety, security",,安全性,あんぜんせい,,,
 "safety, welfare",,安否,あんぴ,,,
-stability,B1,安定,あんてい,状態が安定していること。,,
+stability,B1,安定,あんてい,状態が安定していること。,生活の安定が必要です。,Stability in life is necessary.
 "relief, peace of mind",A2,安心,あんしん,心が落ち着くこと。,安心してください。,Please don’t worry.
 easiness,B2,安易,あんい,,,
 "easy, simple, cheap",,安直,あんちょく,,,
 "rest, quiet",C,安静,あんせい,,,
 end,,完,かん,,,
-conclusion,B1,完了,かんりょう,物事が終わること。,,
-completeness,B1,完全,かんぜん,欠けることのない状態。,,
-complete,B1,完成,かんせい,仕上げること。,,
+conclusion,B1,完了,かんりょう,物事が終わること。,仕事を完了しました。,I finished the work.
+completeness,B1,完全,かんぜん,欠けることのない状態。,計画は完全です。,The plan is complete.
+complete,B1,完成,かんせい,仕上げること。,家を完成させました。,I finished building the house.
 perfection,C,完璧,かんぺき,,,
 sect,,宗,しゅう,,,
-religion,B1,宗教,しゅうきょう,信仰の体系。,,
+religion,B1,宗教,しゅうきょう,信仰の体系。,宗教について話しました。,We talked about religion.
 religious studies,,宗教学,しゅうきょうがく,,,
 bureaucrat,C,官僚,かんりょう,,,
 bureaucracy,,官僚制,かんりょうせい,,,
@@ -3174,7 +3174,7 @@ government office,B2,官庁,かんちょう,,,
 regular holiday,B2,定休日,ていきゅうび,,,
 capacity of people,B2,定員,ていいん,,,
 retirement age,C,定年,ていねん,,,
-fixed period,B1,定期,ていき,一定の期間。,,
+fixed period,B1,定期,ていき,一定の期間。,定期券を買いました。,I bought a commuter pass.
 regular,,定期的,ていきてき,,,
 "standard, routine",,定番,ていばん,,,
 being fixed,,定着,ていちゃく,,,
@@ -3186,10 +3186,10 @@ each,,宛,ずつ,,,
 address,C,宛てる,あてる,,,
 "address, destination",,宛先,あてさき,,,
 recipient's name and address,B2,宛名,あてな,,,
-good,B1,宜しい,よろしい,良いこと。,,
-kindly,B1,宜しく,よろしく,よろしくを表すあいさつ。,,
-treasure,B1,宝,たから,大切な物。,,
-gem,B1,宝石,ほうせき,貴重な石。,,
+good,B1,宜しい,よろしい,良いこと。,それで宜しいですか。,Is that all right?
+kindly,B1,宜しく,よろしく,よろしくを表すあいさつ。,宜しくお願いします。,Nice to meet you. / Thank you in advance.
+treasure,B1,宝,たから,大切な物。,その箱は宝です。,That box is a treasure.
+gem,B1,宝石,ほうせき,貴重な石。,宝石を買いました。,I bought a gemstone.
 lottery,,宝籤,たからくじ,,,
 reality,C,実,じつ,,,
 ripen,B2,実る,みのる,,,
@@ -3197,17 +3197,17 @@ ripen,B2,実る,みのる,,,
 one's parents' home,,実家,じっか,,,
 actual feeling,B2,実感,じっかん,,,
 actual situation,C,実態,じったい,,,
-carrying out,B1,実施,じっし,実際に行うこと。,,
+carrying out,B1,実施,じっし,実際に行うこと。,計画を実施しました。,We carried out the plan.
 businessperson,C,実業家,じつぎょうか,,,
-actualization,B1,実現,じつげん,現実にすること。,,
+actualization,B1,実現,じつげん,現実にすること。,夢を実現しました。,I realized my dream.
 pratical use,B2,実用,じつよう,,,
 pragmatism,,実用主義,じつようしゅぎ,,,
 practical,,実用的,じつようてき,,,
 execution,C,実行,じっこう,,,
 true story,,実話,じつわ,,,
 practice,C,実践,じっせん,,,
-"practicality, reality",B1,実際,じっさい,事実であること。,,
-experiment,B1,実験,じっけん,科学的に確かめる行為。,,
+"practicality, reality",B1,実際,じっさい,事実であること。,実際に見ました。,I actually saw it.
+experiment,B1,実験,じっけん,科学的に確かめる行為。,科学実験をしました。,I did a science experiment.
 guest,A2,客,きゃく,訪れる人。,客がたくさん来ました。,Many guests came.
 guest seating,B2,客席,きゃくせき,,,
 objective,,客観的,きゃっかんてき,,,
@@ -3225,8 +3225,8 @@ party,,宴,うたげ,,,
 reception,B2,宴会,えんかい,,,
 house,A1,家,いえ,住むための建物。,私の家は東京にあります。,My house is in Tokyo.
 "house, home",,家,うち,,,
-housework,B1,家事,かじ,家庭内の仕事。,,
-furniture,B1,家具,かぐ,生活に必要な道具。,,
+housework,B1,家事,かじ,家庭内の仕事。,家事を手伝いました。,I helped with housework.
+furniture,B1,家具,かぐ,生活に必要な道具。,新しい家具を買いました。,I bought new furniture.
 "my wife, my family",A2,家内,かない,自分の妻や家族をへりくだって言う言葉。,家内は病院にいます。,My wife is at the hospital.
 running away from home,C,家出,いえで,,,
 house,B2,家屋,かおく,,,
@@ -3236,25 +3236,25 @@ family,A1,家族,かぞく,親子や親族を含む集まり。,家族と旅行�
 matriarchy,,家母長制,かぼちょうせい,,,
 patriarchy,,家父長制,かふちょうせい,,,
 livestock,C,家畜,かちく,,,
-rent,B1,家賃,やちん,家を借りる費用。,,
+rent,B1,家賃,やちん,家を借りる費用。,家賃を払いました。,I paid the rent.
 container,B2,容器,ようき,,,
 "one's looks, face and figure",,容姿,ようし,,,
-"easy, simple",B1,容易,ようい,容易であること。,,
+"easy, simple",B1,容易,ようい,容易であること。,容易な問題です。,It is an easy problem.
 "easy, simple, light",C,容易い,たやすい,,,
 charge,,容疑,ようぎ,,,
 suspect,,容疑者,ようぎしゃ,,,
 "pardon, forgiveness, mercy",,容赦,ようしゃ,,,
-lodging,B1,宿,やど,人を泊める建物。,,
+lodging,B1,宿,やど,人を泊める建物。,宿に泊まりました。,I stayed at an inn.
 "fate, destiny",C,宿命,しゅくめい,,,
 inn,,宿屋,やどや,,,
-accommodation,B1,宿泊,しゅくはく,宿に泊まること。,,
+accommodation,B1,宿泊,しゅくはく,宿に泊まること。,宿泊の予約をしました。,I made a lodging reservation.
 homework,A1,宿題,しゅくだい,学習者に与えられる課題。,宿題をします。,I do my homework.
 lonely,A2,寂しい,さびしい,孤独を感じること。,一人だと寂しいです。,It is lonely to be alone.
 loneliness,,寂しさ,さびしさ,,,
 "come near, bring near",B2,寄せる,よせる,,,
 "approach, come near",A2,寄る,よる,近寄ること。,駅に寄りました。,I stopped by the station.
 contribution,C,寄与,きよ,,,
-donation,B1,寄付,きふ,金品を差し出すこと。,,
+donation,B1,寄付,きふ,金品を差し出すこと。,寄付をしました。,I made a donation.
 "send, hand over",B2,寄越す,よこす,,,
 secret,C,密か,ひそか,,,
 density,C,密度,みつど,,,
@@ -3279,7 +3279,7 @@ sleeping bag,,寝袋,ねぶくろ,,,
 the cops,,察,さつ,,,
 "guess, understanding",,察し,さっし,,,
 "guess, suppose, gather, sense",C,察する,さっする,,,
-"trial, judgement",B1,審判,しんぱん,裁判や試合で判定すること。,,
+"trial, judgement",B1,審判,しんぱん,裁判や試合で判定すること。,審判が試合を止めました。,The referee stopped the game.
 referee,,審判員,しんぱんい,,,
 "examination, investigation",C,審査,しんさ,,,
 deliberation,C,審議,しんぎ,,,
@@ -3290,9 +3290,9 @@ spare moment,,寸暇,すんか,,,
 wise-crack,,寸言,すんげん,,,
 temple,A2,寺,てら,仏教の建物。,お寺を見学しました。,I visited a temple.
 temple,B2,寺院,じいん,,,
-"pair, couple, set",B1,対,つい,二つで一組。,,
+"pair, couple, set",B1,対,つい,二つで一組。,二人は対になっています。,The two are a pair.
 regarding,C,対して,たいして,,,
-"face, confront",B1,対する,たいする,向き合うこと。,,
+"face, confront",B1,対する,たいする,向き合うこと。,彼に質問を対しました。,I asked him a question.
 "external, foreign",,対外,たいがい,,,
 "correspondence, response",C,対応,たいおう,,,
 antagonism,C,対抗,たいこう,,,
@@ -3301,7 +3301,7 @@ accusative case,,対格,たいかく,,,
 confrontation,B2,対立,たいりつ,,,
 "measure, step",B2,対策,たいさく,,,
 dialogue,C,対話,たいわ,,,
-target,B1,対象,たいしょう,目標や対象となるもの。,,
+target,B1,対象,たいしょう,目標や対象となるもの。,対象を決めました。,We decided on the target.
 "longevity, best wishes",,寿,ことぶき,,,
 sushi,,寿司,すし,,,
 life span,B2,寿命,じゅみょう,,,
@@ -3313,7 +3313,7 @@ sealed letter,,封書,ふうしょ,,,
 envelope,A1,封筒,ふうとう,手紙を入れる紙の入れ物。,封筒に手紙を入れます。,I put a letter in the envelope.
 blockade,C,封鎖,ふうさ,,,
 exclusively,C,専ら,もっぱら,,,
-academic major,B1,専攻,せんこう,学問の専攻分野。,,
+academic major,B1,専攻,せんこう,学問の専攻分野。,経済を専攻しています。,I am majoring in economics.
 housewife,,専業主婦,せんぎょうしゅふ,,,
 exclusive use,C,専用,せにょう,,,
 speciality,,専門,せんもん,,,
@@ -3338,25 +3338,25 @@ officer,,将校,しょうこう,,,
 "respect, look up to",C,尊ぶ,とうとぶ,,,
 "dignity, dignified",,尊厳,そんげん,,,
 death with dignity,,尊厳死,そんげんし,,,
-respect,B1,尊敬,そんけい,人を敬うこと。,,
+respect,B1,尊敬,そんけい,人を敬うこと。,先生を尊敬しています。,I respect my teacher.
 "ask, enquire",A2,尋ねる,たずねる,質問すること。,道を尋ねました。,I asked for directions.
 interrogation,,尋問,じんもん,,,
 guide,C,導く,みちびく,,,
 "introduction, installation",C,導入,どうにゅう,,,
-smallness,B1,小,しょう,小さいこと。,,
+smallness,B1,小,しょう,小さいこと。,小さな花です。,It is a small flower.
 small,A1,小さい,ちいさい,大きさが小さいこと。,小さい犬です。,It is a small dog.
 teaspoon,,小さじ,こさじ,,,
 urine,B2,小便,しょうべん,,,
 figurine,,小像,しょうぞう,,,
 brochure,,小冊子,こさっし,,,
 check,C,小切手,こぎって,,,
-parcel,B1,小包,こづつみ,小さな荷物。,,
+parcel,B1,小包,こづつみ,小さな荷物。,小包を受け取りました。,I received a parcel.
 small-scale,,小型,こがた,,,
 soft voice,,小声,こごえ,,,
 retail,C,小売,こうり,,,
 elementary school,A2,小学校,しょうがっこう,初等教育の学校。,小学校で算数を学びます。,I study math in elementary school.
 elementary school student,B2,小学生,しょうがくせい,,,
-hut,B1,小屋,こや,小さな建物。,,
+hut,B1,小屋,こや,小さな建物。,小屋で休みました。,I rested in a hut.
 stream,,小川,おがわ,,,
 asteroid,,小惑星,しょうわくせい,,,
 little finger,B2,小指,こゆび,,,
@@ -3372,23 +3372,23 @@ adzuki beans,,小豆,あずき,,,
 pocket money,B2,小遣い,こづかい,,,
 small change,C,小銭,こぜに,,,
 small bird,A2,小鳥,ことり,小さな鳥。,小鳥が歌っています。,A small bird is singing.
-wheat,B1,小麦,こむぎ,パンや麺の原料。,,
+wheat,B1,小麦,こむぎ,パンや麺の原料。,小麦を育てました。,I grew wheat.
 flour,,小麦粉,こむぎこ,,,
-a moment,B1,少々,しょうしょう,短い時間。,,
+a moment,B1,少々,しょうしょう,短い時間。,少々お待ちください。,Please wait a moment.
 a little,A1,少し,すこし,量が少しであること。,水を少しください。,Please give me a little water.
 few,A1,少ない,すくない,数量が少ないこと。,人が少ないです。,There are few people.
 at least,B2,少なくとも,すくなくとも,,,
 major,,少佐,しょうさ,,,
-girl,B1,少女,しょうじょ,年少の女子。,,
+girl,B1,少女,しょうじょ,年少の女子。,少女が遊んでいます。,A girl is playing.
 declining birth rate,,少子化,しょうしか,,,
-boy,B1,少年,しょうねん,年少の男子。,,
+boy,B1,少年,しょうねん,年少の男子。,少年が走っています。,A boy is running.
 minority,C,少数,しょうすう,,,
 "besides, furthermore",,尚且つ,なおかつ,,,
 "about, concerning",,就いて,ついて,,,
-hold a position,B1,就く,つく,職務につくこと。,,
+hold a position,B1,就く,つく,職務につくこと。,仕事に就きました。,I took a position at work.
 inauguration,B2,就任,しゅうにん,,,
-getting a job,B1,就職,しゅうしょく,仕事に就くこと。,,
-butt,B1,尻,しり,体の後部。,,
+getting a job,B1,就職,しゅうしょく,仕事に就くこと。,就職が決まりました。,I got a job.
+butt,B1,尻,しり,体の後部。,尻を打ちました。,I hit my butt.
 tail,B2,尻尾,しっぽ,,,
 be used up,C,尽きる,つきる,,,
 "devote, do to exhaustion",C,尽くす,つくす,,,
@@ -3396,21 +3396,21 @@ tail,C,尾,お,,,
 mountain ridge,,尾根,おね,,,
 urine,C,尿,にょう,,,
 desire to urinate,,尿意,にょうい,,,
-bureau,B1,局,きょく,官庁や機関。,,
+bureau,B1,局,きょく,官庁や機関。,郵便局に行きました。,I went to the post office.
 local,,局地的,きょくちてき,,,
 general delivery,,局留め,きょくどめ,,,
 telephone code,,局番,きょくばん,,,
 "be, exist",A1,居る,いる,生物が存在すること。,ここにいたのか！,There you are!
-"be, exist",B1,居る,おる,存在すること。,,
+"be, exist",B1,居る,おる,存在すること。,犬がそこに居ます。,A dog is there.
 residence,C,居住,きょじゅう,,,
 resident,,居住者,きょじゅうしゃ,,,
 "sit upright, become aggressive",,居直る,いなおる,,,
-nodding off,B1,居眠り,いねむり,眠ってしまうこと。,,
+nodding off,B1,居眠り,いねむり,眠ってしまうこと。,授業中に居眠りしました。,I dozed off during class.
 pub,,居酒屋,いざかや,,,
-living room,B1,居間,いま,家族が集まる部屋。,,
+living room,B1,居間,いま,家族が集まる部屋。,居間で休みました。,I rested in the living room.
 "refraction, bending, warping",C,屈折,くっせつ,,,
 "disgrace, humiliation",,屈辱,くつじょく,,,
-"reach, arrive",B1,届く,とどく,届くこと。,,
+"reach, arrive",B1,届く,とどく,届くこと。,手紙が届きました。,A letter arrived.
 deliver,A2,届ける,とどける,届けること。,手紙を家に届けました。,I delivered a letter to the house.
 "report, notification",,届け出,とどけで,,,
 "shop, store",,屋,や,,,
@@ -3419,7 +3419,7 @@ indoors,,屋内,おくない,,,
 food stall,,屋台,やたい,,,
 outdoors,B2,屋外,おくがい,,,
 "residence, estate",C,屋敷,やしき,,,
-roof,B1,屋根,やね,建物の上部を覆うもの。,,
+roof,B1,屋根,やね,建物の上部を覆うもの。,屋根を修理しました。,I repaired the roof.
 "view, outlook",C,展望,てんぼう,,,
 viewing platform,,展望台,てんぼうだい,,,
 "exhibition, display",C,展示,てんじ,,,
@@ -3429,9 +3429,9 @@ development,B2,展開,てんかい,,,
 genus,,属,ぞく,,,
 belong,B2,属する,ぞくする,,,
 genitive case,,属格,ぞっかく,,,
-"again and again, often",B1,屡々,しばしば,しばしばを表す言葉。,,
+"again and again, often",B1,屡々,しばしば,,彼はしばしば旅行します。,He often travels.
 footwear,,履き物,はきもの,,,
-put on shoes,B1,履く,はく,靴を身につけること。,,
+put on shoes,B1,履く,はく,靴を身につけること。,靴を履きました。,I put on shoes.
 personal history,C,履歴,りれき,,,
 resume,,履歴書,りれきしょ,,,
 mountain,A1,山,やま,地面が高く盛り上がった所。,山に登ります。,I climb the mountain.
@@ -3446,12 +3446,12 @@ wasabi,,山葵,わさび,,,
 parade float,,山車,だし,,,
 summit,,山頂,さんちょう,,,
 "surely, certainly",A2,屹度,きっと,確かにを示す言葉。,明日はきっと晴れます。,It will surely be sunny tomorrow.
-rock,B1,岩,いわ,大きな石。,,
+rock,B1,岩,いわ,大きな石。,大きな岩があります。,There is a big rock.
 bedrock,,岩盤,がんばん,,,
 rock,C,岩石,がんせき,,,
 petrology,,岩石学,がんせきがく,,,
 cape,B2,岬,みさき,,,
-shore,B1,岸,きし,陸と海の境。,,
+shore,B1,岸,きし,陸と海の境。,岸に立っています。,I am standing on the shore.
 "mountain pass, ridge, peak",B2,峠,とうげ,,,
 island,A2,島,しま,水に囲まれた土地。,島で休みました。,I rested on an island.
 island,,島,とう,,,
@@ -3470,20 +3470,20 @@ cliff edge,,崖っ縁,がけっぷち,,,
 "collapse, decay",C,崩壊,ほうかい,,,
 "fit, fall into",C,嵌まる,はまる,,,
 "insert, put on",B2,嵌める,はめる,,,
-storm,B1,嵐,あらし,,,
+storm,B1,嵐,あらし,,嵐で木が倒れました。,A tree fell in the storm.
 be bulky,C,嵩張る,かさばる,,,
 river,A1,川,かわ,水が流れる道。,川で魚を見ます。,I see fish in the river.
 riverbank,,川岸,かわぎし,,,
 Kawasaki,,川崎,かわさき,,,
 comic haiku,,川柳,せんりゅう,,,
-"state, province",B1,州,しゅう,,,
+"state, province",B1,州,しゅう,,この州には大きな湖があります。,There is a large lake in this state.
 state government,,州政府,しゅうせいふ,,,
 go around,B2,巡る,めぐる,,,
 patrol,,巡回,じゅんかい,,,
 police officer,B2,巡査,じゅんさ,,,
 pilgrimage,,巡礼,じゅんれい,,,
 pilgrim,,巡礼者,じゅんれいしゃ,,,
-nest,B1,巣,す,,,
+nest,B1,巣,す,,木に鳥の巣があります。,There is a bird’s nest in the tree.
 construction work,B2,工事,こうじ,,,
 work of handicraft,C,工作,こうさく,,,
 hand tool,,工具,こうぐ,,,
@@ -3496,24 +3496,24 @@ industrialization,,工業化,こうぎょうか,,,
 handicraft,B2,工芸,こうげい,,,
 left,A1,左,ひだり,方角の左。,左に曲がってください。,Please turn left.
 left side,,左側,ひだりがわ,,,
-"left and right, determination",B1,左右,さゆう,,,
+"left and right, determination",B1,左右,さゆう,,天気に左右されます。,It depends on the weather.
 left hand,,左手,ひだりて,,,
 "that's right, like that",,左様,さよう,,,
 "farewell, goodbye",B2,左様なら,さようなら,,,
 left-wing,,左翼,さよく,,,
 giant,,巨人,きょじん,,,
 master,,巨匠,きょしょう,,,
-huge,B1,巨大,きょだい,,,
+huge,B1,巨大,きょだい,,巨大な建物が建ちました。,A huge building was built.
 giant star,,巨星,きょせい,,,
 large sum,,巨額,きょがく,,,
-difference,B1,差,さ,,,
+difference,B1,差,さ,,二人の意見には差があります。,There is a difference between their opinions.
 "give, offer",A2,差し上げる,さしあげる,差し出すことの敬語。,先生にお土産を差し上げました。,I gave a souvenir to my teacher.
 "hold out, present",C,差し出す,さしだす,,,
 "come near, approach",C,差し掛ける,さしかける,,,
 "interfere, hinder",C,差し支える,さしつかえる,,,
 insert,,差し込む,さしこむ,,,
 "raise, shine, be visible",A1,差す,さす,光が差し込むこと。,傘を差します。,I open an umbrella.
-discrimination,B1,差別,さべつ,,,
+discrimination,B1,差別,さべつ,,差別をなくすべきです。,Discrimination should be eliminated.
 difference,C,差異,さい,,,
 "balance, difference",C,差額,さがく,,,
 roll,C,巻,まき,,,
@@ -3521,22 +3521,22 @@ involve,,巻き込む,まきこむ,,,
 "roll up, wind",B2,巻く,まく,,,
 "napkin, cloth",,巾,きん,,,
 city,A2,市,し,行政区分の都市。,東京は大きな市です。,Tokyo is a big city.
-"market, fair",B1,市,いち,,,
+"market, fair",B1,市,いち,,市で祭りが開かれました。,A festival was held in the city.
 market price,,市価,しか,,,
 within the city,,市内,しない,,,
 minicipal,,市営,しえい,,,
-market,B1,市場,いちば,,,
+market,B1,市場,いちば,,市場で野菜を買いました。,I bought vegetables at the market.
 market,,市場,しじょう,,,
 outside the city,,市外,しがい,,,
 citizen,A2,市民,しみん,都市に住む人。,市民は祭りを楽しみます。,The citizens enjoy the festival.
 municipality,,市町村,しちょうそん,,,
-cloth,B1,布,ぬの,,,
+cloth,B1,布,ぬの,,布で服を作りました。,I made clothes with cloth.
 futon,A2,布団,ふとん,寝具。,夜は布団で寝ます。,At night I sleep in a futon.
 cloth,,布地,ぬのじ,,,
 noble gas,,希ガス,きガス,,,
 "scarce, rare",,希少,きしょう,,,
 scarcity,,希少性,きしょうせい,,,
-hope,B1,希望,きぼう,,,
+hope,B1,希望,きぼう,,希望を持ち続けます。,I will continue to have hope.
 wishful,,希望的,きぼうてき,,,
 empire,,帝国,ていこく,,,
 imperialism,,帝国主義,ていこくしゅぎ,,,
@@ -3547,7 +3547,7 @@ seat,A2,席,せき,座る場所。,席に座ってください。,Please sit in 
 "room charge, cover charge",,席料,せきりょう,,,
 academic ranking,,席次,せきじ,,,
 seating order,,席順,せきじゅん,,,
-"sash, belt",B1,帯,おび,,,
+"sash, belt",B1,帯,おび,,着物に帯を締めました。,I tied a sash on my kimono.
 "wear, be entrusted, take on",C,帯びる,おびる,,,
 "take out, check out",,帯出,たいしゅつ,,,
 aquifer,,帯水層,たいすいそう,,,
@@ -3559,52 +3559,52 @@ send home,B2,帰す,かえす,,,
 returning to Tokyo,C,帰京,ききょう,,,
 naturalization,,帰化,きか,,,
 return to one's country,,帰国,きこく,,,
-returning home,B1,帰宅,きたく,,,
-always,B1,常に,つねに,,,
+returning home,B1,帰宅,きたく,,父が帰宅しました。,My father returned home.
+always,B1,常に,つねに,,彼は常に笑顔です。,He is always smiling.
 ordinary person,,常人,じょうじん,,,
 full-time work,,常勤,じょうきん,,,
 regular customer,,常客,じょうきゃく,,,
 "always, 24-hours",,常時,じょうじ,,,
 room temperature,,常温,じょうおん,,,
 being habitual,,常習,じょうしゅう,,,
-common sense,B1,常識,じょうしき,,,
+common sense,B1,常識,じょうしき,,常識を守りましょう。,Let’s follow common sense.
 "staple food, everyday diet",,常食,じょうしょく,,,
 hat,A1,帽子,ぼうし,頭にかぶる物。,帽子をかぶります。,I wear a hat.
-width,B1,幅,はば,,,
+width,B1,幅,はば,,道の幅が広いです。,The road is wide.
 extensive,,幅広い,はばひろい,,,
-curtain,B1,幕,まく,,,
+curtain,B1,幕,まく,,幕が上がりました。,The curtain went up.
 shogunate,,幕府,ばくふ,,,
 "air, dry, drain",B2,干す,ほす,,,
 "interference, meddling",C,干渉,かんしょう,,,
 tidal flat,,干潟,ひがた,,,
-flat,B1,平ら,たいら,,,
+flat,B1,平ら,たいら,,庭は平らです。,The garden is flat.
 hiragana syllabary,B2,平仮名,ひらがな,,,
 "boring, ordinary",B2,平凡,へいぼん,,,
-peace,B1,平和,へいわ,,,
-average,B1,平均,へいきん,,,
+peace,B1,平和,へいわ,,平和な国に住みたいです。,I want to live in a peaceful country.
+average,B1,平均,へいきん,,平均点は七十点です。,The average score is 70 points.
 Heisei period,,平成,へいせい,,,
 weekday,B2,平日,へいじつ,,,
 composure,B2,平気,へいき,,,
-equality,B1,平等,びょうどう,,,
+equality,B1,平等,びょうどう,,全員を平等に扱います。,Everyone is treated equally.
 plain,B2,平野,へいや,,,
 tranquility,,平静,へいせい,,,
 year,A1,年,とし,時間の単位。,今年はうれしい年です。,This year is a happy year.
 "older, senior",,年上,としうえ,,,
-throughout the year,B1,年中,ねんじゅう,,,
-"age, era",B1,年代,ねんだい,,,
-elderly person,B1,年寄り,としより,,,
+throughout the year,B1,年中,ねんじゅう,,年中花が咲いています。,Flowers bloom all year round.
+"age, era",B1,年代,ねんだい,,この建物は昭和年代のものです。,This building is from the Showa era.
+elderly person,B1,年寄り,としより,,年寄りに席を譲りました。,I gave my seat to an elderly person.
 fiscal year,B2,年度,ねんど,,,
 timeline,,年表,ねんぴょう,,,
 New Year’s card,,年賀状,ねんがじょう,,,
 elderly,,年配,ねんぱい,,,
 pension,,年金,ねんきん,,,
-period of a year,B1,年間,ねんかん,,,
-age,B1,年齢,ねんれい,,,
-"fortunate, lucky, happy",B1,幸い,さいわい,,,
-happiness,B1,幸せ,しあわせ,,,
+period of a year,B1,年間,ねんかん,,年間五百万人が訪れます。,Five million people visit every year.
+age,B1,年齢,ねんれい,,年齢を教えてください。,Please tell me your age.
+"fortunate, lucky, happy",B1,幸い,さいわい,,幸い雨が止みました。,"Fortunately, the rain stopped."
+happiness,B1,幸せ,しあわせ,,幸せな家庭を作りたいです。,I want to create a happy family.
 "appreciation, gratefulness",,幸甚,こうじん,,,
-"fulfillment, happiness",B1,幸福,こうふく,,,
-"good luck, good fortune",B1,幸運,こううん,,,
+"fulfillment, happiness",B1,幸福,こうふく,,彼女は幸福を感じています。,She feels happiness.
+"good luck, good fortune",B1,幸運,こううん,,幸運にも試験に合格しました。,I was lucky to pass the exam.
 tree trunk,C,幹,みき,,,
 "secretary, organizer",,幹事,かんじ,,,
 main line,C,幹線,かんせん,,,
@@ -3616,7 +3616,7 @@ fantastic,,幻想的,げんそうてき,,,
 disillusionment,,幻滅,げんめつ,,,
 phantom limb,,幻肢,げんし,,,
 hallucination,,幻覚,げんかく,,,
-"jouvenile, childish",B1,幼い,おさない,,,
+"jouvenile, childish",B1,幼い,おさない,,幼い子供が遊んでいます。,A young child is playing.
 "young child, toddler",B2,幼児,ようじ,,,
 "immature, childish, infancy",B2,幼稚,ようち,,,
 kindergarten,B2,幼稚園,ようちえん,,,
@@ -3636,19 +3636,20 @@ agency,C,庁,ちょう,,,
 government office building,,庁舎,ちょうしゃ,,,
 "extensive, spacious",B2,広々,ひろびろ,,,
 "wide, spacious",A1,広い,ひろい,広がりが大きいこと。,この部屋は広いです。,This room is spacious.
-spread,B1,広がる,ひろがる,,,
+"spread, span, expanse, extent",,広がり,ひろがり,,,
+spread,B1,広がる,ひろがる,,町は徐々に広がっています。,The town is gradually expanding.
 spread something out,B2,広げる,ひろげる,,,
 "extent, vastness",B2,広さ,ひろさ,,,
 "spread, be spread",C,広まる,ひろまる,,,
-advertisement,B1,広告,こうこく,,,
+advertisement,B1,広告,こうこく,,広告を見ました。,I saw an advertisement.
 town square,B2,広場,ひろば,,,
 "vast, extensive",,広大,こうだい,,,
 Hiroshima,,広島,ひろしま,,,
-floor,B1,床,ゆか,,,
+floor,B1,床,ゆか,,床を掃除しました。,I cleaned the floor.
 bed,C,床,とこ,,,
 under the floor,,床下,ゆかした,,,
 barbershop,A2,床屋,とこや,髪を切る店。,床屋で髪を切りました。,I had my hair cut at the barbershop.
-bottom,B1,底,そこ,,,
+bottom,B1,底,そこ,,川の底に石があります。,There are stones at the bottom of the river.
 real intention,,底意,そこい,,,
 bottomless,,底無し,そこなし,,,
 geometric base,,底面,ていめん,,,
@@ -3657,13 +3658,13 @@ storekeeper,,店主,てんしゅ,,,
 inside the store,,店内,てんない,,,
 salesperson,A2,店員,てんいん,店で働く人。,店員に聞きました。,I asked the clerk.
 store manager,,店長,てんちょう,,,
-"degree, every time",B1,度,たび,,,
-frequently,B1,度々,たびたび,,,
+"degree, every time",B1,度,たび,,毎度ありがとうございます。,Thank you every time.
+frequently,B1,度々,たびたび,,度々ここに来ます。,I often come here.
 "courage, nerve",,度胸,どきょう,,,
 "seat, place",,座,ざ,,,
 sit,A1,座る,すわる,腰を曲げて座ること。,いすに座ります。,I sit on the chair.
 Japanese cushion for seating,B2,座布団,ざぶとん,,,
-seat,B1,座席,ざせき,,,
+seat,B1,座席,ざせき,,座席に座ってください。,Please sit in your seat.
 tatami room,B2,座敷,ざしき,,,
 tatami chair,,座椅子,ざいす,,,
 coordinate system,C,座標,ざひょう,,,
@@ -3680,22 +3681,22 @@ become obsolete,C,廃れる,すたれる,,,
 ruins,,廃墟,はいきょ,,,
 abolition,C,廃止,はいし,,,
 "on and on, meandering",,延々,えんえん,,,
-postponement,B1,延期,えんき,,,
+postponement,B1,延期,えんき,,会議は延期されました。,The meeting was postponed.
 extention,B2,延長,えんちょう,,,
 be built,B2,建つ,たつ,,,
 build,A2,建てる,たてる,建物を作ること。,家を建てました。,We built a house.
 national foundation,,建国,けんこく,,,
 building,A1,建物,たてもの,人が作った構造物。,高い建物があります。,There is a tall building.
-architecture,B1,建築,けんちく,,,
+architecture,B1,建築,けんちく,,建築を勉強しています。,I am studying architecture.
 architect,,建築家,けんちくか,,,
 "building, structure",,建築物,けんちくぶつ,,,
-construction,B1,建設,けんせつ,,,
+construction,B1,建設,けんせつ,,新しいビルを建設しました。,We built a new building.
 constructive,,建設的,けんせつてき,,,
 "structure, building",,建造物,けんそうぶつ,,,
 dialect,,弁,べん,,,
 distinction,,弁別,べんべつ,,,
 "speaker, orator, narrator",,弁士,べんし,,,
-lunchbox,B1,弁当,べんとう,,,
+lunchbox,B1,弁当,べんとう,,弁当を持ってきました。,I brought a lunchbox.
 "excuse, explanation, justification",C,弁解,べんかい,,,
 "defense, advocacy",C,弁護,べんご,,,
 lawyer,,弁護士,べんごし,,,
@@ -3711,12 +3712,12 @@ take on,B2,引き受ける,ひきうける,,,
 detain,B2,引き止める,ひきとめる,,,
 "cause, bring about",C,引き起こす,ひきおこす,,,
 pull,A1,引く,ひく,物を自分の方へ動かすこと。,ドアを引きます。,I pull the door.
-draw tight,B1,引っ張る,ひっぱる,,,
+draw tight,B1,引っ張る,ひっぱる,,ロープを引っ張りました。,I pulled the rope.
 moving house,B2,引っ越し,ひっこし,,,
 move house,A2,引っ越す,ひっこす,住居を移すこと。,大阪に引っ越しました。,I moved to Osaka.
-quote,B1,引用,いんよう,,,
+quote,B1,引用,いんよう,,本から文章を引用しました。,I quoted a passage from the book.
 quotation mark,,引用符,いんようふ,,,
-retirement,B1,引退,いんたい,,,
+retirement,B1,引退,いんたい,,彼は引退を発表しました。,He announced his retirement.
 younger brother,A1,弟,おとうと,年下の男の兄弟。,弟は中学生です。,My younger brother is a junior high school student.
 bowstring,,弦,つる,,,
 string music,,弦楽,げんがく,,,
@@ -3734,7 +3735,7 @@ by force,C,強いて,しいて,,,
 "get strong, be strengthened",C,強まる,つよまる,,,
 strengthen,C,強める,つよめる,,,
 "coercion, force",C,強制,きょうせい,,,
-"powerful, strong​",B1,強力,きょうりょく,,,
+"powerful, strong​",B1,強力,きょうりょく,,強力なエンジンです。,It is a powerful engine.
 "reinforcement, strengthening",B2,強化,きょうか,,,
 rape,,強姦,ごうかん,,,
 "overbearing, coercive",B2,強引,ごういん,,,
@@ -3743,14 +3744,14 @@ authoritarianism,,強権,きょうけん,,,
 "authoritarian, heavy-handed",,強権的,きょうけんてき,,,
 "confident, assured",B2,強気,つよき,,,
 "strong, intense, severe",C,強烈,きょうれつ,,,
-robbery,B1,強盗,ごうとう,,,
+robbery,B1,強盗,ごうとう,,銀行で強盗がありました。,There was a robbery at the bank.
 "firm, strong, unbending",C,強硬,きょうこう,,,
-emphasis,B1,強調,きょうちょう,,,
+emphasis,B1,強調,きょうちょう,,彼は強調して話しました。,He spoke with emphasis.
 "beg, pester, plead",C,強請る,ねだる,,,
 compulsion,,強迫,きょうはく,,,
 OCD,,強迫性障害,きょうはくせいしょうがい,,,
 strong wind,,強風,きょうふう,,,
-"bullet, shell",B1,弾,たま,,,
+"bullet, shell",B1,弾,たま,,銃から弾が出ました。,A bullet came out of the gun.
 play an instrument,A1,弾く,ひく,楽器を鳴らすこと。,ピアノを弾きます。,I play the piano.
 snap,C,弾く,はじく,,,
 bounce,C,弾む,はずむ,,,
@@ -3761,14 +3762,14 @@ oppression,,弾圧,だんあつ,,,
 warhead,,弾頭,だんとう,,,
 "hit, success",C,当たり,あたり,,,
 obvious,B2,当たり前,あたりまえ,,,
-be hit,B1,当たる,あたる,,,
-hit,B1,当てる,あてる,,,
+be hit,B1,当たる,あたる,,ボールが頭に当たりました。,The ball hit my head.
+hit,B1,当てる,あてる,,答えを黒板に当てました。,I applied the answer to the blackboard.
 matter under concern,,当事,とうじ,,,
 person involved,,当事者,とうじしゃ,,,
 initially,,当初,とうしょ,,,
 this store,,当店,とうてん,,,
 on that day,B2,当日,とうじつ,,,
-at that time,B1,当時,とうじ,,,
+at that time,B1,当時,とうじ,,当時は貧しかったです。,At that time we were poor.
 "naturally, of course",,当然,とうぜん,,,
 person in charge,B2,当番,とうばん,,,
 being elected,C,当選,とうせん,,,
@@ -3787,24 +3788,24 @@ carve,B2,彫る,ほる,,,
 sculpture,B2,彫刻,ちょうこく,,,
 chisel,,彫刻刀,ちょうこくとう,,,
 sculptor,,彫刻家,ちょうこくか,,,
-shadow,B1,影,かげ,,,
-influence,B1,影響,えいきょう,,,
-purpose,B1,役,やく,,,
+shadow,B1,影,かげ,,木の影に座りました。,I sat in the shade of a tree.
+influence,B1,影響,えいきょう,,音楽は人に影響を与えます。,Music influences people.
+purpose,B1,役,やく,,役を演じました。,I played a role.
 be useful,A2,役に立つ,やくにたつ,役に立つこと。,この本は役に立ちます。,This book is useful.
 government official,B2,役人,やくにん,,,
-role,B1,役割,やくわり,,,
+role,B1,役割,やくわり,,彼の役割は大きいです。,His role is important.
 seat of local government,B2,役所,やくしょ,,,
 be useful,C,役立つ,やくだつ,,,
 actor,B2,役者,やくしゃ,,,
 he,A2,彼,かれ,男性を指す言葉。,彼は私の友達です。,He is my friend.
 that (over there),C,彼の,あの,,,
-they,B1,彼ら,かれら,,,
+they,B1,彼ら,かれら,,彼らは学生です。,They are students.
 that over there,A1,彼れ,あれ,遠くにある物を指す言葉。,あれは山です。,That over there is a mountain.
 over there,A1,彼処,あそこ,遠い場所を指す言葉。,あそこに学校があります。,There is a school over there.
 she,A2,彼女,かのじょ,女性を指す言葉。,彼女は学生です。,She is a student.
 they,,彼女達,かのじょたち,,,
 over there,A1,彼方,あちら,遠方を指す言葉。,あちらへどうぞ。,"This way, please."
-"here and there, several places",B1,彼方此方,あちこち,,,
+"here and there, several places",B1,彼方此方,あちこち,,彼方此方に花が咲いています。,Flowers are blooming here and there.
 boyfriend,,彼氏,かれし,,,
 round trip,B2,往復,おうふく,,,
 coming and going,,往来,おうらい,,,
@@ -3824,29 +3825,29 @@ aftertaste,,後味,あとあじ,,,
 regret,C,後悔,こうかい,,,
 in the rear,,後方,こうほう,,,
 postposition,,後置詞,こうちし,,,
-the latter,B1,後者,こうしゃ,,,
+the latter,B1,後者,こうしゃ,,私は後者を選びます。,I choose the latter.
 junior employee,B2,後輩,こうはい,,,
 retreat,C,後退,こうたい,,,
-"gradual, steady",B1,徐々,じょじょ,,,
+"gradual, steady",B1,徐々,じょじょ,,徐々に良くなっています。,It is gradually getting better.
 "gradually, steadily",,徐々に,じょじょに,,,
 on foot,C,徒歩,とほ,,,
-"obey, follow",B1,従う,したがう,,,
-"therefore, accordingly",B1,従って,したがって,,,
-male cousin,B1,従兄弟,いとこ,,,
+"obey, follow",B1,従う,したがう,,規則に従ってください。,Please follow the rules.
+"therefore, accordingly",B1,従って,したがって,,従って結果は明らかです。,"Therefore, the result is clear."
+male cousin,B1,従兄弟,いとこ,,従兄弟と遊びました。,I played with my cousin.
 female cousin,B2,従姉妹,いとこ,,,
 employee,C,従業員,じゅうぎょういん,,,
 "bargain, advantage",,得,とく,,,
 make a profit,,得する,とくする,,,
-get,B1,得る,える,,,
-"good at, forte",B1,得意,とくい,,,
+get,B1,得る,える,,新しい知識を得ました。,I gained new knowledge.
+"good at, forte",B1,得意,とくい,,数学が得意です。,I am good at mathematics.
 game score,C,得点,とくてん,,,
-"each other, one another",B1,御互い,おたがい,,,
+"each other, one another",B1,御互い,おたがい,,御互い助け合いましょう。,Let’s help each other.
 "end, conclusion",,御仕舞い,おしまい,,,
 good night,B2,御休み,おやすみ,,,
 sorry,B2,御免,ごめん,,,
-I am sorry,B1,御免なさい,ごめんなさい,,,
+I am sorry,B1,御免なさい,ごめんなさい,,御免なさい、遅れました。,"I am sorry, I was late."
 snack,B2,御八つ,おやつ,,,
-you,B1,御前,おまえ,,,
+you,B1,御前,おまえ,,御前に質問があります。,I have a question for you.
 "monster, goblin",,御化け,おばけ,,,
 knowing,A2,御存知,ごぞんじ,知っているの尊敬語。,その人をご存知ですか。,Do you know that person?
 "your house, your home",A2,御宅,おたく,相手の家を丁寧に言う言葉。,お宅はどちらですか。,Where is your house?
@@ -3856,10 +3857,10 @@ how old,A1,御幾つ,おいくつ,年齢を尋ねる丁寧な言葉。,おいく
 "be, exist",C,御座います,ございます,,,
 rice ball,,御握り,おにぎり,,,
 good morning,B2,御早う,おはよう,,,
-lunch,B1,御昼,おひる,,,
+lunch,B1,御昼,おひる,,御昼を食べました。,I ate lunch.
 stylish,B2,御洒落,おしゃれ,,,
 soy dashi stew,,御田,おでん,,,
-congratulations,B1,御目出度う,おめでとう,,,
+congratulations,B1,御目出度う,おめでとう,,御目出度う、卒業ですね。,Congratulations on graduating.
 grandmother,A1,御祖母さん,おばあさん,母親の母を呼ぶ言葉。,おばあさんは元気です。,My grandmother is healthy.
 grandfather,C,御祖父さん,おじいさん,,,
 stomach,A1,御腹,おなか,食べ物を消化する体の部分。,おなかが痛いです。,My stomach hurts.
@@ -3883,14 +3884,14 @@ revenge,,復讐,ふくしゅう,,,
 circulatory system,,循環器,じゅんかんき,,,
 "faint, dim, weak",C,微か,かすか,,,
 "particle, little piece",C,微塵,みじん,,,
-"subtle, questionable, delicate",B1,微妙,びみょう,,,
+"subtle, questionable, delicate",B1,微妙,びみょう,,それは微妙な問題です。,That is a delicate problem.
 microbiology,,微生物学,びせいぶつがく,,,
 smile,C,微笑,びしょう,,,
 smile,,微笑み,ほほえみ,,,
-smile,B1,微笑む,ほほえむ,,,
+smile,B1,微笑む,ほほえむ,,彼女は微笑みました。,She smiled.
 microscopic,,微視的,びしてき,,,
-staying up all night,B1,徹夜,てつや,,,
-thoroughness,B1,徹底,てってい,,,
+staying up all night,B1,徹夜,てつや,,徹夜で勉強しました。,I studied all night.
+thoroughness,B1,徹底,てってい,,徹底的に調べました。,I investigated thoroughly.
 thorough,,徹底的,てっていてき,,,
 mind,A2,心,こころ,感情を持つ部分。,心が落ち着きました。,My mind has calmed.
 state of mind,,心境,しんきょう,,,
@@ -3898,14 +3899,14 @@ reassuring,C,心強い,こころづよい,,,
 "know, understand",B2,心得る,こころえる,,,
 heartbeat,,心拍,しんぱく,,,
 be heart-warming,,心温まる,こころあたたまる,,,
-psychology,B1,心理,しんり,,,
+psychology,B1,心理,しんり,,心理を学びます。,I study psychology.
 psychological,,心理的,しんりてき,,,
-heart,B1,心臓,しんぞう,,,
+heart,B1,心臓,しんぞう,,心臓が速く打っています。,My heart is beating fast.
 heart attack,,心臓発作,しんぞうほっさ,,,
 mind and body,B2,心身,しんしん,,,
-worry,B1,心配,しんぱい,,,
+worry,B1,心配,しんぱい,,明日の試験が心配です。,I am worried about tomorrow’s exam.
 always,A2,必ず,かならず,必ず行うこと。,必ず宿題を出してください。,Be sure to hand in your homework.
-"frantic, desperate",B1,必死,ひっし,,,
+"frantic, desperate",B1,必死,ひっし,,必死で走りました。,I ran desperately.
 "necessity, need",A2,必要,ひつよう,欠かせないこと。,水は必要です。,Water is necessary.
 necessity,,必要性,ひつようせい,,,
 necessities,B2,必需品,ひつじゅひん,,,
@@ -3923,7 +3924,7 @@ forgetting,,忘却,ぼうきゃく,,,
 year-end party,,忘年会,ぼうねんかい,,,
 busy,A1,忙しい,いそがしい,用事が多くて余裕がないこと。,今日は忙しいです。,I am busy today.
 being extremely busy,,忙殺,ぼうさつ,,,
-"respond, comply with",B1,応じる,おうじる,,,
+"respond, comply with",B1,応じる,おうじる,,質問に応じました。,I responded to the question.
 "answer, respond",B2,応ずる,おうずる,,,
 appropriateness,,応分,おうぶん,,,
 application,C,応募,おうぼ,,,
@@ -3940,19 +3941,19 @@ clear weather,B2,快晴,かいせい,,,
 pleasure,,快楽,かいらく,,,
 "cheerful, lively",,快活,かいかつ,,,
 rapidity,,快速,かいそく,,,
-comfort,B1,快適,かいてき,,,
+comfort,B1,快適,かいてき,,快適な部屋です。,It is a comfortable room.
 "sense, idea",C,念,ねん,,,
 on one's mind,,念頭,ねんとう,,,
 all of a sudden,B2,忽ち,たちまち,,,
 anger,C,怒り,いかり,,,
-get angry,A2,怒る,おこる,怒ること。,先生が怒りました。,The teacher got angry.
+get angry,A2,怒る,おこる,,先生が怒りました。,The teacher got angry.
 yell,B2,怒鳴る,どなる,,,
 scary,A2,怖い,こわい,恐ろしく感じること。,怖い映画を見ました。,I watched a scary movie.
 be afraid of,,怖がる,こわがる,,,
 "thought, feelings",,思い,おもい,,,
 think of,B2,思い付く,おもいつく,,,
 be at a loss,,思い余る,おもいあまる,,,
-memories,B1,思い出,おもいで,,,
+memories,B1,思い出,おもいで,,子供の思い出があります。,I have childhood memories.
 remember,A2,思い出す,おもいだす,過去のことを心に浮かべること。,名前を思い出しました。,I remembered the name.
 let go of,,思い切る,おもいきる,,,
 be reminded of,,思い浮かべる,おもいうかべる,,,
@@ -3960,32 +3961,32 @@ assume,B2,思い込む,おもいこむ,,,
 "consideration, thoughtfulness",,思い遣り,おもいやり,,,
 think,A2,思う,おもう,考えを持つこと。,そうだと思います。,I think so.
 it seems that,,思える,おもえる,,,
-unthinkingly,B1,思わず,おもわず,,,
-"idea, ideology",B1,思想,しそう,,,
+unthinkingly,B1,思わず,おもわず,,思わず笑いました。,I laughed unintentionally.
+"idea, ideology",B1,思想,しそう,,思想の自由は大切です。,Freedom of thought is important.
 ideologically,,思想的,しそうてき,,,
 puberty,,思春期,ししゅんき,,,
 thought,C,思考,しこう,,,
 sluggish,C,怠い,だるい,,,
-be lazy,B1,怠ける,なまける,,,
+be lazy,B1,怠ける,なまける,,彼は仕事を怠けました。,He neglected his work.
 lazy person,,怠け者,なまけもの,,,
 "neglect, be off one's guard",B2,怠る,おこたる,,,
 laziness,,怠惰,たいだ,,,
 sudden,A2,急,きゅう,突然の様子。,急に雨が降りました。,It suddenly rained.
 "hurry, rush",A2,急ぐ,いそぐ,急いで行動すること。,急いで駅に行きます。,I hurried to the station.
-suddenly,B1,急に,きゅうに,,,
+suddenly,B1,急に,きゅうに,,急に雨が降りました。,It suddenly rained.
 sudden death,,急死,きゅうし,,,
-rapidity,B1,急激,きゅうげき,,,
+rapidity,B1,急激,きゅうげき,,急激な変化です。,It is a rapid change.
 sudden illness,,急病,きゅうびょう,,,
 "express, hurrying",A2,急行,きゅうこう,速く走る列車。,急行に乗りました。,I rode the express train.
-"speed, rapidity",B1,急速,きゅうそく,,,
-personal nature,B1,性,せい,,,
+"speed, rapidity",B1,急速,きゅうそく,,経済が急速に発展しました。,The economy developed rapidly.
+personal nature,B1,性,せい,,性の違いを学びます。,I study the differences between sexes.
 intercourse,,性交,せいこう,,,
 sex toy,,性具,せいぐ,,,
 "gender, sex",B2,性別,せいべつ,,,
 genitals,,性器,せいき,,,
 gender role,,性役割,せいやくわり,,,
 sex education,,性教育,せいきょういく,,,
-personality,B1,性格,せいかく,,,
+personality,B1,性格,せいかく,,明るい性格です。,He has a cheerful personality.
 "lust, sexual desire",,性欲,せいよく,,,
 sexual,,性的,せいてき,,,
 sexual orientation,,性的指向,せいてきしこう,,,
@@ -3993,21 +3994,21 @@ innate ability,B2,性能,せいのう,,,
 "nature, property",B2,性質,せいしつ,,,
 suspicious,B2,怪しい,あやしい,,,
 "mysterious person, monster",,怪人,かいじん,,,
-injury,B1,怪我,けが,,,
+injury,B1,怪我,けが,,転んで怪我をしました。,I got injured when I fell.
 monster,,怪物,かいぶつ,,,
 monster,C,怪獣,かいじゅう,,,
-"romance, love",B1,恋,こい,,,
+"romance, love",B1,恋,こい,,若いころ恋をしました。,I fell in love when I was young.
 "yearned for, longed for",B2,恋しい,こいしい,,,
 fall in love,C,恋する,こいする,,,
-romantic partner,B1,恋人,こいびと,,,
+romantic partner,B1,恋人,こいびと,,彼女は私の恋人です。,She is my girlfriend.
 falling in love,C,恋愛,れんあい,,,
 love letter,,恋文,こいぶみ,,,
-"perhaps, I dare say, likely",B1,恐らく,おそらく,,,
+"perhaps, I dare say, likely",B1,恐らく,おそらく,,恐らく明日は雨です。,Perhaps it will rain tomorrow.
 fear,C,恐れ,おそれ,,,
-"fear, be afraid of",B1,恐れる,おそれる,,,
-"dreadful, terrible",B1,恐ろしい,おそろしい,,,
+"fear, be afraid of",B1,恐れる,おそれる,,失敗を恐れます。,I fear failure.
+"dreadful, terrible",B1,恐ろしい,おそろしい,,恐ろしい夢を見ました。,I had a terrible dream.
 extortion,,恐喝,きょうかつ,,,
-"fear, dread",B1,恐怖,きょうふ,,,
+"fear, dread",B1,恐怖,きょうふ,,暗闇に恐怖を感じました。,I felt fear in the darkness.
 phobia,,恐怖症,きょうふしょう,,,
 "panic, sense of crisis",,恐慌,きょうこう,,,
 dinosaur,,恐竜,きょうりゅう,,,
@@ -4019,11 +4020,11 @@ feel ashamed,C,恥じる,はじる,,,
 "embarrassed, ashamed",A2,恥ずかしい,はずかしい,人前で恥ずかしく思うこと。,恥ずかしいことを言いました。,I said something embarrassing.
 shameless,,恥知らず,はじしらず,,,
 "disgrace, shame",,恥辱,ちじょく,,,
-"favor, obligation",B1,恩,おん,,,
+"favor, obligation",B1,恩,おん,,先生に恩を感じます。,I feel indebted to my teacher.
 "savior, benefactor, patron",,恩人,おんじん,,,
 "grace, blessing",B2,恩恵,おんけい,,,
 amnesty,,恩赦,おんしゃ,,,
-breath,B1,息,いき,,,
+breath,B1,息,いき,,深い息をしました。,I took a deep breath.
 son,A2,息子,むすこ,男性の子供。,息子はサッカーが好きです。,My son likes soccer.
 be blessed,B2,恵まれる,めぐまれる,,,
 blessing,C,恵み,めぐみ,,,
@@ -4033,31 +4034,31 @@ regret,B2,悔やむ,くやむ,,,
 "perceive, sense",C,悟る,さとる,,,
 spiritual enlightenment,,悟道,ごどう,,,
 "suffer from, fall ill from",,患う,わずらう,,,
-medical patient,B1,患者,かんじゃ,,,
+medical patient,B1,患者,かんじゃ,,患者が病院に来ました。,A patient came to the hospital.
 affliction,,患難,かんなん,,,
 torment,C,悩ます,なやます,,,
 "trouble, worries",C,悩み,なやみ,,,
-be worried,B1,悩む,なやむ,,,
+be worried,B1,悩む,なやむ,,将来について悩んでいます。,I am worried about the future.
 anguish,,悩乱,のうらん,,,
 evil,C,悪,あく,,,
 bad,A1,悪い,わるい,よくないこと。,悪い天気です。,It is bad weather.
 bad person,,悪人,あくにん,,,
 worsening,C,悪化,あっか,,,
-slander,B1,悪口,わるぐち,,,
+slander,B1,悪口,わるぐち,,悪口を言わないでください。,Please don’t speak ill of others.
 nightmare,,悪夢,あくむ,,,
 negative influence,,悪影響,あくえいきょう,,,
 villain,,悪役,あくやく,,,
 vicious cycle,,悪循環,あくじゅんかん,,,
 "vice, immorality",,悪徳,あくとく,,,
 malice,,悪意,あくい,,,
-prank,B1,悪戯,いたずら,,,
+prank,B1,悪戯,いたずら,,子供が悪戯をしました。,The child played a prank.
 bad person,C,悪者,わるもの,,,
 morning sickness,,悪阻,つわり,,,
 demon,,悪霊,あくりょう,,,
-devil,B1,悪魔,あくま,,,
+devil,B1,悪魔,あくま,,悪魔の話を聞きました。,I heard a story about a demon.
 sad,A2,悲しい,かなしい,悲しむ気持ち。,悲しい話を聞きました。,I heard a sad story.
-"feel sad, mourn, regret",B1,悲しむ,かなしむ,,,
-tragedy,B1,悲劇,ひげき,,,
+"feel sad, mourn, regret",B1,悲しむ,かなしむ,,友達の死を悲しみました。,I mourned my friend’s death.
+tragedy,B1,悲劇,ひげき,,それは悲劇でした。,That was a tragedy.
 tragic,,悲劇的,ひげきてき,,,
 sorrow,,悲哀,ひあい,,,
 tragic,C,悲惨,ひさん,,,
@@ -4067,7 +4068,7 @@ scream,C,悲鳴,ひめい,,,
 compassion,C,情け,なさけ,,,
 "miserable, shameful",,情けない,なさけない,,,
 state of affairs,C,情勢,じょうせい,,,
-information,B1,情報,じょうほう,,,
+information,B1,情報,じょうほう,,ニュースで情報を得ました。,I got information from the news.
 passion,C,情熱,じょうねつ,,,
 "bewilder, perplex",,惑わす,まどわす,,,
 planet,C,惑星,わくせい,,,
@@ -4075,56 +4076,56 @@ planet,C,惑星,わくせい,,,
 "close, almost",B2,惜しい,おしい,,,
 sparing no expense,,惜しまない,おしまない,,,
 be frugal,C,惜しむ,おしむ,,,
-imagination,B1,想像,そうぞう,,,
+imagination,B1,想像,そうぞう,,未来を想像しました。,I imagined the future.
 assumption,,想定,そうてい,,,
 "feelings, thoughts, meaning",,意,い,,,
 inclination,C,意向,いこう,,,
 meaning,A1,意味,いみ,言葉の内容や意味。,意味が分かりません。,I don’t understand the meaning.
 intention,C,意図,いと,,,
-"unexpected, surprising",B1,意外,いがい,,,
-will,B1,意志,いし,,,
-"intention, wish, purpose",B1,意思,いし,,,
+"unexpected, surprising",B1,意外,いがい,,意外な結果でした。,It was an unexpected result.
+will,B1,意志,いし,,強い意志を持っています。,I have a strong will.
+"intention, wish, purpose",B1,意思,いし,,成功の意思があります。,I have the intention to succeed.
 "motivation, desire",C,意欲,いよく,,,
 enthusiastic,,意欲的,いよくてき,,,
 be enthusiastic about,C,意気込む,いきごむ,,,
 "meaning, significance",B2,意義,いぎ,,,
 opinion,A2,意見,いけん,考えを述べたもの。,意見を言いました。,I stated my opinion.
-"consciousness, awareness",B1,意識,いしき,,,
-love,B1,愛,あい,,,
-love,B1,愛する,あいする,,,
+"consciousness, awareness",B1,意識,いしき,,意識を失いました。,I lost consciousness.
+love,B1,愛,あい,,愛を信じています。,I believe in love.
+love,B1,愛する,あいする,,彼女を愛しています。,I love her.
 "lover, mistress",,愛人,あいじん,,,
 "love of country, patriotism",,愛国,あいこく,,,
-"love, affection",B1,愛情,あいじょう,,,
+"love, affection",B1,愛情,あいじょう,,母の愛情を感じました。,I felt my mother’s affection.
 "amiability, friendliness",C,愛想,あいそ,,,
 "pet dog, beloved dog",,愛犬,あいけん,,,
 nickname,,愛称,あいしょう,,,
-"feeling, impression",B1,感じ,かんじ,,,
-feel,B1,感じる,かんじる,,,
-"being moved, being affected",B1,感動,かんどう,,,
+"feeling, impression",B1,感じ,かんじ,,楽しい感じです。,It is a pleasant feeling.
+feel,B1,感じる,かんじる,,痛みを感じました。,I felt pain.
+"being moved, being affected",B1,感動,かんどう,,映画に感動しました。,I was moved by the movie.
 moving,,感動的,かんどうてき,,,
 "admiration, astonishment",,感嘆,かんたん,,,
 exclamation point,,感嘆符,かんたんふ,,,
-admiration,B1,感心,かんしん,,,
-emotion,B1,感情,かんじょう,,,
+admiration,B1,感心,かんしん,,彼の努力に感心しました。,I admired his effort.
+emotion,B1,感情,かんじょう,,悲しい感情が残りました。,Sad emotions remained.
 impression,B2,感想,かんそう,,,
 infection,C,感染,かんせん,,,
 "impression, inspiration",B2,感激,かんげき,,,
-sensation,B1,感覚,かんかく,,,
+sensation,B1,感覚,かんかく,,冷たい感覚がありました。,I felt a cold sensation.
 "feeling, touch",C,感触,かんしょく,,,
-gratitude,B1,感謝,かんしゃ,,,
+gratitude,B1,感謝,かんしゃ,,先生に感謝しました。,I thanked the teacher.
 Thanksgiving,,感謝祭,かんしゃさい,,,
 treat with tenderness,,慈しむ,いつくしむ,,,
 "charity, philanthrophy",,慈善,じぜん,,,
 "mercy, compassion",,慈悲,じひ,,,
 "affection, fondness",,慈愛,じあい,,,
 "on purpose, especially",C,態々,わざわざ,,,
-on purpose,B1,態と,わざと,,,
+on purpose,B1,態と,わざと,,態と間違えました。,I made a mistake on purpose.
 "attitude, posture",C,態勢,たいせい,,,
-"attitude, behavior",B1,態度,たいど,,,
+"attitude, behavior",B1,態度,たいど,,礼儀正しい態度です。,It is a polite attitude.
 "busy, hurried, confused",B2,慌ただしい,あわただしい,,,
 be in a hurry,B2,慌てる,あわてる,,,
 be careful,C,慎む,つつしむ,,,
-"careful, cautious",B1,慎重,しんちょう,,,
+"careful, cautious",B1,慎重,しんちょう,,慎重に行動してください。,Please act carefully.
 chronic disease,,慢性病,まんせいびょう,,,
 chronic,,慢性的,まんせいてき,,,
 get used to,A2,慣れる,なれる,慣れ親しむこと。,寒さに慣れました。,I got used to the cold.
@@ -4146,7 +4147,7 @@ hatred,,憎悪,ぞうお,,,
 resent,,憤る,いきどおる,,,
 "admiration, longing",C,憧れ,あこがれ,,,
 "admire, long for",B2,憧れる,あこがれる,,,
-constitution,B1,憲法,けんぽう,,,
+constitution,B1,憲法,けんぽう,,憲法を守ることは大切です。,It is important to uphold the constitution.
 charter,,憲章,けんしょう,,,
 "bosom, bust",,懐,ふところ,,,
 nostalgic,B2,懐かしい,なつかしい,,,
@@ -4158,22 +4159,22 @@ Japanese fine dining,,懐石,かいせき,,,
 become,A1,成る,なる,別の状態に移ること。,とても暑くなった。,It got very hot.
 as much as possible,A2,成る可く,なるべく,できるだけを示す言葉。,なるべく早く来てください。,Please come as soon as possible.
 I see,A2,成る程,なるほど,理解したときに言う言葉。,なるほど、そういう意味ですね。,"I see, so that’s what it means."
-adult,B1,成人,せいじん,,,
+adult,B1,成人,せいじん,,彼は成人しました。,He became an adult.
 component,B2,成分,せいぶん,,,
-success,B1,成功,せいこう,,,
+success,B1,成功,せいこう,,努力して成功しました。,I succeeded through effort.
 achievement,C,成果,せいか,,,
 maturity,C,成熟,せいじゅく,,,
 formation,B2,成立,せいりつ,,,
-grade,B1,成績,せいせき,,,
-"growth, development",B1,成長,せいちょう,,,
-we,B1,我々,われわれ,,,
-selfishness,B1,我が儘,わがまま,,,
-forbearance,B1,我慢,がまん,,,
-"a certain, some",B1,或,ある,,,
-alternatively,B1,或いは,あるいは,,,
+grade,B1,成績,せいせき,,試験の成績が良かったです。,My exam results were good.
+"growth, development",B1,成長,せいちょう,,子供は早く成長します。,Children grow quickly.
+we,B1,我々,われわれ,,我々は一緒に働きます。,We work together.
+selfishness,B1,我が儘,わがまま,,彼は我が儘な人です。,He is a selfish person.
+forbearance,B1,我慢,がまん,,少し我慢してください。,Please be patient.
+"a certain, some",B1,或,ある,,或本を読みました。,I read a certain book.
+alternatively,B1,或いは,あるいは,,或いは電車で行きましょう。,"Alternatively, let’s go by train."
 battle,C,戦,いくさ,,,
-"fight, battle",B1,戦い,たたかい,,,
-"fight, wage war",B1,戦う,たたかう,,,
+"fight, battle",B1,戦い,たたかい,,戦いは長く続きました。,The battle continued for a long time.
+"fight, wage war",B1,戦う,たたかう,,敵と戦いました。,I fought with the enemy.
 war,A2,戦争,せんそう,国家間の武力闘争。,戦争は恐ろしいです。,War is terrible.
 pre-war,,戦前,せんぜん,,,
 battlefield,,戦場,せんじょう,,,
@@ -4186,7 +4187,7 @@ sliding door,A1,戸,と,家の出入口の板。,戸を開けます。,I open th
 confuse,,戸惑う,とまどう,,,
 cupboard,B2,戸棚,とだな,,,
 family register,C,戸籍,こせき,,,
-put back,B1,戻す,もどす,,,
+put back,B1,戻す,もどす,,本を元の場所に戻しました。,I put the book back in its original place.
 the way back,,戻り道,もどりみち,,,
 return,A2,戻る,もどる,元の場所へ戻ること。,家に戻りました。,I returned home.
 place,A1,所,ところ,位置や場所。,静かな所です。,It is a quiet place.
@@ -4196,9 +4197,9 @@ income,C,所得,しょとく,,,
 income tax,,所得税,しょとくぜい,,,
 possession,C,所持,しょじ,,,
 ownership,,所有,しょゆう,,,
-"fault, blame",B1,所為,せい,,,
+"fault, blame",B1,所為,せい,,事故は彼の所為です。,The accident was his fault.
 after all,,所詮,しょせん,,,
-so-called,B1,所謂,いわゆる,,,
+so-called,B1,所謂,いわゆる,,彼は所謂エリートです。,He is a so-called elite.
 folding fan,,扇,おうぎ,,,
 "fan, incite",B2,扇ぐ,あおぐ,,,
 incitement,,扇動,せんどう,,,
@@ -4208,7 +4209,7 @@ electric fan,B2,扇風機,せんぷうき,,,
 door,C,扉,とびら,,,
 hand,A1,手,て,腕の先の部分。,手を貸してくれ。,Give me a hand.
 "obtain, get a hold of",,手に入れる,てにいれる,,,
-help,B1,手伝い,てつだい,,,
+help,B1,手伝い,てつだい,,母の手伝いをしました。,I helped my mother.
 help,A2,手伝う,てつだう,他人を助けること。,母の手伝いをしました。,I helped my mother.
 homemade,,手作り,てづくり,,,
 on hand,C,手元,てもと,,,
@@ -4218,21 +4219,21 @@ hand rail,,手摺,てすり,,,
 let go of,,手放す,てばなす,,,
 "trouble, bother",C,手数,てすう,,,
 handwriting,,手書き,てがき,,,
-means,B1,手段,しゅだん,,,
+means,B1,手段,しゅだん,,安全な手段を選びました。,I chose a safe means.
 "technique, method",C,手法,しゅほう,,,
 hand washing,B2,手洗い,てあらい,,,
 letter,A1,手紙,てがみ,文字で書いた便り。,彼に手紙を書いている。,I'm writing to him.
 "procedure, process",B2,手続き,てつづき,,,
-surgery,B1,手術,しゅじゅつ,,,
+surgery,B1,手術,しゅじゅつ,,彼は手術を受けました。,He had surgery.
 glove,A2,手袋,てぶくろ,手を覆う衣類。,手袋をはきました。,I put on gloves.
 sign language,,手話,しゅわ,,,
 limb,,手足,てあし,,,
 "easy, simple",C,手軽,てがる,,,
 arrangement,C,手配,てはい,,,
 handcuffs,C,手錠,てじょう,,,
-"time, labor",B1,手間,てま,,,
+"time, labor",B1,手間,てま,,この仕事には多くの手間がかかります。,This job takes a lot of time and effort.
 wrist,B2,手首,てくび,,,
-talent,B1,才能,さいのう,,,
+talent,B1,才能,さいのう,,彼女は音楽の才能があります。,She has a talent for music.
 launch,,打ち上げる,うちあげる,,,
 briefing session,B2,打ち合わせ,うちあわせ,,,
 open up,,打ち明ける,うちあける,,,
@@ -4252,18 +4253,18 @@ repay,B2,払い戻す,はらいもどす,,,
 "deposit, pay in",B2,払い込む,はらいこむ,,,
 pay,A2,払う,はらう,代金を支払うこと。,お金を払いました。,I paid money.
 "treatment, service",C,扱い,あつかい,,,
-handle,B1,扱う,あつかう,,,
+handle,B1,扱う,あつかう,,子供を丁寧に扱ってください。,Please treat children carefully.
 masturbate,,扱く,しごく,,,
 ratification,,批准,ひじゅん,,,
-"criticism, judgement",B1,批判,ひはん,,,
+"criticism, judgement",B1,批判,ひはん,,その計画は批判されました。,That plan was criticized.
 critical,,批判的,ひはんてき,,,
-"critique, review",B1,批評,ひひょう,,,
+"critique, review",B1,批評,ひひょう,,映画の批評を読みました。,I read a review of the movie.
 "hear, know, be told",B2,承る,うけたまわる,,,
-"knowledge, awareness",B1,承知,しょうち,,,
-"approval, consent",B1,承認,しょうにん,,,
+"knowledge, awareness",B1,承知,しょうち,,その件は承知しました。,I understand that matter.
+"approval, consent",B1,承認,しょうにん,,会議で承認を得ました。,I got approval at the meeting.
 acceptance,C,承諾,しょうだく,,,
 skill,C,技,わざ,,,
-"engineer, technician",B1,技士,ぎし,,,
+"engineer, technician",B1,技士,ぎし,,彼は技士として働いています。,He works as an engineer.
 technique,,技法,ぎほう,,,
 technical skill,C,技能,ぎのう,,,
 technology,A2,技術,ぎじゅつ,学問や技の方法。,新しい技術を学びました。,I learned new technology.
@@ -4279,7 +4280,7 @@ deposit,C,投入,とうにゅう,,,
 pitcher,,投手,とうしゅ,,,
 speculation,,投機,とうき,,,
 speculative,,投機的,とうきてき,,,
-voting,B1,投票,とうひょう,,,
+voting,B1,投票,とうひょう,,投票に参加しました。,I took part in the vote.
 posting,,投稿,とうこう,,,
 investment,C,投資,とうし,,,
 dispute,C,抗争,こうそう,,,
@@ -4297,15 +4298,15 @@ paper folding,,折り紙,おりがみ,,,
 fold,A2,折る,おる,物を折り曲げること。,紙を折りました。,I folded the paper.
 be folded,A2,折れる,おれる,折れて二つになること。,木が折れました。,The tree broke.
 with trouble,B2,折角,せっかく,,,
-"omit, leave out",B1,抜く,ぬく,,,
-"be omitted, be left out",B1,抜ける,ぬける,,,
+"omit, leave out",B1,抜く,ぬく,,文章の一部を抜きました。,I left out part of the sentence.
+"be omitted, be left out",B1,抜ける,ぬける,,力が抜けました。,My strength gave out.
 slip out,C,抜け出す,ぬけだす,,,
 secret passage,,抜け穴,ぬけあな,,,
 tooth extraction,,抜歯,ばっし,,,
 "announcement, introduction",,披露,ひろう,,,
 wedding reception,,披露宴,ひろうえん,,,
-"hold, have",B1,抱える,かかえる,,,
-"embrace, hold, hug",B1,抱く,いだく,,,
+"hold, have",B1,抱える,かかえる,,大きな荷物を抱えています。,I am carrying a large bag.
+"embrace, hold, hug",B1,抱く,いだく,,子供を抱きました。,I held a child.
 "aspiration, ambition",,抱負,ほうふ,,,
 "wipe out, deny, ignore",,抹殺,まっさつ,,,
 "crossing off, crossing out",,抹消,まっしょう,,,
@@ -4326,12 +4327,12 @@ abstract,,抽象的,ちゅうしょうてき,,,
 bear a burden,C,担う,になう,,,
 bear on one's shoulder,B2,担ぐ,かつぐ,,,
 "class teacher, homeroom teacher",,担任,たんにん,,,
-being in charge,B1,担当,たんとう,,,
+being in charge,B1,担当,たんとう,,私は販売を担当しています。,I am in charge of sales.
 person in charge,,担当者,たんとうしゃ,,,
 stretcher,C,担架,たんか,,,
 "abduction, kidnapping",,拉致,らち,,,
 Chinese noodles,,拉麺,らあめん,,,
-applause,B1,拍手,はくしゅ,,,
+applause,B1,拍手,はくしゅ,,観客が拍手しました。,The audience applauded.
 kidnap,,拐かす,かどわかす,,,
 abduction,,拐取,かいしゅ,,,
 refuse,,拒む,こばむ,,,
@@ -4339,8 +4340,8 @@ refusal,C,拒否,きょひ,,,
 rejection,C,拒絶,きょぜつ,,,
 anorexia,,拒食症,きょしょくしょう,,,
 invitation,C,招き,まねき,,,
-invite,B1,招く,まねく,,,
-invitation,B1,招待,しょうたい,,,
+invite,B1,招く,まねく,,友達を家に招きました。,I invited my friend home.
+invitation,B1,招待,しょうたい,,誕生日の招待を受けました。,I received a birthday invitation.
 "pay one's respects, beg",B2,拝む,おがむ,,,
 borrowing,C,拝借,はいしゃく,,,
 seeing,A2,拝見,はいけん,見るの謙譲語。,本を拝見しました。,I looked at the book.
@@ -4348,7 +4349,7 @@ reading,,拝読,はいどく,,,
 "contribution, donation",,拠出,きょしゅつ,,,
 "foothold, footing",,拠点,きょてん,,,
 expansion,B2,拡充,かくじゅう,,,
-magnification,B1,拡大,かくだい,,,
+magnification,B1,拡大,かくだい,,写真を拡大しました。,I enlarged the photo.
 magnifying glass,,拡大鏡,かくだいきょう,,,
 "expansion, escape",B2,拡張,かくちょう,,,
 diffusion,C,拡散,かくさん,,,
@@ -4366,10 +4367,10 @@ bring home,,持ち帰る,もちかえる,,,
 "bringing, taking, carrying",B2,持参,じさん,,,
 sustainability,,持続可能,じぞくかのう,,,
 finger,A2,指,ゆび,手の先の部分。,指をけがしました。,I injured my finger.
-point,B1,指す,さす,,,
+point,B1,指す,さす,,地図で場所を指しました。,I pointed out the location on the map.
 orientation,,指向,しこう,,,
 "reservation, assignment",B2,指定,してい,,,
-guidance,B1,指導,しどう,,,
+guidance,B1,指導,しどう,,先生が生徒を指導しました。,The teacher guided the students.
 "leader, coach",,指導者,しどうしゃ,,,
 point with one's finger,C,指差す,ゆびさす,,,
 "conduct, direct",C,指揮,しき,,,
@@ -4387,7 +4388,7 @@ greeting,,挨拶,あいさつ,,,
 pretending,C,振り,ふり,,,
 hover-over kana,B2,振り仮名,ふりがな,,,
 look back on,,振り返る,ふりかえる,,,
-"wave, shake",B1,振る,ふる,,,
+"wave, shake",B1,振る,ふる,,手を振って別れました。,I waved goodbye.
 "flourish, thrive",,振るう,ふるう,,,
 "behavior, conduct",,振る舞い,ふるまい,,,
 "behave, entertain",B2,振る舞う,ふるまう,,,
@@ -4398,7 +4399,7 @@ wire transfer,,振込,ふりこみ,,,
 "captivate, grasp",B2,捉える,とらえる,,,
 knead,,捏ねる,こねる,,,
 catch,A2,捕まえる,つかまえる,逃げるものを捕えること。,警察が泥棒を捕まえました。,The police caught the thief.
-be caught,B1,捕まる,つかまる,,,
+be caught,B1,捕まる,つかまる,,泥棒が捕まりました。,The thief was caught.
 "capture, arrest",B2,捕らえる,とらえる,,,
 catcher,,捕手,ほしゅ,,,
 capture,C,捕獲,ほかく,,,
@@ -4457,44 +4458,44 @@ recommendation,,推奨,すいしょう,,,
 guess,C,推測,すいそく,,,
 "mystery, reasoning",C,推理,すいり,,,
 transition,,推移,すいい,,,
-"recommendation, endorsement",B1,推薦,すいせん,,,
+"recommendation, endorsement",B1,推薦,すいせん,,先生に推薦されました。,I was recommended by my teacher.
 promotion,C,推進,すいしん,,,
 "stop, cease",,措く,おく,,,
 "measure, step, action",C,措置,そち,,,
 "tout, hold up",C,掲げる,かかげる,,,
-bulletin,B1,掲示,けいじ,,,
+bulletin,B1,掲示,けいじ,,掲示を見てください。,Please look at the notice.
 bulletin board,,掲示板,けいじばん,,,
 publication,C,掲載,けいさい,,,
 shaved ice,,掻き氷,かきごおり,,,
 scratch,B2,掻く,かく,,,
 be complete,B2,揃う,そろう,,,
 "arrange, prepare",B2,揃える,そろえる,,,
-draw,B1,描く,えがく,,,
-draw,B1,描く,かく,,,
+draw,B1,描く,えがく,,夢を描きました。,I drew a dream.
+draw,B1,描く,かく,,絵を描くのが好きです。,I like drawing pictures.
 depiction,C,描写,びょうしゃ,,,
 take along,,提げる,さげる,,,
 "donation, provision",C,提供,ていきょう,,,
 donor,,提供者,ていきょうしゃ,,,
-submission,B1,提出,ていしゅつ,,,
+submission,B1,提出,ていしゅつ,,レポートを提出しました。,I submitted the report.
 synecdoche,,提喩,ていゆ,,,
-proposal,B1,提案,ていあん,,,
+proposal,B1,提案,ていあん,,新しい提案をしました。,I made a new proposal.
 presentation,C,提示,ていじ,,,
 fry,A1,揚げる,あげる,油で揚げること。,魚を油で揚げます。,I fry fish in oil.
 physical lift,,揚力,ようりょく,,,
-"replace, exchange",B1,換える,かえる,,,
+"replace, exchange",B1,換える,かえる,,お金をドルに換えました。,I exchanged money for dollars.
 ventilation,B2,換気,かんき,,,
 "conversion, exchange",C,換算,かんさん,,,
-"grasp, grip",B1,握る,にぎる,,,
+"grasp, grip",B1,握る,にぎる,,ボールを強く握りました。,I gripped the ball tightly.
 grip strength,,握力,あくりょく,,,
-handshake,B1,握手,あくしゅ,,,
-"support, aid",B1,援助,えんじょ,,,
+handshake,B1,握手,あくしゅ,,友達と握手しました。,I shook hands with a friend.
+"support, aid",B1,援助,えんじょ,,彼に援助を求めました。,I asked him for help.
 "covering, backing",,援護,えんご,,,
 "shake, jolt, rock",C,揺さぶる,ゆさぶる,,,
 "cradle, swing",,揺る,ゆる,,,
 "sway, shake",A2,揺れる,ゆれる,左右に揺れること。,木が風で揺れています。,The tree is swaying in the wind.
 baby cradle,,揺籃,ようらん,,,
-"damage, injury, loss",B1,損,そん,,,
-"damage, injury, loss",B1,損害,そんがい,,,
+"damage, injury, loss",B1,損,そん,,事故で損をしました。,I suffered a loss in the accident.
+"damage, injury, loss",B1,損害,そんがい,,台風で大きな損害が出ました。,The typhoon caused heavy damage.
 "boarding, embarkation",,搭乗,とうじょう,,,
 boarding pass,,搭乗券,とうじょうけん,,,
 boarding gate,,搭乗口,とうじょうぐち,,,
@@ -4510,7 +4511,7 @@ pinch,C,摘む,つまむ,,,
 "removal, taking out",,摘出,てきしゅつ,,,
 "rub, pat, massage",,摩る,さする,,,
 friction,B2,摩擦,まさつ,,,
-shoot,B1,撃つ,うつ,,,
+shoot,B1,撃つ,うつ,,銃を撃ちました。,I fired a gun.
 shooting down,,撃墜,げきつい,,,
 "withdrawal, repeal",,撤去,てっきょ,,,
 "retraction, revocation",,撤回,てっかい,,,
@@ -4519,28 +4520,28 @@ military withdrawal,,撤退,てったい,,,
 smooth down,,撫で付ける,なでつける,,,
 filming,B2,撮影,さつえい,,,
 operate,C,操る,あやつる,,,
-operation,B1,操作,そうさ,,,
+operation,B1,操作,そうさ,,機械を操作しました。,I operated the machine.
 piloting,C,操縦,そうじゅう,,,
 pilot,,操縦士,そうじゅうし,,,
 scrub,B2,擦る,こする,,,
 "rub, pat, massage",,擦る,する,,,
 pass by one another,B2,擦れ違う,すれちがう,,,
-support,B1,支える,ささえる,,,
-expenses,B1,支出,ししゅつ,,,
-branch office,B1,支店,してん,,,
-arrangements,B1,支度,したく,,,
-payment,B1,支払い,しはらい,,,
-pay,B1,支払う,しはらう,,,
+support,B1,支える,ささえる,,柱で屋根を支えます。,The pillars support the roof.
+expenses,B1,支出,ししゅつ,,今年の支出が多いです。,Expenses are high this year.
+branch office,B1,支店,してん,,駅前に支店があります。,There is a branch office in front of the station.
+arrangements,B1,支度,したく,,出発の支度をしました。,I made preparations for departure.
+payment,B1,支払い,しはらい,,支払いを済ませました。,I finished the payment.
+pay,B1,支払う,しはらう,,料金を支払いました。,I paid the fee.
 "support, backing",C,支持,しじ,,,
 approval rating,,支持率,しじりつ,,,
 supporter,,支持者,しじしゃ,,,
 "aid, assitance",,支援,しえん,,,
-"provision, supply",B1,支給,しきゅう,,,
-dominion,B1,支配,しはい,,,
+"provision, supply",B1,支給,しきゅう,,給料が支給されました。,Salaries were provided.
+dominion,B1,支配,しはい,,国を支配しました。,They ruled the country.
 obstacle,,支障,ししょう,,,
 again,B2,改めて,あらためて,,,
 improve,B2,改める,あらためる,,,
-improvement,B1,改善,かいぜん,,,
+improvement,B1,改善,かいぜん,,サービスを改善しました。,We improved the service.
 past the ticket gate,B2,改札,かいさつ,,,
 "revision, amendment",B2,改正,かいせい,,,
 "improvement, reform",C,改良,かいりょう,,,
@@ -4549,8 +4550,8 @@ reform,C,改革,かいかく,,,
 "attack, offense",C,攻め,せめ,,,
 attack,B2,攻める,せめる,,,
 "offense, menthod of attack",B2,攻め手,せめて,,,
-"attack, offense",B1,攻撃,こうげき,,,
-release,B1,放す,はなす,,,
+"attack, offense",B1,攻撃,こうげき,,軍が攻撃しました。,The army attacked.
+release,B1,放す,はなす,,鳥を放しました。,I released the bird.
 "fire, shoot",,放つ,はなつ,,,
 "throw, hurl, toss",B2,放る,ほうる,,,
 emission,C,放出,ほうしゅつ,,,
@@ -4559,12 +4560,12 @@ radioactivity,C,放射性,ほうしゃせい,,,
 absent-mindedness,,放心,ほうしん,,,
 abandonment,C,放棄,ほうき,,,
 arson,,放火,ほうか,,,
-broadcast,B1,放送,ほうそう,,,
+broadcast,B1,放送,ほうそう,,ニュースを放送しました。,The news was broadcast.
 as you please,,放題,ほうだい,,,
 "rule, government",,政,まつりごと,,,
 government ordinance,,政令,せいれい,,,
 political party,B2,政党,せいとう,,,
-government,B1,政府,せいふ,,,
+government,B1,政府,せいふ,,政府の発表がありました。,There was a government announcement.
 regime,C,政権,せいけん,,,
 politics,A2,政治,せいじ,国家を治める活動。,彼は政治に興味があります。,He is interested in politics.
 politician,,政治家,せいじか,,,
@@ -4573,9 +4574,9 @@ policy,C,政策,せいさく,,,
 therefore,,故に,ゆえに,,,
 the departed,C,故人,こじん,,,
 criminal intent,,故意,こい,,,
-"home town, birthplace",B1,故郷,ふるさと,,,
+"home town, birthplace",B1,故郷,ふるさと,,故郷に帰りたいです。,I want to return to my hometown.
 "failure, breakdown",A2,故障,こしょう,機械や器具の不調。,車が故障しました。,The car broke down.
-rescue,B1,救う,すくう,,,
+rescue,B1,救う,すくう,,命を救いました。,I saved a life.
 salvation,,救世,きゅうせい,,,
 "relief, aid",B2,救助,きゅうじょ,,,
 first-aid kit,,救急箱,きゅうきゅうばこ,,,
@@ -4586,13 +4587,13 @@ first-aid,,救護,きゅうご,,,
 "be taught, learn",B2,教わる,おそわる,,,
 church,A2,教会,きょうかい,キリスト教の建物。,日曜日に教会へ行きます。,I go to church on Sundays.
 classroom,A1,教室,きょうしつ,授業を行う部屋。,生徒たちは教室を出て行った。,The students left the classroom.
-teacher,B1,教師,きょうし,,,
+teacher,B1,教師,きょうし,,彼は教師です。,He is a teacher.
 adherent,,教徒,きょうと,,,
-professor,B1,教授,きょうじゅ,,,
+professor,B1,教授,きょうじゅ,,教授の話を聞きました。,I listened to the professor’s lecture.
 educational materials,C,教材,きょうざい,,,
 pope,,教皇,きょうこう,,,
 academic subject,C,教科,きょうか,,,
-textbook,B1,教科書,きょうかしょ,,,
+textbook,B1,教科書,きょうかしょ,,教科書を開きました。,I opened the textbook.
 dogma,,教義,きょうぎ,,,
 education,A2,教育,きょういく,人を育て教えること。,教育はとても大切です。,Education is very important.
 instruction,C,教訓,きょうくん,,,
@@ -4607,24 +4608,24 @@ prose,,散文,さんぶん,,,
 strolling,A1,散歩,さんぽ,気楽に歩くこと。,公園を散歩します。,I take a walk in the park.
 "respect, revere, honor",B2,敬う,うやまう,,,
 "sincerely yours, sincerely",C,敬具,けいぐ,,,
-"respect, honor",B1,敬意,けいい,,,
+"respect, honor",B1,敬意,けいい,,先生に敬意を表します。,I show respect to my teacher.
 salute,,敬礼,けいれい,,,
 respect language,B2,敬語,けいご,,,
-number,B1,数,かず,,,
+number,B1,数,かず,,数が多いです。,There are many in number.
 "many, numerous",,数々,かずかず,,,
-count,B1,数える,かぞえる,,,
+count,B1,数える,かぞえる,,羊を数えました。,I counted sheep.
 several people,,数人,すうにん,,,
 "numerical value, score",,数値,すうち,,,
 several minutes,,数分,すうふん,,,
-numerical digit,B1,数字,すうじ,,,
+numerical digit,B1,数字,すうじ,,数字を書きました。,I wrote numbers.
 mathematics,A2,数学,すうがく,数を扱う学問。,数学のテストを受けました。,I took a math test.
 several years,,数年,すうねん,,,
 be arranged,B2,整う,ととのう,,,
 arrange something,C,整える,ととのえる,,,
 alignment,C,整列,せいれつ,,,
 integer,B2,整数,せいすう,,,
-organization,B1,整理,せいり,,,
-enemy,B1,敵,てき,,,
+organization,B1,整理,せいり,,机の中を整理しました。,I organized the desk.
+enemy,B1,敵,てき,,彼は敵です。,He is an enemy.
 enemy country,,敵国,てきこく,,,
 enemy territory,,敵地,てきち,,,
 hostile nature,,敵性,てきせい,,,
@@ -4633,14 +4634,14 @@ spread out,B2,敷く,しく,,,
 "site, plot",B2,敷地,しきち,,,
 threshold,,敷居,しきい,,,
 security deposit,,敷金,しききん,,,
-sentence,B1,文,ぶん,,,
+sentence,B1,文,ぶん,,短い文を書きました。,I wrote a short sentence.
 literary style,B2,文体,ぶんたい,,,
 culture,A2,文化,ぶんか,人間の営みの形。,日本の文化を学びます。,I study Japanese culture.
-"complaint, objection",B1,文句,もんく,,,
-writing,B1,文字,もじ,,,
+"complaint, objection",B1,文句,もんく,,文句を言わないでください。,Please don’t complain.
+writing,B1,文字,もじ,,文字を覚えました。,I memorized characters.
 literature,A2,文学,ぶんがく,言葉で表す学問。,文学を研究しています。,I am researching literature.
 stationery,B2,文房具,ぶんぼうぐ,,,
-civilization,B1,文明,ぶんめい,,,
+civilization,B1,文明,ぶんめい,,文明が発展しました。,Civilization advanced.
 document,C,文書,ぶんしょ,,,
 grammar,A2,文法,ぶんぽう,言語の仕組み。,文法を勉強しました。,I studied grammar.
 text,A1,文章,ぶんしょう,まとまった文章。,文章を読みます。,I read a text.
@@ -4649,7 +4650,7 @@ context,B2,文脈,ぶんみゃく,,,
 "material, fee, rate",C,料,りょう,,,
 cuisine,A1,料理,りょうり,調理した食べ物。,日本料理を食べます。,I eat Japanese cuisine.
 "cook, chef",,料理人,りょうりにん,,,
-"fee, charge, fare",B1,料金,りょうきん,,,
+"fee, charge, fare",B1,料金,りょうきん,,料金を払いました。,I paid the fee.
 toll booth,,料金所,りょうきんじょ,,,
 diagonal,B2,斜め,ななめ,,,
 italics,,斜体,しゃたい,,,
@@ -4660,7 +4661,7 @@ axe,,斧,おの,,,
 axe,,斧斤,ふきん,,,
 "cut down, kill",B2,斬る,きる,,,
 unconventional,,斬新,ざんしん,,,
-"refuse, reject",B1,断る,ことわる,,,
+"refuse, reject",B1,断る,ことわる,,頼まれても断りました。,"Even when asked, I refused."
 "affirmation, declaration",B2,断定,だんてい,,,
 giving up,,断念,だんねん,,,
 water outage,B2,断水,だんすい,,,
@@ -4669,7 +4670,7 @@ deciding to carry out,,断行,だんこう,,,
 "assertion, declaration",C,断言,だんげん,,,
 like this,A2,斯う,こう,このように、を示す言葉。,こう言えば分かります。,"If you say it like this, you’ll understand."
 new,A1,新しい,あたらしい,新しくできた様子。,新しい自転車を買いたいんだ。,I need to buy a new bike.
-novel,B1,新た,あらた,,,
+novel,B1,新た,あらた,,新たな仕事を始めました。,I started a new job.
 fresh face,C,新人,しんじん,,,
 Shinjuku,,新宿,しんじゅく,,,
 bullet train,B2,新幹線,しんかんせん,,,
@@ -4679,14 +4680,14 @@ newspaper,A1,新聞,しんぶん,世の中の出来事を伝える紙。,興味�
 reestablishment,,新規,しんき,,,
 "groom, bridegroom",,新郎,しんろう,,,
 up and coming,,新鋭,しんえい,,,
-fresh,B1,新鮮,しんせん,,,
+fresh,B1,新鮮,しんせん,,新鮮な魚を食べました。,I ate fresh fish.
 person,A1,方,かた,人を敬っていう言葉。,あの方は先生です。,That person is a teacher.
-"direction, side",B1,方,ほう,,,
-people,B1,方々,かたがた,,,
-direction,B1,方向,ほうこう,,,
+"direction, side",B1,方,ほう,,北の方に山があります。,There is a mountain to the north.
+people,B1,方々,かたがた,,多くの方々が集まりました。,Many people gathered.
+direction,B1,方向,ほうこう,,車の方向を変えました。,I changed the direction of the car.
 having no sense of direction,,方向音痴,ほうこうおんち,,,
 method,C,方式,ほうしき,,,
-method,B1,方法,ほうほう,,,
+method,B1,方法,ほうほう,,安全な方法を選びました。,I chose a safe method.
 methodology,,方法論,ほうほうろん,,,
 "direction, way, method",B2,方角,ほうかく,,,
 dialect,B2,方言,ほうげん,,,
@@ -4696,7 +4697,7 @@ direction,B2,方面,ほうめん,,,
 "policy, measure",,施策,しさく,,,
 "carrying out, enforcement",C,施行,しこう,,,
 facility,C,施設,しせつ,,,
-trip,B1,旅,たび,,,
+trip,B1,旅,たび,,旅に出ました。,I went on a trip.
 travel destination,,旅先,たびさき,,,
 passport,C,旅券,りょけん,,,
 brigade,,旅団,りょだん,,,
@@ -4711,21 +4712,21 @@ Japanese-style hotel,A2,旅館,りょかん,日本風の宿泊施設。,京都�
 "revolution, rotation",,旋回,せんかい,,,
 "melody, tune",,旋律,せんりつ,,,
 "whirlwind, commotion",,旋風,せんぷう,,,
-already,B1,既に,すでに,,,
+already,B1,既に,すでに,,既に知っています。,I already know.
 being married,C,既婚,きこん,,,
 existing,,既存,きそん,,,
 stereotype,,既成概念,きせいがいねん,,,
 day,A2,日,ひ,一日の単位。,今日はいい日です。,Today is a good day.
 day after day,C,日々,ひび,,,
-during the day,B1,日中,にっちゅう,,,
-date,B1,日付,ひづけ,,,
-sunlight,B1,日光,にっこう,,,
+during the day,B1,日中,にっちゅう,,日中は暑いです。,It is hot during the day.
+date,B1,日付,ひづけ,,日付を確認してください。,Please check the date.
+sunlight,B1,日光,にっこう,,木の葉に日光が当たりました。,Sunlight hit the leaves.
 sunlight,B2,日差し,ひざし,,,
-everyday,B1,日常,にちじょう,,,
+everyday,B1,日常,にちじょう,,日常生活に便利です。,It is useful in everyday life.
 routine,,日常的,にちじょうてき,,,
 date and time,B2,日時,にちじ,,,
 Sunday,A1,日曜日,にちようび,週の最終日。,日曜日は教会に行かない。,I don't go to church on Sundays.
-Japan,B1,日本,にほん,,,
+Japan,B1,日本,にほん,,日本に行きました。,I went to Japan.
 Japanese person,,日本人,にほんじん,,,
 Japanese history,,日本史,にほんし,,,
 Japan studies,,日本学,にほんがく,,,
@@ -4762,18 +4763,18 @@ sublimation,,昇華,しょうか,,,
 "promotion, advancement",C,昇進,しょうしん,,,
 elevator,,昇降機,しょうこうき,,,
 two days after tomorrow,B2,明々後日,しあさって,,,
-"lamp, light, glow",B1,明かり,あかり,,,
+"lamp, light, glow",B1,明かり,あかり,,明かりをつけました。,I turned on the light.
 "open one's eyes, mouth",,明く,あく,,,
 Happy New Year,,明けまして,あけまして,,,
 dawn,B2,明け方,あけがた,,,
-clear,B1,明らか,あきらか,,,
+clear,B1,明らか,あきらか,,理由は明らかです。,The reason is clear.
 "bright, well-lit",A1,明るい,あかるい,光が多く暗くない様子。,未来は明るい。,The future is bright.
 day after tomorrow,A1,明後日,あさって,二日後を示す語。,あさってテストがあります。,"The day after tomorrow, there is a test."
 tomorrow,A1,明日,あした,翌日を示す語。,明日、新しい車を買うんだ。,I'm buying a new car tomorrow.
 Meiji era,,明治,めいじ,,,
 Meiji Restoration,,明治維新,めいじいしん,,,
 obviousness,,明白,めいはく,,,
-clarity,B1,明確,めいかく,,,
+clarity,B1,明確,めいかく,,明確な答えをください。,Please give me a clear answer.
 clear writing,,明記,めいき,,,
 sound asleep,,昏々,こんこん,,,
 fainting,,昏倒,こんとう,,,
@@ -4810,24 +4811,24 @@ Showa period,,昭和,しょうわ,,,
 at all costs,,是が非でも,ぜがひでも,,,
 "correction, rectify",C,是正,ぜせい,,,
 approval,,是認,ぜにん,,,
-"indeed, very much",B1,是非,ぜひ,,,
+"indeed, very much",B1,是非,ぜひ,,ぜひ来てください。,Please come by all means.
 by all means,B2,是非とも,ぜひとも,,,
 midday,A1,昼,ひる,日の明るい時間。,昼にパンを食べます。,I eat bread at midday.
 lunch,A1,昼ご飯,ひるごはん,昼に食べる食事。,昼ご飯を食べました。,I ate lunch.
 lunch break,A2,昼休み,ひるやすみ,昼の休憩時間。,昼休みに友達と話しました。,I talked with friends during the lunch break.
 midday nap,B2,昼寝,ひるね,,,
 daytime,A2,昼間,ひるま,昼間の時間。,昼間はとても暑いです。,It is very hot during the daytime.
-lunch,B1,昼食,ちゅうしょく,,,
-time,B1,時,とき,,,
+lunch,B1,昼食,ちゅうしょく,,昼食を食べました。,I ate lunch.
+time,B1,時,とき,,時が経ちました。,Time has passed.
 sometimes,A1,時々,ときどき,時々起こること。,時々散歩します。,Sometimes I take a walk.
 era,A2,時代,じだい,ある時代。,江戸時代の建物があります。,There are Edo-period buildings.
 "old-fashioned, out-of-date",,時代遅れ,じだいおくれ,,,
-time,B1,時刻,じこく,,,
+time,B1,時刻,じこく,,電車の時刻を調べました。,I checked the train time.
 timetable,C,時刻表,じこくひょう,,,
 time difference,C,時差,じさ,,,
 jet lag,,時差惚け,じさぼけ,,,
 sometimes,C,時折,ときおり,,,
-period,B1,時期,じき,,,
+period,B1,時期,じき,,今は試験の時期です。,It is exam season now.
 clock,A1,時計,とけい,時刻を示す道具。,時計は動いている。,The clock is running.
 "time, hour",A1,時間,じかん,一定の時の長さ。,一時間勉強します。,I study for one hour.
 "period of time, time zone",,時間帯,じかんたい,,,
@@ -4837,10 +4838,10 @@ evening,A1,晩,ばん,日が暮れた後の時間。,晩にテレビを見ます
 dinner,A1,晩ご飯,ばんごはん,夜に食べる食事。,晩ご飯を食べます。,I eat dinner.
 sunset years,,晩年,ばんねん,,,
 popularization,B2,普及,ふきゅう,,,
-usual,B1,普段,ふだん,,,
+usual,B1,普段,ふだん,,普段は家で勉強します。,I usually study at home.
 regular,A2,普通,ふつう,通常の様子。,普通の学生です。,I am an ordinary student.
 "universal, general",C,普遍,ふへん,,,
-economic conditions,B1,景気,けいき,,,
+economic conditions,B1,景気,けいき,,景気が良くなりました。,The economy has improved.
 "scenery, landscape",A2,景色,けしき,自然の景観。,山の景色が美しいです。,The mountain scenery is beautiful.
 clear weather,A1,晴れ,はれ,雲がなく太陽が出ている状態。,今日は晴れです。,Today is clear weather.
 be sunny,A1,晴れる,はれる,雲がなく太陽が出ること。,空が晴れました。,The sky cleared up.
@@ -4866,13 +4867,13 @@ assassin,,暗殺者,あんさつしゃ,,,
 reef,,暗礁,あんしょう,,,
 "hint, suggestion",C,暗示,あんじ,,,
 mental math,C,暗算,あんざん,,,
-memorization,B1,暗記,あんき,,,
+memorization,B1,暗記,あんき,,単語を暗記しました。,I memorized words.
 personal ID number,,暗証番号,あんしょうばんごう,,,
 the darkness,,暗闇,くらやみ,,,
 dark cloud,,暗雲,あんうん,,,
 unspoken,,暗黙,あんもく,,,
 for a moment,A2,暫く,しばらく,少しの間。,しばらく待ってください。,Please wait a moment.
-live,B1,暮らす,くらす,,,
+live,B1,暮らす,くらす,,静かな町で暮らしています。,I live in a quiet town.
 "expose, uncover",,暴く,あばく,,,
 rampage,B2,暴れる,あばれる,,,
 violence,C,暴力,ぼうりょく,,,
@@ -4894,7 +4895,7 @@ bend,B2,曲げる,まげる,,,
 curve,B2,曲線,きょくせん,,,
 get late,B2,更ける,ふける,,,
 more,,"更なる",さらなる,,,
-in addition,B1,更に,さらに,,,
+in addition,B1,更に,さらに,,更に勉強します。,I will study further.
 menopause,,更年期,こうねんき,,,
 "renewal, reform",,更改,こうかい,,,
 renewal,,更新,こうしん,,,
@@ -4909,31 +4910,31 @@ rewrite,,書き直す,かきなおす,,,
 "fill in, fill out",,書き込む,かきこむ,,,
 write,A1,書く,かく,文字で表すこと。,手紙を書きます。,I write a letter.
 bookstore,B2,書店,しょてん,,,
-"study, home office",B1,書斎,しょさい,,,
-books,B1,書物,しょもつ,,,
+"study, home office",B1,書斎,しょさい,,書斎で読書しました。,I read in the study.
+books,B1,書物,しょもつ,,古い書物を持っています。,I own old books.
 registered mail,B2,書留,かきとめ,,,
 "book, publication",B2,書籍,しょせき,,,
 book review,C,書評,しょひょう,,,
 calligraphy,B2,書道,しょどう,,,
-document,B1,書類,しょるい,,,
-replace,B1,替える,かえる,,,
+document,B1,書類,しょるい,,書類を提出しました。,I submitted the documents.
+replace,B1,替える,かえる,,古い靴を新しいのに替えました。,I replaced old shoes with new ones.
 second serving of noodles,,替え玉,かえだま,,,
 "succeed, replace",B2,替わる,かわる,,,
-most,B1,最も,もっとも,,,
-while,B1,最中,さいちゅう,,,
-"worst, lowest",B1,最低,さいてい,,,
+most,B1,最も,もっとも,,最も重要なことです。,This is the most important thing.
+while,B1,最中,さいちゅう,,食事の最中に電話が鳴りました。,The phone rang in the middle of the meal.
+"worst, lowest",B1,最低,さいてい,,これは最低の結果です。,This is the worst result.
 initial,A2,最初,さいしょ,物事の始まり。,最初に名前を書きます。,"First, write your name."
 "biggest, largest",,最大,さいだい,,,
 final,A2,最後,さいご,物事の終わり。,最後に質問してください。,Please ask questions at the end.
 "worst, terrible",,最悪,さいあく,,,
 newest,,最新,さいしん,,,
 "already, now",C,最早,もはや,,,
-"last, final",B1,最終,さいしゅう,,,
+"last, final",B1,最終,さいしゅう,,最終日です。,It is the final day.
 ultimate,,最終的,さいしゅうてき,,,
 recently,A2,最近,さいきん,最近の時期。,最近忙しいです。,I’ve been busy recently.
 optimal,,最適,さいてき,,,
-"best, highest",B1,最高,さいこう,,,
-moon,B1,月,つき,,,
+"best, highest",B1,最高,さいこう,,最高の景色です。,It is the best view.
+moon,B1,月,つき,,月が明るいです。,The moon is bright.
 moonlight,,月影,つきかげ,,,
 Monday,A1,月曜日,げつようび,週の最初の日。,月曜日に会いましょう。,Let’s meet on Monday.
 end of the month,B2,月末,げつまつ,,,
@@ -4943,14 +4944,14 @@ moon viewing,,月見,つきみ,,,
 monthly payment,C,月賦,げっぷ,,,
 lunar eclipse,,月食,げっしょく,,,
 own,C,有する,ゆうする,,,
-every,B1,有らゆる,あらゆる,,,
+"every, each",B1,有らゆる,あらゆる,,あらゆる問題に答えます。,I will answer all questions.
 as it is,C,有りの儘,ありのまま,,,
 unlikely,,有り得ない,ありえない,,,
-thank you,B1,有り難う,ありがとう,,,
+thank you,B1,有り難う,ありがとう,,ありがとうございます。,Thank you very much.
 have,A1,有る,ある,存在すること。,"古いパソコンがある。",I have an old computer.
-advantageous,B1,有利,ゆうり,,,
+advantageous,B1,有利,ゆうり,,この方法は有利です。,This method is advantageous.
 "influential, powerful",C,有力,ゆうりょく,,,
-valid,B1,有効,ゆうこう,,,
+valid,B1,有効,ゆうこう,,有効な手段です。,It is an effective means.
 famous,A1,有名,ゆうめい,広く知られていること。,彼は有名です。,He is famous.
 celebrity,,有名人,ゆうめいじん,,,
 being willing,,有志,ゆうし,,,
@@ -4960,14 +4961,14 @@ organic,C,有機,ゆうき,,,
 presence or absence,B2,有無,うむ,,,
 beneficial,C,有益,ゆうえき,,,
 guilt,,有罪,ゆうざい,,,
-competent,B1,有能,ゆうのう,,,
+competent,B1,有能,ゆうのう,,彼は有能な人です。,He is a capable person.
 "thankful, grateful",B2,有難い,ありがたい,,,
 clothes,A1,服,ふく,身に着ける布。,新しい服を買いました。,I bought new clothes.
-costume,B1,服装,ふくそう,,,
+costume,B1,服装,ふくそう,,服装に気をつけます。,I pay attention to my clothing.
 attire,,服飾,ふくしょく,,,
 desirable,C,望ましい,のぞましい,,,
-hope,B1,望み,のぞみ,,,
-desire,B1,望む,のぞむ,,,
+hope,B1,望み,のぞみ,,成功への望みがあります。,I have a hope for success.
+desire,B1,望む,のぞむ,,自由を望みます。,I desire freedom.
 "unexpected, undeserved",,望外,ぼうがい,,,
 watchtower,,望楼,ぼうろう,,,
 telescope,B2,望遠鏡,ぼうえんきょう,,,
@@ -4979,8 +4980,8 @@ tribute,,朝貢,ちょうこう,,,
 breakfast,,朝食,ちょうしょく,,,
 Korea,,朝鮮,ちょうせん,,,
 Korean War,,朝鮮戦争,ちょうせんせんそう,,,
-expectation,B1,期待,きたい,,,
-"period, term",B1,期間,きかん,,,
+expectation,B1,期待,きたい,,期待に応えました。,I met expectations.
+"period, term",B1,期間,きかん,,試験の期間は二週間です。,The exam period is two weeks.
 deadline,B2,期限,きげん,,,
 tree,A1,木,き,幹や枝を持つ植物。,小さな木を買った。,I bought a small tree.
 trees,,木々,きぎ,,,
@@ -4995,16 +4996,16 @@ even now,,未だに,いまだに,,,
 unmarried,C,未婚,みこん,,,
 undetermined,C,未定,みてい,,,
 underage,,未成年,みせいねん,,,
-future,B1,未来,みらい,,,
+future,B1,未来,みらい,,未来を信じています。,I believe in the future.
 insufficient,B2,未満,みまん,,,
 unripe,C,未熟,みじゅく,,,
 "not yet known, strange",C,未知,みち,,,
 failed attempt,,未遂,みすい,,,
 underdeveloped,C,未開,みかい,,,
-"end, last",B1,末,すえ,,,
+"end, last",B1,末,すえ,,年の末に旅行します。,I will travel at the end of the year.
 book,A1,本,ほん,読むための冊子。,本を読みます。,I read a book.
 "mere, only, just",C,本の,ほんの,,,
-the person in question,B1,本人,ほんにん,,,
+the person in question,B1,本人,ほんにん,,本人に直接聞きました。,I asked the person in question directly.
 main part,C,本体,ほんたい,,,
 real name,C,本名,ほんみょう,,,
 mainland,,本土,ほんど,,,
@@ -5022,7 +5023,7 @@ orthodox,C,本格,ほんかく,,,
 in an orthodox way,,本格的,ほんかくてき,,,
 bookshelf,A1,本棚,ほんだな,本を並べて置く棚。,本棚に辞書があります。,There is a dictionary on the bookshelf.
 serious,C,本気,ほんき,,,
-authenticity,B1,本物,ほんもの,,,
+authenticity,B1,本物,ほんもの,,これは本物のダイヤです。,This is a real diamond.
 Honda,,本田,ほんだ,,,
 performance,,本番,ほんばん,,,
 main office,,本社,ほんしゃ,,,
@@ -5039,17 +5040,17 @@ desk,A1,机,つくえ,学習や仕事に使う机。,机に座ります。,I sit
 on the desk,,机上,きじょう,,,
 Japanese cedar,B2,杉,すぎ,,,
 "Japanese plum, prune",,李,すもも,,,
-"material, ingredient",B1,材料,ざいりょう,,,
+"material, ingredient",B1,材料,ざいりょう,,料理に新しい材料を使いました。,I used new ingredients for the cooking.
 lumber,B2,材木,ざいもく,,,
 "material, material properties",,材質,ざいしつ,,,
 village,A1,村,むら,人が集まって暮らす小さな場所。,村に住んでいます。,I live in a village.
 villager,,村人,むらびと,,,
 "wand, cane",C,杖,つえ,,,
-bundle,B1,束,たば,,,
+bundle,B1,束,たば,,花の束を買いました。,I bought a bundle of flowers.
 tie up in a bundle,,束ねる,たばねる,,,
 "restraint, binding",C,束縛,そくばく,,,
 "article, provision",,条,じょう,,,
-"condition, term",B1,条件,じょうけん,,,
+"condition, term",B1,条件,じょうけん,,条件を確認してください。,Please confirm the conditions.
 conditional mood,,条件法,じょうけんほう,,,
 treaty,C,条約,じょうやく,,,
 "clause, stipulation",,条項,じょうこう,,,
@@ -5067,9 +5068,9 @@ Tokyo,,東京,とうきょう,,,
 Tohoku region,,東北,とうほく,,,
 Eastern Europe,,東欧,とうおう,,,
 Orient,B2,東洋,とうよう,,,
-pine tree,B1,松,まつ,,,
+pine tree,B1,松,まつ,,庭に松の木があります。,There is a pine tree in the garden.
 crutches,,松葉杖,まつばづえ,,,
-"board, plank",B1,板,いた,,,
+"board, plank",B1,板,いた,,板で机を作りました。,I made a desk with planks.
 sushi chef,,板前,いたまえ,,,
 dilemma,,板挟み,いたばさみ,,,
 material on the blackboard,,板書,ばんしょ,,,
@@ -5104,8 +5105,8 @@ build a bridge,,架橋,かきょう,,,
 "overhead, imaginary",B2,架空,かくう,,,
 overhead wire,,架線,かせん,,,
 "installation, construction",,架設,かせつ,,,
-handle,B1,柄,え,,,
-pattern,B1,柄,がら,,,
+handle,B1,柄,え,,ナイフの柄を持ってください。,Please hold the knife by the handle.
+pattern,B1,柄,がら,,このシャツの柄はきれいです。,The pattern on this shirt is pretty.
 ladle,,柄杓,ひしゃく,,,
 be dyed,C,染まる,そまる,,,
 "stain, spot",,染み,しみ,,,
@@ -5128,14 +5129,14 @@ visa,,査証,さしょう,,,
 peer review,,査読,さどく,,,
 persimmon,,柿,かき,,,
 prosper,C,栄える,さかえる,,,
-nutrition,B1,栄養,えいよう,,,
+nutrition,B1,栄養,えいよう,,栄養のある食事をしてください。,Please eat nutritious meals.
 nutrient,,栄養素,えいようそ,,,
 "bottle cap, cork, stopper",B2,栓,せん,,,
 bottle opener,,栓抜き,せんぬき,,,
 chestnut,,栗,くり,,,
 squirrel,,栗鼠,りす,,,
 principal,A2,校長,こうちょう,学校の責任者。,校長先生に会いました。,I met the principal.
-stock,B1,株,かぶ,,,
+stock,B1,株,かぶ,,会社の株を持っています。,I own company stocks.
 shareholder,,株主,かぶぬし,,,
 share price,,株価,かぶか,,,
 "stock, share",C,株式,かぶしき,,,
@@ -5145,7 +5146,7 @@ nuclear weapon,,核兵器,かくへいき,,,
 nuclear family,,核家族,かくかぞく,,,
 nuclear warhead,,核弾頭,かくだんとう,,,
 "core, heart",,核心,かくしん,,,
-root,B1,根,ね,,,
+root,B1,根,ね,,木の根を掘りました。,I dug up the roots of the tree.
 be rooted,,根ざす,ねざす,,,
 base,C,根元,ねもと,,,
 "basis, root, essence",,根幹,こんかん,,,
@@ -5155,7 +5156,7 @@ deeply rooted,,根強い,ねづよい,,,
 "patience, endurance",C,根気,こんき,,,
 "status, grammatical case",C,格,かく,,,
 particular,B2,格別,かくべつ,,,
-"appearance, form",B1,格好,かっこう,,,
+"appearance, form",B1,格好,かっこう,,彼の服装はいい格好です。,His clothing looks good.
 cool,,格好良い,かっこいい,,,
 lattice,,格子,こうし,,,
 bargain,,格安,かくやす,,,
@@ -5164,24 +5165,24 @@ being remarkable,,格段,かくだん,,,
 digit,B2,桁,けた,,,
 peach,,桃,もも,,,
 pink,,桃色,ももいろ,,,
-"proposal, suggestion",B1,案,あん,,,
+"proposal, suggestion",B1,案,あん,,新しい案を出しました。,I made a new proposal.
 worry about,C,案じる,あんじる,,,
 just as I feared,C,案の定,あんのじょう,,,
 "item, topic",,案件,あんけん,,,
-guidance,B1,案内,あんない,,,
+guidance,B1,案内,あんない,,駅まで案内します。,I’ll guide you to the station.
 "unexpected, surprising",B2,案外,あんがい,,,
 "Sakura, cherry blossom",,桜,さくら,,,
 "crosspiece, frame, bolt",,桟,さん,,,
 pier,C,桟橋,さんばし,,,
 plank road,,桟道,さんどう,,,
-plum,B1,梅,うめ,,,
+plum,B1,梅,うめ,,梅の花が咲きました。,The plum blossoms bloomed.
 pickled plum,C,梅干し,うめぼし,,,
 syphilis,,梅毒,ばいどく,,,
-rainy season,B1,梅雨,つゆ,,,
+rainy season,B1,梅雨,つゆ,,梅雨に雨が多いです。,There is much rain during the rainy season.
 owl,,梟,ふくろう,,,
 treetop,C,梢,こずえ,,,
 ladder,B2,梯子,はしご,,,
-stick,B1,棒,ぼう,,,
+stick,B1,棒,ぼう,,棒でドアを押しました。,I pushed the door with a stick.
 shelf,A2,棚,たな,物を置く板。,棚に本を置きました。,I put books on the shelf.
 forest,A2,森,もり,木が多い広い場所。,森を歩きました。,I walked in the forest.
 woodlands,B2,森林,しんりん,,,
@@ -5193,16 +5194,16 @@ chair,A1,椅子,いす,腰掛ける家具。,この椅子は壊れているか�
 plant,A2,植える,うえる,植物を土に植えること。,庭に木を植えました。,I planted a tree in the garden.
 garden shrubs,B2,植木,うえき,,,
 colony,C,植民地,しょくみんち,,,
-plant,B1,植物,しょくぶつ,,,
+plant,B1,植物,しょくぶつ,,植物を育てています。,I am growing plants.
 botanical garden,,植物園,しょくぶつえん,,,
 shitake mushroom,,椎茸,しいたけ,,,
 "vertebra, vertebrae",,椎骨,ついこつ,,,
 public prosecutor,C,検事,けんじ,,,
 inspection,,検問,けんもん,,,
-inspection,B1,検査,けんさ,,,
+inspection,B1,検査,けんさ,,血液の検査を受けました。,I had a blood test.
 quarantine,,検疫,けんえき,,,
 search,,検索,けんさく,,,
-consideration,B1,検討,けんとう,,,
+consideration,B1,検討,けんとう,,計画を検討しました。,I considered the plan.
 checkup,,検診,けんしん,,,
 verification,,検証,けんしょう,,,
 censorship,,検閲,けんえつ,,,
@@ -5216,7 +5217,7 @@ type of business,,業種,ぎょうしゅ,,,
 "achievement, performance",C,業績,ぎょうせき,,,
 "trader, dealer",C,業者,ぎょうしゃ,,,
 "defy, disobey",,楯突く,たてつく,,,
-"pole, climax, extremity",B1,極,きょく,,,
+"pole, climax, extremity",B1,極,きょく,,山の頂上は極めて寒いです。,The top of the mountain is extremely cold.
 "very, quite",,極,ごく,,,
 extremely,C,極めて,きわめて,,,
 "investigate, carry to the end",,極める,きわめる,,,
@@ -5228,7 +5229,7 @@ paradise,C,極楽,ごくらく,,,
 "extreme, extremity",C,極端,きょくたん,,,
 "tall building, tower",,楼,ろう,,,
 "tower, lofty building",,楼閣,ろうかく,,,
-"ease, relaxation",B1,楽,らく,,,
+"ease, relaxation",B1,楽,らく,,休日は楽に過ごしました。,I spent the holiday in comfort.
 fun,A1,楽しい,たのしい,楽しみを感じること。,あなたの仕事は楽しいですか？,Do you enjoy your job?
 enjoyment,A2,楽しみ,たのしみ,楽しみなこと。,旅行は大きな楽しみです。,The trip is a big enjoyment.
 "enjoy, have fun",A2,楽しむ,たのしむ,楽しむこと。,スポーツを楽しみました。,I had fun playing sports.
@@ -5243,18 +5244,18 @@ approximation,,概算,がいさん,,,
 "outline, overview",,概要,がいよう,,,
 "general statement, outline",C,概説,がいせつ,,,
 introduction,B2,概論,がいろん,,,
-"mind, care",B1,構う,かまう,,,
+"mind, care",B1,構う,かまう,,私は結果に構いません。,I don’t care about the result.
 structure,C,構え,かまえ,,,
 "set up, establish, maintain",C,構える,かまえる,,,
 premises,,構内,こうない,,,
 composition,,構図,こうず,,,
 "plan, design, conception",C,構想,こうそう,,,
-composition,B1,構成,こうせい,,,
+composition,B1,構成,こうせい,,体は水と骨で構成されています。,The body is made up of water and bones.
 structure,,構築,こうちく,,,
 structure,B2,構造,こうぞう,,,
 lisping,,構音障害,こうおんしょうがい,,,
-various,B1,様々,さまざま,,,
-situational appearance,B1,様子,ようす,,,
+various,B1,様々,さまざま,,様々な人が集まりました。,Various people gathered.
+situational appearance,B1,様子,ようす,,子供の様子を見てください。,Please look at the child’s condition.
 "style, form, pattern",C,様式,ようしき,,,
 "example, sample",B2,標本,ひょうほん,,,
 standard,B2,標準,ひょうじゅん,,,
@@ -5264,17 +5265,17 @@ sign,B2,標識,ひょうしき,,,
 imitation,C,模倣,もほう,,,
 physical model,C,模型,もけい,,,
 simulation,,模擬,もぎ,,,
-"pattern, design",B1,模様,もよう,,,
+"pattern, design",B1,模様,もよう,,この着物には美しい模様があります。,This kimono has a beautiful design.
 exemplar,C,模範,もはん,,,
 searching for a solution,C,模索,もさく,,,
 "right, authority, power",C,権,けん,,,
-rights,B1,権利,けんり,,,
+rights,B1,権利,けんり,,国民は権利を持っています。,The citizens have rights.
 power,C,権力,けんりょく,,,
 authority,C,権威,けんい,,,
 "jurisdiction, limits of power",C,権限,けんげん,,,
 horizontal,A1,横,よこ,横の方向。,横に座ってください。,Please sit beside me.
-"cross, traverse",B1,横切る,よこぎる,,,
-crossing,B1,横断,おうだん,,,
+"cross, traverse",B1,横切る,よこぎる,,道を横切りました。,I crossed the street.
+crossing,B1,横断,おうだん,,横断歩道を渡りました。,I walked across the crosswalk.
 "violence, oppression",,横暴,おうぼう,,,
 Yokohama,,横浜,よこはま,,,
 cave,,横穴,よこあな,,,
@@ -5292,12 +5293,12 @@ loom,C,機,はた,,,
 opportunity,A2,機会,きかい,機会やチャンス。,いい機会をもらいました。,I got a good opportunity.
 on a plane,,機内,きない,,,
 in-flight meal,,機内食,きないしょく,,,
-mood,B1,機嫌,きげん,,,
+mood,B1,機嫌,きげん,,今日は機嫌がいいです。,I’m in a good mood today.
 "clever, shrewd",,機敏,きびん,,,
-machine,B1,機械,きかい,,,
+machine,B1,機械,きかい,,新しい機械を買いました。,I bought a new machine.
 mechanism,C,機構,きこう,,,
-"function, feature",B1,機能,きのう,,,
-"engine, agency",B1,機関,きかん,,,
+"function, feature",B1,機能,きのう,,このアプリには多くの機能があります。,This app has many functions.
+"engine, agency",B1,機関,きかん,,政府の機関で働いています。,I work at a government agency.
 locomotive,B2,機関車,きかんしゃ,,,
 comb,B2,櫛,くし,,,
 "field, column",B2,欄,らん,,,
@@ -5306,18 +5307,18 @@ bannister,,欄干,らんかん,,,
 "miss, fail to do",,欠かす,かかす,,,
 cause to lack,,欠かせる,かかせる,,,
 "chip, break, lack",C,欠く,かく,,,
-"be chipped, be broken",B1,欠ける,かける,,,
+"be chipped, be broken",B1,欠ける,かける,,皿のふちが欠けました。,The edge of the plate is chipped.
 "shortage, famine",C,欠乏,けつぼう,,,
 yawn,B2,欠伸,あくび,,,
-absence,B1,欠席,けっせき,,,
-disadvantage,B1,欠点,けってん,,,
-defect,B1,欠陥,けっかん,,,
+absence,B1,欠席,けっせき,,今日は欠席が多いです。,There are many absences today.
+disadvantage,B1,欠点,けってん,,彼の欠点を直しました。,I corrected his faults.
+defect,B1,欠陥,けっかん,,機械に欠陥があります。,The machine has a defect.
 next,A1,次,つぎ,次に来るもの。,次の駅は原宿だ。,The next station is Harajuku.
-one after another,B1,次々,つぎつぎ,,,
+one after another,B1,次々,つぎつぎ,,次々に人が来ました。,People came one after another.
 come after,B2,次ぐ,つぐ,,,
 dimension,,次元,じげん,,,
 next time,,次回,じかい,,,
-depending on,B1,次第,しだい,,,
+depending on,B1,次第,しだい,,成功するかは努力次第です。,Success depends on effort.
 Europe,,欧州,おうしゅう,,,
 European Union,,欧州連合,おうしゅうれんごう,,,
 "Europe and America, the West",B2,欧米,おうべい,,,
@@ -5332,7 +5333,7 @@ song,A1,歌,うた,声を出して節をつけるもの。,歌を歌います。
 sing,A1,歌う,うたう,声を出して歌うこと。,歌をうたいます。,I sing a song.
 opera,,歌劇,かげき,,,
 singing,,歌唱,かしょう,,,
-singer,B1,歌手,かしゅ,,,
+singer,B1,歌手,かしゅ,,彼は歌手です。,He is a singer.
 Japanese playing cards,B2,歌留多,かるた,,,
 Japanese classical drama,,歌舞伎,かぶき,,,
 lyrics,,歌詞,かし,,,
@@ -5341,23 +5342,23 @@ lyrics,,歌詞,かし,,,
 "cheer, shout of joy",C,歓声,かんせい,,,
 pleasure,,歓楽,かんらく,,,
 chat,,歓談,かんだん,,,
-welcome,B1,歓迎,かんげい,,,
+welcome,B1,歓迎,かんげい,,心から歓迎します。,I welcome you from the heart.
 stop,A1,止まる,とまる,動きが止まること。,車が止まります。,The car stops.
 stop,A2,止む,やむ,止むこと。,雨が止みました。,The rain stopped.
 stop doing,A2,止める,やめる,行動をやめること。,たばこを止めました。,I quit smoking.
 stop,A2,止める,とめる,行動を中止すること。,車を止めました。,I stopped the car.
 tourniquet,,止血帯,しけつたい,,,
-"true, regular",B1,正,せい,,,
+"true, regular",B1,正,せい,,正しい答えを選びました。,I chose the correct answer.
 "correct, accurate",A2,正しい,ただしい,正確で間違いのないこと。,正しい答えです。,That is the correct answer.
 "surely, no doubt",C,正しく,まさしく,,,
-just,B1,正に,まさに,,,
-noon,B1,正午,しょうご,,,
-"true form, formal, official",B1,正式,せいしき,,,
+just,B1,正に,まさに,,彼は正に天才です。,He is truly a genius.
+noon,B1,正午,しょうご,,正午に会いましょう。,Let’s meet at noon.
+"true form, formal, official",B1,正式,せいしき,,正式な書類を提出しました。,I submitted official documents.
 being legitimate,C,正当,せいとう,,,
 square,B2,正方形,せいほうけい,,,
 New Year,,正月,しょうがつ,,,
-honest,B1,正直,しょうじき,,,
-accurate,B1,正確,せいかく,,,
+honest,B1,正直,しょうじき,,彼は正直な人です。,He is an honest person.
+accurate,B1,正確,せいかく,,正確に書いてください。,Please write accurately.
 justice,C,正義,せいぎ,,,
 correct answer,C,正解,せいかい,,,
 main gate,B2,正門,せいもん,,,
@@ -5370,7 +5371,7 @@ here,A1,此処,ここ,近い場所を指す言葉。,ここに座ってくださ
 this guy,,此奴,こいつ,,,
 this way,A1,此方,こちら,話し手側の方向を示す言葉。,こちらへどうぞ。,"This way, please."
 military power,C,武力,ぶりょく,,,
-weapon,B1,武器,ぶき,,,
+weapon,B1,武器,ぶき,,銃は危険な武器です。,A gun is a dangerous weapon.
 "warrior, samurai",B2,武士,ぶし,,,
 samurai code,,武士道,ぶしどう,,,
 military commander,,武将,ぶしょう,,,
@@ -5386,7 +5387,7 @@ pedometer,,歩数計,ほすうけい,,,
 walking,,歩行,ほこう,,,
 pedestrian,,歩行者,ほこうしゃ,,,
 pace,,歩調,ほちょう,,,
-sidewalk,B1,歩道,ほどう,,,
+sidewalk,B1,歩道,ほどう,,歩道を歩きました。,I walked on the sidewalk.
 pedestrian bridge,,歩道橋,ほどうきょう,,,
 tooth,A1,歯,は,口の中にある硬い部分。,歯をみがきます。,I brush my teeth.
 dental crown,,歯冠,しかん,,,
@@ -5405,7 +5406,7 @@ historian,,歴史家,れきしか,,,
 historical,,歴史的,れきしてき,,,
 death,C,死,し,,,
 die,A1,死ぬ,しぬ,生命を失うこと。,犬が死にました。,The dog died.
-dying,B1,死亡,しぼう,,,
+dying,B1,死亡,しぼう,,事故で死亡者が出ました。,There were fatalities in the accident.
 corpse,B2,死体,したい,,,
 "death penalty, cap. punish.",C,死刑,しけい,,,
 stillbirth,,死産,しざん,,,
@@ -5415,7 +5416,7 @@ god of death,,死神,しにがみ,,,
 admirable,,殊勝,しゅしょう,,,
 distinguished services,,殊勲,しゅくん,,,
 particularly,,殊更,ことさら,,,
-leave behind,B1,残す,のこす,,,
+leave behind,B1,残す,のこす,,メモを残しました。,I left a note.
 be left behind,A2,残る,のこる,残っていること。,家が残っています。,The house remains.
 brutality,,残忍,ざんにん,,,
 "regrettable, disappointing",A2,残念,ざんねん,期待に反して残念なこと。,それは残念です。,That is unfortunate.
@@ -5430,12 +5431,12 @@ reverberation,,残響,ざんきょう,,,
 bank balance,C,残高,ざんだか,,,
 punch,B2,殴る,なぐる,,,
 "strike, blow, hit",,殴打,おうだ,,,
-step,B1,段,だん,,,
+step,B1,段,だん,,階段を一段上がりました。,I climbed one step of the stairs.
 gradually,A1,段々,だんだん,少しずつ変化すること。,だんだん寒くなります。,It gradually becomes cold.
 cardboard,,段ボール,ダンボール,,,
 paragraph,,段落,だんらく,,,
 stage,B2,段階,だんかい,,,
-kill,B1,殺す,ころす,,,
+kill,B1,殺す,ころす,,虫を殺しました。,I killed an insect.
 murder,C,殺人,さつじん,,,
 "murderer, killer",,殺人者,さつじんしゃ,,,
 "killing, murder",,殺害,さつがい,,,
@@ -5447,7 +5448,7 @@ my mother,,母,はは,,,
 native country,,母国,ぼこく,,,
 native language,,母国語,ぼこくご,,,
 alma mater,C,母校,ぼこう,,,
-mother,B1,母親,ははおや,,,
+mother,B1,母親,ははおや,,母親が子供を迎えました。,The mother welcomed her child.
 mother tongue,,母語,ぼご,,,
 vowel,,母音,ぼいん,,,
 "each, every",C,毎,ごと,,,
@@ -5458,7 +5459,7 @@ every evening,A1,毎晩,まいばん,毎晩繰り返すこと。,毎晩テレビ
 every month,A1,毎月,まいつき,毎月繰り返すこと。,毎月お金を払います。,I pay money every month.
 every morning,A1,毎朝,まいあさ,毎朝繰り返すこと。,毎朝走ります。,I run every morning.
 every week,A1,毎週,まいしゅう,毎週繰り返すこと。,毎週学校に行きます。,I go to school every week.
-poison,B1,毒,どく,,,
+poison,B1,毒,どく,,このキノコには毒があります。,This mushroom is poisonous.
 food taster,,毒味,どくみ,,,
 toxicity,,毒性,どくせい,,,
 toxicology,,毒性学,どくせいがく,,,
@@ -5472,11 +5473,11 @@ proportion,C,比例,ひれい,,,
 "allegory, metaphor",,比喩,ひゆ,,,
 "metaphorical, figurative",,比喩的,ひゆてき,,,
 ratio,C,比率,ひりつ,,,
-comparison,B1,比較,ひかく,,,
+comparison,B1,比較,ひかく,,二つの意見を比較しました。,I compared two opinions.
 relatively,B2,比較的,ひかくてき,,,
 "relative density, importance",C,比重,ひじゅう,,,
 "fur, wool, hair",A2,毛,け,動物や人の毛。,犬の毛が落ちています。,Dog hair is falling.
-blanket,B1,毛布,もうふ,,,
+blanket,B1,毛布,もうふ,,毛布をかけて寝ました。,I slept under a blanket.
 hairy,,毛深い,けぶかい,,,
 fur,B2,毛皮,けがわ,,,
 skin pores,,毛穴,けあな,,,
@@ -5496,23 +5497,23 @@ folk tale,,民話,みんわ,,,
 folk song,B2,民謡,みんよう,,,
 private,B2,民間,みんかん,,,
 spirit,A2,気,き,気配や精神。,気をつけてください。,Please be careful.
-"like, be pleased with",B1,気に入る,きにいる,,,
-pitiful,B1,気の毒,きのどく,,,
+"like, be pleased with",B1,気に入る,きにいる,,その服が気に入りました。,I liked that piece of clothing.
+pitiful,B1,気の毒,きのどく,,病気の彼が気の毒です。,I feel sorry for him because he is sick.
 take care,B2,気を付ける,きをつける,,,
 awkward,,気不味い,きまずい,,,
-notice,B1,気付く,きづく,,,
+notice,B1,気付く,きづく,,間違いに気付きました。,I noticed the mistake.
 gas,B2,気体,きたい,,,
-climate,B1,気候,きこう,,,
+climate,B1,気候,きこう,,この町の気候は温暖です。,The climate of this town is mild.
 climate change,,気候変動,きこうへんどう,,,
 climate zone,,気候帯,きこうたい,,,
 mood,A2,気分,きぶん,体や心の状態。,今日は気分がいいです。,I am in a good mood today.
 fighting spirit,,気合い,きあい,,,
-"sensation, feeling",B1,気味,きみ,,,
+"sensation, feeling",B1,気味,きみ,,少し風邪の気味です。,I feel a little like I have a cold.
 atmospheric pressure,B2,気圧,きあつ,,,
 disposition,,気性,きしょう,,,
 feeling,A2,気持ち,きもち,感情の状態。,気持ちがうれしいです。,I feel happy.
 carefree,C,気楽,きらく,,,
-air temperature,B1,気温,きおん,,,
+air temperature,B1,気温,きおん,,今日の気温は二十度です。,Today’s temperature is 20 degrees.
 "disposition, nature",C,気立て,きだて,,,
 "air pipe, trachea",,気管,きかん,,,
 weather,C,気象,きしょう,,,
@@ -5534,33 +5535,33 @@ Wednesday,A1,水曜日,すいようび,週の三日目。,水曜日に会いま�
 jellyfish,,水母,くらげ,,,
 submerge,,水没,すいぼつ,,,
 swimming,A2,水泳,すいえい,泳ぐ運動。,水泳が好きです。,I like swimming.
-level,B1,水準,すいじゅん,,,
+level,B1,水準,すいじゅん,,水準を上げる必要があります。,It’s necessary to raise the level.
 water droplet,B2,水滴,すいてき,,,
 swimsuit,,水着,みずぎ,,,
 water bottle,B2,水筒,すいとう,,,
 hydrogen,B2,水素,すいそ,,,
 water supply,A2,水道,すいどう,生活に必要な水の設備。,水道をひねりました。,I turned on the water supply.
 mercury,,水銀,すいぎん,,,
-ice,B1,氷,こおり,,,
+ice,B1,氷,こおり,,飲み物に氷を入れました。,I put ice in my drink.
 ice field,,氷原,ひょうげん,,,
 iceberg,,氷山,ひょうざん,,,
 icicle,,氷柱,つらら,,,
 ice water,,氷水,こおりみず,,,
 glacier,,氷河,ひょうが,,,
-permanence,B1,永久,えいきゅう,,,
+permanence,B1,永久,えいきゅう,,友情は永久に続きます。,Friendship lasts forever.
 permafrost,,永久凍土,えいきゅうとうど,,,
 permanent residence,,永住,えいじゅう,,,
-eternity,B1,永遠,えいえん,,,
+eternity,B1,永遠,えいえん,,愛は永遠です。,Love is eternal.
 "juice, soup",B2,汁,しる,,,
 soup bowl,,汁椀,しるわん,,,
 juice,,汁気,しるけ,,,
 soup,,汁物,しるもの,,,
-seek,B1,求める,もとめる,,,
+seek,B1,求める,もとめる,,仕事を求めています。,I am looking for a job.
 recruitment,,求人,きゅうじん,,,
 marriage proposal,,求婚,きゅうこん,,,
 suitor,,求婚者,きゅうこんしゃ,,,
 job hunting,,求職,きゅうしょく,,,
-sweat,B1,汗,あせ,,,
+sweat,B1,汗,あせ,,汗をかきました。,I sweated.
 malaria,,汗疹,あせも,,,
 sweat gland,,汗腺,かんせん,,,
 dirty,A1,汚い,きたない,清潔でないこと。,この部屋は汚いです。,This room is dirty.
@@ -5569,7 +5570,7 @@ dirt,,汚れ,よごれ,,,
 get dirty,A2,汚れる,よごれる,汚れること。,服が汚れました。,My clothes got dirty.
 dirty laundry,,汚れ物,よごれもの,,,
 infamy,,汚名,おめい,,,
-pollution,B1,汚染,おせん,,,
+pollution,B1,汚染,おせん,,川の水が汚染されました。,The river water was polluted.
 dirty water,,汚水,おすい,,,
 corruption,,汚職,おしょく,,,
 Edo,,江戸,えど,,,
@@ -5578,18 +5579,18 @@ pond,A1,池,いけ,水がたまった場所。,池に魚がいます。,There ar
 near a pond,,池畔,ちはん,,,
 Ikebukuro,,池袋,いけぶくろ,,,
 never,A2,決して,けっして,絶対にしないこと。,決して忘れません。,I will never forget.
-"rule, regulation",B1,決まり,きまり,,,
+"rule, regulation",B1,決まり,きまり,,決まりを守ってください。,Please follow the rules.
 be decided,A2,決まる,きまる,決定されること。,時間が決まりました。,The time has been decided.
 decide,A2,決める,きめる,選択を決めること。,進路を決めました。,I decided my career path.
-decision,B1,決定,けってい,,,
+decision,B1,決定,けってい,,旅行の日程を決定しました。,We decided the schedule of the trip.
 "definite, final",,決定的,けっていてき,,,
-determination,B1,決心,けっしん,,,
+determination,B1,決心,けっしん,,決心して留学しました。,I made up my mind and studied abroad.
 "decision, resolution",C,決意,けつい,,,
 "decision, judgement",C,決断,けつだん,,,
 duel,,決闘,けっとう,,,
 steam train,A2,汽車,きしゃ,蒸気で動く列車。,汽車に乗りました。,I rode a steam train.
 "deeply, fully",B2,沁み沁み,しみじみ,,,
-sink,B1,沈む,しずむ,,,
+sink,B1,沈む,しずむ,,太陽が沈みました。,The sun set.
 submerge,C,沈める,しずめる,,,
 "sinking, submersion",C,沈没,ちんぼつ,,,
 "silence, inaction",C,沈黙,ちんもく,,,
@@ -5606,7 +5607,7 @@ erupt,,沸き起こる,わきおこる,,,
 be boiling,A2,沸く,わく,水が熱して沸くこと。,お湯が沸いています。,The water is boiling.
 boiling point,,沸点,ふってん,,,
 boiling,C,沸騰,ふっとう,,,
-oil,B1,油,あぶら,,,
+oil,B1,油,あぶら,,サラダに油を入れました。,I put oil on the salad.
 oil well,,油井,ゆせい,,,
 carelessness,B2,油断,ゆだん,,,
 oil field,,油田,ゆでん,,,
@@ -5621,7 +5622,7 @@ counter for nights of a stay,C,泊,はく,,,
 stay somewhere overnight,A2,泊まる,とまる,泊まって夜を過ごすこと。,旅館に泊まりました。,I stayed overnight at a Japanese inn.
 "put up, give shelter to",B2,泊める,とめる,,,
 natural harbor,,泊地,はくち,,,
-"method, law",B1,法,ほう,,,
+"method, law",B1,法,ほう,,法を守るべきです。,We should follow the law.
 corporation,,法人,ほうじん,,,
 "law, rule",B2,法則,ほうそく,,,
 Ministry of Justice,,法務省,ほうむしょう,,,
@@ -5629,23 +5630,23 @@ legal studies,C,法学,ほうがく,,,
 courtroom,C,法廷,ほうてい,,,
 law,A2,法律,ほうりつ,社会の規則。,法律を学んでいます。,I study law.
 bill,C,法案,ほうあん,,,
-"bubble, foam",B1,泡,あわ,,,
+"bubble, foam",B1,泡,あわ,,泡が立ちました。,Foam formed.
 form bubbles,,泡立つ,あわだつ,,,
-wave,B1,波,なみ,,,
+wave,B1,波,なみ,,波の音が聞こえます。,I can hear the sound of waves.
 ripple,,波紋,はもん,,,
 wavelength,,波長,はちょう,,,
 cry,A2,泣く,なく,涙を流すこと。,子どもが泣いています。,The child is crying.
-mud,B1,泥,どろ,,,
+mud,B1,泥,どろ,,靴に泥がつきました。,Mud stuck to my shoes.
 thief,A2,泥棒,どろぼう,他人の物を盗む人。,泥棒を見ました。,I saw a thief.
 quandary,,泥沼,どろぬま,,,
-note,B1,注,ちゅう,,,
-pour,B1,注ぐ,そそぐ,,,
+note,B1,注,ちゅう,,注を読みました。,I read the notes.
+pour,B1,注ぐ,そそぐ,,花に水を注ぎました。,I poured water on the flowers.
 shot,A2,注射,ちゅうしゃ,薬を体に入れる行為。,注射をしました。,I got an injection.
 syringe,,注射器,ちゅうしゃき,,,
 caution,A2,注意,ちゅうい,注意すること。,先生の注意を聞きました。,I listened to the teacher’s caution.
 important point,,注意点,ちゅういてん,,,
-order,B1,注文,ちゅうもん,,,
-"attention, notice",B1,注目,ちゅうもく,,,
+order,B1,注文,ちゅうもん,,レストランに注文しました。,I placed an order at the restaurant.
+"attention, notice",B1,注目,ちゅうもく,,彼の行動に注目しました。,I paid attention to his actions.
 annotation,,注釈,ちゅうしゃく,,,
 swim,A1,泳ぐ,およぐ,水の中を体で進むこと。,プールで泳ぎます。,I swim in the pool.
 swimmer,,泳者,えしゃ,,,
@@ -5675,11 +5676,11 @@ cave bear,,洞窟熊,どうくつぐま,,,
 tidal wave,C,津波,つなみ,,,
 flood,C,洪水,こうずい,,,
 vitality,B2,活力,かつりょく,,,
-activity,B1,活動,かつどう,,,
+activity,B1,活動,かつどう,,部活の活動が始まりました。,Club activities have started.
 activity,,活性,かっせい,,,
 "activation, revitalization",,活性化,かっせいか,,,
-"energy, liveliness",B1,活気,かっき,,,
-utilization,B1,活用,かつよう,,,
+"energy, liveliness",B1,活気,かっき,,町に活気があります。,The town is full of energy.
+utilization,B1,活用,かつよう,,知識を活用しました。,I made use of knowledge.
 liveliness,C,活発,かっぱつ,,,
 "activity, great efforts",B2,活躍,かつやく,,,
 "clique, group",C,派,は,,,
@@ -5688,9 +5689,9 @@ dispatch,C,派遣,はけん,,,
 political faction,,派閥,はばつ,,,
 "current, stream",C,流,りゅう,,,
 sink,C,流し,ながし,,,
-"shed, spill",B1,流す,ながす,,,
-flow,B1,流れ,ながれ,,,
-flow out,B1,流れる,ながれる,,,
+"shed, spill",B1,流す,ながす,,涙を流しました。,I shed tears.
+flow,B1,流れ,ながれ,,川の流れが速いです。,The river current is fast.
+flow out,B1,流れる,ながれる,,水が道に流れました。,Water flowed onto the road.
 outflow,,流出,りゅうしゅつ,,,
 "fluid, mobile",,流動的,りゅうどうてき,,,
 washing away,,流失,りゅうしつ,,,
@@ -5701,7 +5702,7 @@ miscarriage,,流産,りゅうざん,,,
 as expected,B2,流石,さすが,,,
 quicksand,,流砂,りゅうしゃ,,,
 bloodshed,,流血,りゅうけつ,,,
-"fashion, fad",B1,流行,りゅうこう,,,
+"fashion, fad",B1,流行,りゅうこう,,その歌は流行しています。,That song is popular.
 "be popular, be going around",B2,流行る,はやる,,,
 circulation,C,流通,りゅうつう,,,
 shallow,A2,浅い,あさい,深さが浅いこと。,この川は浅いです。,This river is shallow.
@@ -5723,7 +5724,7 @@ bathroom,C,浴室,よくしつ,,,
 bathtub,,浴槽,よくそう,,,
 informal kimono,B2,浴衣,ゆかた,,,
 sea,A1,海,うみ,広い水の場所。,海で泳ぎます。,I swim in the sea.
-overseas,B1,海外,かいがい,,,
+overseas,B1,海外,かいがい,,海外に住みたいです。,I want to live overseas.
 coast,A2,海岸,かいがん,海の岸辺。,海岸を歩きました。,I walked along the coast.
 strait,C,海峡,かいきょう,,,
 starfish,,海星,ひとで,,,
@@ -5751,12 +5752,12 @@ elimination,C,消去,しょうきょ,,,
 disinfectant,B2,消毒,しょうどく,,,
 disappearance,,消滅,しょうめつ,,,
 hydrant,,消火栓,しょうかせん,,,
-consumption,B1,消費,しょうひ,,,
+consumption,B1,消費,しょうひ,,電気を多く消費しました。,I consumed a lot of electricity.
 consumer,,消費者,しょうひしゃ,,,
-fire fighting,B1,消防,しょうぼう,,,
+fire fighting,B1,消防,しょうぼう,,消防士が火を消しました。,A firefighter put out the fire.
 firefighter,,消防士,しょうぼうし,,,
 fire station,B2,消防署,しょうぼうしょ,,,
-tear,B1,涙,なみだ,,,
+tear,B1,涙,なみだ,,涙が出ました。,I shed tears.
 liquid,C,液,えき,,,
 liquid,B2,液体,えきたい,,,
 liquifaction,,液化,えきか,,,
@@ -5771,14 +5772,14 @@ fresh water,B2,淡水,たんすい,,,
 deep,A2,深い,ふかい,深さがあること。,この池は深いです。,This pond is deep.
 deepen,B2,深まる,ふかまる,,,
 "deepen, intensify",C,深める,ふかめる,,,
-"seriousness, severeness",B1,深刻,しんこく,,,
+"seriousness, severeness",B1,深刻,しんこく,,深刻な問題です。,It’s a serious problem.
 "midnight, late at night",B2,深夜,しんや,,,
 deep sea,,深海,しんかい,,,
 be mixed,B2,混ざる,まざる,,,
 mix,B2,混ぜる,まぜる,,,
 mix,,混ぜ合わせる,まぜあわせる,,,
 "be busy, be crowded",A2,混む,こむ,人や車が込み合うこと。,電車が混んでいます。,The train is crowded.
-confusion,B1,混乱,こんらん,,,
+confusion,B1,混乱,こんらん,,事故で混乱しました。,The accident caused confusion.
 interference,,混信,こんしん,,,
 mixing,B2,混合,こんごう,,,
 "commingling, mixing",C,混同,こんどう,,,
@@ -5786,7 +5787,7 @@ mixed bathing,,混浴,こんよく,,,
 "be mixed up, be crossed",,混線,こんせん,,,
 multiracial,C,混血,こんけつ,,,
 "turmoil, confusion",,混迷,こんめい,,,
-"congestion, crowding",B1,混雑,こんざつ,,,
+"congestion, crowding",B1,混雑,こんざつ,,電車は混雑しています。,The train is crowded.
 meet expectations,C,添う,そう,,,
 "garnish, accompany",C,添える,そえる,,,
 attaching,,添付,てんぷ,,,
@@ -5801,17 +5802,17 @@ new and fresh,,清新,せいしん,,,
 clean and fresh water,,清水,しみず,,,
 clear stream,,清流,せいりゅう,,,
 purifier,,清浄器,せいじょうき,,,
-cleanliness,B1,清潔,せいけつ,,,
+cleanliness,B1,清潔,せいけつ,,部屋を清潔にしてください。,Please keep the room clean.
 liquidation,C,清算,せいさん,,,
 tranquility,,清閑,せいかん,,,
-get done with,B1,済ませる,すませる,,,
-"excuse me, I am sorry",B1,済みません,すみません,,,
+get done with,B1,済ませる,すませる,,宿題を済ませました。,I finished my homework.
+"excuse me, I am sorry",B1,済みません,すみません,,済みません、質問があります。,"Excuse me, I have a question."
 be done with,A2,済む,すむ,物事が終わること。,会議が済みました。,The meeting is finished.
 "tart, bitter",C,渋い,しぶい,,,
-traffic congestion,B1,渋滞,じゅうたい,,,
+traffic congestion,B1,渋滞,じゅうたい,,道路が渋滞しています。,The road is congested.
 Shibuya,,渋谷,しぶや,,,
-decrease something,B1,減らす,へらす,,,
-decrease,B1,減る,へる,,,
+decrease something,B1,減らす,へらす,,食べ物を減らしました。,I reduced the amount of food.
+decrease,B1,減る,へる,,体重が減りました。,My weight decreased.
 reduction,C,減少,げんしょう,,,
 carry across,A1,渡す,わたす,物を相手に渡すこと。,友だちに本を渡します。,I hand a book to my friend.
 cross,A1,渡る,わたる,水や道を越えること。,橋を渡ります。,I cross the bridge.
@@ -5823,11 +5824,11 @@ warm something up,B2,温める,あたためる,,,
 temperate,C,温和,おんわ,,,
 greenhouse,B2,温室,おんしつ,,,
 temperate zone,B2,温帯,おんたい,,,
-temperature,B1,温度,おんど,,,
-"warm, mild, temperate",B1,温暖,おんだん,,,
+temperature,B1,温度,おんど,,温度を測りました。,I measured the temperature.
+"warm, mild, temperate",B1,温暖,おんだん,,この町は温暖です。,This town is warm.
 warming,,温暖化,おんだんか,,,
 hot spring,B2,温泉,おんせん,,,
-measure,B1,測る,はかる,,,
+measure,B1,測る,はかる,,体の高さを測りました。,I measured my body height.
 measurement,B2,測定,そくてい,,,
 surveying,B2,測量,そくりょう,,,
 habor,A2,港,みなと,船が出入りする所。,港に船があります。,There are ships in the harbor.
@@ -5840,7 +5841,7 @@ lake shore,,湖畔,こはん,,,
 hot water,A2,湯,ゆ,熱いお湯。,湯を飲みました。,I drank hot water.
 teacup,B2,湯呑み,ゆのみ,,,
 "steam, vapor",B2,湯気,ゆげ,,,
-bay,B1,湾,わん,,,
+bay,B1,湾,わん,,東京湾に船がいます。,There are ships in Tokyo Bay.
 gulf,,湾岸,わんがん,,,
 humid,,湿っぽい,しめっぽい,,,
 be damp,B2,湿る,しめる,,,
@@ -5848,16 +5849,16 @@ be damp,B2,湿る,しめる,,,
 humidity,B2,湿度,しつど,,,
 dampness,B2,湿気,しっけ,,,
 satisfy,C,満たす,みたす,,,
-be full,B1,満ちる,みちる,,,
+be full,B1,満ちる,みちる,,部屋が光で満ちました。,The room was filled with light.
 full house,B2,満員,まんいん,,,
 whole audience,C,満場,まんじょう,,,
 Manchuria,,満州,まんしゅう,,,
 full moon,C,満月,まんげつ,,,
 perfect score,B2,満点,まんてん,,,
 full stomach,,満腹,まんぷく,,,
-satisfaction,B1,満足,まんぞく,,,
+satisfaction,B1,満足,まんぞく,,結果に満足しました。,I was satisfied with the result.
 "follow, conform, apply to",C,準じる,じゅんじる,,,
-preparation,B1,準備,じゅんび,,,
+preparation,B1,準備,じゅんび,,旅行の準備をしました。,I prepared for the trip.
 semi-express train,C,準急,じゅんきゅう,,,
 dwarf planet,,準惑星,じゅんわくせい,,,
 apply correspondingly,,準用,じゅんよう,,,
@@ -5873,7 +5874,7 @@ liquid solution,C,溶液,ようえき,,,
 dissolution,,溶解,ようかい,,,
 be destroyed,C,滅びる,ほろびる,,,
 "downfall, ruin, collapse",C,滅亡,めつぼう,,,
-"rarely, seldom",B1,滅多に,めったに,,,
+"rarely, seldom",B1,滅多に,めったに,,彼に会うのは滅多にありません。,I rarely meet him.
 "smooth, glossy",C,滑らか,なめらか,,,
 "slide, glide",A2,滑る,すべる,滑って移動すること。,道で滑りました。,I slipped on the road.
 "be slippery, be slimy",B2,滑る,ぬめる,,,
@@ -5883,7 +5884,7 @@ pulley,,滑車,かっしゃ,,,
 waterfall,B2,滝,たき,,,
 rapids,,滝川,たきがわ,,,
 be delayed,C,滞る,とどこおる,,,
-stay,B1,滞在,たいざい,,,
+stay,B1,滞在,たいざい,,ホテルに一週間滞在しました。,I stayed at the hotel for a week.
 falling behind,C,滞納,たいのう,,,
 fish for,,漁る,あさる,,,
 fisherman,B2,漁師,りょうし,,,
@@ -5901,10 +5902,10 @@ short circuit,,漏電,ろうでん,,,
 perform,C,演じる,えんじる,,,
 "staging, production",C,演出,えんしゅつ,,,
 theater,B2,演劇,えんげき,,,
-musical performance,B1,演奏,えんそう,,,
-acting,B1,演技,えんぎ,,,
+musical performance,B1,演奏,えんそう,,ピアノを演奏しました。,I played the piano.
+acting,B1,演技,えんぎ,,演技が上手です。,Her acting is good.
 theatrical program,,演目,えんもく,,,
-speech,B1,演説,えんぜつ,,,
+speech,B1,演説,えんぜつ,,演説を聞きました。,I listened to a speech.
 "pedal, paddle",C,漕ぐ,こぐ,,,
 rowing,,漕艇,そうてい,,,
 "Han, China",,漢,かん,,,
@@ -5931,11 +5932,11 @@ lubricating oil,,潤滑油,じゅんかつゆ,,,
 crush,B2,潰す,つぶす,,,
 be crushed,B2,潰れる,つぶれる,,,
 ulcer,,潰瘍,かいよう,,,
-intense,B1,激しい,はげしい,,,
+intense,B1,激しい,はげしい,,激しい雨が降りました。,Heavy rain fell.
 encouragement,C,激励,げきれい,,,
 "turbulence, upheaval",,激動,げきどう,,,
 passion,,激情,げきじょう,,,
-"strong, intense, thick",B1,濃い,こい,,,
+"strong, intense, thick",B1,濃い,こい,,このスープは味が濃いです。,This soup has a strong flavor.
 "concentration, density",B2,濃度,のうど,,,
 dark blue,,濃紺,のうこん,,,
 enrichment,,濃縮,のうしゅく,,,
@@ -5948,14 +5949,14 @@ burn,B2,火傷,やけど,,,
 volcano,B2,火山,かざん,,,
 Mars,C,火星,かせい,,,
 Tuesday,A1,火曜日,かようび,週の二日目。,火曜日に授業があります。,There is class on Tuesday.
-conflagration,B1,火災,かさい,,,
+conflagration,B1,火災,かさい,,火災が発生しました。,A fire broke out.
 spark,C,火花,ひばな,,,
-"light, lamp, torch",B1,灯,ひ,,,
+"light, lamp, torch",B1,灯,ひ,,灯をともしました。,I lit a lamp.
 light,,灯す,ともす,,,
 be lit,,灯る,ともる,,,
 lighthouse,B2,灯台,とうだい,,,
 "lamp oil, kerosene",B2,灯油,とうゆ,,,
-ash,B1,灰,はい,,,
+ash,B1,灰,はい,,灰が残りました。,Ashes remained.
 ashtray,A1,灰皿,はいざら,吸殻を入れる器。,灰皿にたばこを入れます。,I put a cigarette in the ashtray.
 gray,B2,灰色,はいいろ,,,
 grizzly bear,,灰色熊,はいいろぐま,,,
@@ -5970,7 +5971,7 @@ mixed rice,,炊き込みご飯,たきこみごはん,,,
 cook grains,B2,炊く,たく,,,
 cooking,B2,炊事,すいじ,,,
 rice cooker,,炊飯器,すいはんき,,,
-"flame, blaze",B1,炎,ほのお,,,
+"flame, blaze",B1,炎,ほのお,,炎が高く上がりました。,The flames rose high.
 inflammation,,炎症,えんしょう,,,
 fry,C,炒める,いためる,,,
 table with an electric heater,C,炬燵,こたつ,,,
@@ -5996,7 +5997,7 @@ squid,,烏賊,いか,,,
 does not exist,A1,無い,ない,存在しないこと。,"限界はない。",There are no limits.
 "lose, get rid of",A1,無くす,なくす,物をなくすこと。,かばんをなくしました。,I lost my bag.
 "be lost, be missing",A2,無くなる,なくなる,物がなくなること。,財布が無くなりました。,I lost my wallet.
-"without incident, safely",B1,無事,ぶじ,,,
+"without incident, safely",B1,無事,ぶじ,,事故がなく無事でした。,I was safe without an accident.
 uninhabited,,無人,むじん,,,
 uninhabited island,,無人島,むじんとう,,,
 "unintentional, random",,無作為,むさくい,,,
@@ -6004,7 +6005,7 @@ void,C,無効,むこう,,,
 without labels,,無印,むじるし,,,
 "halter, headcollar, muzzle",C,無口,むくち,,,
 unconsciousness,,無意識,むいしき,,,
-free of charge,B1,無料,むりょう,,,
+free of charge,B1,無料,むりょう,,水は無料です。,Water is free.
 apathy,,無気力,むきりょく,,,
 "unreasonable, impossible",A2,無理,むり,無理なこと。,それは無理です。,That is impossible.
 against one's will,,無理矢理,むりやり,,,
@@ -6013,11 +6014,11 @@ irrelevant,,無縁,むえん,,,
 innocence,,無罪,むざい,,,
 joblessness,,無職,むしょく,,,
 incompetence,C,無能,むのう,,,
-ignoring,B1,無視,むし,,,
+ignoring,B1,無視,むし,,ルールを無視しました。,I ignored the rules.
 speechless,C,無言,むごん,,,
 irresponsibility,,無責任,むせきにん,,,
 limitless,B2,無限,むげん,,,
-waste,B1,無駄,むだ,,,
+waste,B1,無駄,むだ,,無駄なお金を使いました。,I wasted money.
 burn,B2,焦げる,こげる,,,
 impatience,,焦り,あせり,,,
 "panic, be in a hurry",C,焦る,あせる,,,
@@ -6025,7 +6026,7 @@ focus,B2,焦点,しょうてん,,,
 however,A1,然し,しかし,逆接を表す語。,しかし分かりません。,"However, I don’t understand."
 and then,A1,然して,そして,続いて行うことを示す語。,そして帰ります。,And then I go home.
 however,C,然しながら,しかしながら,,,
-nevertheless,B1,然も,しかも,,,
+nevertheless,B1,然も,しかも,,彼は学生で然も優秀です。,"He is a student, and moreover an excellent one."
 not so much,C,然程,さほど,,,
 fried noodles,,焼き蕎麦,やきそば,,,
 grilled fish,,焼き魚,やきざかな,,,
@@ -6035,7 +6036,7 @@ grilled chicken,,焼き鳥,やきとり,,,
 grilled meat,,焼肉,やきにく,,,
 purgatory,,煉獄,れんごく,,,
 brick,B2,煉瓦,れんが,,,
-smoke,B1,煙,けむり,,,
+smoke,B1,煙,けむり,,煙が出ています。,Smoke is rising.
 smoky,B2,煙い,けむい,,,
 billow smoke,C,煙る,けむる,,,
 chimney,B2,煙突,えんとつ,,,
@@ -6061,18 +6062,18 @@ idiom,B2,熟語,じゅくご,,,
 hot,A1,熱い,あつい,温度が非常に高いこと。,今日は暑いです。,It is hot today.
 heat up,B2,熱する,ねっする,,,
 "heat stroke, hyperthermia",,熱中症,ねっちゅうしょう,,,
-tropical,B1,熱帯,ねったい,,,
-enthusiasm,B1,熱心,ねっしん,,,
+tropical,B1,熱帯,ねったい,,熱帯の植物です。,It is a tropical plant.
+enthusiasm,B1,熱心,ねっしん,,熱心に勉強しました。,I studied enthusiastically.
 heat wave,,熱波,ねっぱ,,,
 "ardent, passionate",,熱烈,ねつれつ,,,
-burn,B1,燃える,もえる,,,
+burn,B1,燃える,もえる,,紙が燃えました。,The paper burned.
 burst into flames,,燃え上がる,もえあがる,,,
 burn,B2,燃やす,もやす,,,
 fuel,C,燃料,ねんりょう,,,
 "burst open, pop",,爆ぜる,はぜる,,,
 bomb,C,爆弾,ばくだん,,,
 bombing raid,,爆撃,ばくげき,,,
-explosion,B1,爆発,ばくはつ,,,
+explosion,B1,爆発,ばくはつ,,爆発が起きました。,An explosion occurred.
 fingernail,B2,爪,つめ,,,
 nail clippers,,爪切り,つめきり,,,
 toothpick,,爪楊枝,つまようじ,,,
@@ -6080,7 +6081,7 @@ nail file,,爪鑢,つめやすり,,,
 my father,,父,ちち,,,
 father,,父さん,とうさん,,,
 "mother and father, parents",B2,父母,ふぼ,,,
-father,B1,父親,ちちおや,,,
+father,B1,父親,ちちおや,,父親は働いています。,The father is working.
 "fresh, refreshing",B2,爽やか,さわやか,,,
 refreshing,,爽快,そうかい,,,
 be tidied up,B2,片付く,かたづく,,,
@@ -6095,7 +6096,7 @@ inside corner,,片隅,かたすみ,,,
 "edition, printing block",C,版,はん,,,
 printmaking,C,版画,はんが,,,
 tusk,,牙,きば,,,
-cow,B1,牛,うし,,,
+cow,B1,牛,うし,,牛が草を食べています。,The cow is eating grass.
 milk,A1,牛乳,ぎゅうにゅう,牛の乳から作る飲み物。,牛乳を飲みます。,I drink milk.
 beef,A1,牛肉,ぎゅうにく,牛の肉。,牛肉を食べます。,I eat beef.
 oyster,,牡蠣,かき,,,
@@ -6105,10 +6106,10 @@ pastor,C,牧師,ぼくし,,,
 stock farming,B2,牧畜,ぼくちく,,,
 pasture,,牧草,ぼくそう,,,
 thing,A1,物,もの,存在する事物。,そんなものはない。,There is no such thing.
-things,B1,物事,ものごと,,,
+things,B1,物事,ものごと,,物事をよく考えましょう。,Let’s think carefully about things.
 "article, thing",,物件,ぶっけん,,,
 "object, body",C,物体,ぶったい,,,
-cost of living,B1,物価,ぶっか,,,
+cost of living,B1,物価,ぶっか,,物価が上がりました。,The cost of living went up.
 "ruler, measure",B2,物差し,ものさし,,,
 physics,B1,物理,ぶつり,,,
 storage room,B2,物置,ものおき,,,
@@ -6942,8 +6943,8 @@ bamboo screen,,簾,すだれ,,,
 basket,B1,籠,かご,,,
 shut oneself in,C,籠る,こもる,,,
 "tempting, coaxing",,籠絡,ろうらく,,,
-uncooked rice,A2,米,こめ,炊く前の穀物。,日本人は米をよく食べます。,Japanese people often eat rice.
 meter,A1,米,メートル,長さを測る単位。,一メートルあります。,It is one meter.
+uncooked rice,A2,米,こめ,炊く前の穀物。,日本人は米をよく食べます。,Japanese people often eat rice.
 United States,,米国,べいこく,,,
 the Americas,,米州,べいしゅう,,,
 rice production,,米産,べいさん,,,
