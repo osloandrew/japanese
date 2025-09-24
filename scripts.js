@@ -12,12 +12,13 @@ const SCHEMA_MAP = {
   ord: "漢字",
   engelsk: "英訳",
   CEFR: "CEFR",
-  gender: "仮名", // not in Japanese CSV
+  gender: "partOfSpeech", // not in Japanese CSV
   uttale: null, // not in Japanese CSV
   etymologi: null, // not in Japanese CSV
   definisjon: "定義",
   eksempel: "例文",
   sentenceTranslation: "sentenceTranslation",
+  kana: "仮名",
 };
 
 // Function to show or hide the landing card
@@ -250,7 +251,7 @@ function parseCSVData(data) {
           definisjon: get("definisjon"),
           eksempel: get("eksempel"),
           sentenceTranslation: get("sentenceTranslation"),
-          region: get("region"),
+          kana: get("kana"),
         };
 
         // Defensive trims
@@ -535,7 +536,7 @@ async function search(queryOverride = null) {
           .toLowerCase()
           .split(",")
           .map((s) => s.trim());
-        const kanaList = (r.gender || "")
+        const kanaList = (r.kana || "")
           .toLowerCase()
           .split(",")
           .map((s) => s.trim()); // 👈 add this
@@ -678,7 +679,7 @@ async function search(queryOverride = null) {
         const partialRegex = new RegExp(variation, "i"); // Partial match for larger words like "bevegelsesfrihet"
 
         const ordText = (r.ord || "").toLowerCase();
-        const kanaText = (r.gender || "").toLowerCase(); // 👈 kana
+        const kanaText = (r.kana || "").toLowerCase(); // 👈 kana
         const engVals = (r.engelsk || "")
           .toLowerCase()
           .split(",")
@@ -854,7 +855,7 @@ async function search(queryOverride = null) {
           .split(",")
           .map((s) => s.trim())
           .includes(queryLower) ||
-        (a.gender || "")
+        (a.kana || "")
           .toLowerCase()
           .split(",")
           .map((s) => s.trim())
@@ -871,7 +872,7 @@ async function search(queryOverride = null) {
           .split(",")
           .map((s) => s.trim())
           .includes(queryLower) ||
-        (b.gender || "")
+        (b.kana || "")
           .toLowerCase()
           .split(",")
           .map((s) => s.trim())
@@ -1012,7 +1013,7 @@ function checkForSentences(word, pos) {
       (r) => r.ord.toLowerCase() === wordPart.toLowerCase()
     );
     const baseForms = [wordPart];
-    if (entry?.gender) baseForms.push(entry.gender);
+    if (entry?.kana) baseForms.push(entry.kana);
     const wordVariations = baseForms.flatMap((f) =>
       generateWordVariationsForSentences(f, pos)
     );
@@ -1316,8 +1317,8 @@ function makeDefinitionClickable(defText) {
                 set.add(w);
             });
         }
-        if (r?.gender) {
-          r.gender
+        if (r?.kana) {
+          r.kana
             .split(",")
             .map((s) => s.trim())
             .forEach((w) => {
@@ -1559,8 +1560,8 @@ function displaySearchResults(results, query = "") {
                   </div>
 
                     ${
-                      result.gender && result.gender !== result.ord
-                        ? `<div class="gender ${multipleResultsgenderClass}">${result.gender}</div>`
+                      result.kana && result.kana !== result.ord
+                        ? `<div class="gender ${multipleResultsgenderClass}">${result.kana}</div>`
                         : ""
                     }
                     ${
@@ -2252,13 +2253,10 @@ function fetchAndRenderSentences(word, pos, showEnglish = true) {
     (r) => r.ord.toLowerCase() === trimmedWord.toLowerCase()
   );
   // For Japanese: just use ord first, then kana (gender) if present
-  const wordVariations = [
-    trimmedWord,
-    ...(entry?.gender ? [entry.gender] : []),
-  ];
+  const wordVariations = [trimmedWord, ...(entry?.kana ? [entry.kana] : [])];
 
   const kanji = entry.ord.trim(); // e.g. 人
-  const kana = entry.gender?.trim(); // e.g. ひと
+  const kana = entry.kana?.trim(); // e.g. ひと
 
   // Collect matches for each form
   function collectMatches(form) {

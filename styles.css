@@ -1048,10 +1048,6 @@ ul {
   padding-inline-start: 20px;
 }
 
-.pos-filter {
-  display: none !important;
-}
-
 /* Basic styling for the table */
 .pronunciation-table {
   width: 100%;
