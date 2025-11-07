@@ -1,24 +1,27 @@
 // Global Variables
 let results = [];
 let isEnglishVisible = true;
-let isKanjiVisible = true; // default: show Kanji
 let latestMultipleResults = null;
 const resultsContainer = document.getElementById("results-container");
-// Language + schema for Japanese
-const APP_LANG = "es";
+
+// --- Sentences index globals ---
+let sentenceCorpus = []; // Flat array of { id, no, en, noNorm, enNorm, cefr, audio }
+let sentenceIndex = null; // Map<string, Uint32Array | number[]>
 
 // Map incoming CSV headers to the app’s canonical keys
 const SCHEMA_MAP = {
-  ord: "漢字",
-  engelsk: "英訳",
+  ord: "word",
+  wordAudio: "wordAudio",
+  engelsk: "English",
   CEFR: "CEFR",
-  gender: "partOfSpeech", // not in Japanese CSV
-  uttale: null, // not in Japanese CSV
-  etymologi: null, // not in Japanese CSV
-  definisjon: "定義",
-  eksempel: "例文",
+  gender: "gender",
+  uttale: "transliteration",
+  etymologi: "region",
+  definisjon: "definition",
+  eksempel: "example",
+  sentenceAudio: "sentenceAudio",
   sentenceTranslation: "sentenceTranslation",
-  kana: "仮名",
+  transliteration: "transliteration", // optional extra; stored for future use
 };
 
 // Function to show or hide the landing card
@@ -87,18 +90,20 @@ function appendToContainer(content) {
   resultsContainer.innerHTML += content;
 }
 
-function shouldNotDecline(adjective) {
-  // Pattern for adjectives that do not decline (same form in all genders)
-  const noDeclinePattern = /(ende|bra|ing|y|ekte)$/i;
-
-  return noDeclinePattern.test(adjective);
-}
-
 function formatDefinitionWithMultipleSentences(definition) {
   return definition
     .split(/(?<=[.!?])\s+/) // Split by sentence delimiters
     .map((sentence) => `<p class="example">${sentence}</p>`) // Wrap each sentence in a <p> tag
     .join(""); // Join them together into a string
+}
+
+function splitIntoSentences(text) {
+  if (!text) return [];
+  const arr = text.match(/[^.!?]+[.!?]*/g);
+  return arr ? arr.map((s) => s.trim()) : [text.trim()];
+}
+function normalize(str) {
+  return (str || "").toLowerCase().trim();
 }
 
 function togglePronunciationGuide() {
@@ -115,7 +120,7 @@ function filterResultsByPOS(results, selectedPOS) {
     if (selectedPOS === "noun") {
       return (
         r.gender &&
-        ["noun", "masculine", "feminine"].some((genderVal) =>
+        ["masculine", "feminine", "neuter"].some((genderVal) =>
           r.gender.toLowerCase().includes(genderVal)
         )
       );
@@ -128,45 +133,12 @@ function filterResultsByPOS(results, selectedPOS) {
   });
 }
 
-// Filter results based on selected CEFR level
-function filterResultsByCEFR(results, selectedCEFR) {
-  if (!selectedCEFR) return results;
-  return results.filter(
-    (r) => r.CEFR && r.CEFR.toUpperCase() === selectedCEFR.toUpperCase()
-  );
-}
-
 // Helper function to format 'gender' (grammatical gender) based on its value
-// Helper to format/display 'gender' and flag nouns consistently
 function formatGender(gender) {
   if (!gender) return "";
   const g = gender.toLowerCase().trim();
-  const esNounMarkers = ["noun", "masculine", "feminine"];
-  const norNounMarkers = ["en", "et", "ei", "en-et", "en-ei-et"];
-
-  if (esNounMarkers.some((m) => g === m)) {
-    // Japanese CSV uses masculine/feminine for nouns
-    return "noun - " + gender;
-  }
-  if (norNounMarkers.some((m) => g.startsWith(m))) {
-    return "noun - " + gender;
-  }
-  return gender;
-}
-// Helper to format/display 'gender' and flag nouns consistently
-function formatGender(gender) {
-  if (!gender) return "";
-  const g = gender.toLowerCase().trim();
-  const esNounMarkers = ["noun", "masculine", "feminine"];
-  const norNounMarkers = ["en", "et", "ei", "en-et", "en-ei-et"];
-
-  if (g === "noun") return "noun";
-
-  if (esNounMarkers.some((m) => g === m)) {
-    // Japanese CSV uses masculine/feminine for nouns
-    return "noun - " + gender;
-  }
-  if (norNounMarkers.some((m) => g.startsWith(m))) {
+  // If it starts with a Japanese gender, mark as noun
+  if (["masculine", "feminine", "neuter"].some((x) => g.startsWith(x))) {
     return "noun - " + gender;
   }
   return gender;
@@ -225,7 +197,7 @@ async function fetchAndLoadDictionaryData() {
   }
 }
 
-// Parse the CSV data using PapaParse and normalize to canonical keys
+// Parse the CSV data using PapaParse
 function parseCSVData(data) {
   Papa.parse(data, {
     header: true,
@@ -251,7 +223,9 @@ function parseCSVData(data) {
           definisjon: get("definisjon"),
           eksempel: get("eksempel"),
           sentenceTranslation: get("sentenceTranslation"),
-          kana: get("kana"),
+          wordAudio: get("wordAudio"),
+          sentenceAudio: get("sentenceAudio"),
+          region: get("region"),
         };
 
         // Defensive trims
@@ -259,8 +233,9 @@ function parseCSVData(data) {
 
         return entry;
       });
-
-      console.log("Parsed and normalized data:", results);
+      buildSentenceCorpus();
+      buildSentenceIndex();
+      console.log("Parsed and cleaned data:", results);
     },
     error: function (error) {
       console.error("Error parsing CSV:", error);
@@ -268,10 +243,69 @@ function parseCSVData(data) {
   });
 }
 
+function buildSentenceCorpus() {
+  sentenceCorpus = [];
+  let id = 0;
+  for (const r of results) {
+    const noList = splitIntoSentences(r.eksempel);
+    const enList = splitIntoSentences(r.sentenceTranslation || "");
+    const n = Math.max(noList.length, enList.length);
+    for (let i = 0; i < n; i++) {
+      const no = noList[i] || "";
+      const en = enList[i] || "";
+      if (!no && !en) continue;
+      sentenceCorpus.push({
+        id: id++,
+        no,
+        en,
+        noNorm: normalize(no),
+        enNorm: normalize(en),
+        cefr: (r.CEFR || "").toUpperCase(),
+        audio: r.sentenceAudio === "X",
+      });
+    }
+  }
+  console.log(
+    `[Sentences] Corpus built: ${sentenceCorpus.length} sentence rows`
+  );
+}
+
+function tokenize(text) {
+  // Unicode letters.
+  const m = text.match(/\p{L}+/gu);
+  return m ? m.map((w) => w.toLowerCase()) : [];
+}
+
+function buildSentenceIndex() {
+  console.time("[Sentences] build index");
+  const idx = new Map();
+  for (const row of sentenceCorpus) {
+    const seen = new Set();
+    for (const tok of [...tokenize(row.noNorm), ...tokenize(row.enNorm)]) {
+      if (tok.length === 0) continue;
+      if (seen.has(tok)) continue; // avoid dup adds for same row
+      seen.add(tok);
+      let postings = idx.get(tok);
+      if (!postings) {
+        postings = [];
+        idx.set(tok, postings);
+      }
+      postings.push(row.id);
+    }
+  }
+  // Optionally compact to typed arrays if large
+  for (const [k, list] of idx) {
+    if (list.length > 1024) idx.set(k, Uint32Array.from(list));
+  }
+  sentenceIndex = idx;
+  console.timeEnd("[Sentences] build index");
+  console.log(`[Sentences] index terms: ${idx.size}`);
+}
+
 function flagMissingWordEntry(word) {
   // URL of your Google Form
   const formUrl =
-    "https://docs.google.com/forms/d/e/1FAIpQLSdEbYtaDMd278Cwx4MmYYqWwyYEv7HY1__yev0UaczKjO9Tsw/formResponse";
+    "https://docs.google.com/forms/d/e/1FAIpQLSdMpnbI2DyUo6SWBRR53ZnYucDPdAYXK9rksP3AhMrC7b91Dw/formResponse";
 
   // Prepare the data to be sent
   const formData = new FormData();
@@ -348,6 +382,10 @@ async function randomWord() {
     filteredResults = filteredResults.filter(
       (r) => !selectedCEFR || (r.CEFR && r.CEFR.toUpperCase() === selectedCEFR)
     );
+  } else if (type === "pronunciation") {
+    initPronunciation();
+    hideSpinner();
+    return; // ✅ stop here, pronunciation handles itself
   } else {
     // Filter results by the selected part of speech (for 'words' type)
     filteredResults = filterResultsByPOS(results, selectedPOS);
@@ -431,24 +469,36 @@ async function randomWord() {
                 <div class="sentence-box-norwegian ${
                   !isEnglishVisible ? "sentence-box-norwegian-hidden" : ""
                 }">
-                    <div class="sentence-content">
-                        ${cefrLabel}  <!-- Add the CEFR label in the upper-left corner -->
-                        <p class="sentence">${cleanedSentence}</p>
-                    </div>
+            <div class="sentence-content">
+            <div class="cefr-audio-block">
+              ${cefrLabel}
+              ${
+                randomResult.sentenceAudio === "X"
+                  ? `<i class="fas fa-volume-up sentence-audio-icon"
+                        data-sentence="${cleanedSentence
+                          .replace(/<[^>]*>/g, "")
+                          .trim()}"></i>`
+                  : ""
+              }
+            </div>
+              <p class="sentence">${cleanedSentence}</p>
+            </div>
                 </div>
         `;
 
     if (selectedTranslation) {
       sentenceHTML += `
-                <div class="sentence-box-english" style="display: ${
-                  isEnglishVisible ? "block" : "none"
-                };">
+        <div class="sentence-box-english ${isEnglishVisible ? "" : "hidden"}">
                     <p class="sentence">${selectedTranslation}</p>
                 </div>
             `;
     }
     sentenceHTML += "</div>"; // Close the sentence-container div
     document.getElementById("results-container").innerHTML = sentenceHTML;
+  } else if (type === "pronunciation") {
+    initPronunciation();
+    hideSpinner();
+    return; // ✅ stop here, pronunciation handles itself
   } else {
     // Update the URL to include the random word's info
     updateURL("", type, randomResult.gender, null, randomResult.ord);
@@ -458,68 +508,107 @@ async function randomWord() {
   hideSpinner(); // Hide the spinner
 }
 
-// Function to generate potential inexact matches by removing plural endings, etc.
+// Comprehensive Japanese inexact-match generator
 function generateInexactMatches(query) {
-  const variations = [query.toLowerCase().trim()]; // Always include the base query
+  const q = query.toLowerCase().trim();
+  const variations = new Set([q]);
 
-  // Handle common suffixes like 'ing', 'ed', etc.
+  // --- 1. Inflectional suffixes (nouns, adjectives, verbs) ---
   const suffixes = [
-    // plurals
-    "s",
-    "es",
-    // adverbs
-    "mente",
-    // adjective gender/number
-    "o",
+    // singular noun/adjective endings
     "a",
-    "os",
-    "as",
-    // common diminutives
-    "ito",
-    "ita",
-    "itos",
-    "itas",
-    // participles and gerunds
-    "ado",
-    "ada",
-    "ados",
-    "adas",
-    "ido",
-    "ida",
-    "idos",
-    "idas",
-    "ando",
-    "iendo",
-    // very common present/preterite endings (short list for recall)
-    "o",
-    "as",
-    "a",
-    "amos",
-    "an",
-    "es",
     "e",
-    "emos",
-    "en",
-    "í",
-    "iste",
-    "ió",
-    "imos",
-    "ieron",
-    // infinitive recovery helper
-    "r",
-    "ar",
-    "er",
-    "ir",
+    "i",
+    "o",
+    "u",
+    "om",
+    "em",
+    "u",
+    "om",
+    "omu",
+    "oga",
+    "ega",
+    // plural endings
+    "ama",
+    "ima",
+    "ovima",
+    "evima",
+    "ovima",
+    "ima",
+    "ovi",
+    "evi",
+    "i",
+    "e",
+    // genitive/locative endings
+    "ih",
+    "ama",
+    "ima",
+    "ima",
+    "ima",
+    "ama",
+    "ima",
+    // verb person/tense endings
+    "m",
+    "š",
+    "mo",
+    "te",
+    "ju",
+    "ći",
+    "la",
+    "lo",
+    "li",
+    "le",
+    "o",
+    "ao",
+    "eo",
+    "io",
   ];
-  suffixes.forEach((suffix) => {
-    if (query.endsWith(suffix)) {
-      variations.push(query.slice(0, -suffix.length));
+  suffixes.forEach((suf) => {
+    if (q.endsWith(suf) && q.length > suf.length + 2) {
+      variations.add(q.slice(0, -suf.length));
     }
   });
 
-  return variations;
-}
+  // --- 2. Derivational adjective alternations ---
+  // Map of frequent adjectival endings → stem alternations
+  const alternations = [
+    // --- Adjective/adverb alternations ---
+    { from: "nih", to: "an" }, // spolnih → spolan, glavnih → glavan
+    { from: "ni", to: "an" }, // spolni → spolan
+    { from: "ni", to: "en" }, // javni → javen
+    { from: "no", to: "an" }, // sustavno → sustavan, glasno → glasan
+    { from: "no", to: "en" }, // mirno → miren
+    { from: "no", to: "in" }, // tiho → tih / tišin- (approximates)
+    // --- Other derivational adjective endings ---
+    { from: "ski", to: "ak" }, // ljudski → ljudak
+    { from: "ski", to: "an" }, // morski → moran
+    { from: "ški", to: "aš" }, // bošnjački → bošnjak
+    { from: "čki", to: "ak" }, // dječački → dječak
+    { from: "asti", to: "ast" }, // robustni → robustan
+    // --- Verb stems ---
+    { from: "ati", to: "" }, // raditi → rad
+    { from: "jeti", to: "je" }, // htjeti → htje
+    { from: "ći", to: "" }, // ići → i
+    { from: "oga", to: "" }, // genitive adjectives (novoga → nov)
+  ];
+  alternations.forEach(({ from, to }) => {
+    if (q.endsWith(from) && q.length > from.length + 2) {
+      variations.add(q.slice(0, -from.length) + to);
+    }
+  });
 
+  // --- 3. Final vowel normalization (broad recall) ---
+  // Handles cases like "spoln" → "spolan", "glavn" → "glavan"
+  const withFinal = Array.from(variations);
+  withFinal.forEach((base) => {
+    if (base.endsWith("n")) variations.add(base + "an");
+    if (base.endsWith("r")) variations.add(base + "ar");
+    if (base.endsWith("v")) variations.add(base + "an");
+  });
+
+  // --- 4. Deduplication and return ---
+  return Array.from(variations);
+}
 // Perform a search based on the input query and selected POS
 async function search(queryOverride = null) {
   const originalQuery =
@@ -529,29 +618,25 @@ async function search(queryOverride = null) {
   document.getElementById("search-bar").dataset.originalQuery = originalQuery; // 👈 this line
   // Try to find a base form in the dataset
   const variations = generateInexactMatches(originalQuery);
+  const selector = document.getElementById("type-select").value;
   const query =
-    variations.find((base) =>
-      results.some((r) => {
-        const ordList = r.ord
-          .toLowerCase()
-          .split(",")
-          .map((s) => s.trim());
-        const kanaList = (r.kana || "")
-          .toLowerCase()
-          .split(",")
-          .map((s) => s.trim()); // 👈 add this
-        const engList = r.engelsk
-          .toLowerCase()
-          .split(",")
-          .map((s) => s.trim());
-        return (
-          ordList.includes(base) ||
-          kanaList.includes(base) ||
-          engList.includes(base)
-        ); // 👈 add kanaList
-      })
-    ) || originalQuery;
+    selector === "sentences"
+      ? originalQuery
+      : variations.find((base) =>
+          results.some((r) => {
+            const ordList = r.ord
+              .toLowerCase()
+              .split(",")
+              .map((s) => s.trim());
+            const engelskList = r.engelsk
+              .toLowerCase()
+              .split(",")
+              .map((s) => s.trim());
+            return ordList.includes(base) || engelskList.includes(base);
+          })
+        ) || originalQuery;
   const isInexactMatch = originalQuery !== query;
+
   console.log("Search triggered with query:", query);
   const selectedPOS = document.getElementById("pos-select")
     ? document.getElementById("pos-select").value.toLowerCase()
@@ -613,49 +698,96 @@ async function search(queryOverride = null) {
     // Render the matching stories
     displayStoryList(matchingResults);
   } else if (type === "sentences") {
-    // Handle empty search query
     if (!query) {
       resultsContainer.innerHTML = `
-            <div class="definition error-message">
-                <h2 class="word-gender">
-                    Error <div class="gender">Empty Search</div>
-                </h2>
-                <p>Please enter a word in the search field before searching.</p>
-            </div>
-        `;
+      <div class="definition error-message">
+        <h2 class="word-gender">Error <div class="gender">Empty Search</div></h2>
+        <p>Please enter a word in the search field before searching.</p>
+      </div>`;
       hideSpinner();
       return;
     }
 
-    // If searching sentences, look for matches in both 'eksempel' and 'sentenceTranslation' fields
-    matchingResults = cleanResults.filter((r) => {
-      return normalizedQueries.some((normQuery) => {
-        const japaneseSentenceMatch =
-          r.eksempel && r.eksempel.toLowerCase().includes(normQuery); // Match in 'eksempel'
-        const englishTranslationMatch =
-          r.sentenceTranslation &&
-          r.sentenceTranslation.toLowerCase().includes(normQuery); // Match in 'sentenceTranslation'
-        return japaneseSentenceMatch || englishTranslationMatch;
-      });
-    });
+    // Safety: ensure index exists
+    if (!sentenceIndex || !sentenceCorpus.length) {
+      buildSentenceCorpus();
+      buildSentenceIndex();
+    }
 
-    // Additionally, filter by the selected CEFR level
-    matchingResults = filterResultsByCEFR(matchingResults, selectedCEFR);
+    console.time("[Sentences] query");
+    const terms = normalize(query).split(/\s+/).filter(Boolean);
 
-    // Prioritize the matching results using the prioritizeResults function
-    matchingResults = prioritizeResults(matchingResults, query, "eksempel");
+    let ids = null;
+    for (const t of terms) {
+      const match = sentenceIndex.get(t) || [];
+      const asArray = ArrayBuffer.isView(match) ? Array.from(match) : match;
+      ids =
+        ids === null
+          ? new Set(asArray)
+          : new Set(asArray.filter((x) => ids.has(x)));
+    }
 
-    // Highlight the query in both 'eksempel' and 'sentenceTranslation'
-    matchingResults.forEach((result) => {
-      result.eksempel = highlightQuery(result.eksempel, query);
-      if (result.sentenceTranslation) {
-        result.sentenceTranslation = highlightQuery(
-          result.sentenceTranslation,
-          query
+    // If nothing matched, default to empty
+    if (!ids || ids.size === 0) {
+      ids = [];
+    }
+
+    // Materialize rows
+    const rowsAll = [];
+    for (const sid of ids) rowsAll.push(sentenceCorpus[sid]);
+
+    // Apply CEFR filter if set
+    const selectedCEFR = document.getElementById("cefr-select")
+      ? document.getElementById("cefr-select").value.toUpperCase()
+      : "";
+    const rowsFiltered = selectedCEFR
+      ? rowsAll.filter((r) => r.cefr === selectedCEFR)
+      : rowsAll;
+
+    // Prefer exact phrase matches first, then multi-word partials
+    const exact = [];
+    const partial = [];
+    for (const r of rowsFiltered) {
+      const inOrder =
+        r.noNorm.includes(normalize(query)) ||
+        r.enNorm.includes(normalize(query));
+      if (inOrder) {
+        exact.push(r);
+      } else {
+        // fallback: all words must still appear somewhere
+        const matchesAll = terms.every(
+          (t) => r.noNorm.includes(t) || r.enNorm.includes(t)
         );
+        if (matchesAll) {
+          partial.push(r);
+        }
       }
-    });
-    renderSentences(matchingResults, query); // Pass the query for highlighting
+    } // CEFR order for sorting
+    const cefrOrder = { A1: 1, A2: 2, B1: 3, B2: 4, C: 5 };
+
+    // Sort helper: lower CEFR first, then leave relative order intact
+    function sortByCEFR(arr) {
+      return arr.sort((a, b) => {
+        const aVal = cefrOrder[a.cefr] || 99;
+        const bVal = cefrOrder[b.cefr] || 99;
+        return aVal - bVal;
+      });
+    }
+
+    // Top-N cap (10 like your current UI), exact matches first, within each CEFR-ordered
+    let combined = [];
+    if (exact.length) {
+      combined = sortByCEFR(exact).concat(sortByCEFR(partial));
+    } else {
+      combined = sortByCEFR(partial);
+    }
+    combined = combined.slice(0, 10);
+
+    renderSentenceMatchesFromCorpus(combined, query);
+
+    console.timeEnd("[Sentences] query");
+    hideSpinner();
+    return;
   } else {
     // Handle empty search query
     if (!query) {
@@ -677,21 +809,14 @@ async function search(queryOverride = null) {
       const matchesQuery = normalizedQueries.some((variation) => {
         const exactRegex = new RegExp(`\\b${variation}\\b`, "i"); // Exact match regex for whole word
         const partialRegex = new RegExp(variation, "i"); // Partial match for larger words like "bevegelsesfrihet"
-
-        const ordText = (r.ord || "").toLowerCase();
-        const kanaText = (r.kana || "").toLowerCase(); // 👈 kana
-        const engVals = (r.engelsk || "")
+        const wordMatch =
+          exactRegex.test(r.ord.toLowerCase()) ||
+          partialRegex.test(r.ord.toLowerCase());
+        const englishValues = r.engelsk
           .toLowerCase()
           .split(",")
           .map((e) => e.trim());
-
-        const wordMatch =
-          exactRegex.test(ordText) ||
-          partialRegex.test(ordText) ||
-          exactRegex.test(kanaText) ||
-          partialRegex.test(kanaText); // 👈 include kana
-
-        const englishMatch = engVals.some(
+        const englishMatch = englishValues.some(
           (eng) => exactRegex.test(eng) || partialRegex.test(eng)
         );
         return wordMatch || englishMatch;
@@ -702,7 +827,7 @@ async function search(queryOverride = null) {
         matchesQuery &&
         (!selectedPOS ||
           (selectedPOS === "noun" &&
-            ["noun", "masculine", "feminine"].some((gender) =>
+            ["masculine", "feminine", "neuter"].some((gender) =>
               r.gender.toLowerCase().includes(gender)
             )) ||
           r.gender.toLowerCase().includes(selectedPOS)) &&
@@ -740,19 +865,16 @@ async function search(queryOverride = null) {
 
       // Now search for results using these inexact queries
       let inexactWordMatches = results.filter((r) => {
-        const matchesInexact = inexactWordQueries.some((inexactQuery) => {
-          const q = inexactQuery.toLowerCase();
-          return (
-            (r.ord || "").toLowerCase().includes(q) ||
-            (r.gender || "").toLowerCase().includes(q) || // 👈 include kana
-            (r.engelsk || "").toLowerCase().includes(q)
-          );
-        });
+        const matchesInexact = inexactWordQueries.some(
+          (inexactQuery) =>
+            r.ord.toLowerCase().includes(inexactQuery) ||
+            r.engelsk.toLowerCase().includes(inexactQuery)
+        );
         return (
           matchesInexact &&
           (!selectedPOS ||
             (selectedPOS === "noun" &&
-              ["noun", "masculine", "feminine"].some((gender) =>
+              ["masculine", "feminine", "neuter"].some((gender) =>
                 r.gender.toLowerCase().includes(gender)
               )) ||
             r.gender.toLowerCase().includes(selectedPOS)) &&
@@ -848,35 +970,20 @@ async function search(queryOverride = null) {
         a.ord
           .toLowerCase()
           .split(",")
-          .map((s) => s.trim())
+          .map((str) => str.trim())
           .includes(queryLower) ||
-        (a.engelsk || "")
+        a.engelsk
           .toLowerCase()
           .split(",")
-          .map((s) => s.trim())
-          .includes(queryLower) ||
-        (a.kana || "")
-          .toLowerCase()
-          .split(",")
-          .map((s) => s.trim())
-          .includes(queryLower); // 👈
-
+          .map((str) => str.trim())
+          .includes(queryLower);
       const isExactMatchB =
-        b.ord
+        b.ord.toLowerCase() === queryLower ||
+        b.engelsk
           .toLowerCase()
           .split(",")
-          .map((s) => s.trim())
-          .includes(queryLower) ||
-        (b.engelsk || "")
-          .toLowerCase()
-          .split(",")
-          .map((s) => s.trim())
-          .includes(queryLower) ||
-        (b.kana || "")
-          .toLowerCase()
-          .split(",")
-          .map((s) => s.trim())
-          .includes(queryLower); // 👈
+          .map((str) => str.trim())
+          .includes(queryLower);
       if (isExactMatchA && !isExactMatchB) {
         return -1;
       }
@@ -995,7 +1102,7 @@ function checkForSentences(word, pos) {
       // Handle POS matching for nouns and other parts of speech
       const posMatch =
         (pos === "noun" &&
-          ["noun", "masculine", "feminine"].some((gender) =>
+          ["masculine", "feminine", "neuter"].some((gender) =>
             result.gender.toLowerCase().includes(gender)
           )) ||
         result.gender.toLowerCase().includes(pos.toLowerCase());
@@ -1008,15 +1115,8 @@ function checkForSentences(word, pos) {
     }
 
     // Generate word variations
-    // Generate variations from both ord and kana (gender) if present
-    const entry = results.find(
-      (r) => r.ord.toLowerCase() === wordPart.toLowerCase()
-    );
-    const baseForms = [wordPart];
-    if (entry?.kana) baseForms.push(entry.kana);
-    const wordVariations = baseForms.flatMap((f) =>
-      generateWordVariationsForSentences(f, pos)
-    );
+    const wordVariations = generateWordVariationsForSentences(wordPart, pos);
+
     // Check if any sentences in the data include this word or its variations in the 'eksempel' field
     if (
       results.some(
@@ -1087,6 +1187,44 @@ function selectType(type) {
   handleTypeChange(type);
 }
 
+function enableSearchControls() {
+  const searchBar = document.getElementById("search-bar");
+  const searchBtn = document.getElementById("search-btn");
+  const clearBtn = document.getElementById("clear-btn");
+
+  if (!searchBar || !searchBtn || !clearBtn) return;
+
+  searchBar.disabled = false;
+  searchBtn.disabled = false;
+  clearBtn.disabled = false;
+
+  searchBar.style.color = "";
+  searchBar.style.cursor = "text";
+  searchBtn.style.color = "";
+  searchBtn.style.cursor = "pointer";
+  clearBtn.style.color = "";
+  clearBtn.style.cursor = "pointer";
+}
+
+function disableSearchControls() {
+  const searchBar = document.getElementById("search-bar");
+  const searchBtn = document.getElementById("search-btn");
+  const clearBtn = document.getElementById("clear-btn");
+
+  if (!searchBar || !searchBtn || !clearBtn) return;
+
+  searchBar.disabled = true;
+  searchBtn.disabled = true;
+  clearBtn.disabled = true;
+
+  searchBar.style.color = "#ccc";
+  searchBar.style.cursor = "not-allowed";
+  searchBtn.style.color = "#ccc";
+  searchBtn.style.cursor = "not-allowed";
+  clearBtn.style.color = "#ccc";
+  clearBtn.style.cursor = "not-allowed";
+}
+
 // Handle change in search type (words/sentences)
 function handleTypeChange(type) {
   // If type is not passed in (e.g., called from dropdown), get it from the dropdown
@@ -1152,6 +1290,8 @@ function handleTypeChange(type) {
     cefrFilterContainer.classList.remove("disabled"); // Visually enable the CEFR filter
     cefrSelect.value = ""; // Reset to default "CEFR Level"
 
+    enableSearchControls();
+
     // Load stories data if not already loaded
     if (!storyResults.length) {
       fetchAndLoadStoryData().then(() => {
@@ -1183,6 +1323,8 @@ function handleTypeChange(type) {
     cefrSelect.value = ""; // Reset to "CEFR Level" option
     cefrFilterContainer.classList.remove("disabled"); // Visually enable the CEFR filter
 
+    enableSearchControls();
+
     // If the search bar is not empty, perform a sentence search
     if (query) {
       console.log("Searching for sentences with query:", query);
@@ -1196,6 +1338,21 @@ function handleTypeChange(type) {
 
     resetGame();
     startWordGame(); // Call the word game function
+  } else if (type === "pronunciation") {
+    // Same UI adjustments you already had…
+    isEnglishVisible = true;
+    genreFilterContainer.style.display = "none";
+    searchBarWrapper.style.display = "inline-flex";
+    randomBtn.style.display = "block";
+    posFilterContainer.style.display = "inline-flex";
+    posSelect.disabled = true;
+    cefrLock.style.display = "none";
+    cefrSelect.disabled = false;
+    cefrFilterContainer.classList.remove("disabled");
+
+    disableSearchControls();
+    // Now call the pronunciation module
+    initPronunciation();
   } else {
     // Handle default case (e.g., "Words" type)
     genreFilterContainer.style.display = "none"; // Hide genre dropdown
@@ -1217,6 +1374,8 @@ function handleTypeChange(type) {
     cefrSelect.disabled = false;
     cefrSelect.value = ""; // Reset to "CEFR Level" option
     cefrFilterContainer.classList.remove("disabled");
+
+    enableSearchControls();
 
     // Optionally, generate a random word if needed when switching back to words
     if (query) {
@@ -1271,7 +1430,11 @@ function handleCEFRChange() {
 
     // Display the filtered list of stories
     displayStoryList(filteredStories);
+  } else if (type === "pronunciation") {
+    // Pronunciation: regenerate a sentence with the selected CEFR
+    initPronunciation();
   }
+
   // Handle the word game logic or dictionary search when 'word-game' or 'words' are selected
   else if (gameActive && type === "word-game") {
     startWordGame(); // Adjust the word game based on the new CEFR filter
@@ -1291,132 +1454,74 @@ function handleCEFRChange() {
 function makeDefinitionClickable(defText) {
   if (!defText) return "";
 
-  // Normalize lines; strip trailing sentence punctuation (incl. JP)
-  let text = defText
-    .split(/\r?\n+/)
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .join(" ")
-    .replace(/\s*[.!?…。、！？]\s*$/u, "");
-
-  // Build once: alternation of known JP headwords (kanji + kana)
-  if (!makeDefinitionClickable._rxBuilt) {
-    const set = new Set();
-    if (Array.isArray(results)) {
-      for (const r of results) {
-        if (r?.ord) {
-          r.ord
-            .split(",")
-            .map((s) => s.trim())
-            .forEach((w) => {
-              if (
-                /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(
-                  w
-                )
-              )
-                set.add(w);
-            });
-        }
-        if (r?.kana) {
-          r.kana
-            .split(",")
-            .map((s) => s.trim())
-            .forEach((w) => {
-              if (/[\p{Script=Hiragana}\p{Script=Katakana}]/u.test(w))
-                set.add(w);
-            });
-        }
-      }
-    }
-    const words = Array.from(set)
-      .filter(Boolean)
-      .sort((a, b) => b.length - a.length);
-    const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const alt = words.map(esc).join("|") || "(?!)";
-    // Match headwords ANYWHERE (no JP boundary requirement)
-    makeDefinitionClickable._rx = new RegExp(`(${alt})`, "gu");
-    makeDefinitionClickable._rxBuilt = true;
-  }
-
-  // Wrap JP headwords found in the text + add a space if another JP char follows
-  text = text.replace(makeDefinitionClickable._rx, (m, _g1, offset, str) => {
-    const safe = m.replace(/["&<>]/g, (ch) =>
-      ch === "&"
-        ? "&amp;"
-        : ch === '"'
-        ? "&quot;"
-        : ch === "<"
-        ? "&lt;"
-        : "&gt;"
-    );
-
-    // Look at the next character in the *original* string
-    const nextChar = str.slice(offset + m.length, offset + m.length + 1);
-
-    // JP char class incl. long-vowel mark + halfwidth kana
-    const JP_NEXT =
-      /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\u30FC\uFF66-\uFF9D]/u;
-
-    const needsSpace = JP_NEXT.test(nextChar);
-
-    return `<span class="clickable-definition-word" data-word="${safe}">${m}</span>${
-      needsSpace ? " " : ""
-    }`;
-  });
-
-  // Fallback wrapper for spaced languages — but SKIP any token that contains JP chars
-  const hasJP = (s) =>
-    /[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}]/u.test(s);
-
   function wrapToken(token) {
-    if (/<span[^>]*>/.test(token)) return token; // already wrapped by JP pass
-    if (hasJP(token)) return token; // don't wrap whole JP runs
-
-    // (foo)bar or foo(bar)baz
-    const complex = token.match(
+    // Håndter sammensatte ord med parentes, som (språk)gruppe eller språk(gruppe)
+    const complexParenMatch = token.match(
       /^([\p{L}\-']*)\(([\p{L}\-']+)\)([\p{L}\-']*)([.,;!?]*)$/u
     );
-    if (complex) {
-      const [, before, inside, after, punct] = complex;
+    if (complexParenMatch) {
+      const [, before, inside, after, punctuation] = complexParenMatch;
       const parts = [];
-      if (before)
+
+      if (before) {
         parts.push(
           `<span class="clickable-definition-word" data-word="${before}">${before}</span>`
         );
+      }
+
       parts.push("(");
       parts.push(
         `<span class="clickable-definition-word" data-word="${inside}">${inside}</span>`
       );
       parts.push(")");
-      if (after)
+
+      if (after) {
         parts.push(
           `<span class="clickable-definition-word" data-word="${after}">${after}</span>`
         );
-      parts.push(punct || "");
+      }
+
+      parts.push(punctuation || "");
       return parts.join("");
     }
 
-    const m = token.match(
+    // Opprinnelig logikk for alt annet
+    const match = token.match(
       /^(\()?(?<prefix>[\p{L}\-']+)?(\))?(?<base>[\p{L}\-']+)?([:.,;!?]*)$/u
     );
-    if (!m || !m.groups) return token;
 
-    const { prefix, base } = m.groups;
-    const punct = (token.match(/[:.,;!?]+$/) || [""])[0];
+    if (!match || !match.groups) return token;
+
+    const { prefix, base } = match.groups;
+    const punctuationMatch = token.match(/[:.,;!?]+$/);
+    const punctuation = punctuationMatch ? punctuationMatch[0] : "";
     const open = token.startsWith("(") ? "(" : "";
     const close = token.includes(")") ? ")" : "";
+
+    const parts = [];
+
+    // 👇 Check for trailing hyphen outside the word
     const endsWithHyphen = token.endsWith("-");
+
     const word = (prefix || base || "").replace(/-$/, "");
-    if (!word) return `${open}${close}${punct}`;
-    return `${open}<span class="clickable-definition-word" data-word="${word}">${word}</span>${
-      endsWithHyphen ? "-" : ""
-    }${close}${punct}`;
+
+    if (word) {
+      parts.push(
+        `${open}<span class="clickable-definition-word" data-word="${word}">${word}</span>${
+          endsWithHyphen ? "-" : ""
+        }${close}`
+      );
+    } else if (open || close) {
+      parts.push(`${open}${close}`);
+    }
+
+    return parts.join("") + punctuation;
   }
 
-  if (text.includes(";")) {
-    const items = text
+  if (defText.includes(";")) {
+    const items = defText
       .split(";")
-      .map((s) => s.trim())
+      .map((item) => item.trim())
       .filter(Boolean);
     return (
       `<ul class="definition-list">` +
@@ -1427,15 +1532,17 @@ function makeDefinitionClickable(defText) {
     );
   }
 
-  return text
+  return defText
     .split(/\s+/)
     .map((token) => {
-      if (/<span[^>]*>/.test(token)) return token; // preserve JP matches
-      if (hasJP(token)) return token; // don't wrap whole JP tokens
       if (token.includes("/") && !token.startsWith("http")) {
-        return token.split("/").map(wrapToken).join("/");
+        return token
+          .split("/")
+          .map((subToken) => wrapToken(subToken))
+          .join("/");
+      } else {
+        return wrapToken(token);
       }
-      return wrapToken(token);
     })
     .join(" ");
 }
@@ -1451,26 +1558,15 @@ function displaySearchResults(results, query = "") {
   // Limit to a maximum of 10 results
   results.slice(0, 10).forEach((result) => {
     result.gender = formatGender(result.gender);
-
-    const g = (result.gender || "").toLowerCase();
-    const NOUN_MARKERS = [
-      "en",
-      "et",
-      "ei",
-      "en-et",
-      "en-ei-et",
-      "noun",
-      "masculine",
-      "feminine",
-      "m",
-      "f",
-      "m/f",
-      "noun - masculine",
-      "noun - feminine",
-    ];
-
-    const isNoun = NOUN_MARKERS.some((m) => g.includes(m));
-    result.pos = isNoun ? "noun" : g;
+    // Directly handle the POS based on the gender field
+    {
+      const g = (result.gender || "").toLowerCase();
+      result.pos = ["masculine", "feminine", "neuter"].some((x) =>
+        g.includes(x)
+      )
+        ? "noun"
+        : g;
+    }
 
     // Convert the word to lowercase and trim spaces when generating the ID
     const normalizedWord = result.ord.toLowerCase().trim();
@@ -1514,25 +1610,6 @@ function displaySearchResults(results, query = "") {
       .replace(/\r?\n|\r/g, ""); // Escapes single quotes, double quotes, and removes newlines
     const hasSentencesPlaceholder = `<button class="sentence-btn english-toggle-btn" style="display: none;" onclick="event.stopPropagation(); toggleEnglishTranslations('${normalizedWord}')">Show English</button>`;
 
-    function normalizeDefinitionText(def) {
-      return def
-        .split(/\r?\n+/)
-        .map((line) => {
-          line = line.trim();
-          if (!line) return "";
-          // lowercase the first alphabetic char
-          line = line.replace(
-            /^([(\s"«“¡¿]*)?([A-ZÁÉÍÓÚÜÑÇÀÈÌÒÙÂÊÎÔÛÄËÏÖÜÅÆØŒ])/u,
-            (m, pre = "", ch) => pre + ch.toLowerCase()
-          );
-          // strip trailing . ! ? …
-          line = line.replace(/\s*[.!?…]\s*$/u, "");
-          return line;
-        })
-        .filter(Boolean)
-        .join(" ");
-    }
-
     htmlString += `
 <div 
   class="definition ${multipleResultsDefinition}" 
@@ -1560,8 +1637,8 @@ function displaySearchResults(results, query = "") {
                   </div>
 
                     ${
-                      result.kana && result.kana !== result.ord
-                        ? `<div class="gender ${multipleResultsgenderClass}">${result.kana}</div>`
+                      result.gender
+                        ? `<div class="gender ${multipleResultsgenderClass}">${result.gender}</div>`
                         : ""
                     }
                     ${
@@ -1582,7 +1659,7 @@ function displaySearchResults(results, query = "") {
                     ? `<p class="${multipleResultsDefinitionText}">${
                         defaultResult
                           ? makeDefinitionClickable(result.definisjon)
-                          : result.definisjon // 👈 multiple results just show raw definisjon
+                          : result.definisjon
                       }</p>`
                     : ""
                 }
@@ -1594,7 +1671,16 @@ function displaySearchResults(results, query = "") {
                         : ""
                     }
                     ${
-                      result.uttale
+                      result.wordAudio === "X"
+                        ? `<p class="pronunciation">
+                            <i class="fas fa-volume-up sentence-audio-icon"
+                        data-sentence="${result.ord
+                          .split(",")[0]
+                          .trim()}"></i>                            ${
+                            result.uttale || ""
+                          }
+                          </p>`
+                        : result.uttale
                         ? `<p class="pronunciation"><i class="fas fa-volume-up"></i> ${result.uttale}</p>`
                         : ""
                     }
@@ -1668,7 +1754,7 @@ function toggleEnglishTranslations(wordId = null) {
   const englishSentenceDivs = wordId
     ? sentenceContainer.querySelectorAll(".sentence-box-english")
     : document.querySelectorAll(".sentence-box-english"); // Global if no wordId
-  const norwegianSentenceDivs = wordId
+  const japaneseSentenceDivs = wordId
     ? sentenceContainer.querySelectorAll(".sentence-box-norwegian")
     : document.querySelectorAll(".sentence-box-norwegian"); // Global if no wordId
 
@@ -1687,10 +1773,10 @@ function toggleEnglishTranslations(wordId = null) {
   isEnglishVisible = !isEnglishVisible;
 
   englishSentenceDivs.forEach((div) => {
-    div.style.display = isEnglishVisible ? "block" : "none";
+    div.classList.toggle("hidden", !isEnglishVisible);
   });
 
-  norwegianSentenceDivs.forEach((div) => {
+  japaneseSentenceDivs.forEach((div) => {
     div.classList.toggle("sentence-box-norwegian-hidden", !isEnglishVisible);
   });
 
@@ -1734,275 +1820,365 @@ function getCefrColor(cefrLevel) {
   }
 }
 
-// Utility function to generate word variations for verbs ending in -ere and handle adjective/noun forms
 function generateWordVariationsForSentences(word, pos) {
-  const variations = [];
+  // Purpose: cast a wide net for surface-form matching in Japanese example sentences.
+  // NOTE: This is NOT a full morphological engine—it's a high-coverage heuristic set.
 
-  // Split the word into parts in case it's a phrase (e.g., "vedtatt sannhet")
-  const wordParts = word.split(" ");
+  const v = new Set([word]); // always include lemma/base as given
+  const w = String(word || "").toLowerCase();
 
-  // Handle phrases with slashes (e.g., "være/vær så snill", "logge inn/på")
-  if (word.includes("/")) {
-    // Split on the slash and create variations for both parts
-    const [firstPart, secondPart] = word.split("/");
-    const restOfPhrase = word.split(" ").slice(1).join(" "); // Get the rest of the phrase after the first word
+  // --- IRREGULAR EXCEPTIONS ---
+  // Hard-coded lists for the most common irregulars
+  const irregulars = {
+    biti: [
+      "sam",
+      "si",
+      "je",
+      "smo",
+      "ste",
+      "su",
+      "bio",
+      "bila",
+      "bilo",
+      "bili",
+      "bile",
+    ],
+    htjeti: [
+      "ću",
+      "ćeš",
+      "će",
+      "ćemo",
+      "ćete",
+      "će",
+      "htio",
+      "htjela",
+      "htjeli",
+    ],
+    moći: [
+      "mogu",
+      "možeš",
+      "može",
+      "možemo",
+      "možete",
+      "mogu",
+      "mogao",
+      "mogla",
+      "mogli",
+    ],
+    ići: [
+      "idem",
+      "ideš",
+      "ide",
+      "idemo",
+      "idete",
+      "idu",
+      "išao",
+      "išla",
+      "išli",
+    ],
+    doći: [
+      "dođem",
+      "dođeš",
+      "dođe",
+      "dođemo",
+      "dođete",
+      "dođu",
+      "došao",
+      "došla",
+      "došli",
+    ],
+    dati: ["dam", "daš", "da", "damo", "date", "daju", "dao", "dala", "dali"],
+    jesti: [
+      "jedem",
+      "jedeš",
+      "jede",
+      "jedemo",
+      "jedete",
+      "jedu",
+      "jeo",
+      "jela",
+      "jeli",
+    ],
+    vidjeti: [
+      "vidim",
+      "vidiš",
+      "vidi",
+      "vidimo",
+      "vidite",
+      "vide",
+      "vidio",
+      "vidjela",
+      "vidjeli",
+    ],
+    teći: [
+      "tečem",
+      "tečeš",
+      "teče",
+      "tečemo",
+      "tečete",
+      "teku",
+      "tekao",
+      "tekla",
+      "tekli",
+    ],
+    čovjek: ["ljudi"], // irregular plural
+    dijete: ["djeca", "djeteta", "djeci", "djecu"],
+    otac: ["očevi", "oca", "ocu", "ocem"],
+    majka: ["majke", "majci", "majkom"],
+  };
 
-    variations.push(`${firstPart} ${restOfPhrase}`); // Add the first part with the rest of the phrase
-    variations.push(`${secondPart} ${restOfPhrase}`); // Add the second part with the rest of the phrase
-    return variations;
+  if (irregulars[w]) {
+    irregulars[w].forEach((f) => v.add(f));
   }
 
-  // Reflexive pronouns to handle reflexive verbs with variations (e.g., "seg", "deg", "meg", "oss", etc.)
-  const reflexivePronouns = ["me", "te", "se", "nos", "os"];
+  // --- crude stems for Japanese (heuristic, not full morphology) ---
+  let verbStem = w;
+  let adjStem = w;
+  let nounStem = w;
 
-  // If it's a single word
-  if (wordParts.length === 1) {
-    const singleWord = wordParts[0];
-    let stem = singleWord;
-    let gender = getWordGender(singleWord);
+  // --- VERBS ---
+  // infinitive -ti → bare stem
+  if (verbStem.endsWith("ti")) {
+    verbStem = verbStem.replace(/ti$/, ""); // učiti → uči-
+  }
+  // catch a few irregular infinitives (just broaden recall, not perfect)
+  if (/ći$/.test(w)) {
+    // ići, doći, moći → strip -ći
+    verbStem = w.replace(/ći$/, "");
+  }
+  if (/jeti$/.test(w)) {
+    // htjeti → htje- (approximate)
+    verbStem = w.replace(/jeti$/, "je");
+  }
 
-    if (singleWord.length <= 2) {
-      // Handle the case where the word is too short to generate meaningful variations
-      console.warn(`Word "${singleWord}" is too short to generate variations.`);
-      variations.push(singleWord); // Just return the word as is
-      return variations;
-    }
-
-    if (pos === "noun" && gender.includes("ei")) {
-      if (singleWord.endsWith("e")) {
-        stem = singleWord.slice(0, -1); // Remove the final -e from the word
-      }
-      variations.push(
-        `${stem}`, // setning
-        `${stem}e`, // jente
-        `${stem}a`, // jenta
-        `${stem}en`, // jenten
-        `${stem}er`, // jenter
-        `${stem}ene` // jentene
-      );
-      // Handle verb variations if the word is a verb and ends with "e"
-    } else if (pos === "verb") {
-      if (singleWord.endsWith("e")) {
-        stem = singleWord.slice(0, -1); // Remove the final -e from the verb
-      }
-      variations.push(
-        `${stem}`, // imperative: anglifiser
-        `${stem}a`, // past tense: snakka
-        `${stem}e`, // infinitive: anglifisere
-        `${stem}er`, // present tense: anglifiserer
-        `${stem}es`, // passive: anglifiseres
-        `${stem}et`, // past tense: snakket
-        `${stem}r`, // present tense: bor
-        `${stem}t`, // past participle: anglifisert
-        `${stem}te` // past tense: anglifiserte
-      );
-    } else {
-      // For non-verbs, just add the word itself as a variation
-      variations.push(singleWord);
-    }
-
-    // If it's a phrase (e.g., "vedtatt sannhet"), handle each part separately
-  } else if (wordParts.length >= 2) {
-    const [firstWord, secondWord, ...restOfPhrase] = wordParts;
-    const remainingPhrase = restOfPhrase.join(" ");
-
-    // Handle reflexive verbs like "beklage seg" with variations for reflexive pronouns
-    if (reflexivePronouns.includes(secondWord)) {
-      let stem;
-      // Only remove the final 'e' if it exists; otherwise, use the full word (e.g., for "bry")
-      if (firstWord.endsWith("e")) {
-        stem = firstWord.slice(0, -1); // Remove the final -e from the verb
-      } else {
-        stem = firstWord; // Use the full word if it doesn't end with 'e'
-      }
-      // Add variations for all reflexive pronouns (seg, deg, meg, etc.)
-      reflexivePronouns.forEach((reflexive) => {
-        variations.push(
-          `${stem}e ${reflexive} ${remainingPhrase}`, // infinitive
-          `${stem}er ${reflexive} ${remainingPhrase}`, // present tense
-          `${stem}te ${reflexive} ${remainingPhrase}`, // past tense
-          `${stem}t ${reflexive} ${remainingPhrase}`, // past participle
-          `${stem}et ${reflexive} ${remainingPhrase}`, // past tense/past participle
-          `${stem}a ${reflexive} ${remainingPhrase}`, // past tense/past participle
-          `${stem} ${reflexive} ${remainingPhrase}`, // imperative
-          `${stem}es ${reflexive} ${remainingPhrase}` // passive
-        );
-      });
-    } else if (wordParts.length === 2) {
-      // Handle adjective inflection (e.g., "vedtatt" -> "vedtatte")
-      const adjectiveVariations = [firstWord, firstWord.replace(/t$/, "te")]; // Add plural/adjective form
-
-      // Handle noun pluralization (e.g., "sannhet" -> "sannheter")
-      const nounVariations = [secondWord, secondWord + "er"]; // Add plural form for nouns
-
-      // Combine all variations of adjective and noun
-      adjectiveVariations.forEach((adj) => {
-        nounVariations.forEach((noun) => {
-          variations.push(`${adj} ${noun}`);
-        });
-      });
-    } else {
-      // For other longer phrases, just return the phrase as is
-      variations.push(word);
-    }
+  // --- ADJECTIVES ---
+  if (/(an|en|in)$/.test(adjStem)) {
+    // važan → važn, sretan → sretn, jedinstven → jedinstven
+    adjStem = adjStem.replace(/(an|en|in)$/, "n");
+  } else if (/(ak|ek|ik)$/.test(adjStem)) {
+    // težak → tešk-, lagan → lagan/lag-, velik → velik/velik-
+    adjStem = adjStem.replace(/(ak|ek|ik)$/, "k");
+  } else if (/d$/.test(adjStem)) {
+    // mlad → mlad- (don’t strip vowel)
+    adjStem = adjStem;
   } else {
-    // Add the original phrase as a variation (no transformation needed for long phrases)
-    variations.push(word);
+    // regular endings: mali/mala/malo, dobar/dobra/dobro
+    adjStem = adjStem.replace(/(i|a|o|e)$/, "");
   }
 
-  return variations;
-}
+  // --- NOUNS ---
+  // default: strip final vowel (žena → žen-, selo → sel-)
+  nounStem = w.replace(/(a|o|e|i)$/, "");
 
-// Render a single sentence
-function renderSentence(sentenceResult) {
-  // Split the example by common sentence delimiters (period, question mark, exclamation mark)
-  const sentences = sentenceResult.eksempel.split(/(?<=[.!?])\s+/);
+  // special noun patterns
+  if (/ac$/.test(w)) {
+    // otac → očev-, mladić/vojnik handled elsewhere
+    nounStem = w.replace(/ac$/, "c");
+  }
+  if (/ik$/.test(w)) {
+    // vojnik → vojnici
+    nounStem = w.replace(/ik$/, "k");
+  }
+  if (/ost$/.test(w)) {
+    // mladost → mladost(i)
+    nounStem = w; // leave whole, since stem doesn’t shorten
+  }
+  if (/et$/.test(w)) {
+    // dijete → djece (irregular, approximate only)
+    nounStem = w.replace(/et$/, "ec");
+  }
 
-  // Get the first sentence from the array
-  const firstSentence = sentences[0];
+  if (pos === "noun") {
+    // Frequent noun endings across genders (sg/pl, common cases).
+    // This is purposely redundant across genders to maximize recall.
+    [
+      "a", // gen sg (žena → žene; selo → sela (also nom/acc pl neuter))
+      "e", // nom/acc pl fem; voc sg masc; acc sg fem
+      "i", // dat sg fem; nom pl masc
+      "u", // loc sg; acc sg masc/neut (many)
+      "o", // nom sg neuter (selo)
+      "om", // instr sg masc/neut
+      "em", // dat/loc sg masc (soft stems)
+      "ama", // dat/loc/instr pl fem
+      "ima", // dat/loc/instr pl masc/neut
+      "ovi", // nom pl masc (grad → gradovi)
+      "evima", // dat/loc/instr pl masc alt pattern
+      "ovima", // dat/loc/instr pl masc alt (gradovima)
+      "ih", // gen pl (many paradigms)
+    ].forEach((end) => v.add(nounStem + end));
+  } else if (pos === "adjective") {
+    // Core agreement + oblique + degrees.
+    // Key fix: include neuter sg "-o" (e.g., selo je malo).
+    [
+      "i", // masc pl (dobri)
+      "a", // fem sg (dobra)
+      "e", // fem pl (dobre)
+      "o", // neut sg (dobro)  ← critical fix for "malo"
+      "og", // gen/acc (anim) masc sg (dobrog)
+      "ega", // alt gen/acc masc sg (dobroga)
+      "om", // dat/loc masc/neut sg (dobrom)
+      "oj", // dat/loc fem sg (dobroj)
+      "im", // dat/loc/inst pl (dobrim)  ← adjectives take -im (not -ima)
+      "ih", // gen pl (dobrih)
+    ].forEach((end) => v.add(adjStem + end));
 
-  const sentenceHTML = `
-        <div class="definition">
-            <p class="sentence">${firstSentence}</p>
-        </div>
-    `;
-
-  document.getElementById("results-container").innerHTML = sentenceHTML;
-}
-
-function renderSentences(sentenceResults, word) {
-  clearContainer(); // Clear previous results
-
-  const query = word.trim().toLowerCase(); // Trim and lower-case the search term for consistency
-  let exactMatches = [];
-  let partialMatches = [];
-  let uniqueSentences = new Set(); // Track unique sentences
-
-  const regexExactMatch = new RegExp(`\\b${query}\\b`, "i");
-
-  sentenceResults.forEach((result) => {
-    // Split example sentences by common sentence delimiters (period, question mark, exclamation mark)
-    const sentences = result.eksempel.match(/[^.!?]+[.!?]*/g) || [
-      result.eksempel,
-    ];
-    const translations = result.sentenceTranslation
-      ? result.sentenceTranslation.match(/[^.!?]+[.!?]*/g)
-      : [];
-
-    // Generate the CEFR label based on the result's CEFR value
-    let cefrLabel = "";
-    if (result.CEFR === "A1") {
-      cefrLabel = '<div class="sentence-cefr-label easy">A1</div>';
-    } else if (result.CEFR === "A2") {
-      cefrLabel = '<div class="sentence-cefr-label easy">A2</div>';
-    } else if (result.CEFR === "B1") {
-      cefrLabel = '<div class="sentence-cefr-label medium">B1</div>';
-    } else if (result.CEFR === "B2") {
-      cefrLabel = '<div class="sentence-cefr-label medium">B2</div>';
-    } else if (result.CEFR === "C") {
-      cefrLabel = '<div class="sentence-cefr-label hard">C</div>';
+    // Special case: adjectives ending in -an / -en / -in
+    // These often keep the whole "an/en/in" before endings.
+    if (/(an|en|in)$/.test(w)) {
+      ["a", "o", "i", "e", "og", "ega", "om", "oj", "im", "ih"].forEach(
+        (end) => {
+          v.add(w.replace(/(an|en|in)$/, "$1") + end);
+        }
+      );
     }
 
-    // Iterate through each sentence and match it with its translation
-    sentences.forEach((sentence, index) => {
-      const trimmedSentence = sentence.trim();
-      const translation = translations[index] || "";
+    // Comparative patterns (cover common alternations)
+    v.add(adjStem + "ji");
+    v.add(adjStem + "iji");
+    v.add(adjStem + "ši"); // e.g., lak → lakši (irregular class)
 
-      if (!uniqueSentences.has(trimmedSentence)) {
-        // Only add unique sentences
-        uniqueSentences.add(trimmedSentence);
+    // Superlative = "naj-" + comparative
+    v.add("naj" + adjStem + "ji");
+    v.add("naj" + adjStem + "iji");
+    v.add("naj" + adjStem + "ši");
+  } else if (pos === "verb") {
+    // PRESENT: cover all three theme-vowel classes (-a-, -e-, -i-)
+    // 1sg
+    v.add(verbStem + "m"); // generic (if theme vowel already present)
+    v.add(verbStem + "am"); // radim/radam (cover -a- class)
+    v.add(verbStem + "em"); // pišem (-e- class)
+    v.add(verbStem + "im"); // učim (-i- class)
+    // 2sg
+    v.add(verbStem + "š");
+    v.add(verbStem + "aš");
+    v.add(verbStem + "eš");
+    v.add(verbStem + "iš");
+    // 3sg
+    v.add(verbStem); // some lemmatizers yield bare stem—keep it
+    v.add(verbStem + "a");
+    v.add(verbStem + "e");
+    v.add(verbStem + "i");
+    // 1pl
+    v.add(verbStem + "mo");
+    v.add(verbStem + "amo");
+    v.add(verbStem + "emo");
+    v.add(verbStem + "imo");
+    // 2pl
+    v.add(verbStem + "te");
+    v.add(verbStem + "ate");
+    v.add(verbStem + "ete");
+    v.add(verbStem + "ite");
+    // 3pl
+    v.add(verbStem + "u");
+    v.add(verbStem + "ju");
+    v.add(verbStem + "e");
+    v.add(verbStem + "aju");
 
-        // Check for exact match (whole word match) in both the Japanese sentence and English translation
-        if (
-          regexExactMatch.test(sentence.toLowerCase()) ||
-          regexExactMatch.test(translation.toLowerCase())
-        ) {
-          exactMatches.push({
-            cefrLabel,
-            sentence: highlightQuery(sentence, query),
-            translation: highlightQuery(translation, query),
-          });
-        }
-        // Check for partial match in both Japanese sentence and English translation
-        else if (
-          sentence.toLowerCase().includes(query) ||
-          translation.toLowerCase().includes(query)
-        ) {
-          partialMatches.push({
-            cefrLabel,
-            sentence: highlightQuery(sentence, query),
-            translation: highlightQuery(translation, query),
-          });
-        }
-      }
-    });
-  });
+    // PAST (L-participle) — cover gender/number
+    v.add(verbStem + "o"); // masc sg (radio/jeo pattern varies by lemma, but -o helps matching)
+    v.add(verbStem + "la"); // fem sg
+    v.add(verbStem + "lo"); // neut sg
+    v.add(verbStem + "li"); // masc/mixed pl
+    v.add(verbStem + "le"); // fem pl
+    v.add(verbStem + "la"); // neut pl
 
-  // Combine exact matches first, then partial matches
-  const combinedMatches = [...exactMatches, ...partialMatches].slice(0, 10);
+    // IMPERATIVE (common shapes)
+    v.add(verbStem + "j"); // dođi-type often surfaces as -j after palatalization
+    v.add(verbStem + "jte"); // pl
+    v.add(verbStem + "i"); // piši / uči
+    v.add(verbStem + "imo"); // pišimo
+    v.add(verbStem + "ite"); // pišite
+    v.add(verbStem + "aj"); // -ati class: radi → radi / (radi!) ~ rad(i)/rad(i)!; many -aj imperatives surface
+    v.add(verbStem + "ajte"); // -ajte
 
-  // Debugging log
-  console.log("Exact Matches:", exactMatches);
-  console.log("Partial Matches:", partialMatches);
-  console.log("Combined Matches:", combinedMatches);
+    // FUTURE I (periphrastic) — keep separated with space
+    ["ću", "ćeš", "će", "ćemo", "ćete", "će"].forEach((aux) =>
+      v.add(w + " " + aux)
+    );
 
-  // Check if no results found
-  if (combinedMatches.length === 0) {
+    // CONDITIONAL (bih/bi/bismo/biste/bi)
+    ["bih", "bi", "bismo", "biste", "bi"].forEach((aux) =>
+      v.add(w + " " + aux)
+    );
+  } else {
+    // other POS: just return base
+    v.add(word);
+  }
+
+  return Array.from(v);
+}
+
+function renderSentenceMatchesFromCorpus(rows, query) {
+  clearContainer();
+
+  if (!rows.length) {
     document.getElementById("results-container").innerHTML = `
-            <div class="definition error-message">
-                <h2 class="word-gender">
-                    Error <span class="gender">No Matching Sentences</span>
-                </h2>
-                <p>No sentences found containing "${query}".</p>
-            </div>
-        `;
-    return; // Exit early since there's nothing to render
+      <div class="definition error-message">
+        <h2 class="word-gender">Error <span class="gender">No Matching Sentences</span></h2>
+        <p>No sentences found containing "${query}".</p>
+      </div>`;
+    return;
   }
 
-  // Generate HTML for the combined matches
-  let htmlString = "";
+  let html = `
+    <div class="result-header">
+      <h2>Sentence Results for "${query}"</h2>
+    </div>
+    <button class="sentence-btn english-toggle-btn" onclick="toggleEnglishTranslations()">
+      ${isEnglishVisible ? "Hide English" : "Show English"}
+    </button>
+  `;
 
-  if (combinedMatches.length > 0) {
-    // Generate the header card
-    htmlString += `
-            <div class="result-header">
-                <h2>Sentence Results for "${word}"</h2>
+  for (const row of rows) {
+    const cefr = row.cefr;
+    const cefrLabel =
+      cefr === "A1"
+        ? '<div class="sentence-cefr-label easy">A1</div>'
+        : cefr === "A2"
+        ? '<div class="sentence-cefr-label easy">A2</div>'
+        : cefr === "B1"
+        ? '<div class="sentence-cefr-label medium">B1</div>'
+        : cefr === "B2"
+        ? '<div class="sentence-cefr-label medium">B2</div>'
+        : cefr === "C"
+        ? '<div class="sentence-cefr-label hard">C</div>'
+        : "";
+
+    const noHTML = highlightQuery(row.no, query);
+    const enHTML = row.en ? highlightQuery(row.en, query) : "";
+
+    html += `
+      <div class="sentence-container">
+        <div class="sentence-box-norwegian ${
+          !isEnglishVisible ? "sentence-box-norwegian-hidden" : ""
+        }">
+          <div class="sentence-content">
+            <div class="cefr-audio-block">
+              ${cefrLabel}
+              ${
+                row.audio
+                  ? `<i class="fas fa-volume-up sentence-audio-icon" data-sentence="${row.no
+                      .replace(/<[^>]*>/g, "")
+                      .trim()}"></i>`
+                  : ""
+              }
             </div>
-            <button class="sentence-btn english-toggle-btn" onclick="toggleEnglishTranslations()">
-                ${isEnglishVisible ? "Hide English" : "Show English"}
-            </button>    
-        `;
+            <p class="sentence">${noHTML}</p>
+          </div>
+        </div>
+        ${
+          row.en
+            ? `
+          <div class="sentence-box-english ${isEnglishVisible ? "" : "hidden"}">
+            <p class="sentence">${enHTML}</p>
+          </div>`
+            : ""
+        }
+      </div>
+    `;
   }
 
-  combinedMatches.forEach((match) => {
-    htmlString += `
-            <div class="sentence-container">
-                <div class="sentence-box-norwegian ${
-                  !isEnglishVisible ? "sentence-box-norwegian-hidden" : ""
-                }">
-                    <div class="sentence-content">
-                        ${match.cefrLabel}
-                        <p class="sentence">${match.sentence}</p>
-                    </div>
-                </div>
-        `;
-
-    // Only add the English translation box if it exists
-    if (match.translation) {
-      htmlString += `
-            <div class="sentence-box-english" style="display: ${
-              isEnglishVisible ? "block" : "none"
-            };">
-                    <p class="sentence">${match.translation}</p>
-                </div>
-            `;
-    }
-
-    htmlString += "</div>"; // Close the sentence-container div
-  });
-
-  // Insert the generated HTML into the results container
-  document.getElementById("results-container").innerHTML = htmlString;
+  document.getElementById("results-container").innerHTML = html;
 }
 
 // Highlight search query in text, accounting for Japanese characters (å, æ, ø) and verb variations
@@ -2016,8 +2192,11 @@ function highlightQuery(sentence, query) {
   );
 
   // Define a regex pattern that includes Japanese characters and dynamically inserts the query
-  const letters = "[\\wåæøÅÆØáéíóúÁÉÍÓÚñÑüÜ]"; // Include Japanese letters in the pattern
-  const regex = new RegExp(`(${letters}*${query}${letters}*)`, "gi");
+  const japaneseLetters = "[\\wčćđšžČĆĐŠŽ]"; // Include Japanese letters in the pattern
+  const regex = new RegExp(
+    `(${japaneseLetters}*${query}${japaneseLetters}*)`,
+    "gi"
+  );
 
   // Highlight all occurrences of the query in the sentence
   cleanSentence = cleanSentence.replace(
@@ -2031,7 +2210,7 @@ function highlightQuery(sentence, query) {
   // Highlight each query variation in the sentence
   queries.forEach((q) => {
     // Define a regex pattern that includes Japanese characters and dynamically inserts the query
-    const regex = new RegExp(`(\\b${q}\\b|\\b${q}(?![\\wåæøÅÆØ]))`, "gi");
+    const regex = new RegExp(`(\\b${q}\\b|\\b${q}(?![\\wčćđšžČĆĐŠŽ]))`, "gi");
 
     // Highlight all occurrences of the query variation in the sentence
     cleanSentence = cleanSentence.replace(
@@ -2045,7 +2224,7 @@ function highlightQuery(sentence, query) {
     result.ord.toLowerCase().includes(query)
   );
   const pos = matchingWordEntry
-    ? ["noun", "masculine", "feminine"].some((gender) =>
+    ? ["masculine", "feminine", "neuter"].some((gender) =>
         matchingWordEntry.gender.toLowerCase().includes(gender)
       )
       ? "noun"
@@ -2094,7 +2273,7 @@ function renderSentencesHTML(sentenceResults, wordVariations) {
 
         if (matchedVariation) {
           // Use a regular expression to match the full word containing any of the variations
-          const japanesePattern = "[\\wåæøÅÆØ]"; // Pattern including Japanese letters
+          const japanesePattern = "[\\wčćđšžČĆĐŠŽ]"; // Pattern including Japanese letters
           const regex = new RegExp(
             `(${japanesePattern}*${matchedVariation}${japanesePattern}*)`,
             "gi"
@@ -2178,7 +2357,7 @@ function renderWordDefinition(word, selectedPOS = "") {
     // Check for noun gender match when selectedPOS is 'noun'
     const posMatch =
       selectedPOS === "noun"
-        ? ["noun", "masculine", "feminine"].some((gender) =>
+        ? ["masculine", "feminine", "neuter"].some((gender) =>
             r.gender.toLowerCase().includes(gender)
           )
         : selectedPOS
@@ -2239,52 +2418,47 @@ function fetchAndRenderSentences(word, pos, showEnglish = true) {
 
   // Find the part of speech (POS) of the word
   const matchingWordEntry = results.find(
-    (result) => result.ord.toLowerCase() === trimmedWord
-  ); // Updated to use exact match
-
+    (result) =>
+      result.ord.toLowerCase() === trimmedWord &&
+      pos &&
+      result.gender.toLowerCase().includes(pos.toLowerCase())
+  );
   if (!matchingWordEntry) {
     console.error(`No matching word found for "${trimmedWord}".`);
     return; // Stop if the word isn't found
   }
 
   // Generate word variations using the external function
-  // Variations from ord + kana (gender) if available
-  const entry = results.find(
-    (r) => r.ord.toLowerCase() === trimmedWord.toLowerCase()
-  );
-  // For Japanese: just use ord first, then kana (gender) if present
-  const wordVariations = [trimmedWord, ...(entry?.kana ? [entry.kana] : [])];
+  const wordVariations =
+    trimmedWord.length < 4
+      ? [trimmedWord]
+      : trimmedWord
+          .split(",")
+          .flatMap((w) => generateWordVariationsForSentences(w.trim(), pos));
 
-  const kanji = entry.ord.trim(); // e.g. 人
-  const kana = entry.kana?.trim(); // e.g. ひと
-
-  // Collect matches for each form
-  function collectMatches(form) {
-    return results.filter((r) => r.eksempel && r.eksempel.includes(form));
-  }
-
-  let kanjiEntries = collectMatches(kanji);
-  let kanaEntries = kana ? collectMatches(kana) : [];
-
-  // Prioritize separately, then merge
-  const prioritizedKanji = prioritizeResults(
-    kanjiEntries.filter((r) => r.ord !== matchingWordEntry.ord),
-    kanji,
-    "eksempel"
-  );
-  const prioritizedKana = kana
-    ? prioritizeResults(
-        kanaEntries.filter((r) => r.ord !== matchingWordEntry.ord),
-        kana,
-        "eksempel"
-      )
-    : [];
-
-  // Collect kanji matches first, then kana
-  let relevantEntries = collectMatches(kanji);
-  if (kana) {
-    relevantEntries = [...relevantEntries, ...collectMatches(kana)];
-  }
+  // First, filter results to get relevant entries
+  let relevantEntries = results.filter((r) => {
+    return wordVariations.some((variation) => {
+      if (
+        pos === "adverb" ||
+        pos === "conjunction" ||
+        pos === "preposition" ||
+        pos === "interjection" ||
+        pos === "numeral" ||
+        pos === "particle"
+      ) {
+        const regex = new RegExp(`(^|\\s)${variation}($|[\\s.,!?;])`, "gi");
+        return regex.test(r.eksempel);
+      } else {
+        // For other parts of speech, ensure the word starts a word
+        const regexStartOfWord = new RegExp(
+          `(^|[^\\wčćđšžČĆĐŠŽ])${variation}($|[^\\wčćđšžČĆĐŠŽ])`,
+          "i"
+        );
+        return regexStartOfWord.test(r.eksempel);
+      }
+    });
+  });
 
   // Use a Set to store unique sentences and translations
   const uniqueSentences = new Set();
@@ -2292,25 +2466,6 @@ function fetchAndRenderSentences(word, pos, showEnglish = true) {
 
   // Now, split sentences and align translations
   let matchingResults = [];
-
-  // --- Ensure own entry’s sentences always appear first ---
-  if (matchingWordEntry.eksempel) {
-    const primarySentences = matchingWordEntry.eksempel.split(/(?<=[.!?])\s+/);
-    const primaryTranslations = matchingWordEntry.sentenceTranslation
-      ? matchingWordEntry.sentenceTranslation.split(/(?<=[.!?])\s+/)
-      : [];
-
-    primarySentences.forEach((sentence, index) => {
-      if (!uniqueSentences.has(sentence)) {
-        uniqueSentences.add(sentence);
-        matchingResults.push({
-          ...matchingWordEntry,
-          eksempel: sentence,
-          sentenceTranslation: primaryTranslations[index] || "",
-        });
-      }
-    });
-  }
   outerLoop: for (const r of relevantEntries) {
     const sentences = r.eksempel.split(/(?<=[.!?])\s+/);
     const translations = r.sentenceTranslation
@@ -2321,7 +2476,14 @@ function fetchAndRenderSentences(word, pos, showEnglish = true) {
 
     sentences.forEach((sentence, index) => {
       const isMatched = wordVariations.some((variation) => {
-        const regex = new RegExp(variation, "i");
+        const regex =
+          pos === "adverb" ||
+          pos === "conjunction" ||
+          pos === "preposition" ||
+          pos === "interjection" ||
+          pos === "numeral"
+            ? new RegExp(`(^|\\s)${variation}($|[\\s.,!?;])`, "gi")
+            : new RegExp(`(^|[^\\wčćđšžČĆĐŠŽ])${variation}`, "i");
         return regex.test(sentence);
       });
 
@@ -2351,21 +2513,41 @@ function fetchAndRenderSentences(word, pos, showEnglish = true) {
     if (uniqueSentences.size >= 10) break outerLoop;
   }
 
+  // Ensure each sentence in the primary 'eksempel' attribute from the matching word entry is added if unique
+  if (matchingWordEntry.eksempel) {
+    const primarySentences = matchingWordEntry.eksempel.split(/(?<=[.!?])\s+/);
+    const primaryTranslations = matchingWordEntry.sentenceTranslation
+      ? matchingWordEntry.sentenceTranslation.split(/(?<=[.!?])\s+/)
+      : [];
+
+    primarySentences.forEach((sentence, index) => {
+      // Check if each sentence is already in uniqueSentences before adding
+      if (!uniqueSentences.has(sentence)) {
+        uniqueSentences.add(sentence); // Track unique primary sentence
+
+        matchingResults.unshift({
+          ...matchingWordEntry,
+          eksempel: sentence, // Add only the unique sentence
+          sentenceTranslation: primaryTranslations[index] || "",
+        });
+      }
+    });
+  }
+
   // Check if there are any matching results
   if (matchingResults.length === 0) {
     console.log(`No sentences found for the word variations.`);
     return;
   }
 
-  // Merge: own entry sentences first, then other kanji, then kana
-  // Merge: own entry sentences first, then other kanji, then kana
-  const seen = new Set(matchingResults.map((r) => r.eksempel));
+  // Prioritize the matching results using the prioritizeResults function
+  matchingResults = prioritizeResults(
+    matchingResults,
+    trimmedWord,
+    "eksempel",
+    pos
+  );
 
-  matchingResults = [
-    ...matchingResults,
-    ...prioritizedKanji.filter((r) => !seen.has(r.eksempel)),
-    ...prioritizedKana.filter((r) => !seen.has(r.eksempel)),
-  ];
   // Apply highlighting for the new word and reset any previous highlighting
   matchingResults.forEach((result) => {
     wordVariations.forEach((variation) => {
@@ -2408,17 +2590,28 @@ function fetchAndRenderSentences(word, pos, showEnglish = true) {
                 <div class="sentence-box-norwegian ${
                   !showEnglish ? "sentence-box-norwegian-hidden" : ""
                 }">
-                    <div class="sentence-content">
-                        ${cefrLabel}
-                        <p class="sentence">${sentence}</p>
-                    </div>
+                  <div class="sentence-content">
+                  <div class="cefr-audio-block">
+
+                    ${cefrLabel}
+                ${
+                  result.sentenceAudio === "X"
+                    ? `<i class="fas fa-volume-up sentence-audio-icon"
+                          data-sentence="${sentence
+                            .replace(/<[^>]*>/g, "")
+                            .trim()}"></i>`
+                    : ""
+                }        
+                </div>            
+                <p class="sentence">${sentence}</p>
+                  </div>
                 </div>
                 ${
                   translations[index]
                     ? `
-                <div class="sentence-box-english" style="display: ${
-                  showEnglish ? "block" : "none"
-                };">
+                <div class="sentence-box-english ${
+                  showEnglish ? "" : "hidden"
+                }">
                     <p class="sentence-translation">${translations[index]}</p>
                 </div>`
                     : ""
@@ -2596,6 +2789,9 @@ function capitalizeType(type) {
       return "Sentences";
     case "stories":
       return "Stories";
+    case "pronunciation":
+      return "Pronunciation";
+
     default:
       return type.charAt(0).toUpperCase() + type.slice(1);
   }
@@ -2643,6 +2839,8 @@ function loadStateFromURL() {
 
       if (type === "word-game") {
         startWordGame();
+      } else if (type === "pronunciation") {
+        handleTypeChange("pronunciation"); // 👈 ensure pronunciation tab is restored
       } else if (type !== "words") {
         handleTypeChange(type);
       }
@@ -2882,5 +3080,28 @@ document.addEventListener("click", (event) => {
         search(word); // fallback to regular multi-result search
       }
     }
+  }
+});
+
+document.addEventListener("click", (event) => {
+  if (event.target.classList.contains("sentence-audio-icon")) {
+    stopAllAudio();
+    const text = event.target.dataset.sentence;
+    let audioUrl;
+
+    // Decide if this is a word or a sentence based on where the icon lives
+    if (event.target.closest(".pronunciation")) {
+      // Word-level audio
+      audioUrl = buildWordAudioUrl(text);
+    } else {
+      // Sentence-level audio
+      audioUrl = buildPronAudioUrl(text);
+    }
+
+    const audio = new Audio(audioUrl);
+    activeAudio.push(audio);
+    audio.play().catch((err) => {
+      console.error("Audio playback failed:", err);
+    });
   }
 });

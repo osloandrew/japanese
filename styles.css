@@ -1,5 +1,5 @@
 a {
-  color: #8c3b2e;
+  color: #3c88d4;
 }
 
 .alt-spelling {
@@ -16,10 +16,77 @@ audio {
   width: 100%;
 }
 
+/* --- Pronunciation Button (blue theme) --- */
+.audio-button {
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 88px;
+  height: 88px;
+  background: radial-gradient(circle at 30% 30%, #4ea3f7, #1c68b5);
+  border-radius: 50%;
+  box-shadow: 0 6px 20px rgba(28, 104, 181, 0.35);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.audio-button:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 28px rgba(28, 104, 181, 0.45);
+  background: radial-gradient(circle at 30% 30%, #5ab0ff, #1c68b5);
+}
+
+.audio-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 4px 12px rgba(28, 104, 181, 0.3);
+}
+
+/* Soft pulsing ring */
+.audio-button::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid rgba(76, 148, 228, 0.35);
+  animation: pulse-ring-blue 2s infinite ease-out;
+}
+
+@keyframes pulse-ring-blue {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+/* Icon styling */
+.audio-button img {
+  width: 48px;
+  height: 48px;
+  filter: invert(1) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.2));
+  z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.audio-button:hover img {
+  transform: scale(1.15);
+}
+
+/* Optional click feedback */
+.audio-button.clicked {
+  transform: scale(0.9);
+  box-shadow: 0 0 0 10px rgba(76, 148, 228, 0.25);
+}
+
 #back-button,
 #speed-btn,
 #toggle-english-btn,
-#toggle-kanji-btn {
+.toggle-kanji-btn {
   background-color: #f4f4f4; /* Neutral light gray */
   border: #bbb 1px solid;
   border-radius: 5px;
@@ -38,8 +105,12 @@ audio {
 #back-button:hover,
 #speed-btn:hover,
 #toggle-english-btn:hover,
-#toggle-kanji-btn:hover {
+.toggle-kanji-btn:hover {
   background-color: gainsboro; /* Slightly darker purple on hover */
+}
+
+#audio-player {
+  display: none !important; /* Always hidden */
 }
 
 .back-navigation {
@@ -98,13 +169,39 @@ button:disabled i {
 }
 
 .button-container i {
-  color: #2e2e2e;
+  color: #0d3a69;
   margin-bottom: 10px;
 }
 
 .button-container p {
   font-size: 5px !important;
   text-align: center !important;
+}
+
+.button-pron {
+  background-color: #f4f4f4; /* Neutral light gray */
+  border: #bbb 1px solid;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #2a3a2f;
+  cursor: pointer;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 500;
+  padding: 0.5em 1em;
+  position: relative;
+  transition: background-color 0.3s ease;
+  z-index: 1;
+}
+
+.button-pron:hover {
+  background-color: gainsboro; /* Slightly darker purple on hover */
+}
+
+.cefr-audio-block {
+  display: flex;
+  flex-direction: column; /* stack vertically */
+  align-items: flex-start; /* left-align both items */
+  gap: 10px; /* small vertical gap between CEFR and icon */
 }
 
 .cefr-badge {
@@ -257,7 +354,7 @@ button:disabled i {
 
 .definition-content i {
   margin-right: 8px;
-  color: #2e2e2e; /* Dark red color */
+  color: #951b1b; /* Dark red color */
   font-size: 18px; /* Slightly larger than the text */
   width: 24px; /* Fixed width for uniformity */
   text-align: center; /* Centers the icons within their block */
@@ -266,14 +363,14 @@ button:disabled i {
 }
 
 .definition-content p {
-  color: #2e2e2e; /* Ensure text is also dark red */
+  color: #951b1b; /* Ensure text is also dark red */
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
 .definition-label {
-  color: #2e2e2e;
+  color: #951b1b;
   font-family: "Noto Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
@@ -289,17 +386,17 @@ li {
   margin: 10px 0 10px 0;
 }
 
-.distractor-muted {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
 .english,
 .etymology,
 .pronunciation {
   color: #555 !important;
   font-size: 16px !important;
   font-weight: 500;
+}
+
+.distractor-muted {
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 .english-sentence {
@@ -326,12 +423,12 @@ li {
 
 /* Specific styling for the error message */
 .error-message h2 {
-  color: #2e2e2e; /* Error title in a distinct color */
+  color: #951b1b; /* Error title in a distinct color */
   font-size: 24px;
 }
 
 .error-message {
-  color: #2e2e2e; /* Error type in a similar error color */
+  color: #951b1b; /* Error type in a similar error color */
   font-size: 16px;
   font-weight: 600;
 }
@@ -347,9 +444,9 @@ li {
 }
 
 footer {
-  background-color: #dbe3c9;
+  background-color: #d2dce5;
   bottom: 0;
-  color: #2e2e2e;
+  color: #0d3a69;
   font-family: "Noto Sans", sans-serif;
   padding: 20px 0;
   position: relative;
@@ -363,13 +460,13 @@ footer p {
 }
 
 footer p a {
-  color: #8c3b2e;
+  color: #3c88d4;
   font-weight: bold;
   text-decoration: none;
 }
 
 footer p a:hover {
-  color: #2e2e2e;
+  color: #0d3a69;
   text-decoration: underline;
 }
 
@@ -476,6 +573,17 @@ footer .copyright {
 
 .game-english-translation {
   color: gray !important;
+}
+
+.game-fade {
+  opacity: 1;
+  transition: opacity 0.35s ease-in-out;
+}
+.game-fade.fade-out {
+  opacity: 0;
+}
+.game-fade.fade-in {
+  opacity: 1;
 }
 
 .game-gender {
@@ -704,7 +812,7 @@ footer .copyright {
 }
 
 h1 {
-  color: #2e2e2e;
+  color: #293a78;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -728,8 +836,8 @@ h4 {
 }
 
 header {
-  background-color: #dbe3c9;
-  color: #2e2e2e;
+  background-color: #d2dce5;
+  color: #0d3a69;
   font-family: "Noto Sans", sans-serif;
   letter-spacing: 0.05rem;
   padding: 20px;
@@ -758,6 +866,7 @@ header p {
 html {
   display: flex;
   flex-direction: column;
+  height: 100%;
   margin: 0;
 }
 
@@ -782,7 +891,7 @@ input[type="text"] {
 
 input[type="text"]:focus + label,
 input[type="text"]:not(:placeholder-shown) + label {
-  color: #2e2e2e;
+  color: #293a78;
   font-size: 12px;
   top: -10px;
 }
@@ -797,7 +906,7 @@ input[type="text"]:not(:placeholder-shown) + label {
   display: -webkit-box; /* Creates a block-level flex container */
   font-family: "Noto Serif", serif; /* Japanese-specific font */
   font-weight: 350;
-  font-size: 18px;
+  font-size: 14px;
   overflow: hidden; /* Hides the overflowing text */
   text-overflow: ellipsis; /* Adds ellipses when text overflows */
   text-transform: uppercase;
@@ -829,7 +938,7 @@ label {
 
 /* Adjust the heading size and color to match the word titles in definition cards */
 #landing-card h2 {
-  color: #2e2e2e; /* Matches the heading color of definition cards */
+  color: #0d3a69; /* Matches the heading color of definition cards */
   font-family: "Grenze Gotisch", serif;
   font-size: 38px !important; /* Matches the font size of definition card headings */
   margin-bottom: 10px;
@@ -914,7 +1023,7 @@ label {
 }
 
 li {
-  color: #2e2e2e;
+  color: #1c68b5;
 }
 
 .links {
@@ -935,9 +1044,9 @@ li {
   display: inline-flex;
   font-family: "Noto Sans", sans-serif;
   font-size: 13px;
-  height: 30px; /* Match height to the BuyMeACoffee image */
   padding: 2px 15px;
   text-decoration: none;
+  height: 30px; /* Match height to the BuyMeACoffee image */
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
@@ -953,6 +1062,7 @@ li {
 }
 
 #lock-icon {
+  color: white;
   font-size: 16px;
   margin: 0 5px 0 5px; /* Space between the icon and the text */
   cursor: pointer;
@@ -963,10 +1073,12 @@ li {
 }
 
 #lock-icon.locked {
+  color: #c7e3b6; /* light green for locked */
   transform: scale(1.1);
 }
 
 #lock-icon.unlocked {
+  color: white; /* default white */
   transform: scale(1);
 }
 
@@ -1070,10 +1182,10 @@ ul {
 
 .random-btn {
   align-items: center;
-  background-color: #dbe3c9;
+  background-color: #0d3a69;
   border: none;
   border-radius: 15px;
-  color: #2e2e2e;
+  color: white;
   cursor: pointer;
   display: flex;
   font-family: "Noto Sans", sans-serif;
@@ -1085,7 +1197,7 @@ ul {
 }
 
 .random-btn:hover {
-  background-color: #4a99ff;
+  background-color: #3c88d4;
   box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
 }
 
@@ -1119,7 +1231,7 @@ ul {
 
 .result-header h2 {
   margin: 0; /* Reset margin for the title */
-  color: #2e2e2e;
+  color: #951b1b;
   font-family: "Noto Sans", sans-serif;
   font-size: 1.3em;
   font-weight: 400;
@@ -1129,7 +1241,7 @@ ul {
 }
 
 .result-header i {
-  color: #2e2e2e;
+  color: #951b1b;
   position: absolute;
   left: 15px; /* Position the icon on the far left */
   cursor: pointer;
@@ -1167,7 +1279,7 @@ ul {
 .genre-filter,
 .game-english-filter {
   align-items: center;
-  background-color: #dbe3c9;
+  background-color: #0d3a69;
   border-radius: 15px;
   box-sizing: border-box;
   display: flex;
@@ -1182,7 +1294,7 @@ ul {
 .cefr-filter i,
 .genre-filter i,
 .game-english-filter i {
-  color: #2e2e2e;
+  color: white;
   font-size: 18px;
   pointer-events: none;
   right: 15px;
@@ -1191,7 +1303,7 @@ ul {
 
 .search-btn {
   align-items: center;
-  background-color: #dbe3c9;
+  background-color: #0d3a69;
   border: none;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 15px;
@@ -1211,7 +1323,7 @@ ul {
 }
 
 .search-btn i {
-  color: #2e2e2e;
+  color: white;
   font-size: 16px;
   margin: 0;
 }
@@ -1259,6 +1371,76 @@ ul {
   display: flex;
   justify-content: space-between;
   gap: 10px;
+}
+
+.practice-row {
+  display: flex;
+  gap: 2rem; /* more space between Native and You */
+  align-items: flex-start;
+}
+
+.practice-row-header {
+  letter-spacing: 0.75px;
+  margin: 0px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.native-col,
+.user-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+.native-controls,
+.user-controls {
+  display: flex;
+  gap: 10px;
+}
+
+#waveform,
+#user-waveform {
+  margin-bottom: 0.5rem;
+}
+
+.recording-controls {
+  margin-top: 15px;
+  text-align: center; /* center under the row */
+}
+
+.sentence-audio-icon {
+  display: inline-flex !important; /* Flexbox to center the icon */
+  align-items: center !important; /* Vertical centering */
+  justify-content: center !important; /* Horizontal centering */
+  padding: 6px !important; /* Same padding as .sentence-cefr-label */
+  font-size: 14px !important; /* Icon size inside */
+  border-radius: 4px !important; /* Same rounded corners */
+  background-color: #f0f0f0 !important; /* Matches the default CEFR look */
+  color: #4f4f4f !important; /* Icon color */
+  user-select: none !important; /* Same no-selection behavior */
+  cursor: pointer !important;
+  width: auto !important; /* Clickable */
+  box-sizing: border-box !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15); /* soft shadow gives depth */
+  transition: background-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+.sentence-audio-icon:hover {
+  background-color: #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* stronger shadow on hover */
+  transform: translateY(-1px); /* tiny lift */
+}
+
+.sentence-box-practice {
+  align-content: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  justify-content: center; /* Center the title */
+  align-items: center;
+  position: relative; /* Set relative position for positioning the icon */
 }
 
 .sentence-btn {
@@ -1321,7 +1503,7 @@ ul {
   background-color: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
+  margin-bottom: 12.5px;
   padding: 10px 15px 10px 15px;
   width: 100%;
   display: flex;
@@ -1334,9 +1516,14 @@ ul {
 }
 
 .sentence-box-english {
-  color: gray;
   border-radius: 0 12px 12px 0; /* Rounded corners on bottom */
   box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+  color: gray;
+  display: flex !important;
+}
+
+.sentence-box-english.hidden {
+  display: none !important; /* hide when toggled */
 }
 
 .sentence-box-norwegian {
@@ -1385,7 +1572,7 @@ ul {
 }
 
 #site-title {
-  color: #2e2e2e;
+  color: #293a78;
   cursor: pointer;
   margin: -5px 0px 10px 0px;
   transition: color 0.2s ease, text-shadow 0.2s ease;
@@ -1400,6 +1587,7 @@ ul {
 }
 
 /* Ensure sticky header CEFR label matches list page */
+
 .sticky-cefr-label {
   align-items: center; /* Center vertically */
   border: 1px solid #ddd; /* Lighter gray for a subtler border */
@@ -1422,6 +1610,7 @@ ul {
 }
 
 /* Flex container for genre and CEFR */
+
 .sticky-detail-container {
   display: flex;
   flex-direction: column; /* Stack rows vertically */
@@ -1429,6 +1618,7 @@ ul {
 }
 
 /* Ensure sticky header genre matches list page */
+
 .sticky-genre {
   align-items: center; /* Center vertically */
   align-self: flex-start;
@@ -1528,7 +1718,7 @@ ul {
 }
 
 .stories-back-btn {
-  color: #2e2e2e;
+  color: #951b1b;
   margin-left: 20px;
   margin-right: 190px;
   font-size: 1.5em;
@@ -1586,30 +1776,30 @@ ul {
 }
 
 .stories-detail-container {
-  align-items: center; /* Align CEFR and genre vertically */
-  display: flex;
-  gap: 5px; /* Add spacing between genre and CEFR */
+  display: flex; /* Use flexbox layout */
+  gap: 5px;
   margin-left: 10px;
 }
 
 .stories-genre {
-  align-self: flex-start;
-  background-color: #f0f0f0;
+  align-self: flex-start; /* Align the label to the left */
+  background-color: #f0f0f0; /* Green for 'A1, A2' */
   border-radius: 4px;
+  padding: 3px 7px; /* Smaller padding */
+  font-size: 12px; /* Smaller font size */
   color: #4f4f4f;
-  padding: 3px 7px;
-  font-family: "Noto Sans", sans-serif;
-  font-size: 12px;
   font-weight: bold;
+  border-radius: 4px;
   text-align: center;
   text-transform: uppercase;
+  font-family: "Noto Sans", sans-serif;
   user-select: none;
-  white-space: nowrap;
+  white-space: nowrap; /* Prevent text wrapping */
   width: 18px;
 }
 
 .stories-genre i {
-  color: #333;
+  color: #333; /* Dark icon color for visibility */
 }
 
 .stories-list {
@@ -1644,7 +1834,7 @@ ul {
 }
 
 .stories-list-item h2 {
-  color: #2e2e2e !important;
+  color: #0d3a69 !important;
   font-family: "Noto Sans", sans-serif !important;
   font-size: 16px;
   font-weight: 400;
@@ -1701,7 +1891,7 @@ ul {
 
 .stories-result-header h2 {
   margin: 0; /* Reset margin for the title */
-  color: #2e2e2e;
+  color: #951b1b;
   font-family: "Noto Sans", sans-serif;
   font-size: 1.3em;
   font-weight: 400;
@@ -1711,7 +1901,7 @@ ul {
 }
 
 .stories-result-header i {
-  color: #2e2e2e;
+  color: #951b1b;
   position: absolute;
   left: 15px; /* Position the icon on the far left */
   cursor: pointer;
@@ -1777,7 +1967,7 @@ ul {
 
 .stories-story-header h2 {
   margin: 0; /* Reset margin for the title */
-  color: #2e2e2e;
+  color: #951b1b;
   font-family: "Noto Sans", sans-serif;
   font-size: 1.3em;
   font-weight: 400;
@@ -1795,7 +1985,6 @@ ul {
   row-gap: 2.5px;
 }
 
-/* Style for the story content */
 #story-content {
   background: #fff; /* Same white background as story list items */
   border: 1px solid #ddd; /* Light border for separation */
@@ -1821,6 +2010,7 @@ ul {
 }
 
 /* Story list and story content */
+
 #story-list,
 #story-viewer {
   max-width: 800px; /* Limit the width */
@@ -1828,7 +2018,7 @@ ul {
 }
 
 .spinner {
-  color: #2e2e2e;
+  color: #293a78;
   display: none;
   font-size: 20px;
   margin: 20px;
@@ -1839,16 +2029,12 @@ ul {
   animation: spin 0.8s linear infinite;
   border: 3px solid rgba(0, 0, 0, 0.3);
   border-radius: 50%;
-  border-top-color: #2e2e2e;
+  border-top-color: #293a78;
   content: "";
   display: inline-block;
   height: 40px;
   margin-bottom: 10px;
   width: 40px;
-}
-
-#toggle-kanji-btn {
-  margin-top: 5px;
 }
 
 /* Gray out both the select text and the arrow when disabled */
@@ -1878,7 +2064,7 @@ ul {
   appearance: none;
   background-color: inherit;
   border: none;
-  color: #2e2e2e;
+  color: white;
   cursor: pointer;
   font-family: "Noto Sans", sans-serif;
   padding-right: 15px; /* Reduce padding to show more text */
@@ -1891,18 +2077,16 @@ ul {
 }
 
 .word-gender {
-  align-items: flex-start;
+  align-items: flex;
   display: flex;
   justify-content: space-between;
   line-height: 1.2;
   overflow-wrap: break-word;
   word-break: break-word;
-  flex-direction: column;
-  hyphens: auto;
 }
 
 .word-gender .gender {
-  color: #2e2e2e;
+  color: #951b1b;
   font-size: 14px;
   font-weight: 400;
   text-transform: uppercase;
@@ -1925,10 +2109,14 @@ ul {
   #back-button,
   #speed-btn,
   #toggle-english-btn,
-  #toggle-kanji-btn {
+  .toggle-kanji-btn {
     font-size: 10px;
     min-width: 80px;
     padding: 0.5em;
+  }
+
+  .cefr-audio-block {
+    flex-direction: row;
   }
 
   .definition {
@@ -2116,6 +2304,10 @@ ul {
     justify-content: center; /* Vertically center the word and gender within their container */
   }
 
+  .practice-row {
+    display: block;
+  }
+
   /* Adjust pronunciation table for mobile */
   .pronunciation-table,
   .pronunciation-table tbody,
@@ -2200,12 +2392,6 @@ ul {
     font-size: 16px;
   }
 
-  .sentence-cefr-label {
-    padding: 2px 4px; /* Smaller padding */
-    font-size: 8px; /* Smaller font size */
-    min-width: 10px;
-  }
-
   #search-container {
     box-sizing: border-box;
     overflow: hidden;
@@ -2240,14 +2426,14 @@ ul {
 
   .sentence-box-english {
     border-radius: 0 0 12px 12px; /* Rounded corners on bottom */
-    padding: 5px 10px 5px 38px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 6px 9px 6px 49px;
   }
 
   .sentence-box-norwegian {
     border-radius: 12px 12px 0 0; /* Rounded corners on top */
-    padding: 5px 10px 5px 10px;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    padding: 6px 9px;
   }
 
   /* Norwegian box styling when English is hidden */
@@ -2268,35 +2454,47 @@ ul {
   }
 
   .sentence-content {
-    gap: 10px !important; /* Adds space between the Norwegian and English sentences */
+    gap: 10px; /* Adds space between the Norwegian and English sentences */
   }
+
   .sticky-cefr-label {
     height: 25px !important;
   }
+
   .sticky-genre {
     height: 25px;
   }
+
   #sticky-header {
     border: none;
     padding: 0.25em 0.5em;
     gap: 0.5em;
   }
+
   .sticky-title-container {
     gap: 5px; /* Adjust to desired spacing */
   }
+
   .sticky-title-japanese {
     font-size: 1.3em;
   }
+
   .sticky-title-english {
     font-size: 0.8em;
   }
+
   #stories {
     display: grid;
     grid-template-columns: 1fr;
   }
+
   .stories-back-btn {
     margin-left: 10px;
     margin-right: 10px;
+  }
+
+  .stories-detail-container {
+    margin-top: 0px !important;
   }
 
   .stories-english-btn {
@@ -2361,9 +2559,11 @@ ul {
     margin: 0.75em 0;
     padding: 1em 1em 1em 1em;
   }
+
   #story-content > div {
     margin-bottom: 15px; /* Margin for each sentence couplet */
   }
+
   .story-image {
     margin-bottom: 1.25em;
   }
@@ -2374,7 +2574,7 @@ ul {
   .genre-filter,
   .game-english-filter {
     box-sizing: border-box !important;
-    background-color: #dbe3c9; /* Consistent background for all filters */
+    background-color: #0d3a69; /* Consistent background for all filters */
     border-radius: 15px;
     padding: 5px 5px 5px 5px;
     min-width: 0px;

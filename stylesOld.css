@@ -1,0 +1,2428 @@
+a {
+  color: #8c3b2e;
+}
+
+.alt-spelling {
+  display: block;
+  font-size: 0.8em;
+  font-weight: 400;
+  margin-top: 2px;
+  opacity: 0.75; /* Very subtle */
+}
+
+audio {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+}
+
+#back-button,
+#speed-btn,
+#toggle-english-btn,
+#toggle-kanji-btn {
+  background-color: #f4f4f4; /* Neutral light gray */
+  border: #bbb 1px solid;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: #2a3a2f;
+  cursor: pointer;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 500;
+  min-width: 115px;
+  padding: 0.5em 1em;
+  position: relative;
+  transition: background-color 0.3s ease;
+  z-index: 1;
+}
+
+#back-button:hover,
+#speed-btn:hover,
+#toggle-english-btn:hover,
+#toggle-kanji-btn:hover {
+  background-color: gainsboro; /* Slightly darker purple on hover */
+}
+
+.back-navigation {
+  display: block; /* Block-level element to allow centering */
+  line-height: 30px; /* Matches height for vertical centering */
+  margin: 0 0 10px 0; /* Remove auto margin and set bottom margin only */
+  margin-bottom: 10px;
+  background-color: #ffffff; /* Subtle, lighter background */
+  color: #5a1a1a; /* Subtle maroon text */
+  border-radius: 6px; /* Slightly rounded corners */
+  padding: 8px 14px; /* Larger padding for a more clickable feel */
+  font-family: "Noto Sans", sans-serif; /* Clean, modern font */
+  font-size: 12px; /* Smaller font size for subtlety */
+  font-weight: 500; /* Slightly bolder text */
+  text-transform: uppercase; /* Uppercase for consistency */
+  letter-spacing: 0.03em; /* Slight letter spacing */
+  cursor: pointer; /* Pointer on hover */
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+  touch-action: manipulation; /* Helps reduce delay on mobile */
+  box-shadow: 0 4px 8px rgba(135, 135, 135, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  height: 30px;
+}
+
+.back-navigation:hover {
+  background-color: #f7f7f7; /* Slightly darker background on hover */
+  box-shadow: 0 6px 12px rgba(135, 135, 135, 0.3), 0 3px 6px rgba(0, 0, 0, 0.15); /* Slightly larger shadow */
+}
+
+body {
+  background-color: #f4f4f4;
+  display: flex;
+  flex-direction: column;
+  font-family: "Noto Serif", serif;
+  font-size: 16px;
+  height: 100%;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+button:disabled {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Disable hover effects for disabled buttons */
+button:disabled:hover {
+  cursor: not-allowed; /* Keep the not-allowed cursor */
+}
+
+button:disabled i {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.button-container i {
+  color: #2e2e2e;
+  margin-bottom: 10px;
+}
+
+.button-container p {
+  font-size: 5px !important;
+  text-align: center !important;
+}
+
+.cefr-badge {
+  text-align: center !important;
+  display: inline-block;
+  padding: 3px 7px;
+  border-radius: 4px;
+  min-width: 17.5px;
+}
+
+.cefr-label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.cefr-label i {
+  margin-right: 5px;
+}
+
+.cefr-value {
+  border-radius: 4px;
+  color: #4f4f4f; /* Default text color */
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 3px 7px;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: nowrap;
+  width: 18px;
+}
+
+.cefr-value.a1,
+.sticky-cefr-label.a1 {
+  background-color: #cfe5c0; /* Soft olive green for A1 (new grass) */
+  color: #2a4d14; /* Dark forest green for high contrast */
+}
+
+.cefr-value.a2,
+.sticky-cefr-label.a2 {
+  background-color: #b3d8a3; /* Bright meadow green for A2 (spring leaves) */
+  color: #2f4f17; /* Deep moss green for high contrast */
+}
+
+.cefr-value.b1,
+.sticky-cefr-label.b1 {
+  background-color: #f7e3b0; /* Gentle wheat yellow for B1 (warm sunlight) */
+  color: #5c4b11; /* Warm brown for legibility and contrast */
+}
+
+.cefr-value.b2,
+.sticky-cefr-label.b2 {
+  background-color: #f0d39a; /* Brighter golden yellow for B2 (ripe fields) */
+  color: #604b0e; /* Rich amber brown for sharp contrast */
+}
+
+.cefr-value.c1,
+.sticky-cefr-label.c1 {
+  background-color: #e9c3b4; /* Muted rose pink for C1 (wild roses) */
+  color: #5a2d25; /* Deep reddish-brown for readability and aesthetic balance */
+}
+
+.cefr-value.c2,
+.sticky-cefr-label.c2 {
+  background-color: #e0af92; /* Bright terracotta orange for C2 (sunlit clay) */
+  color: #5a2e18; /* Burnt sienna for clear contrast */
+}
+
+.cefr-value.cefr-unknown,
+.sticky-cefr-label.cefr-unknown {
+  background-color: #e0e0e0; /* Gray for unknown levels */
+  color: #444444; /* Dark charcoal gray for readability */
+}
+
+.clear-btn {
+  align-items: center;
+  background-color: white;
+  border: none;
+  color: #999;
+  cursor: pointer;
+  display: flex;
+  font-size: 18px;
+  padding: 0 15px;
+}
+
+.clear-btn i {
+  color: #999;
+  font-size: 18px;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.clear-btn:hover i {
+  color: #666; /* Slightly darker shade for hover */
+}
+
+.clickable-definition-word {
+  cursor: pointer;
+  color: #3c88d4;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(60, 136, 212, 0.4);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+
+.clickable-definition-word:hover {
+  color: #1f4f80; /* darker and cooler than #2b6ca3 */
+  text-decoration-color: transparent; /* fades underline out smoothly */
+}
+
+#cloze-sentence {
+  font-weight: normal;
+  font-size: 1.2em;
+  line-height: 1.35; /* Preferred */
+  overflow: visible; /* Let text overflow if necessary */
+}
+
+.coffee-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent; /* No visible border but ensures alignment */
+  border-radius: 4px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.coffee-img {
+  max-height: 30px; /* Adjust the height of the image to align with the LinkedIn button */
+  width: auto;
+}
+
+.default-hidden-content {
+  display: none;
+}
+
+.definition {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 25px;
+}
+
+.definition-content {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.definition-content i {
+  margin-right: 8px;
+  color: #2e2e2e; /* Dark red color */
+  font-size: 18px; /* Slightly larger than the text */
+  width: 24px; /* Fixed width for uniformity */
+  text-align: center; /* Centers the icons within their block */
+  display: inline-block; /* Ensures icons behave like a fixed block */
+  vertical-align: middle; /* Ensures the icon is vertically aligned with the text */
+}
+
+.definition-content p {
+  color: #2e2e2e; /* Ensure text is also dark red */
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.definition-label {
+  color: #2e2e2e;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.04rem;
+  text-transform: uppercase;
+}
+
+.definition p,
+li {
+  color: #333;
+  font-size: 20px;
+  line-height: 1.4;
+  margin: 10px 0 10px 0;
+}
+
+.distractor-muted {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.english,
+.etymology,
+.pronunciation {
+  color: #555 !important;
+  font-size: 16px !important;
+  font-weight: 500;
+}
+
+.english-sentence {
+  color: gray; /* Set a different color for English text */
+  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
+}
+
+.english-title {
+  color: #666;
+  font-family: "Noto Sans", sans-serif; /* English-specific font */
+  font-size: 12.5px;
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 1; /* Limits the text to 1 line */
+}
+
+.error-message {
+  align-content: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 25px;
+}
+
+/* Specific styling for the error message */
+.error-message h2 {
+  color: #2e2e2e; /* Error title in a distinct color */
+  font-size: 24px;
+}
+
+.error-message {
+  color: #2e2e2e; /* Error type in a similar error color */
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.error-message p {
+  color: #555;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.example {
+  font-size: 16px !important;
+}
+
+footer {
+  background-color: #dbe3c9;
+  bottom: 0;
+  color: #2e2e2e;
+  font-family: "Noto Sans", sans-serif;
+  padding: 20px 0;
+  position: relative;
+  text-align: center;
+  width: 100%;
+}
+
+footer p {
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+footer p a {
+  color: #8c3b2e;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+footer p a:hover {
+  color: #2e2e2e;
+  text-decoration: underline;
+}
+
+footer .copyright {
+  color: #555;
+  font-size: 12px;
+}
+
+#game-banner-placeholder {
+  align-self: baseline;
+  background-color: #f8f8f8;
+  color: #4f4f4f; /* Gray color, matching the scorecard */
+  text-align: center;
+  padding: 0px 6px !important; /* Smaller padding for a more compact banner */
+  border-radius: 5px;
+  font-size: 16px !important; /* Smaller font size to fit the text on one line */
+  font-weight: normal; /* Adjusted to normal to avoid boldness */
+  font-family: "Noto Serif", serif; /* Using Noto Sans, sans-serif */
+  margin: 0 1px 0 1px 0 auto; /* Reduced spacing between banner and the rest */
+  margin-bottom: 5px;
+  max-width: 60%;
+  transition: opacity 0.5s ease-in-out; /* Smooth transition */
+  font-weight: 400;
+  user-select: none;
+}
+
+#game-banner-placeholder p {
+  margin: 1px !important;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 15px; /* Slightly increase space between the cards */
+}
+
+.game-cefr-label {
+  align-self: flex-start; /* Align the label to the left */
+  padding: 3px 7px; /* Smaller padding */
+  font-size: 12px; /* Smaller font size */
+  color: #4f4f4f;
+  font-weight: bold;
+  border-radius: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Noto Sans", sans-serif;
+  white-space: nowrap; /* Prevent text wrapping */
+  min-width: 17.5px;
+  user-select: none; /* Prevent text selection */
+}
+
+.game-cefr-label.easy,
+.game-cefr-label.a1,
+.game-cefr-label.a2 {
+  background-color: #c7e3b6; /* Green for 'A1, A2' */
+}
+
+.game-cefr-label.medium,
+.game-cefr-label.b1,
+.game-cefr-label.b2 {
+  background-color: #f2d96b; /* Yellow for 'B1, B2' */
+}
+
+.game-cefr-label.hard,
+.game-cefr-label.c,
+.game-cefr-label.c1,
+.game-cefr-label.c2 {
+  background-color: #e9a895; /* Red for 'C' */
+}
+
+.game-cefr-spacer {
+  align-items: flex-end;
+  display: flex;
+  gap: 5px; /* Optional: Space between the elements */
+  text-align: center;
+  flex-direction: row;
+  min-height: 70px;
+  width: 100%;
+}
+
+/* Example Sentences */
+.game-cefr-spacer p {
+  color: #413e3e;
+  font-family: "Noto Serif", serif;
+  font-size: 0.7em !important;
+  flex: 1; /* Makes each <p> element take up equal width */
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.game-correct-card {
+  background-color: #c7e3b6 !important; /* Lighter olive green for correct */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px; /* Consistent height with the other cards */
+}
+
+.game-english-translation {
+  color: gray !important;
+}
+
+.game-gender {
+  align-self: flex-start; /* Align the label to the left */
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  color: #4f4f4f !important;
+  font-family: "Noto Sans", sans-serif;
+  padding: 3px 7px;
+  font-size: 12px; /* Smaller font size */
+  font-weight: bold !important;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0px 0px 5px 0px !important;
+  min-width: fit-content;
+  user-select: none; /* Prevent text selection */
+}
+
+.game-incorrect-card {
+  background-color: #e9a895 !important; /* Lighter clay red for incorrect */
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80px; /* Consistent height with the other cards */
+}
+
+.game-label-subgroup {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  flex-direction: column;
+}
+
+.game-labels-container {
+  align-items: center;
+  display: flex;
+  min-height: 70px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+#game-next-word-button {
+  margin-top: 15px;
+  width: 100%;
+  background-color: #f8d9b0; /* Subtle, lighter background */
+  color: #8a7063; /* Subtle maroon text */
+  border: 1px solid #b8a58b; /* Slightly darker border for depth */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+  border-radius: 6px; /* Slightly rounded corners */
+  padding: 20px 15px;
+  font-family: "Noto Sans", sans-serif; /* Clean, modern font */
+  font-size: 18px; /* Smaller font size for subtlety */
+  font-weight: 500; /* Normal font weight for less boldness */
+  text-transform: uppercase; /* Uppercase for consistency */
+  letter-spacing: 0.04em; /* Slight letter spacing */
+  cursor: pointer; /* Pointer on hover */
+  user-select: none; /* Prevent text selection */
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+}
+
+#game-next-word-button:active {
+  background-color: #f2c18c; /* Darker background on click */
+  border-color: #8a7063; /* Border matches text color on click */
+}
+
+#game-next-word-button:disabled {
+  background-color: #f0e5d2; /* Lighter background when disabled */
+  color: #c5b3a6; /* More muted text color when disabled */
+  border-color: #d1c4b5; /* Muted border when disabled */
+  cursor: not-allowed; /* Disabled cursor */
+  box-shadow: none; /* No shadow when disabled */
+}
+
+.game-pronunciation {
+  font-family: "Noto Serif", serif;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 0.04rem;
+}
+
+.game-tricky-word {
+  align-self: flex-end; /* Align to the top */
+  padding: 3px 7px; /* Same padding as CEFR label */
+  font-size: 12px; /* Same font size as CEFR label */
+  color: #4f4f4f;
+  font-weight: bold;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-family: "Noto Sans", sans-serif;
+  white-space: nowrap; /* Prevent text wrapping */
+  background-color: #fae5c3;
+  margin-bottom: 5px; /* Space between label and word */
+  visibility: hidden; /* Initially hidden but space is reserved */
+}
+
+.game-tricky-word.visible {
+  visibility: visible; /* When the label should be shown */
+}
+
+/* Stats Card Styling */
+.game-stats-content {
+  display: flex;
+  width: 100%; /* Ensure the content takes up full width */
+  gap: 10px; /* Adjust the space between boxes */
+  margin: 0px 0px 7.5px 0px; /* Center horizontally */
+}
+
+/* Correct box styling */
+.game-stats-correct-box {
+  background-color: #c7e3b6; /* Lighter olive green */
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 10px 20px;
+  text-align: center;
+  color: white;
+  min-width: 60px; /* Ensure minimum size */
+}
+
+/* Incorrect box styling */
+.game-stats-incorrect-box {
+  background-color: #e9a895; /* Lighter clay red */
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 10px 20px;
+  text-align: center;
+  color: white;
+  min-width: 60px; /* Ensure minimum size */
+}
+
+/* Text styling for the numbers */
+.game-stats-correct-box p {
+  color: #6b9461 !important;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 18px; /* Bigger font for numbers */
+  font-weight: 500;
+  margin: 0;
+  user-select: none; /* Prevent text selection */
+}
+
+.game-stats-incorrect-box p {
+  color: #b5634d !important;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 18px; /* Bigger font for numbers */
+  font-weight: 500;
+  margin: 0;
+  user-select: none; /* Prevent text selection */
+}
+
+.game-translation-card {
+  background-color: white; /* Same as the word card */
+  border: 1px solid #ccc; /* Same border */
+  border-radius: 10px; /* Same rounded corners */
+  padding: 15px; /* Reduced padding to make the cards less bulky */
+  text-align: center; /* Centered text */
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1.2em !important; /* Consistent font size */
+  color: #333; /* Same text color */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Same shadow */
+  transition: background-color 0.3s ease; /* Smooth hover effect */
+  cursor: pointer; /* Make it clickable */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60px; /* Slightly reduce height */
+  min-height: 60px; /* Ensure the cards remain the same height */
+  line-height: 1.3em; /* Reduce line spacing slightly */
+}
+
+.game-translation-card:hover {
+  background-color: #e6f7ff; /* Hover effect same as word card */
+}
+
+.game-word {
+  align-items: center; /* Center the word vertically */
+  display: flex;
+  justify-content: center; /* Center the word horizontally */
+  flex-grow: 1; /* Allow the word to take up remaining space */
+  text-align: center;
+}
+
+.game-word h2 {
+  margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 400 !important;
+}
+
+.game-word-card {
+  align-items: center; /* Center the content horizontally */
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  color: #333;
+  display: flex;
+  flex-direction: column; /* Stack the label and word vertically */
+  font-size: 1.2em;
+  justify-content: center; /* Center the content vertically */
+  margin-bottom: 15px !important;
+  overflow: hidden; /* Prevent overflowing content from changing layout */
+  padding: 10px; /* Reduce padding at the top, add more below */
+  position: relative; /* Allow for flexible layout */
+}
+
+.gender {
+  align-self: flex-start; /* Align the label to the left */
+  background-color: #f0f0f0;
+  color: #6a6a6a !important;
+  font-family: "Noto Sans", sans-serif;
+  text-transform: uppercase;
+  padding: 3px 4px; /* Smaller padding */
+  font-size: 10px; /* Smaller font size */
+  font-weight: 500 !important;
+  border-radius: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 10px 0px 5px 0px; /* Space between the label and the word */
+  min-width: fit-content;
+  user-select: none; /* Prevent text selection */
+}
+
+.genre-filter {
+  display: none;
+}
+
+h1 {
+  color: #2e2e2e;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+h2 {
+  color: #1c68b5;
+  font-size: 30px;
+  font-weight: bold;
+  margin: -5px 0 -5px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+h3 {
+  user-select: none;
+}
+
+h4 {
+  user-select: none;
+}
+
+header {
+  background-color: #dbe3c9;
+  color: #2e2e2e;
+  font-family: "Noto Sans", sans-serif;
+  letter-spacing: 0.05rem;
+  padding: 20px;
+  position: relative;
+  text-align: center;
+}
+
+header h1 {
+  font-family: "Grenze Gotisch", serif;
+  font-size: 50px;
+  user-select: none; /* Prevent text selection */
+}
+
+header p {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: -20px;
+  text-transform: uppercase;
+  user-select: none; /* Prevent text selection */
+}
+
+.hidden {
+  display: none !important;
+}
+
+html {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+/* Default: list/search mode */
+html:not(.reading) {
+  height: 100%;
+}
+
+/* When reading a story, no fixed height (let it expand naturally) */
+html.reading {
+  height: auto;
+}
+
+input[type="text"] {
+  border: none;
+  flex-grow: 1;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 16px;
+  outline: none;
+  padding: 12px 16px;
+}
+
+input[type="text"]:focus + label,
+input[type="text"]:not(:placeholder-shown) + label {
+  color: #2e2e2e;
+  font-size: 12px;
+  top: -10px;
+}
+
+.japanese-sentence {
+  color: black; /* Set a color for Japanese text */
+  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
+}
+
+.japanese-title {
+  color: #3c3c3c;
+  display: -webkit-box; /* Creates a block-level flex container */
+  font-family: "Noto Serif", serif; /* Japanese-specific font */
+  font-weight: 350;
+  font-size: 18px;
+  overflow: hidden; /* Hides the overflowing text */
+  text-overflow: ellipsis; /* Adds ellipses when text overflows */
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 2; /* Limits the text to 1 line */
+}
+
+label {
+  color: #555;
+  left: 10px;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Modify the landing card styling to match definition cards */
+#landing-card {
+  background-color: #ffffff; /* Matches the background of definition cards */
+  border-radius: 12px; /* Same border radius as definition cards */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Same box shadow */
+  margin: 20px auto; /* Matches the margin of definition cards */
+  max-width: 1200px;
+  padding: 25px; /* Matches the padding of definition cards */
+  text-align: center;
+  width: 45%; /* Same width as definition cards */
+}
+
+/* Adjust the heading size and color to match the word titles in definition cards */
+#landing-card h2 {
+  color: #2e2e2e; /* Matches the heading color of definition cards */
+  font-family: "Grenze Gotisch", serif;
+  font-size: 38px !important; /* Matches the font size of definition card headings */
+  margin-bottom: 10px;
+  letter-spacing: 0.01em;
+  user-select: none;
+  line-height: 1.1;
+}
+
+/* Adjust the paragraph text inside the landing card to be more similar to definition content */
+#landing-card p {
+  font-family: "Noto Sans", sans-serif;
+  font-size: 14px !important; /* Matches the font size of other definition content */
+  color: #555; /* Similar color to definition content */
+  line-height: 1.6; /* Increase line height for readability */
+  text-align: left;
+  user-select: none;
+}
+
+.landing-card-btn {
+  display: block; /* Block-level element to allow centering */
+  margin: 0 auto; /* Centering with smaller vertical margins */
+  margin-bottom: 15px;
+  margin-top: 15px;
+  background-color: #fff; /* Subtle, lighter background */
+  color: #4a4a4a; /* Soft gray text */
+  border: 0.5px solid #a0a0a0; /* Light gray border */
+  border-radius: 6px; /* Slightly rounded corners */
+  padding: 8px 14px; /* Larger padding for a more clickable feel */
+  font-family: "Noto Sans", sans-serif; /* Clean, modern font */
+  font-size: 12px; /* Smaller font size for subtlety */
+  font-weight: 500; /* Slightly bolder text */
+  text-transform: uppercase; /* Uppercase for consistency */
+  letter-spacing: 0.03em; /* Slight letter spacing */
+  cursor: pointer; /* Pointer on hover */
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+  touch-action: manipulation; /* Helps reduce delay on mobile */
+  box-shadow: 0 4px 8px rgba(135, 135, 135, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 140px;
+}
+
+.landing-card-btn:hover {
+  background-color: #f0f0f0; /* Slightly darker on hover */
+  border-color: #6a6a6a; /* Darker gray on hover */
+}
+
+.landing-card-btn i {
+  color: #5a1a1a;
+  margin-right: 8px; /* Adds space between the icon and text */
+}
+
+.landing-card-button-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.landing-card-image {
+  fill: #ff0000; /* changes the color to red */
+  width: 80px;
+  height: 80px;
+}
+
+/* Progress bar container and fill */
+.level-progress-bar-bg {
+  background-color: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.level-progress-bar-fill {
+  background-color: #c7e3b6;
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+li {
+  color: #2e2e2e;
+}
+
+.links {
+  display: flex;
+  gap: 10px; /* Space between the buttons */
+  margin: 10px 0 10px 0;
+  align-items: center; /* Vertically align both buttons */
+  justify-content: center;
+}
+
+.linkedin-btn {
+  align-items: center;
+  background-color: white;
+  border: 1px solid #0a66c2;
+  border-radius: 4px;
+  color: #0a66c2;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 13px;
+  height: 30px; /* Match height to the BuyMeACoffee image */
+  padding: 2px 15px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.linkedin-btn:hover {
+  background-color: #f0f0f0;
+  color: #0a66c2;
+}
+
+.linkedin-icon {
+  height: auto;
+  margin-right: 8px;
+  width: 18px;
+}
+
+#lock-icon {
+  font-size: 16px;
+  margin: 0 5px 0 5px; /* Space between the icon and the text */
+  cursor: pointer;
+  display: none;
+  order: 2;
+  transition: all 0.2s ease;
+  pointer-events: auto; /* ensure it responds to clicks */
+}
+
+#lock-icon.locked {
+  transform: scale(1.1);
+}
+
+#lock-icon.unlocked {
+  transform: scale(1);
+}
+
+main {
+  flex: 1;
+}
+
+/* The whole box */
+.multiple-results-definition {
+  min-height: 0 !important;
+  padding: 15px 25px 15px 25px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+}
+
+.multiple-results-definition:hover {
+  background-color: #f2f9fd; /* Hover effect same as word card */
+}
+
+/* The word, gender and definition */
+.multiple-results-definition-header {
+  display: flex;
+  flex-direction: row; /* Horizontally aligns the word and definition */
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* The definition */
+.multiple-results-definition-text {
+  display: -webkit-box;
+  flex: 1;
+  font-size: 18px !important;
+  margin-left: 20px; /* Space between the gender/word and definition */
+  line-clamp: 4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4; /* Number of lines before truncating */
+  width: 50%; /* Definition takes up exactly 60% of the container */
+}
+
+.multiple-results-english {
+  display: -webkit-box;
+  line-clamp: 3;
+  margin: 8px 0px 10px 0px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Number of lines before truncating */
+}
+
+.multiple-results-hidden-content {
+  display: none;
+}
+
+/* The gender */
+.multiple-results-gender-class {
+  font-size: 12px !important;
+  margin: 10px 0px 0px 0px !important;
+}
+
+/* The word and gender */
+.multiple-results-word-gender {
+  display: flex;
+  font-size: 20px !important;
+  flex-direction: column; /* Ensures word and gender are stacked vertically */
+  margin: 0 20px 0 0 !important;
+  line-height: 1.5 !important;
+  width: 50%; /* The word and gender take up 40% of the container */
+  justify-content: center; /* Vertically center the word and gender within their container */
+}
+
+ol,
+ul {
+  list-style-type: square;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  padding-inline-start: 20px;
+}
+
+/* Basic styling for the table */
+.pronunciation-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 12px;
+  text-align: left;
+}
+
+.pronunciation-table th,
+.pronunciation-table td {
+  border: 1px solid #dddddd;
+  padding: 10px;
+}
+
+.pronunciation-table th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.random-btn {
+  align-items: center;
+  background-color: #dbe3c9;
+  border: none;
+  border-radius: 15px;
+  color: #2e2e2e;
+  cursor: pointer;
+  display: flex;
+  font-family: "Noto Sans", sans-serif;
+  height: 42px;
+  justify-content: center;
+  padding: 10px 20px;
+  transition: all 0.3s ease;
+  width: 20%; /* Adjust the width of the random button */
+}
+
+.random-btn:hover {
+  background-color: #4a99ff;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.return-btn {
+  background-color: #f1f1f1;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 20px;
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-size: 16px;
+}
+
+.return-btn:hover {
+  background-color: #e1e1e1;
+}
+
+.result-header {
+  align-content: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  justify-content: center; /* Center the title */
+  align-items: center;
+  position: relative; /* Set relative position for positioning the icon */
+}
+
+.result-header h2 {
+  margin: 0; /* Reset margin for the title */
+  color: #2e2e2e;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1.3em;
+  font-weight: 400;
+  white-space: normal; /* Allow the text to wrap into multiple lines */
+  overflow-wrap: break-word; /* Ensure the text breaks into a new line if needed */
+  text-align: center; /* Center align the header text */
+}
+
+.result-header i {
+  color: #2e2e2e;
+  position: absolute;
+  left: 15px; /* Position the icon on the far left */
+  cursor: pointer;
+  font-size: 1.3rem; /* Adjust the size as needed */
+  line-height: inherit;
+}
+
+#results-container {
+  background-color: rgb(244, 244, 244);
+  margin: 20px auto;
+  max-width: 1200px;
+  text-align: left;
+  width: 50%;
+}
+
+#right-controls {
+  display: flex;
+  flex-direction: column;
+}
+.search-bar-wrapper,
+.type-filter,
+.pos-filter,
+.cefr-filter,
+.genre-filter,
+.game-english-filter {
+  align-items: center;
+  display: flex;
+  height: 42px;
+  flex: 1;
+}
+
+.type-filter,
+.pos-filter,
+.cefr-filter,
+.genre-filter,
+.game-english-filter {
+  align-items: center;
+  background-color: #dbe3c9;
+  border-radius: 15px;
+  box-sizing: border-box;
+  display: flex;
+  height: 42px;
+  flex: 1;
+  padding: 10px 15px;
+  min-width: 180px;
+}
+
+.type-filter i,
+.pos-filter i,
+.cefr-filter i,
+.genre-filter i,
+.game-english-filter i {
+  color: #2e2e2e;
+  font-size: 18px;
+  pointer-events: none;
+  right: 15px;
+  z-index: 0; /* Ensures the icon is underneath the select element */
+}
+
+.search-btn {
+  align-items: center;
+  background-color: #dbe3c9;
+  border: none;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 15px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  height: 100%;
+  width: 100% !important;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.search-btn:hover {
+  background-color: #4a99ff;
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.search-btn i {
+  color: #2e2e2e;
+  font-size: 16px;
+  margin: 0;
+}
+
+.search-and-random-wrapper {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.search-bar-wrapper {
+  border: 1px solid #d1d1d1;
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  flex-grow: 1;
+  min-width: 320px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+#search-container {
+  display: flex;
+  background-color: white;
+  border-bottom: 1px solid #ccc;
+  font-family: "Noto Sans", sans-serif;
+  margin: auto;
+  padding: 10px 0;
+  position: sticky;
+  text-align: center;
+  top: 0;
+  z-index: 100;
+}
+
+#search-container-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto;
+}
+
+.selectors-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.sentence-btn {
+  background-color: #ffffff; /* Subtle, lighter background */
+  border: none !important; /* Thin maroon border */
+  border-radius: 9px; /* Slightly rounded corners */
+  box-shadow: 0 4px 8px rgba(135, 135, 135, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #5a1a1a; /* Subtle maroon text */
+  cursor: pointer; /* Pointer on hover */
+  display: block; /* Block-level element to allow centering */
+  font-family: "Noto Sans", sans-serif; /* Clean, modern font */
+  font-size: 14px; /* Smaller font size for subtlety */
+  font-weight: 500; /* Slightly bolder text */
+  height: 50px;
+  margin: 0 auto; /* Centering with smaller vertical margins */
+  margin-top: 12.5px;
+  margin-bottom: 12.5px;
+  padding: 8px 14px; /* Larger padding for a more clickable feel */
+  text-transform: uppercase; /* Uppercase for consistency */
+  letter-spacing: 0.03em; /* Slight letter spacing */
+  width: 100%;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+}
+
+.sentence-btn:hover {
+  background-color: #f7f7f7; /* Slightly darker background on hover */
+  box-shadow: 0 6px 12px rgba(135, 135, 135, 0.3), 0 3px 6px rgba(0, 0, 0, 0.15); /* Slightly larger shadow */
+}
+
+.sentence-cefr-label {
+  padding: 3px 7px; /* Smaller padding */
+  font-size: 12px; /* Smaller font size */
+  color: #4f4f4f;
+  display: inline-block; /* Ensure the label takes up only the space it needs */
+  font-weight: bold;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-family: "Noto Sans", sans-serif;
+  white-space: nowrap; /* Prevent text wrapping */
+  user-select: none; /* Prevent text selection */
+  text-align: center;
+  min-width: 15px;
+}
+
+.sentence-cefr-label.easy {
+  background-color: #c7e3b6; /* Green for 'A1, A2' */
+}
+
+.sentence-cefr-label.medium {
+  background-color: #f2d96b; /* Yellow for 'B1, B2' */
+}
+
+.sentence-cefr-label.hard {
+  background-color: #e9a895; /* Red for 'C' */
+}
+
+.sentence-box-english,
+.sentence-box-norwegian {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 10px 15px 10px 15px;
+  width: 100%;
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+}
+
+.sentence-box-english p,
+.sentence-box-norwegian p {
+  margin: 5px 0 5px 0;
+}
+
+.sentence-box-english {
+  color: gray;
+  border-radius: 0 12px 12px 0; /* Rounded corners on bottom */
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sentence-box-norwegian {
+  border-radius: 12px 0 0 12px; /* Rounded corners on top */
+  box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sentence-box-norwegian-hidden {
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sentence-container {
+  display: flex;
+  gap: 3px; /* Adds space between the boxes */
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: stretch !important; /* Horizontally align content (CEFR and sentence) */
+}
+
+.sentence-content {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Adds space between the Norwegian and English sentences */
+  width: 100%;
+}
+
+.sentence-pair {
+  display: flex;
+  align-items: flex-start; /* Align tops of the two sentences */
+  gap: 5px;
+  width: 100%;
+  justify-content: center;
+}
+
+.sentence-pair p {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.single-result-definition {
+  margin-bottom: 0px;
+}
+
+#site-title {
+  color: #2e2e2e;
+  cursor: pointer;
+  margin: -5px 0px 10px 0px;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+#site-title:hover {
+  color: #4d5c94; /* Choose one of the suggested colors here */
+}
+
+#site-subtitle {
+  margin: 0px;
+}
+
+/* Ensure sticky header CEFR label matches list page */
+.sticky-cefr-label {
+  align-items: center; /* Center vertically */
+  border: 1px solid #ddd; /* Lighter gray for a subtler border */
+  border-radius: 4px;
+  box-sizing: border-box; /* Includes padding and border in the width calculation */
+  color: #4f4f4f;
+  display: flex; /* Add Flexbox */
+  flex: 1; /* Allows the children to take up equal and maximum space */
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  justify-content: center; /* Center horizontally */
+  max-width: 100%; /* Ensures they don't exceed the parent container */
+  min-width: 25%;
+  padding: 3px 7px;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Flex container for genre and CEFR */
+.sticky-detail-container {
+  display: flex;
+  flex-direction: column; /* Stack rows vertically */
+  gap: 5px; /* Space between rows */
+}
+
+/* Ensure sticky header genre matches list page */
+.sticky-genre {
+  align-items: center; /* Center vertically */
+  align-self: flex-start;
+  background-color: #f0f0f0; /* Light background for genre badge */
+  border: 1px solid #ddd; /* Lighter gray for a subtler border */
+  border-radius: 4px;
+  box-sizing: border-box; /* Includes padding and border in the width calculation */
+  color: #4f4f4f;
+  display: flex; /* Add Flexbox */
+  flex: 1; /* Allows the children to take up equal and maximum space */
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12px !important;
+  font-weight: bold;
+  height: 30px;
+  justify-content: center; /* Center horizontally */
+  text-align: center;
+  text-transform: uppercase;
+  max-width: 100%; /* Ensures they don't exceed the parent container */
+  min-width: 25%;
+  padding: 3px 7px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.sticky-genre i {
+  color: #333; /* Icon color */
+}
+
+#sticky-header {
+  align-items: center;
+  background-color: white;
+  border-top: 1px solid #ccc; /* Subtle gray border at the top */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: black;
+  display: flex;
+  gap: 1.5em;
+  position: sticky;
+  justify-content: space-between;
+  min-height: 60px; /* Ensure enough height for wrapping content */
+  overflow: hidden; /* Prevent content from overflowing */
+  padding: 0.5em 1.5em;
+  top: 0;
+  z-index: 1000; /* Ensure it stays on top */
+}
+
+.sticky-header-content {
+  align-items: center;
+  display: flex;
+  justify-content: center; /* Center titles horizontally */
+  position: relative;
+  width: 100%; /* Allow flex to distribute space evenly */
+}
+
+.sticky-row {
+  display: flex;
+  gap: 5px; /* Space between genre and CEFR */
+}
+
+.sticky-title-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Adjust to desired spacing */
+  margin-bottom: 0.75em !important;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center; /* Center the text inside */
+  white-space: normal; /* Allow text wrapping */
+  word-break: break-word; /* Break long words if necessary */
+}
+
+.sticky-title-japanese {
+  color: #3c3c3c;
+  font-size: 1.5em;
+  font-family: "Noto Serif", serif; /* Adjust to the appropriate English font */
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin: 0 auto;
+  text-transform: uppercase;
+}
+
+.sticky-title-english {
+  color: #666;
+  font-family: "Noto Sans", sans;
+  font-size: 1em;
+  font-weight: 400;
+  letter-spacing: 0.75px;
+  line-height: 1.2; /* Adjust line height */
+  margin: 0 auto;
+  text-transform: uppercase;
+}
+
+#stories {
+  align-items: start; /* Ensures consistent alignment */
+  column-gap: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.stories-back-btn {
+  color: #2e2e2e;
+  margin-left: 20px;
+  margin-right: 190px;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.stories-back-btn:hover {
+  color: #b32424; /* Slightly lighter shade for a subtle effect */
+}
+
+.stories-english-btn {
+  background-color: #f0f0f0; /* Subtle, lighter background */
+  border: 1px solid #a0a0a0; /* Light gray border */
+  border-radius: 6px; /* Slightly rounded corners */
+  color: #4a4a4a; /* Soft gray text */
+  cursor: pointer; /* Pointer on hover */
+  display: block; /* Block-level element to allow centering */
+  padding: 6px 12px; /* Smaller padding for a more compact feel */
+  font-family: "Noto Sans", sans-serif; /* Clean, modern font */
+  font-size: 12px; /* Smaller font size for subtlety */
+  font-weight: 400; /* Normal font weight for less boldness */
+  text-transform: uppercase; /* Uppercase for consistency */
+  letter-spacing: 0.03em; /* Slight letter spacing */
+  margin: 0 auto; /* Centering with smaller vertical margins */
+  min-width: 100px;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+  touch-action: manipulation; /* Helps reduce delay on mobile */
+  box-shadow: 0 4px 8px rgba(135, 135, 135, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.stories-english-btn:hover {
+  background-color: #e8e8e8; /* Slightly darker on hover */
+}
+
+.stories-english-btn .mobile-text {
+  display: none;
+}
+
+.stories-english-btn .desktop-text {
+  display: inline;
+}
+
+.stories-content {
+  display: flex;
+  flex-direction: column; /* Stack the title and genre vertically */
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.stories-content h2 {
+  font-size: 1.5rem;
+  margin: 0; /* Remove extra margins around the title */
+}
+
+.stories-detail-container {
+  align-items: center; /* Align CEFR and genre vertically */
+  display: flex;
+  gap: 5px; /* Add spacing between genre and CEFR */
+  margin-left: 10px;
+}
+
+.stories-genre {
+  align-self: flex-start;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  color: #4f4f4f;
+  padding: 3px 7px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: nowrap;
+  width: 18px;
+}
+
+.stories-genre i {
+  color: #333;
+}
+
+.stories-list {
+  padding-inline-start: 0px;
+}
+
+.stories-list-item {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 0 0 15px 0;
+  display: flex;
+  justify-content: space-between; /* Space between title/genre and CEFR */
+  align-items: center; /* Vertically center the items */
+  cursor: pointer;
+  padding: 7.5px 12.5px;
+  min-height: 60px;
+  transition: background-color 0.2s ease, border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+}
+
+.stories-list-item:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Lighter shadow for hover */
+  transform: scale(1.01);
+}
+
+.stories-list-item p {
+  color: #333;
+  font-size: 20px;
+  line-height: 1.6;
+  margin: 10px 0 10px 0;
+}
+
+.stories-list-item h2 {
+  color: #2e2e2e !important;
+  font-family: "Noto Sans", sans-serif !important;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.stories-rating {
+  background-color: #ffffff; /* Subtle, lighter background */
+  margin: 0 auto;
+  text-align: center;
+  border-radius: 6px; /* Slightly rounded corners */
+  box-shadow: 0 4px 8px rgba(135, 135, 135, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 8px 14px; /* Larger padding for a more clickable feel */
+  font-family: "Noto Sans", sans-serif; /* Clean, modern font */
+  font-size: 12px; /* Smaller font size for subtlety */
+  font-weight: 500; /* Slightly bolder text */
+  text-transform: uppercase; /* Uppercase for consistency */
+  letter-spacing: 0.05em; /* Slight letter spacing */
+  width: fit-content;
+}
+
+.stories-rating p {
+  margin: 5px 0px 5px 0px;
+}
+
+.stories-rating .stories-star-rating .star {
+  font-size: 24px; /* Size of stars */
+  cursor: pointer; /* Show pointer cursor */
+  color: gray; /* Default color for stars */
+  padding: 0 5px; /* Space between stars */
+  transition: transform 0.2s, color 0.2s; /* Animation for hover effect */
+}
+
+.stories-rating .stories-star-rating .star:hover,
+.stories-rating .stories-star-rating .star.clicked {
+  color: gold; /* Gold color for hovered/clicked stars */
+}
+
+.stories-rating .stories-star-rating .star:hover ~ .star {
+  color: gray; /* Keep remaining stars gray on hover */
+}
+
+.stories-result-header {
+  align-content: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  margin-bottom: 10px;
+  justify-content: center; /* Center the title */
+  align-items: center;
+  position: relative; /* Set relative position for positioning the icon */
+}
+
+.stories-result-header h2 {
+  margin: 0; /* Reset margin for the title */
+  color: #2e2e2e;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1.3em;
+  font-weight: 400;
+  white-space: normal; /* Allow the text to wrap into multiple lines */
+  overflow-wrap: break-word; /* Ensure the text breaks into a new line if needed */
+  text-align: center; /* Center align the header text */
+}
+
+.stories-result-header i {
+  color: #2e2e2e;
+  position: absolute;
+  left: 15px; /* Position the icon on the far left */
+  cursor: pointer;
+  font-size: 1.3rem; /* Adjust the size as needed */
+  line-height: inherit;
+}
+
+.stories-rightward-div {
+  display: flex;
+  gap: 10px; /* Adds space between the elements */
+  align-items: center;
+  margin-right: 20px;
+}
+
+.stories-sentence-box-english,
+.stories-sentence-box-norwegian {
+  background-color: #ffffff;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  padding: 10px 15px 10px 15px;
+  width: 100%;
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+}
+
+.stories-sentence-box-english p,
+.stories-sentence-box-norwegian p {
+  margin: 5px 0 5px 0;
+}
+
+.stories-sentence-box-english {
+  color: gray;
+  border-radius: 0 12px 12px 0; /* Rounded corners on bottom */
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stories-sentence-box-norwegian {
+  border-radius: 12px 0 0 12px; /* Rounded corners on top */
+  box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stories-subtitle {
+  display: -webkit-box; /* Creates a block-level flex container */
+  font-family: "Noto Sans", sans;
+  font-size: 12px !important;
+  font-weight: 350;
+  overflow: hidden; /* Hides the overflowing text */
+  color: #666 !important;
+  letter-spacing: 0.25px;
+  margin: 0 !important;
+  text-transform: uppercase;
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 1; /* Limits the text to 1 line */
+}
+
+.stories-story-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* Optional: Adds space between the side and middle divs */
+  position: relative;
+}
+
+.stories-story-header h2 {
+  margin: 0; /* Reset margin for the title */
+  color: #2e2e2e;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 1.3em;
+  font-weight: 400;
+  white-space: normal; /* Allow the text to wrap into multiple lines */
+  overflow-wrap: break-word; /* Ensure the text breaks into a new line if needed */
+  text-align: center; /* Center align the header text */
+}
+
+.stories-title-container {
+  align-items: center;
+  flex-grow: 1; /* Keeps the middle div centered */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  row-gap: 2.5px;
+}
+
+/* Style for the story content */
+#story-content {
+  background: #fff; /* Same white background as story list items */
+  border: 1px solid #ddd; /* Light border for separation */
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
+  font-family: "Noto Serif", serif;
+  margin: 1em 0;
+  padding: 1em 5em 1em 5em;
+}
+
+#story-content > div {
+  margin-bottom: 20px; /* Margin for each sentence couplet */
+}
+
+.story-image {
+  border-radius: 10px; /* Rounds the corners for a soft photograph effect */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2), 0 1px 2px rgba(0, 0, 0, 0.15); /* Adjusted vertical spread and blur */
+  display: block; /* Makes the image behave like a block element */
+  margin: 0 auto; /* Centers the image horizontally */
+  margin-bottom: 2em;
+  max-height: 250px;
+  max-width: 100%; /* Ensures the image is responsive */
+}
+
+/* Story list and story content */
+#story-list,
+#story-viewer {
+  max-width: 800px; /* Limit the width */
+  margin: 0 auto; /* Center align */
+}
+
+.spinner {
+  color: #2e2e2e;
+  display: none;
+  font-size: 20px;
+  margin: 20px;
+  text-align: center;
+}
+
+.spinner::before {
+  animation: spin 0.8s linear infinite;
+  border: 3px solid rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  border-top-color: #2e2e2e;
+  content: "";
+  display: inline-block;
+  height: 40px;
+  margin-bottom: 10px;
+  width: 40px;
+}
+
+#toggle-kanji-btn {
+  margin-top: 5px;
+}
+
+/* Gray out both the select text and the arrow when disabled */
+.cefr-filter.disabled select,
+.type-filter.disabled select,
+.pos-filter.disabled select,
+.genre-filter.disabled select,
+.game-english-filter.disabled select {
+  color: #ccc;
+  cursor: not-allowed;
+}
+
+.cefr-filter.disabled i,
+.type-filter.disabled i,
+.pos-filter.disabled i,
+.genre-filter.disabled i,
+.game-english-filter.disabled i {
+  color: #ccc; /* Gray out the arrow */
+  pointer-events: none; /* Prevent interaction with the arrow */
+}
+
+.type-filter select,
+.pos-filter select,
+.cefr-filter select,
+.genre-filter select,
+.game-english-filter select {
+  appearance: none;
+  background-color: inherit;
+  border: none;
+  color: #2e2e2e;
+  cursor: pointer;
+  font-family: "Noto Sans", sans-serif;
+  padding-right: 15px; /* Reduce padding to show more text */
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  height: 100%; /* Extend the clickable area vertically */
+  min-width: fit-content;
+  width: 100%;
+  text-overflow: ellipsis; /* Add ellipsis for long words */
+}
+
+.word-gender {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  line-height: 1.2;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  flex-direction: column;
+  hyphens: auto;
+}
+
+.word-gender .gender {
+  color: #2e2e2e;
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.word-text-block {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 1024px) {
+  #back-button,
+  #speed-btn,
+  #toggle-english-btn,
+  #toggle-kanji-btn {
+    font-size: 10px;
+    min-width: 80px;
+    padding: 0.5em;
+  }
+
+  .definition {
+    margin-bottom: 10px;
+    padding: 20px;
+  }
+
+  .english,
+  .etymology,
+  .pronunciation {
+    line-height: 1.4 !important;
+  }
+
+  footer,
+  header {
+    width: 100%; /* Ensure both footer and header are the same width */
+    padding: 10px 20px; /* Add consistent padding */
+    box-sizing: border-box; /* Ensure padding is included in the element's total width */
+  }
+
+  footer p {
+    font-size: 11px !important;
+    margin: 0;
+  }
+
+  .random-btn {
+    width: 20% !important;
+  }
+
+  /* Example Sentences */
+  .game-cefr-spacer p {
+    font-size: 0.7em !important;
+  }
+
+  .game-grid {
+    grid-gap: 10px; /* Slightly increase space between the cards */
+  }
+
+  .game-cleared-practice-banner,
+  .game-congratulations-banner,
+  .game-fallback-banner,
+  .game-lock-banner,
+  .game-streak-banner {
+    font-size: 0.9em !important; /* Slightly smaller font size for mobile */
+  }
+
+  .game-translation-card {
+    font-size: 1.1em !important; /* Slightly smaller font size for mobile */
+  }
+
+  /* Stats Card Styling */
+  .game-stats-content {
+    margin: 0px 0px 5px 0px; /* Center horizontally */
+  }
+
+  .game-word-card {
+    margin-bottom: 10px !important;
+  }
+
+  h1 {
+    font-size: 10vw !important;
+    margin-bottom: 10px;
+    margin-top: -5px;
+    white-space: nowrap;
+  }
+
+  h2 {
+    font-size: 7vw;
+    hyphens: auto;
+    overflow-wrap: break-word;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  header {
+    padding: 10px 15px;
+  }
+
+  header p {
+    font-size: 3vw !important;
+    margin: -10px 0 0px 0 !important;
+  }
+
+  input[type="text"] {
+    padding: 10px 10px;
+  }
+
+  label[for="search-bar"] {
+    display: none;
+  }
+
+  /* Adjust landing card width for mobile */
+  #landing-card {
+    width: 85%; /* Ensure it takes up more space on mobile */
+    margin: 5px auto; /* Matches the margin of definition cards */
+    padding: 20px; /* Add more padding for mobile readability */
+  }
+
+  #landing-card h2 {
+    font-size: 26px !important;
+  }
+
+  /* Adjust landing card heading (h3) for mobile */
+  #landing-card h3 {
+    font-size: 14px; /* Reduce font size to fit smaller screens */
+  }
+
+  /* Adjust landing card heading (h4) for mobile */
+  #landing-card h4 {
+    font-size: 12px; /* Reduce font size to fit smaller screens */
+  }
+
+  /* Adjust landing card paragraph text for mobile */
+  #landing-card p {
+    font-size: 10px; /* Reduce paragraph font size */
+  }
+
+  .landing-card-btn {
+    font-size: 10px; /* Smaller font size for subtlety */
+    padding: 6px 8px;
+  }
+
+  .linkedin-btn {
+    font-size: 12px; /* Slightly smaller font size */
+    padding: 0px 10px 0px 10px !important; /* Adjust padding to reduce the button's height */
+    border-radius: 4px;
+  }
+
+  .linkedin-btn::after {
+    content: "Connect"; /* Set the text to 'Connect' on mobile */
+  }
+
+  /* Hide the original text */
+  .linkedin-btn span {
+    display: none;
+  }
+
+  .landing-card-button-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .linkedin-icon {
+    width: 14px; /* Adjust icon size to match the button */
+  }
+
+  .links {
+    display: flex;
+    justify-content: center;
+    margin: 5px 0 5px 0;
+    gap: 8px; /* Ensure proper space between buttons */
+    padding: 0 20px; /* Add padding to create space between the buttons and the screen edges */
+  }
+
+  /* The whole box */
+  .multiple-results-definition {
+    padding: 15px 20px 15px 20px;
+  }
+
+  /* The word, gender and definition */
+  .multiple-results-definition-header {
+    display: flex;
+    flex-direction: row; /* Horizontally aligns the word and definition */
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* The definition */
+  .multiple-results-definition-text {
+    flex: 1;
+    font-size: 14px !important;
+    margin-left: 20px; /* Space between the gender/word and definition */
+    hyphens: auto;
+    overflow-wrap: break-word;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  /* The word and gender */
+  .multiple-results-word-gender {
+    display: flex;
+    font-size: 18px !important;
+    flex-direction: column; /* Ensures word and gender are stacked vertically */
+    margin: 0 20px 0 0 !important;
+    line-height: 1.2 !important;
+    justify-content: center; /* Vertically center the word and gender within their container */
+  }
+
+  /* Adjust pronunciation table for mobile */
+  .pronunciation-table,
+  .pronunciation-table tbody,
+  .pronunciation-table tr,
+  .pronunciation-table td {
+    display: block;
+    font-size: 11px; /* Reduce font size for mobile */
+  }
+
+  .pronunciation-table tr {
+    margin-bottom: 12px;
+    border-bottom: 1px solid #dddddd;
+  }
+
+  .pronunciation-table td {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    text-align: left;
+    border-bottom: none;
+    font-size: 12px;
+  }
+
+  .pronunciation-table td::before {
+    content: attr(data-label);
+    font-weight: bold;
+    flex-basis: 40%; /* Adjusts width for label part */
+    text-align: left; /* Ensure labels are left-aligned */
+  }
+
+  .pronunciation-table th,
+  .pronunciation-table thead {
+    display: none;
+  }
+
+  .pronunciation-table td:nth-child(3),
+  .pronunciation-table td:last-child {
+    text-align: right; /* Ensures the last column is always right-aligned */
+    overflow-wrap: break-word; /* Breaks long words if necessary */
+  }
+
+  .result-header {
+    padding: 20px;
+  }
+
+  #results-container {
+    margin: 5px auto;
+    width: 97.5%;
+  }
+
+  .search-and-random-wrapper {
+    align-items: center; /* Vertically align items */
+    box-sizing: border-box; /* Include padding and border within width */
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    width: 100%;
+  }
+
+  #search-bar {
+    flex-grow: 1;
+    flex-basis: 70%; /* Use percentage for flexibility */
+    min-width: 10px; /* Minimum width to avoid excessive shrinking */
+  }
+
+  .search-bar-wrapper {
+    min-width: 0px;
+  }
+
+  .search-bar-wrapper label {
+    font-size: 12px;
+  }
+
+  .search-btn {
+    padding: 8px;
+    min-width: 60px !important;
+    max-width: 60px !important;
+  }
+
+  .search-btn i {
+    text-align: center;
+    font-size: 16px;
+  }
+
+  .sentence-cefr-label {
+    padding: 2px 4px; /* Smaller padding */
+    font-size: 8px; /* Smaller font size */
+    min-width: 10px;
+  }
+
+  #search-container {
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 10px 5px 10px 5px;
+  }
+
+  #search-container-inner {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 100%;
+  }
+
+  #search-container-inner.word-game-active {
+    gap: 0;
+  }
+
+  .selectors-wrapper {
+    box-sizing: border-box !important;
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .sentence-box-english,
+  .sentence-box-norwegian {
+    font-size: 15px;
+    margin-bottom: 2px !important;
+    width: auto;
+  }
+
+  .sentence-box-english {
+    border-radius: 0 0 12px 12px; /* Rounded corners on bottom */
+    padding: 5px 10px 5px 38px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .sentence-box-norwegian {
+    border-radius: 12px 12px 0 0; /* Rounded corners on top */
+    padding: 5px 10px 5px 10px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Norwegian box styling when English is hidden */
+  .sentence-box-norwegian-hidden {
+    border-radius: 12px; /* Apply full rounding when only the Norwegian box is visible */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .sentence-btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+
+  .sentence-container {
+    display: block; /* Stack sentence boxes on top of each other */
+    gap: 10px; /* Adds space between the boxes */
+    margin-bottom: 10px;
+  }
+
+  .sentence-content {
+    gap: 10px !important; /* Adds space between the Norwegian and English sentences */
+  }
+  .sticky-cefr-label {
+    height: 25px !important;
+  }
+  .sticky-genre {
+    height: 25px;
+  }
+  #sticky-header {
+    border: none;
+    padding: 0.25em 0.5em;
+    gap: 0.5em;
+  }
+  .sticky-title-container {
+    gap: 5px; /* Adjust to desired spacing */
+  }
+  .sticky-title-japanese {
+    font-size: 1.3em;
+  }
+  .sticky-title-english {
+    font-size: 0.8em;
+  }
+  #stories {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  .stories-back-btn {
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .stories-english-btn {
+    min-width: 40px;
+  }
+
+  .stories-english-btn .mobile-text {
+    display: inline;
+  }
+
+  .stories-english-btn .desktop-text {
+    display: none;
+  }
+
+  .stories-list-item {
+    margin-bottom: 10px;
+  }
+
+  .stories-result-header {
+    padding: 20px;
+  }
+
+  .stories-rightward-div {
+    align-items: center;
+    flex-direction: column; /* Stack elements vertically */
+    gap: 0px;
+    margin-right: 0px;
+  }
+
+  .stories-sentence-box-english,
+  .stories-sentence-box-norwegian {
+    font-size: 15px;
+    margin-bottom: 2px !important;
+    width: auto;
+  }
+
+  .stories-sentence-box-english {
+    border-radius: 0 0 12px 12px; /* Rounded corners on bottom */
+    padding: 5px 10px 5px 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .stories-sentence-box-norwegian {
+    border-radius: 12px 12px 0 0; /* Rounded corners on top */
+    padding: 5px 10px 5px 10px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .stories-story-header h2 {
+    font-size: 16px;
+  }
+
+  .stories-subtitle {
+    font-size: 14px !important;
+  }
+
+  .stories-title-container {
+    row-gap: 0px;
+  }
+
+  #story-content {
+    margin: 0.75em 0;
+    padding: 1em 1em 1em 1em;
+  }
+  #story-content > div {
+    margin-bottom: 15px; /* Margin for each sentence couplet */
+  }
+  .story-image {
+    margin-bottom: 1.25em;
+  }
+
+  .type-filter,
+  .pos-filter,
+  .cefr-filter,
+  .genre-filter,
+  .game-english-filter {
+    box-sizing: border-box !important;
+    background-color: #dbe3c9; /* Consistent background for all filters */
+    border-radius: 15px;
+    padding: 5px 5px 5px 5px;
+    min-width: 0px;
+  }
+
+  .type-filter,
+  .pos-filter,
+  .genre-filter,
+  .game-english-filter,
+  .random-btn,
+  .search-bar-wrapper {
+    box-sizing: border-box !important;
+    width: 100%;
+  }
+
+  .type-filter i,
+  .pos-filter i,
+  .cefr-filter i,
+  .genre-filter i,
+  .game-english-filter i {
+    font-size: 12px; /* Make the arrow smaller */
+    pointer-events: none; /* Ensure the icon doesn't block clicks */
+  }
+
+  .type-filter select,
+  .pos-filter select,
+  .cefr-filter select,
+  .genre-filter select,
+  .game-english-filter select {
+    box-sizing: border-box !important;
+    cursor: pointer;
+    font-size: 11px; /* Further reduce the font size for very small screens */
+    font-weight: 500;
+    text-transform: uppercase;
+    padding-right: 0px;
+    min-width: 0px;
+    letter-spacing: 0;
+    text-overflow: unset;
+  }
+
+  .word-gender {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    hyphens: auto;
+  }
+
+  .word-gender .gender {
+    margin-top: 10px;
+  }
+}
