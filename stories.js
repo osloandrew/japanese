@@ -21,6 +21,7 @@ const genreIcons = {
   history: '<i class="fas fa-landmark"></i>', // History genre icon
   horror: '<i class="fas fa-ghost"></i>', // Horror genre icon
   language: '<i class="fas fa-language"></i>', // Language genre icon
+  "manga and anime": '<i class="fas fa-film"></i>',
   monologue: '<i class="fas fa-microphone-alt"></i>', // Monologue genre icon
   music: '<i class="fas fa-music"></i>', // Music genre icon
   mystery: '<i class="fas fa-search"></i>', // Mystery genre icon
@@ -40,9 +41,9 @@ const genreIcons = {
   travel: '<i class="fas fa-plane"></i>', // Travel genre icon
 };
 
-const CSV_URL = "spanishStories.csv";
-const STORY_CACHE_KEY = "storyDataEs";
-const STORY_CACHE_TIME_KEY = "storyDataTimestampEs";
+const CSV_URL = "japaneseStories.csv";
+const STORY_CACHE_KEY = "storyDataJa";
+const STORY_CACHE_TIME_KEY = "storyDataTimestampJa";
 
 async function fetchAndLoadStoryData() {
   showSpinner();
@@ -62,7 +63,7 @@ async function fetchAndLoadStoryData() {
     }).data;
     storyResults = parsed.map((entry) => ({
       ...entry,
-      titleSpanish: (entry.titleSpanish || "").trim(),
+      titleJapanese: (entry.titleJapanese || "").trim(),
     }));
 
     // 3) Optional: store for offline fallback (not used on next run)
@@ -85,7 +86,7 @@ function parseStoryCSVData(data) {
   const parsed = Papa.parse(data, { header: true, skipEmptyLines: true }).data;
   storyResults = parsed.map((entry) => ({
     ...entry,
-    titleSpanish: (entry.titleSpanish || "").trim(),
+    titleJapanese: (entry.titleJapanese || "").trim(),
   }));
 }
 
@@ -127,7 +128,7 @@ async function displayStoryList(filteredStories = storyResults) {
   clearContainer(); // Clear previous results
 
   // Reset the page title and URL to the main list view
-  document.title = "Stories - Spanish Dictionary";
+  document.title = "Stories - Japanese Dictionary";
   history.replaceState(
     {},
     "",
@@ -160,16 +161,16 @@ async function displayStoryList(filteredStories = storyResults) {
     const cefrMatch = selectedCEFR
       ? story.CEFR && story.CEFR.trim().toUpperCase() === selectedCEFR
       : true;
-    const hasSpanish = story.spanish && story.spanish.trim() !== "";
+    const hasJapanese = story.japanese && story.japanese.trim() !== "";
     // NEW: title search across ES + EN titles, like JP
     const matchesSearch =
       !searchText ||
-      (story.titleSpanish &&
-        story.titleSpanish.toLowerCase().includes(searchText)) ||
+      (story.titleJapanese &&
+        story.titleJapanese.toLowerCase().includes(searchText)) ||
       (story.titleEnglish &&
         story.titleEnglish.toLowerCase().includes(searchText));
 
-    return genreMatch && cefrMatch && hasSpanish && matchesSearch;
+    return genreMatch && cefrMatch && hasJapanese && matchesSearch;
   });
 
   // Shuffle the filtered stories using Fisher-Yates algorithm
@@ -202,11 +203,11 @@ async function displayStoryList(filteredStories = storyResults) {
 
     const es = document.createElement("div");
     es.classList.add("japanese-title"); // reuse existing class name to avoid CSS churn
-    es.textContent = story.titleSpanish;
+    es.textContent = story.titleJapanese;
 
     titleContainer.appendChild(es);
 
-    if (story.titleSpanish !== story.titleEnglish) {
+    if (story.titleJapanese !== story.titleEnglish) {
       const en = document.createElement("div");
       en.classList.add("english-title", "stories-subtitle");
       en.textContent = story.titleEnglish || "";
@@ -233,7 +234,7 @@ async function displayStoryList(filteredStories = storyResults) {
     li.appendChild(detail);
 
     // click → open reader (unchanged behavior)
-    li.addEventListener("click", () => displayStory(story.titleSpanish));
+    li.addEventListener("click", () => displayStory(story.titleJapanese));
 
     storyList.appendChild(li);
   });
@@ -251,7 +252,7 @@ async function displayStoryList(filteredStories = storyResults) {
   hideSpinner();
 }
 
-async function displayStory(titleSpanish) {
+async function displayStory(titleJapanese) {
   document.documentElement.classList.add("reading");
   showSpinner(); // Show spinner at the start of story loading
   const searchContainer = document.getElementById("search-container");
@@ -259,17 +260,17 @@ async function displayStory(titleSpanish) {
     "search-container-inner"
   );
   const selectedStory = storyResults.find(
-    (story) => story.titleSpanish === titleSpanish
+    (story) => story.titleJapanese === titleJapanese
   );
 
   if (!selectedStory) {
-    console.error(`No story found with the title: ${titleSpanish}`);
+    console.error(`No story found with the title: ${titleJapanese}`);
     return;
   }
 
-  document.title = selectedStory.titleSpanish + " - Spanish Dictionary";
+  document.title = selectedStory.titleJapanese + " - Japanese Dictionary";
 
-  updateURL(null, "story", null, titleSpanish); // Update URL with story parameter
+  updateURL(null, "story", null, titleJapanese); // Update URL with story parameter
 
   clearContainer();
 
@@ -448,15 +449,15 @@ async function displayStory(titleSpanish) {
       contentHTML = audioHTML + contentHTML;
     }
 
-    for (let i = 0; i < spanishSentences.length; i++) {
-      const spanishSentence = spanishSentences[i].trim();
+    for (let i = 0; i < japaneseSentences.length; i++) {
+      const japaneseSentence = japaneseSentences[i].trim();
       const englishSentence = englishSentences[i]
         ? englishSentences[i].trim()
         : "";
 
       contentHTML += `
     <div class="couplet">
-      <div class="japanese-sentence">${spanishSentence}</div>
+      <div class="japanese-sentence">${japaneseSentence}</div>
       <div class="english-sentence">${englishSentence}</div>
     </div>
   `;
@@ -472,9 +473,9 @@ async function displayStory(titleSpanish) {
       const titleNode = document.createElement("div");
       titleNode.className = "sticky-title-container";
       titleNode.innerHTML = `
-  <h2 class="sticky-title-japanese">${selectedStory.titleSpanish}</h2>
+  <h2 class="sticky-title-japanese">${selectedStory.titleJapanese}</h2>
   ${
-    selectedStory.titleSpanish !== selectedStory.titleEnglish
+    selectedStory.titleJapanese !== selectedStory.titleEnglish
       ? `<p class="sticky-title-english">${selectedStory.titleEnglish}</p>`
       : ""
   }
@@ -493,14 +494,23 @@ async function displayStory(titleSpanish) {
   };
 
   // Process story text into sentences
-  const standardizedSpanish = selectedStory.spanish.replace(/[“”«»]/g, '"');
+  const standardizedJapanese = selectedStory.japanese.replace(/[“”«»]/g, '"');
+  const standardizedHiragana = (selectedStory.hiragana || "").replace(
+    /[“”«»]/g,
+    '"'
+  );
   const standardizedEnglish = selectedStory.english.replace(/[“”«»]/g, '"');
-  const sentenceRegex =
+  const englishSentenceEndings =
     /(?:(["]?.+?(?<!\bMr)(?<!\bMrs)(?<!\bMs)(?<!\bDr)(?<!\bProf)(?<!\bJr)(?<!\bSr)(?<!\bSt)(?<!\bMt)[.!?]["]?)(?=\s|$)|(?:\.\.\."))/g;
-  let spanishSentences = standardizedSpanish.match(sentenceRegex) || [
-    standardizedSpanish,
-  ];
-  let englishSentences = standardizedEnglish.match(sentenceRegex) || [
+  const japaneseSentenceEndings = /[^。！？]+[。！？](?:」|』|”|")?/g;
+
+  let japaneseSentences = standardizedJapanese.match(
+    japaneseSentenceEndings
+  ) || [standardizedJapanese];
+  let japaneseSentencesHiragana = standardizedHiragana.match(
+    japaneseSentenceEndings
+  ) || [standardizedHiragana];
+  let englishSentences = standardizedEnglish.match(englishSentenceEndings) || [
     standardizedEnglish,
   ];
 
@@ -526,13 +536,13 @@ async function displayStory(titleSpanish) {
     }, []);
   };
 
-  spanishSentences = combineSentences(spanishSentences);
+  japaneseSentences = combineSentences(japaneseSentences);
   englishSentences = combineSentences(englishSentences, /\basked\b/i);
 
   finalizeContent(false);
 }
 
-// Function to toggle the visibility of English sentences and update Spanish box styles
+// Function to toggle the visibility of English sentences and update Japanese box styles
 function toggleEnglishSentences() {
   const englishEls = document.querySelectorAll(".english-sentence");
   const englishBtn = document.querySelector(".stories-english-btn");
