@@ -849,9 +849,6 @@ async function serveNewWord() {
   }
 
   renderStats();
-  if (questionType !== "cloze") {
-    displayPronunciation(currentWord);
-  }
 }
 
 async function startWordGame() {
@@ -974,22 +971,6 @@ function fetchIncorrectTranslations(gender, correctTranslation, currentCEFR) {
   }
 
   return incorrectTranslations;
-}
-
-function displayPronunciation(word) {
-  const pronunciationContainer = document.querySelector(
-    "#game-banner-placeholder"
-  );
-  if (pronunciationContainer && word.uttale) {
-    const uttaleText = word.uttale.split(",")[0].trim(); // Get the part before the first comma
-    pronunciationContainer.innerHTML = `
-      <p class="game-pronunciation">${uttaleText}</p>
-    `;
-  } else if (pronunciationContainer) {
-    pronunciationContainer.innerHTML = ""; // Clear if no pronunciation
-  } else {
-    console.log("No container found.");
-  }
 }
 
 // ───────────────── 5) UI Builders ─────────────────
@@ -1176,9 +1157,7 @@ function renderGameUI({
     playWordAudio(wordObj);
   } else if (mode === "flashcard") {
     playWordAudio(wordObj); // ✅ restore word audio for flashcards
-    displayPronunciation(wordObj);
   } else {
-    displayPronunciation(wordObj);
   }
 }
 

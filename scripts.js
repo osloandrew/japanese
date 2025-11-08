@@ -15,7 +15,7 @@ const SCHEMA_MAP = {
   engelsk: "English",
   CEFR: "CEFR",
   gender: "gender",
-  uttale: "transliteration",
+  uttale: "pronunciation",
   etymologi: "region",
   definisjon: "definition",
   eksempel: "example",
