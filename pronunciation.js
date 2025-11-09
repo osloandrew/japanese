@@ -1,9 +1,5 @@
 function buildPronAudioUrl(sentenceText) {
-  const base =
-    window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1"
-      ? "" // local dev server
-      : "/japanese"; // GitHub Pages repo name
+  const base = "/japanese"; // works both locally and on GitHub
 
   return `${base}/Resources/Sentences/${sentenceText
     .trim()
@@ -11,11 +7,7 @@ function buildPronAudioUrl(sentenceText) {
 }
 
 function buildWordAudioUrl(wordText) {
-  const base =
-    window.location.hostname === "localhost" ||
-    window.location.hostname === "127.0.0.1"
-      ? "" // local dev server
-      : "/japanese"; // GitHub Pages repo name
+  const base = "/japanese"; // works both locally and on GitHub
 
   return `${base}/Resources/Words/${wordText.trim()}.m4a`;
 }
