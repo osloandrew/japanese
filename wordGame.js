@@ -1200,7 +1200,10 @@ async function renderClozeGameUI(
 
     for (const c of candidates) {
       // Match any inflected or hyphenated form containing the base
-      const re = new RegExp(`\\b${escapeRegExp(c)}\\p{L}*\\b`, "iu");
+      const re = new RegExp(
+        `(?<!\\p{L})${escapeRegExp(c)}\\p{L}*(?!\\p{L})`,
+        "iu"
+      );
       if (re.test(s)) {
         s = s.replace(re, "___");
         break;
