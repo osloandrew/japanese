@@ -1,5 +1,7 @@
 let storyResults = []; // Global variable to store the stories
 let currentSpeed = 1.0; // default speed
+// isEnglishVisible/setEnglishVisible live in englishVisibility.js, shared
+// with scripts.js and pronunciation.js.
 
 // Define an object mapping genres to Font Awesome icons
 const genreIcons = {
@@ -396,7 +398,7 @@ async function displayStory(titleJapanese) {
   document
     .getElementById("toggle-english-btn")
     ?.addEventListener("click", () => {
-      isEnglishVisible = !isEnglishVisible;
+      setEnglishVisible(!isEnglishVisible);
       updateEnglishVisibility();
       const b = document.getElementById("toggle-english-btn");
       if (b) b.textContent = isEnglishVisible ? "Hide English" : "Show English";

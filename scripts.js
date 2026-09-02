@@ -1,6 +1,7 @@
 // Global Variables
 let results = [];
-let isEnglishVisible = true;
+// isEnglishVisible/setEnglishVisible live in englishVisibility.js, shared
+// with stories.js and pronunciation.js.
 let latestMultipleResults = null;
 const resultsContainer = document.getElementById("results-container");
 
@@ -1301,7 +1302,7 @@ function handleTypeChange(type) {
       displayStoryList(); // Display the list of stories if already loaded
     }
   } else if (type === "sentences") {
-    isEnglishVisible = true;
+    setEnglishVisible(true);
     // Show POS and CEFR dropdowns, hide Genre dropdown
     genreFilterContainer.style.display = "none"; // Hide genre dropdown in sentences mode
 
@@ -1340,7 +1341,7 @@ function handleTypeChange(type) {
     startWordGame(); // Call the word game function
   } else if (type === "pronunciation") {
     // Same UI adjustments you already had…
-    isEnglishVisible = true;
+    setEnglishVisible(true);
     genreFilterContainer.style.display = "none";
     searchBarWrapper.style.display = "inline-flex";
     randomBtn.style.display = "block";
@@ -1769,8 +1770,8 @@ function toggleEnglishTranslations(wordId = null) {
       ]
     : document.querySelectorAll(".english-toggle-btn"); // Global if no wordId
 
-  // Toggle visibility based on the global isEnglishVisible state
-  isEnglishVisible = !isEnglishVisible;
+  // Toggle visibility based on the shared isEnglishVisible state
+  setEnglishVisible(!isEnglishVisible);
 
   englishSentenceDivs.forEach((div) => {
     div.classList.toggle("hidden", !isEnglishVisible);
