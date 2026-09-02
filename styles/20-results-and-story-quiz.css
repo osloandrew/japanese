@@ -1,0 +1,2095 @@
+/* The whole box */
+.multiple-results-definition {
+  min-height: 0 !important;
+  padding: 15px 70px 15px 25px;
+  position: relative;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+}
+
+.multiple-results-definition:hover {
+  background-color: var(--color-wash-blue); /* Hover effect same as word card */
+}
+
+/* The word, gender and definition */
+.multiple-results-definition-header {
+  display: flex;
+  flex-direction: row; /* Horizontally aligns the word and definition */
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* The compact header, rather than the full card, is the result activator.
+   Expanded cards contain independent controls, so this keeps keyboard focus
+   and activation out of their interactive hierarchy. */
+.multiple-results-definition-header[role="button"] {
+  cursor: pointer;
+}
+
+.multiple-results-definition-header[role="button"]:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--color-link-muted);
+  outline-offset: 4px;
+}
+
+/* The definition */
+.multiple-results-definition-text {
+  display: -webkit-box;
+  flex: 1;
+  font-size: 18px !important;
+  margin-left: 20px; /* Space between the gender/word and definition */
+  line-clamp: 4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4; /* Number of lines before truncating */
+  width: 50%; /* Definition takes up exactly 60% of the container */
+}
+
+/* One semicolon-separated sense per line, flush with the rest of the
+   definition text — no list indent, so it lines up with definitions that
+   don't get this treatment (single sense, no semicolons). */
+.multiple-results-definition-item {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.multiple-results-definition-item:last-child {
+  margin-bottom: 0;
+}
+
+.multiple-results-definition-item::before {
+  content: "▪ ";
+}
+
+.multiple-results-english {
+  display: -webkit-box;
+  line-clamp: 3;
+  margin: 8px 0px 10px 0px !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3; /* Number of lines before truncating */
+}
+
+.multiple-results-hidden-content {
+  display: none;
+}
+
+/* The gender */
+.multiple-results-gender-class {
+  /* font-size needs !important: .word-gender .gender (a higher-specificity
+     descendant rule) sets 14px and would otherwise win. margin doesn't —
+     it already beats .gender's own margin by source order alone. */
+  font-size: 14px !important;
+  margin: 10px 0px 0px 0px !important;
+}
+
+.multiple-results-my-words-star {
+  position: absolute;
+  right: 20px;
+  top: 15px;
+  z-index: 2;
+}
+
+/* The word and gender */
+.multiple-results-word-gender {
+  display: flex;
+  font-size: 20px !important;
+  flex-direction: column; /* Ensures word and gender are stacked vertically */
+  margin: 0 20px 0 0 !important;
+  line-height: 1.5 !important;
+  width: 50%; /* The word and gender take up 40% of the container */
+  justify-content: center; /* Vertically center the word and gender within their container */
+}
+
+/* Official fallback entries use the same definition-card structure as CSV
+   entries. Their provenance stays intentionally quieter than the word,
+   class, definition, and examples, while remaining available beside both
+   compact and expanded cards. */
+.ordbokene-source {
+  color: var(--color-text-muted);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  grid-column: 1 / -1;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+  margin-top: 14px;
+}
+
+/* These fallback cards have no English/CEFR companion fields, so letting
+   pronunciation and etymology span the existing two-column details grid
+   avoids a narrow empty second column—especially on phones. */
+.single-result-definition[data-source="ordbokene"]
+  .definition-content
+  > .pronunciation,
+.single-result-definition[data-source="ordbokene"]
+  .definition-content
+  > .etymology {
+  grid-column: 1 / -1;
+}
+
+.ordbokene-source-link {
+  color: inherit;
+  font-weight: 500;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.ordbokene-source-link:hover,
+.ordbokene-source-link:focus-visible {
+  color: var(--color-link-muted);
+  text-decoration-color: var(--color-link-muted-underline);
+}
+
+.definition-content .ordbokene-source-link i,
+.ordbokene-source-link i {
+  color: inherit;
+  display: inline-block;
+  font-size: 9px;
+  margin: 0 5px 0 0;
+  text-align: initial;
+  vertical-align: baseline;
+  width: auto;
+}
+
+ol,
+ul {
+  list-style-type: square;
+  margin-block-start: 0px;
+  margin-block-end: 0px;
+  padding-inline-start: 20px;
+}
+
+.result-header {
+  align-content: center;
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  justify-content: center; /* Center the title */
+  align-items: center;
+  position: relative; /* Set relative position for positioning the icon */
+}
+
+.result-header h2 {
+  margin: 0; /* Reset margin for the title */
+  color: var(--color-danger);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 1.3em;
+  font-weight: 400;
+  white-space: normal; /* Allow the text to wrap into multiple lines */
+  overflow-wrap: break-word; /* Ensure the text breaks into a new line if needed */
+  text-align: center; /* Center align the header text */
+}
+
+.result-header i {
+  color: var(--color-danger);
+  position: absolute;
+  left: 15px; /* Position the icon on the far left */
+  cursor: pointer;
+  font-size: 1.3rem; /* Adjust the size as needed */
+  line-height: inherit;
+}
+
+/* Explains what Sentence Search is for, added into the same white
+   .result-header card as its "Sentence Results for ..." h2 — only on the
+   real "apple" results shown on Sentence Search's very first landing (see
+   showSentencesSearchExample, scripts.js). Never added anywhere else:
+   the "give me another one" gesture's own Random Sentence card (a couple
+   hundred lines up, in randomWord()) deliberately does not get this —
+   it's reached only after a deliberate action past the landing page, not
+   the landing page itself. */
+.result-header-subtitle {
+  color: var(--color-text-strong);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 8px 0 0;
+  text-align: center;
+}
+
+#results-container {
+  background-color: rgb(244, 244, 244);
+  margin: 10px auto;
+  max-width: 810px;
+  text-align: left;
+  width: 50%;
+}
+
+/* My Words (body.word-list-mode, see scripts.js's handleTypeChange), My
+   Stats/Settings/About (body.my-stats-mode/body.account-page-mode), and
+   the Word Game intro/summary screens (body.word-game-mode without
+   .word-game-round-active — an actual round keeps the narrower default
+   width above, which suits its single-question layout better) should read
+   as roughly as wide as the landing page's own #landing-card, rather than
+   the narrower default above meant for a word/sentence definition. Scoped
+   to min-width:601px so it doesn't fight the width:97.5% mobile override
+   just below. */
+@media (min-width: 601px) {
+  body.word-list-mode #results-container,
+  body.my-stats-mode #results-container,
+  body.account-page-mode #results-container,
+  body.word-game-mode:not(.word-game-round-active) #results-container {
+    max-width: 920px;
+    width: 90%;
+  }
+}
+
+#right-controls {
+  display: flex;
+  flex-direction: column;
+}
+
+.practice-row {
+  display: flex;
+  gap: 2rem; /* more space between Native and You */
+  align-items: flex-start;
+}
+
+.practice-row-header {
+  letter-spacing: 0.75px;
+  margin: 0px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.native-col,
+.user-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+.native-controls,
+.user-controls {
+  display: flex;
+  gap: 10px;
+}
+
+#waveform,
+#user-waveform {
+  margin-bottom: 0.5rem;
+}
+
+.sentence-audio-icon {
+  /* This icon sits inside .definition-content, whose own `.definition-content
+     i` rule (a higher-specificity element+class selector) sets display,
+     color, font-size, and width for icons generally — those four need
+     !important to win here; the rest of this rule has no such competitor.
+     display is further complicated by Font Awesome's own .fas/.fa-solid
+     base rule also forcing block layout (same conflict as
+     .game-listening-icon), which is the other reason it needs !important. */
+  display: inline-flex !important; /* Flexbox to center the icon */
+  align-items: center; /* Vertical centering */
+  justify-content: center; /* Horizontal centering */
+  padding: 10px; /* Enlarged for a more comfortable tap target */
+  font-size: 14px !important; /* Icon size inside */
+  border-radius: 4px; /* Same rounded corners */
+  background-color: var(
+    --color-surface-subtle
+  ); /* Matches the default CEFR look */
+  color: var(--color-text-strong) !important; /* Icon color */
+  user-select: none; /* Same no-selection behavior */
+  cursor: pointer;
+  width: auto !important; /* Clickable */
+  box-sizing: border-box;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15); /* soft shadow gives depth */
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+.sentence-audio-icon:hover {
+  background-color: var(--color-surface-strong);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* stronger shadow on hover */
+  transform: translateY(-1px); /* tiny lift */
+}
+
+/* role="button" makes this focusable but not a real button, so it gets no
+   default focus ring -- same treatment as
+   .multiple-results-definition-header[role="button"] above. */
+.sentence-audio-icon:focus-visible {
+  outline: 2px solid var(--color-link-muted);
+  outline-offset: 2px;
+}
+
+.sentence-box-practice {
+  align-content: center;
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  justify-content: center; /* Center the title */
+  align-items: center;
+  position: relative; /* Set relative position for positioning the icon */
+}
+
+.sentence-btn {
+  background-color: var(--color-surface); /* Subtle, lighter background */
+  border: none;
+  border-radius: 9px; /* Slightly rounded corners */
+  box-shadow:
+    0 4px 8px rgba(135, 135, 135, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--color-danger-text); /* Subtle maroon text */
+  cursor: pointer; /* Pointer on hover */
+  display: block; /* Block-level element to allow centering */
+  font-family:
+    "Source Sans 3", "Noto Sans", sans-serif; /* Clean, modern font */
+  font-size: 14px; /* Smaller font size for subtlety */
+  font-weight: 500; /* Slightly bolder text */
+  height: 50px;
+  margin: 0 auto; /* Centering with smaller vertical margins */
+  margin-top: 12.5px;
+  margin-bottom: 12.5px;
+  padding: 8px 14px; /* Larger padding for a more clickable feel */
+  text-transform: uppercase; /* Uppercase for consistency */
+  letter-spacing: 0.03em; /* Slight letter spacing */
+  width: 100%;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+}
+
+.sentence-btn:hover {
+  background-color: var(
+    --color-surface-hover
+  ); /* Slightly darker background on hover */
+  box-shadow:
+    0 6px 12px rgba(135, 135, 135, 0.3),
+    0 3px 6px rgba(0, 0, 0, 0.15); /* Slightly larger shadow */
+}
+
+.sentence-cefr-label {
+  padding: 3px 7px; /* Smaller padding */
+  font-size: 14px; /* Smaller font size */
+  color: var(--color-text-strong);
+  display: inline-block; /* Ensure the label takes up only the space it needs */
+  font-weight: 600;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  white-space: nowrap; /* Prevent text wrapping */
+  user-select: none; /* Prevent text selection */
+  text-align: center;
+  min-width: 15px;
+  /* Matches .sentence-audio-icon's rendered width (~38px), so the two line
+     up neatly in the stacked desktop column instead of the label looking
+     narrower than the icon above/below it. */
+  box-sizing: border-box;
+  width: 38px;
+}
+
+/* Same simplified easy/medium/hard mapping as .game-cefr-label, onto the
+   same CEFR ramp steps — a third independent copy of this same 3-bucket
+   idea used to live here with its own slightly different colors. */
+.sentence-cefr-label.easy {
+  background-color: var(--color-cefr-a2-bg);
+}
+
+.sentence-cefr-label.medium {
+  background-color: var(--color-cefr-b2-bg);
+}
+
+.sentence-cefr-label.hard {
+  background-color: var(--color-cefr-c2-bg);
+}
+
+.sentence-box-english,
+.sentence-box-norwegian {
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 12.5px;
+  padding: 10px 15px 10px 15px;
+  width: 100%;
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+}
+
+.sentence-box-english p,
+.sentence-box-norwegian p {
+  margin: 5px 0 5px 0;
+}
+
+.sentence-box-english {
+  border-radius: 0 12px 12px 0; /* Rounded corners on bottom */
+  box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.1);
+  color: var(--color-text-muted);
+  display: flex;
+}
+
+.sentence-box-norwegian {
+  border-radius: 12px 0 0 12px; /* Rounded corners on top */
+  box-shadow: -4px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sentence-box-norwegian-hidden {
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sentence-container {
+  display: flex;
+  gap: 3px; /* Adds space between the boxes */
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: stretch; /* Horizontally align content (CEFR and sentence) */
+}
+
+/* Ordbøkene supplies Norwegian examples without translations. A deliberately
+   blank English side keeps the same paired-card geometry and lets the shared
+   Show English control behave exactly as it does for CSV examples. */
+.ordbokene-sentence-container .sentence-box-norwegian,
+.ordbokene-sentence-container .sentence-box-english {
+  box-sizing: border-box;
+  flex: 1 1 0;
+  min-width: 0;
+  width: 50%;
+}
+
+.ordbokene-sentence-container .sentence-content,
+.ordbokene-sentence-container .sentence {
+  min-width: 0;
+}
+
+.ordbokene-sentence-container .sentence {
+  overflow-wrap: anywhere;
+}
+
+.ordbokene-sentence-container .sentence-translation:empty::before {
+  content: "\00a0";
+}
+
+.sentence-content {
+  display: flex;
+  align-items: center;
+  gap: 20px; /* Adds space between the Norwegian and English sentences */
+  width: 100%;
+}
+
+/* Shared by Sentence Search, Pronunciation practice, and the example
+   sentences embedded in a word definition — one reading-text component, so
+   one font change here covers all three. */
+.sentence {
+  font-family: "Source Serif 4", "Noto Serif", serif;
+}
+
+/* Definition examples teach one target form at a time. Keep that target
+   visually consistent with the Word Game without changing search matches,
+   story prose, or other reading surfaces. */
+.definition-sentence-target {
+  background: var(--color-streak-bg);
+  border-radius: 3px;
+  color: inherit;
+  padding: 0 2px;
+}
+
+.sentence-pair {
+  display: flex;
+  align-items: flex-start; /* Align tops of the two sentences */
+  gap: 5px;
+  width: 100%;
+  justify-content: center;
+}
+
+.sentence-pair p {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+  word-break: break-word;
+}
+
+.single-result-definition {
+  margin-bottom: 0;
+  position: relative;
+}
+
+/* Single-definition cards only */
+.single-result-definition .word-gender {
+  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.single-result-definition .word-gender > .gender {
+  align-self: flex-start;
+  margin: 8px 0 0;
+}
+
+/* .alt-spelling's base 14px (00-foundations-and-game.css) only gets bumped
+   to 0.82em of the headword under the max-width:768px word-list-row rule
+   (30-stories-and-word-lists.css) — on wider viewports it stays flat at
+   14px against this card's 30px .word-gender, reading much smaller than
+   the same line does on mobile. Apply the same 0.82em ratio here at every
+   width so it doesn't shrink back down once the viewport passes 768px. */
+.single-result-definition .word-gender .alt-spelling {
+  font-size: 0.82em;
+}
+
+.single-result-navigation {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  gap: 10px;
+  margin: 0 0 10px;
+  width: 100%;
+}
+
+/* attachSingleResultMyWordsControls() (wordList.js) always inserts this
+   wrapper, even when there's no prior search to go "back" to (a direct
+   link or fresh page load) and it ends up with no children at all. Without
+   this, its own margin-bottom still reserved a phantom 10px of vertical
+   space above the definition card on every such visit, stacking on top of
+   #results-container's margin and #search-container's padding to read as
+   a doubled gap — especially noticeable on mobile where those add up to a
+   larger share of the screen. */
+.single-result-navigation:empty {
+  display: none;
+}
+
+.single-result-navigation .back-navigation {
+  margin: 0;
+}
+
+.single-result-my-words-controls {
+  margin: 0;
+  position: absolute;
+  right: 25px;
+  top: 25px;
+  z-index: 2;
+}
+
+/* Same pill shape/capitalization language as .back-navigation, but gray
+   and a size down — a secondary, lower-key action next to the definition
+   content rather than a primary navigation control. */
+/* Holds "Report an issue" and, when the word class inflects, the "Word
+   forms" toggle as side-by-side columns — spans both .definition-content
+   columns itself so its own two children get one full-width column each,
+   regardless of how the optional fields above it (pronunciation/etymology/
+   CEFR) happened to fill the grid. */
+.definition-actions-row {
+  grid-column: 1 / -1;
+  /* Mirrors .definition-content's own 1fr/1fr + 10px gap exactly, so
+     "Report an issue" and "Word forms" land in the same two column
+     positions as the pronunciation/etymology/CEFR rows above them — Word
+     forms starts flush under that right column's icons, not drifting
+     toward the middle or the far edge. A fixed pixel minimum or auto-fit
+     (tried first) can't reproduce this: they size columns off the
+     button's own width, which has no reason to match the content grid's
+     columns. Narrow screens are handled by letting a button's label wrap
+     within its column (see the nowrap override below) instead of by
+     collapsing to one column — the fallback label "Report missing word"
+     wrapping to two lines beats it overflowing into "Word forms", and
+     beats the whole row losing its column alignment.
+  */
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 10px;
+  margin-top: 12px;
+}
+
+.definition-actions-row .report-issue-btn,
+.definition-actions-row .inflections-toggle-btn {
+  white-space: normal;
+  width: auto;
+}
+
+.report-issue-btn,
+.inflections-toggle-btn,
+.definition-toggle-btn {
+  align-items: center;
+  background-color: var(--color-surface-subtle);
+  border: none;
+  border-radius: 6px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
+  justify-self: start;
+  letter-spacing: 0.03em;
+  padding: 6px 12px;
+  text-transform: uppercase;
+  touch-action: manipulation;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.definition-content .report-issue-btn i {
+  color: var(--color-danger);
+  font-size: 12px;
+  margin-right: 0;
+  width: auto;
+}
+
+.report-issue-btn:hover,
+.inflections-toggle-btn:hover,
+.definition-toggle-btn:hover {
+  background-color: var(--color-surface-strong);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.report-issue-btn:focus-visible,
+.inflections-toggle-btn:focus-visible,
+.definition-toggle-btn:focus-visible {
+  outline: 2px solid var(--color-text-muted);
+  outline-offset: 2px;
+}
+
+.inflections-toggle-btn i,
+.definition-toggle-btn i {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  margin-right: 0;
+  transition: transform 0.2s ease;
+}
+
+.inflections-toggle-btn.inflections-toggle-expanded i,
+.definition-toggle-btn.definition-toggle-expanded i {
+  transform: rotate(180deg);
+}
+
+/* Reading content (the dictionary gloss itself, including the clickable
+   cross-reference words makeDefinitionClickable wraps inside it — see
+   .clickable-definition-word, 00-foundations-and-game.css — which inherit
+   this rather than setting their own), so it matches the other reading-text
+   surfaces (story prose, .sentence) instead of falling through to body's
+   plain Noto Serif default. Covers both the single-result definition and
+   the compact multiple-results list, which share this class. */
+.definition-text {
+  font-family: "Source Serif 4", "Noto Serif", serif;
+}
+
+/* Collapsed-by-default clamp for a long single-word definition, lifted by
+   .definition-text-expanded when "Expand definition" is clicked. Only
+   applied when the definition exceeds DEFINITION_TRUNCATE_THRESHOLD, so
+   short definitions never get an unnecessary clamp.
+   A multi-sense definition renders as <ul class="definition-list"> instead
+   of plain text in the <p> — a height cap would slice straight through
+   whichever line or list item happened to sit at the cutoff, leaving a
+   sliver of a half-visible row above the button. Clamping each shape on
+   its own terms (whole list items vs. whole text lines) keeps every cut
+   flush against a real boundary. */
+.definition-text-clamped:not(.definition-text-expanded)
+  .definition-list
+  li:nth-child(n + 4) {
+  display: none;
+}
+
+.definition-text-clamped:not(.definition-text-expanded) p.definition-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.definition-toggle-btn {
+  margin-top: 8px;
+}
+
+.inflections-table-wrapper {
+  grid-column: 1 / -1;
+  margin-top: 18px;
+}
+
+.inflections-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  text-align: left;
+}
+
+.inflections-table th,
+.inflections-table td {
+  border: 1px solid var(--color-border);
+  padding: 8px 10px;
+}
+
+.inflections-table th {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-faint);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  width: 45%;
+}
+
+/* A quiet but readable source note under the table. Doubled-up selector
+   outranks ".definition p, li", which otherwise turns this back into large
+   body copy. */
+.inflections-hint.inflections-hint {
+  color: #737373;
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: 1.45;
+  margin: 9px 0 0;
+  text-transform: none;
+}
+
+.inflections-hint a {
+  color: var(--color-link-muted);
+  font-weight: 500;
+  text-decoration-color: var(--color-link-muted-underline);
+  text-underline-offset: 2px;
+}
+
+.inflections-hint-expression {
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .inflections-hint-expression {
+    white-space: normal;
+  }
+}
+
+#site-title {
+  color: var(--color-ink);
+  cursor: pointer;
+  transition:
+    color 0.2s ease,
+    text-shadow 0.2s ease;
+}
+
+#site-title:hover {
+  color: #4d5c94; /* Choose one of the suggested colors here */
+}
+
+/* Ensure sticky header CEFR label matches list page */
+
+.sticky-cefr-label {
+  align-items: center; /* Center vertically */
+  border: 1px solid var(--color-border); /* Lighter gray for a subtler border */
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* Includes padding and border in the width calculation */
+  color: var(--color-text-strong);
+  display: flex; /* Add Flexbox */
+  flex: 1; /* Allows the children to take up equal and maximum space */
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  /* Matches .sticky-genre's explicit height so the two badges are always
+     identically sized. Previously unset, this only *looked* the same as
+     the genre badge because the row's default align-items: stretch
+     happened to stretch this (height: auto) item to match — a coincidence
+     that broke as soon as a fixed-size third item (the favorite star)
+     needed align-items: center instead. */
+  height: 30px;
+  justify-content: center; /* Center horizontally */
+  max-width: 100%; /* Ensures they don't exceed the parent container */
+  min-width: 25%;
+  padding: 3px 7px;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: nowrap;
+}
+
+/* Flex container for genre and CEFR */
+
+.sticky-detail-container {
+  display: flex;
+  flex-direction: column; /* Stack rows vertically */
+  gap: 5px; /* Space between rows */
+}
+
+/* The audio is a sibling of the two control columns, rather than a control
+   itself. Stretch its slot to the header's full height, then center the
+   native player inside that slot. This keeps the player visually centered
+   without using header-level centering, which would pull the badges and Back
+   button down whenever a browser renders taller audio controls. */
+#sticky-audio-slot {
+  align-items: center;
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+}
+
+/* Preserve the full width allocated to the player by the header's flex
+   layout. In particular, do not let centering turn this into an intrinsic-
+   width control on narrow iOS layouts. */
+#sticky-audio-slot .stories-audio-player {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+/* Ensure sticky header genre matches list page */
+
+.sticky-genre {
+  align-items: center; /* Center vertically */
+  background-color: var(
+    --color-surface-subtle
+  ); /* Light background for genre badge */
+  border: 1px solid var(--color-border); /* Lighter gray for a subtler border */
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box; /* Includes padding and border in the width calculation */
+  color: var(--color-text-strong);
+  display: flex; /* Add Flexbox */
+  flex: 1; /* Allows the children to take up equal and maximum space */
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px !important;
+  font-weight: 600;
+  height: 30px;
+  justify-content: center; /* Center horizontally */
+  text-align: center;
+  text-transform: uppercase;
+  max-width: 100%; /* Ensures they don't exceed the parent container */
+  min-width: 25%;
+  padding: 3px 7px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.sticky-genre i {
+  color: var(--color-text); /* Icon color */
+}
+
+#sticky-header {
+  align-items: center;
+  background-color: var(--color-surface);
+  /* No border-top: this always sits directly under #mode-nav, itself a
+     white surface (see #mode-nav's desktop rule in 35-navigation.css) — a
+     border here would draw a seam between two white bars instead of
+     reading as one continuous surface. */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--color-text);
+  display: flex;
+  gap: 1.5em;
+  position: sticky;
+  justify-content: space-between;
+  min-height: 60px; /* Ensure enough height for wrapping content */
+  overflow: hidden; /* Prevent content from overflowing */
+  padding: 0.5em 1.5em;
+  top: 0;
+  z-index: 1000; /* Ensure it stays on top */
+}
+
+.sticky-favorite-slot {
+  /* A plain block div picks up a stray pixel of height from its own
+     inherited line-box on top of the button's actual size — display: flex
+     collapses that away so this slot's height exactly matches the
+     button's, instead of the row's total height being computed against a
+     phantom extra pixel. */
+  display: flex;
+}
+
+.sticky-row {
+  align-items: center; /* the favorite star is taller than the genre/CEFR
+    badges beside it — without this they'd all share a top edge instead of
+    a shared center, making the star look like it hangs down past them */
+  display: flex;
+  gap: 5px; /* Space between favorite star, genre, and CEFR */
+}
+
+.sticky-title-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px; /* Adjust to desired spacing */
+  margin-bottom: 0.75em !important;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center; /* Center the text inside */
+  white-space: normal; /* Allow text wrapping */
+  word-break: break-word; /* Break long words if necessary */
+}
+
+.sticky-title-japanese {
+  color: var(--color-text-strong);
+  font-size: 1.5em;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  margin: 0 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: normal;
+}
+
+.sticky-title-english {
+  color: var(--color-text-muted);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 1em;
+  font-weight: 400;
+  letter-spacing: 0.75px;
+  line-height: 1.2; /* Adjust line height */
+  margin: 0 auto;
+  text-transform: uppercase;
+}
+
+#stories {
+  align-items: stretch;
+  column-gap: 15px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  row-gap: 15px;
+}
+
+.stories-detail-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-left: 10px;
+  /* The favorite button is the first item in this visual rail, but remains
+     a sibling of the link so interactive controls are never nested. */
+  padding-top: 34px;
+}
+
+.stories-genre {
+  align-self: center;
+  background-color: var(--color-surface-subtle); /* Green for 'A1, A2' */
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 14px;
+  color: var(--color-text-strong);
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  user-select: none;
+  white-space: nowrap; /* Prevent text wrapping */
+  width: 20px;
+}
+
+#stories .cefr-value,
+.story-recommendation .cefr-value {
+  font-size: 14px;
+  padding: 4px 8px;
+  width: 20px;
+}
+
+.stories-genre i {
+  color: var(--color-text); /* Dark icon color for visibility */
+}
+
+.stories-list {
+  padding-inline-start: 0px;
+}
+
+.stories-list-item {
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  display: flex;
+  justify-content: space-between; /* Space between title/genre and CEFR */
+  align-items: center; /* Vertically center the items */
+  cursor: pointer;
+  height: 100%;
+  min-height: 90px;
+  position: relative;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+}
+
+.stories-list-item:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Lighter shadow for hover */
+  transform: scale(1.01);
+}
+
+.story-recommendation {
+  background-color: var(--color-wash-blue);
+  border: 1px solid var(--color-wash-blue-border);
+  border-left: 5px solid var(--color-ink);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  cursor: pointer; /* the whole card is a click target, not just the link inside it */
+  margin: 0 0 10px 0;
+  overflow: hidden;
+  position: relative;
+  transition:
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.story-recommendation:hover {
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  transform: scale(1.01);
+}
+
+.story-recommendation-label {
+  align-items: center;
+  color: var(--color-ink);
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 6px;
+  letter-spacing: 0.04em;
+  padding: 10px 12.5px 0 12.5px;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.story-recommendation-label i {
+  color: #d9a441;
+}
+
+/* The end-of-story "Keep Reading" card reuses .story-recommendation's
+   shape but deliberately not its loud styling: that treatment exists to
+   win attention against a page full of plain white browse-list cards,
+   which isn't the situation here — this card is alone at the end of a
+   story, so the same blue fill/accent bar/shadow just reads as a
+   distracting callout instead of a quiet "up next" nudge. */
+.story-recommendation.story-next-card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+  transition: background-color 0.2s ease;
+}
+
+.story-recommendation.story-next-card:hover {
+  background-color: var(--color-surface-subtle);
+  box-shadow: none;
+  transform: none;
+}
+
+.story-recommendation.story-next-card .story-recommendation-label {
+  color: var(--color-text-muted);
+}
+
+.story-recommendation.story-next-card .story-recommendation-label i {
+  color: inherit;
+}
+
+.story-recommendation .story-card-link {
+  cursor: pointer;
+}
+
+/*
+ * Reuses the exact My Words star button/icon. It is a sibling of the link,
+ * not nested inside it, so the two interactive targets remain valid and a
+ * star click can never open the story.
+ */
+.story-card-favorite-button {
+  position: absolute;
+  right: 11px;
+  top: 5px;
+  z-index: 2;
+}
+
+/* Story-list stars should recede behind the title and reading-level cues
+   until selected. Word favorites keep their existing darker outline. */
+.story-card-favorite-button:not(.is-saved) {
+  color: #a9b0b8;
+}
+
+.story-recommendation .story-card-favorite-button {
+  top: 31px;
+}
+
+/* Stories-list metadata only: flatten the three controls and trade that
+   reclaimed height for clearer vertical separation. These selectors are
+   body-scoped so word favorites, sticky-story metadata, and other pages keep
+   their existing dimensions. */
+body.stories-mode .stories-detail-container {
+  gap: 10px;
+  padding-top: 40px;
+}
+
+body.stories-mode .story-card-favorite-button {
+  height: 30px;
+  right: 11px;
+  top: 8px;
+  width: 40px;
+}
+
+body.stories-mode .story-card-favorite-button::before {
+  background-color: transparent;
+  border-radius: 50%;
+  content: "";
+  height: 30px;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.2s ease;
+  width: 30px;
+}
+
+body.stories-mode .story-card-favorite-button:hover {
+  background-color: transparent;
+}
+
+body.stories-mode .story-card-favorite-button:hover::before {
+  background-color: rgba(28, 104, 181, 0.1);
+}
+
+body.stories-mode .story-recommendation .story-card-favorite-button {
+  top: 34px;
+}
+
+/* Reading-view sticky header: same star, genre, CEFR order as the
+   browse-list rail, just left-to-right in this single row instead of
+   stacked, since the sticky bar has no room to spare for an extra row.
+   The button is a normal flex item here (position: relative, not the
+   card's absolute overlay) — top/right must be reset or the card's
+   offsets would carry over and shift it out of the row. position:
+   relative (not static) keeps ::before's absolute hover circle
+   positioned against the button itself, not the sticky bar.
+   Both selectors are needed: body.stories-mode isn't reliably present on
+   a direct /story/<slug>/ page load (only set once the SPA's own type
+   switch runs), so the plain selector covers that case, while the
+   body-prefixed one is needed to out-specificity
+   body.stories-mode .story-card-favorite-button's own top/right when that
+   class *is* present. */
+.sticky-row .story-card-favorite-button,
+body.stories-mode .sticky-row .story-card-favorite-button {
+  position: relative;
+  top: auto;
+  right: auto;
+  flex: 0 0 auto;
+  /* The button's default 20px icon is sized for list rows — full-size
+     here it visually outweighs the much smaller 12px genre glyph beside
+     it, throwing off the equal 5px gaps the row's `gap` already gives
+     all three items (they only look uneven because of that size
+     mismatch, not the spacing itself). Sized to exactly match
+     .sticky-genre's height (30px base / 25px under the max-width:1024px
+     breakpoint below) rather than just visually approximating it, so the
+     three badges are identically sized at every width, not just close. */
+  font-size: 17px;
+  height: 30px;
+  width: 30px;
+}
+
+body.stories-mode .stories-genre,
+body.stories-mode #stories .cefr-value,
+body.stories-mode .story-recommendation .cefr-value {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  height: 24px;
+  justify-content: center;
+  padding-bottom: 2px;
+  padding-top: 2px;
+  width: 36px;
+}
+
+.story-list-empty-state {
+  margin-top: 0;
+  text-align: center;
+}
+
+/* Neutral empty-state typography, not the shared .error-message component's
+   danger-red — "no favorites yet" / "no matches" isn't an error. */
+.story-list-empty-state h2 {
+  color: var(--color-ink);
+  font-size: 24px;
+}
+
+.story-list-empty-state p {
+  color: var(--color-text-strong);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.stories-list-item p {
+  color: var(--color-text);
+  font-size: 20px;
+  line-height: 1.6;
+  margin: 10px 0 10px 0;
+}
+
+.stories-list-item h2 {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.stories-subtitle {
+  display: -webkit-box; /* Creates a block-level flex container */
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.25;
+  overflow: hidden; /* Hides the overflowing text */
+  color: var(--color-text-muted);
+  letter-spacing: 0.25px;
+  margin: 0;
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 1; /* Limits the text to 1 line */
+}
+
+.story-reading-time,
+.stories-list-item .story-reading-time {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  margin: 3px 0 0;
+}
+
+.stories-load-more,
+.search-results-load-more {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 24px 0 24px;
+  text-align: center;
+}
+
+.stories-load-more-button,
+.search-results-load-more-button {
+  background-color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+  border-radius: 7px;
+  color: var(--color-surface);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 10px 16px;
+  text-transform: uppercase;
+}
+
+.stories-load-more-button:hover,
+.search-results-load-more-button:hover {
+  background-color: var(--color-ink-active);
+  border-color: var(--color-ink-active);
+}
+
+.stories-load-more-button:focus-visible,
+.search-results-load-more-button:focus-visible {
+  outline: 2px solid var(--color-interactive);
+  outline-offset: 3px;
+}
+
+.stories-story-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* Optional: Adds space between the side and middle divs */
+  position: relative;
+}
+
+.stories-story-header h2 {
+  margin: 0; /* Reset margin for the title */
+  color: var(--color-danger);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 1.3em;
+  font-weight: 400;
+  white-space: normal; /* Allow the text to wrap into multiple lines */
+  overflow-wrap: break-word; /* Ensure the text breaks into a new line if needed */
+  text-align: center; /* Center align the header text */
+}
+
+.story-card-link {
+  align-items: center;
+  box-sizing: border-box;
+  color: inherit;
+  display: flex;
+  justify-content: space-between;
+  min-height: 90px;
+  padding: 10px 13px;
+  text-decoration: none;
+  width: 100%;
+}
+
+#stories .japanese-title,
+.story-recommendation .japanese-title {
+  font-size: 16px;
+  line-height: 1.25;
+  /* Matches this context's own line-height (2 x 1.25em), overriding the
+     base rule's 2.6em -- see .japanese-title's comment in
+     10-shell-landing-and-stats.css for why this is a plain max-height
+     instead of -webkit-line-clamp. */
+  max-height: 2.5em;
+}
+
+#story-content {
+  background: var(
+    --color-surface
+  ); /* Same white background as story list items */
+  border: 1px solid var(--color-border); /* Light border for separation */
+  border-radius: 12px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  margin: 1em 0;
+  padding: 1em 5em 1em 5em;
+}
+
+#story-content > div {
+  margin-bottom: 20px; /* Margin for each sentence couplet */
+}
+
+/* CC BY-SA-style attribution for stories adapted from norwegianAuthenticStories.csv
+   (see buildStorySourceCreditHTML in stories.js). Quiet, like .ordbokene-source. */
+.story-source-credit {
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  padding-top: 14px;
+}
+
+.story-source-credit a {
+  color: inherit;
+  font-weight: 500;
+  text-decoration-color: transparent;
+  text-underline-offset: 2px;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.story-source-credit a:hover,
+.story-source-credit a:focus-visible {
+  color: var(--color-link-muted);
+  text-decoration-color: var(--color-link-muted-underline);
+}
+
+/* Reserves the image's display height before it loads, so the sentences
+   below don't visibly jump down once it arrives. Slightly over-reserves for
+   images whose aspect ratio would otherwise render shorter than 250px. */
+#story-image-slot {
+  min-height: 250px;
+}
+
+.story-image {
+  border-radius: 10px; /* Rounds the corners for a soft photograph effect */
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.15); /* Adjusted vertical spread and blur */
+  display: block; /* Makes the image behave like a block element */
+  margin: 0 auto; /* Centers the image horizontally */
+  margin-bottom: 2em;
+  max-height: 250px;
+  max-width: 100%; /* Ensures the image is responsive */
+}
+
+/* Comprehension-check quiz, appended after a story's last couplet. Styled to
+   match the story reader itself (Source Serif 4 body text in black, the same
+   subtle uppercase Source Sans 3 chrome buttons as #back-button/#speed-btn)
+   rather than the bolder game-UI look used in the word game/placement test —
+   this section is part of reading a story, not a separate mini-game. */
+.story-quiz-section {
+  border-top: 1px solid var(--color-border);
+  margin-top: 1.5em !important;
+  padding-top: 1.5em;
+}
+
+.story-quiz-heading {
+  color: var(--color-ink);
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: 1.3em;
+  /* 600, not 400 — see .sticky-title-japanese's comment above for why a
+     converted Fraunces heading needs the bump. */
+  font-weight: 600;
+  margin: 0 0 0.75em 0;
+}
+
+/* Mirrors .story-quiz-section/.story-quiz-heading directly above it, so
+   the two read as one continuous "after the story" area rather than a
+   visually competing add-on — the .story-recommendation card underneath
+   (shared with the browse-list banner) is what actually gives it enough
+   presence to be noticed. */
+.story-next-section {
+  border-top: 1px solid var(--color-border);
+  margin-top: 1.5em !important;
+  padding-top: 1.5em;
+}
+
+.story-next-heading {
+  color: var(--color-ink);
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: 1.3em;
+  /* 600, not 400 — see .sticky-title-japanese's comment further up for why
+     a converted Fraunces heading needs the bump. */
+  font-weight: 600;
+  margin: 0 0 0.75em 0;
+}
+
+.story-quiz-progress {
+  color: var(--color-text-muted);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.6em;
+  text-transform: uppercase;
+}
+
+.story-quiz-prompt {
+  color: var(--color-text);
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-size: 1.1em;
+  margin-bottom: 0.85em;
+}
+
+.story-quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.story-quiz-option-btn {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-size: 1em;
+  gap: 10px;
+  padding: 12px 16px;
+  text-align: left;
+  transition: border-color 0.2s ease;
+}
+
+.story-quiz-option-btn:hover:not(:disabled) {
+  border-color: var(--color-accent);
+}
+
+.story-quiz-option-btn:disabled {
+  cursor: default;
+}
+
+.story-quiz-option-btn.story-quiz-correct {
+  border-color: var(--color-success);
+}
+
+.story-quiz-option-btn.story-quiz-incorrect {
+  border-color: var(--color-danger);
+}
+
+.story-quiz-icon {
+  flex: 0 0 auto;
+  font-size: 0.9em;
+}
+
+.story-quiz-icon-correct {
+  color: var(--color-success);
+}
+
+.story-quiz-icon-incorrect {
+  color: var(--color-danger);
+}
+
+.story-quiz-feedback {
+  margin-top: 1em;
+}
+
+.story-quiz-feedback-label {
+  color: var(--color-text);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
+}
+
+.story-quiz-feedback-source {
+  color: var(--color-text-muted);
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  margin: 0 0 1.25em 0;
+}
+
+.story-quiz-next-btn,
+.story-quiz-retry-btn {
+  background-color: var(--color-surface-subtle);
+  border: var(--color-border) 1px solid;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 0.7em 1.4em;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+}
+
+.story-quiz-next-btn:hover,
+.story-quiz-retry-btn:hover {
+  background-color: gainsboro;
+}
+
+.story-quiz-results {
+  text-align: center;
+}
+
+.story-quiz-results-score {
+  color: var(--color-text);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-bottom: 1.25em;
+}
+
+.story-quiz-review {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5em;
+  text-align: left;
+}
+
+.story-quiz-review-item {
+  border-bottom: 1px solid var(--color-border);
+  padding: 14px 0;
+}
+
+.story-quiz-review-item:first-child {
+  padding-top: 0;
+}
+
+.story-quiz-review-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.story-quiz-review-prompt {
+  color: var(--color-text);
+  font-family: "Noto Serif", serif;
+  font-weight: 600;
+  margin: 0 0 0.5em 0;
+}
+
+.story-quiz-review-answer,
+.story-quiz-review-correct-answer {
+  align-items: center;
+  color: var(--color-text);
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 0.9em;
+  gap: 8px;
+  margin: 0;
+}
+
+.story-quiz-review-correct-answer {
+  margin-top: 0.35em;
+}
+
+/* Results, sentence cards, and Stories responsive behavior. */
+@media (max-width: 1024px) {
+  .sentence-cefr-label {
+    align-items: center;
+    display: inline-flex;
+    height: 34px;
+    justify-content: center;
+    width: 29px;
+  }
+
+  .multiple-results-definition {
+    padding: 15px 60px 15px 20px;
+  }
+
+  .multiple-results-definition-header {
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .multiple-results-definition-text {
+    flex: 1;
+    font-size: 14px !important;
+    hyphens: auto;
+    margin-left: 20px;
+    overflow-wrap: break-word;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .multiple-results-my-words-star {
+    right: 15px;
+    top: 10px;
+  }
+
+  .word-gender.multiple-results-word-gender {
+    display: flex;
+    flex-direction: column;
+    font-size: 18px !important;
+    justify-content: center;
+    line-height: 1.2 !important;
+    margin: 0 20px 0 0 !important;
+  }
+
+  .practice-row {
+    display: block;
+  }
+
+  .result-header {
+    padding: 20px;
+  }
+
+  #results-container {
+    margin: 5px auto;
+    width: 97.5%;
+  }
+
+  .sentence-box-english,
+  .sentence-box-norwegian {
+    font-size: 15px;
+    margin-bottom: 2px !important;
+    width: auto;
+  }
+
+  .sentence-box-english {
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 6px 9px 6px 49px;
+  }
+
+  .sentence-box-norwegian {
+    border-radius: 12px 12px 0 0;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
+    padding: 6px 9px;
+  }
+
+  .sentence-box-norwegian-hidden {
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .sentence-btn {
+    margin-bottom: 10px;
+    margin-top: 10px;
+  }
+
+  .sentence-container {
+    display: block;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .ordbokene-sentence-container .sentence-box-norwegian,
+  .ordbokene-sentence-container .sentence-box-english {
+    width: 100%;
+  }
+
+  .sentence-content {
+    gap: 10px;
+  }
+
+  .result-header.sentence-results-header,
+  .result-header.word-results-header,
+  .result-header.story-results-header {
+    margin-bottom: 10px;
+  }
+
+  /* Horizontal-only trims (padding/gap, never the explicit height set
+     below) to claw a little width back for the audio player, which
+     shares this row on mobile — see #back-button/#speed-btn/
+     #toggle-english-btn's own mobile padding comment in
+     00-foundations-and-game.css for why. */
+  .sticky-cefr-label {
+    height: 31px !important;
+    padding: 3px 4px;
+  }
+
+  .sticky-genre {
+    height: 31px;
+    padding: 3px 4px;
+  }
+
+  .sticky-row {
+    gap: 3px;
+  }
+
+  .sticky-row .story-card-favorite-button {
+    /* Matches #speed-btn/#toggle-english-btn's own height (32px, up from
+       26px — #back-button/#speed-btn/#toggle-english-btn grew from 11px to
+       14px text, see their own mobile comment below), not an arbitrary
+       size — the badge row and the button column in #right-controls are
+       separate flex columns stacked independently, so any height mismatch
+       between their first rows (this row vs. the Speed button) throws off
+       the *second* row's alignment too (Back vs. Show English), even
+       though nothing about the second row itself changed. */
+    font-size: 15px;
+    height: 32px;
+    width: 32px;
+  }
+
+  /* Each side column has two rows. Giving every control the same explicit
+     height makes Back share the Show English baseline instead of inheriting
+     a small native line-height difference that accumulates below the badge
+     row. Width and horizontal padding remain untouched so the audio player
+     keeps all of the room it already has.
+     26px -> 32px: these three buttons' shared font-size grew from 11px to
+     14px (readability pass), and 26px was calibrated for the old 11px text
+     — too short for 14px text plus its 0.5em vertical padding, which was
+     spilling text into the row above/below it instead of clipping cleanly. */
+  #back-button,
+  #speed-btn,
+  #toggle-english-btn {
+    box-sizing: border-box;
+    /* Sentence case, not the base rule's uppercase: mixed case reads
+       smaller/calmer than all-caps at the same size, which matters in this
+       cramped mobile row where every pixel is fought over with the audio
+       player. Desktop keeps the uppercase treatment. */
+    text-transform: none;
+  }
+
+  #sticky-header {
+    /* Pin the left (badges/Back) and right (Speed/Show English) columns to
+       the row's top edge instead of centering them against the middle
+       audio column. iOS's native <audio controls> widget renders much
+       taller than Chromium's compact bar (the whole reason this is
+       mobile-only), and center alignment was dragging Back and Show
+       English down with it as the row grew -- flex-start keeps them
+       right under the badge/Speed row regardless of audio height, without
+       touching the audio slot's own width. */
+    align-items: flex-start;
+    border: none;
+    gap: 0.35em;
+    padding: 0.25em 0.35em;
+  }
+
+  /* These explicit self-alignments also protect already-captured story
+     pages whose inline header styles predate the mobile rule above. The
+     columns stay on the bar's top edge while the audio slot handles its own
+     vertical centering. */
+  #sticky-header > .sticky-detail-container,
+  #sticky-header > .right-controls {
+    align-self: flex-start;
+  }
+
+  .sticky-title-container {
+    gap: 5px;
+  }
+
+  .sticky-title-japanese {
+    font-size: 1.3em;
+  }
+
+  .sticky-title-english {
+    font-size: 14px;
+  }
+
+  #stories {
+    display: grid;
+    grid-template-columns: 1fr;
+    row-gap: 10px;
+  }
+
+  .stories-detail-container {
+    margin-top: 0px !important;
+  }
+
+  .stories-list-item {
+    margin: 0;
+  }
+
+  .stories-story-header h2 {
+    font-size: 16px;
+  }
+
+  #story-content {
+    margin: 0.75em 0;
+    padding: 1em 1em 1em 1em;
+  }
+
+  #story-content > div {
+    margin-bottom: 15px;
+  }
+
+  .story-image {
+    margin-bottom: 1.25em;
+  }
+
+  .story-recommendation {
+    margin: 0 0 7.5px 0;
+  }
+}
+
+/* Search and story result orientation cards. */
+.result-header.sentence-results-header,
+.result-header.word-results-header,
+.result-header.story-results-header {
+  align-items: center;
+  background: var(--color-wash-blue-pale);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(13, 58, 105, 0.08);
+  box-sizing: border-box;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+  padding: 20px 24px;
+  text-align: left;
+}
+
+.result-header.sentence-results-header {
+  margin-bottom: 12px;
+  min-height: 110px;
+  padding-right: 148px;
+  position: relative;
+}
+
+.sentence-results-eyebrow,
+.word-results-eyebrow,
+.story-results-eyebrow {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  margin: 0 0 3px;
+  text-transform: uppercase;
+}
+
+.result-header.sentence-results-header h2,
+.result-header.word-results-header h2,
+.result-header.story-results-header h2 {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin: 0;
+  text-align: left;
+}
+
+.sentence-results-query,
+.word-results-query,
+.story-results-query {
+  color: var(--color-text-strong);
+  font-weight: 500;
+}
+
+.sentence-results-count,
+.word-results-count,
+.story-results-count {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 999px;
+  color: var(--color-ink);
+  flex: 0 0 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+
+.result-header.word-results-header,
+.result-header.story-results-header {
+  margin-bottom: 16px;
+}
+
+.sentence-results-header-side {
+  align-items: flex-end;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 24px;
+  top: 20px;
+}
+
+.sentence-results-header-copy,
+.word-results-header-copy,
+.story-results-header-copy {
+  min-width: 0;
+}
+
+.story-results-filters,
+.search-results-filters {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  margin-top: 10px;
+}
+
+.story-results-filter-summary,
+.search-results-filter-summary {
+  align-items: center;
+  color: var(--color-text-slate);
+  cursor: default;
+  display: inline-flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 7px;
+  line-height: 1;
+  min-width: 124px;
+}
+
+.story-results-filters .cefr-value,
+.search-results-filters .cefr-value {
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.story-results-filter-summary + .story-results-filter-summary,
+.search-results-filter-summary + .search-results-filter-summary {
+  border-left: 1px solid var(--color-wash-blue-border);
+  padding-left: 14px;
+}
+
+.search-results-pos-filter .search-results-word-class-badge {
+  flex: 0 0 auto;
+  margin: 0 !important;
+}
+
+@media (min-width: 481px) {
+  .word-results-header .search-results-pos-filter {
+    min-width: 0;
+  }
+
+  .word-results-header .search-results-word-class-badge {
+    font-size: 14px !important;
+  }
+}
+
+.story-results-genre-icon {
+  align-items: center;
+  color: var(--color-text-slate);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 13px;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+}
+
+.result-header.story-results-header .story-results-genre-icon i {
+  color: inherit;
+  left: auto;
+  position: static;
+}
+
+.story-results-filter-name,
+.search-results-filter-name {
+  white-space: nowrap;
+}
+
+.result-header.sentence-results-header .result-header-subtitle {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 8px 0 0;
+  text-align: left;
+}
+
+.sentence-results-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin: auto 0 0;
+}
+
+.sentence-results-actions .sentence-btn {
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 999px;
+  box-shadow: none;
+  color: var(--color-ink);
+  display: inline-flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: auto;
+  justify-content: center;
+  letter-spacing: normal;
+  line-height: normal;
+  margin: 0;
+  padding: 5px 9px;
+  text-transform: none;
+  white-space: nowrap;
+  width: auto;
+}
+
+.sentence-results-actions .sentence-btn:hover {
+  background-color: var(--color-surface-hover);
+  box-shadow: 0 2px 5px rgba(13, 58, 105, 0.1);
+}
+
+@media (max-width: 480px) {
+  .result-header.sentence-results-header,
+  .result-header.word-results-header,
+  .result-header.story-results-header {
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+    padding: 16px;
+  }
+
+  .result-header.sentence-results-header {
+    min-height: 106px;
+    padding-right: 132px;
+  }
+
+  .result-header.word-results-header,
+  .result-header.sentence-results-header,
+  .result-header.story-results-header {
+    flex-wrap: wrap;
+  }
+
+  .word-results-header-copy,
+  .sentence-results-header-copy,
+  .story-results-header-copy {
+    /* Low enough that the row stays side-by-side (like desktop) on real
+       phone widths even next to sentence-results' wider two-line side
+       content (count pill + Show English button) — the title just wraps
+       to its own second line instead of forcing the whole row to stack.
+       flex-wrap above stays as a fallback for pathological long queries. */
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+
+  .story-results-filters,
+  .search-results-filters {
+    gap: 8px 12px;
+    margin-top: 8px;
+  }
+
+  .story-results-filter-summary,
+  .search-results-filter-summary {
+    min-width: 0;
+  }
+
+  .story-results-filter-summary + .story-results-filter-summary,
+  .search-results-filter-summary + .search-results-filter-summary {
+    padding-left: 12px;
+  }
+
+  .result-header.sentence-results-header h2,
+  .result-header.word-results-header h2,
+  .result-header.story-results-header h2 {
+    font-size: 18px;
+  }
+
+  .sentence-results-actions {
+    margin: auto 0 0;
+  }
+
+  .sentence-results-header-side {
+    bottom: 16px;
+    right: 16px;
+    top: 16px;
+  }
+}

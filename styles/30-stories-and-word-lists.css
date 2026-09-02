@@ -1,0 +1,852 @@
+/* Story list and story content */
+
+#story-viewer {
+  max-width: 800px; /* Limit the width */
+  margin: 0 auto; /* Center align */
+}
+
+.spinner {
+  color: var(--color-ink);
+  display: none;
+  font-size: 20px;
+  margin: 20px;
+  text-align: center;
+}
+
+.spinner::before {
+  animation: spin 0.8s linear infinite;
+  border: 3px solid rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+  border-top-color: var(--color-ink);
+  content: "";
+  display: inline-block;
+  height: 40px;
+  margin-bottom: 10px;
+  width: 40px;
+}
+
+.title-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.word-gender {
+  align-items: flex;
+  color: var(--color-ink); /* Matches the headword, not a link */
+  display: flex;
+  font-size: 30px;
+  font-weight: bold;
+  justify-content: space-between;
+  line-height: 1.2;
+  margin: -5px 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.word-gender .gender {
+  color: var(--color-danger);
+  font-size: 14px;
+  font-weight: 400;
+  text-transform: uppercase;
+  overflow-wrap: break-word;
+  white-space: normal;
+}
+
+.word-list-back-navigation {
+  border: none;
+  box-sizing: content-box;
+}
+
+.word-list-header {
+  align-items: center;
+  cursor: default;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin: 0 10px 20px;
+  padding: 20px 40px;
+  text-align: center;
+}
+
+.word-list-header:hover {
+  background-color: var(--color-surface);
+}
+
+.word-list-table-container {
+  width: 100%;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 10px;
+  box-sizing: border-box;
+}
+
+.word-list-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  text-align: left;
+  table-layout: auto;
+}
+
+/*
+ * Each Word List row resembles:
+ * .definition.multiple-results-definition
+ */
+.word-list-row {
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px rgba(13, 58, 105, 0.08);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.word-list-row:focus {
+  outline: none;
+}
+
+.word-list-row:focus-visible {
+  box-shadow:
+    0 0 0 3px var(--color-interactive),
+    0 1px 3px rgba(13, 58, 105, 0.08);
+}
+
+.word-list-row td {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-wash-blue-border);
+  border-top: 1px solid var(--color-wash-blue-border);
+  padding: 11px 14px;
+  transition: background-color 0.2s ease;
+}
+
+.word-list-row .word-list-class,
+.word-list-row .word-list-level,
+.word-list-row .word-list-strength {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+.word-list-row td:first-child {
+  border-left: 1px solid var(--color-wash-blue-border);
+  border-radius: 10px 0 0 10px;
+}
+
+.word-list-row td:last-child {
+  border-right: 1px solid var(--color-wash-blue-border);
+  border-radius: 0 10px 10px 0;
+}
+
+.word-list-row:hover td {
+  background-color: var(--color-wash-blue-pale);
+}
+
+.word-list-controls {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.word-list-control-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  width: 100%;
+}
+
+.word-list-sort-select-wrapper {
+  display: inline-flex;
+  max-width: 100%;
+  position: relative;
+}
+
+.word-list-sort-select {
+  appearance: none;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: var(--color-danger-text);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 8px 34px 8px 12px;
+  text-transform: uppercase;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.word-list-sort-select:hover {
+  background-color: var(--color-surface-hover);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.word-list-sort-select:focus-visible {
+  outline: 2px solid var(--color-interactive);
+  outline-offset: 2px;
+}
+
+.word-list-sort-select-wrapper > .fa-chevron-down {
+  color: var(--color-text-muted);
+  font-size: 11px;
+  pointer-events: none;
+  position: absolute;
+  right: 13px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.word-list-export-controls .word-list-export-button {
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+  color: #6c4a4a;
+  min-height: 44px;
+  padding: 8px 12px;
+}
+
+.word-list-export-controls .word-list-export-button:hover {
+  background-color: var(--color-surface-hover);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.word-list-export-button {
+  appearance: none;
+  background-color: var(--color-surface);
+  border: none;
+  border-radius: 6px;
+  box-shadow:
+    0 4px 8px rgba(135, 135, 135, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--color-danger-text);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  padding: 10px 16px;
+  text-transform: uppercase;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  white-space: normal;
+}
+
+.word-list-export-button:hover {
+  background-color: var(--color-wash-blue);
+  box-shadow:
+    0 6px 12px rgba(135, 135, 135, 0.3),
+    0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.word-list-export-button:focus-visible {
+  outline: 2px solid var(--color-interactive);
+  outline-offset: 2px;
+}
+
+.word-list-export-button.is-active {
+  background-color: var(--color-ink);
+  color: var(--color-surface);
+  box-shadow:
+    0 4px 8px rgba(13, 58, 105, 0.25),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.word-list-export-button.is-active:hover {
+  background-color: var(--color-interactive);
+}
+
+.word-list-export-button.is-danger {
+  background-color: var(--color-danger-bg);
+  color: var(--color-danger);
+}
+
+.word-list-export-button.is-danger:not(:disabled):hover {
+  background-color: var(--color-danger-bg);
+}
+
+.word-list-export-button:disabled {
+  box-shadow: none;
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.word-list-export-button:disabled:hover {
+  background-color: var(--color-surface);
+  box-shadow: none;
+}
+
+.word-list-favorite {
+  /* Always overridden by .word-list-row .word-list-favorite below, which
+     wins on specificity alone — no !important needed on any of the three
+     padding declarations for this class (verified: this cell is always
+     rendered inside a .word-list-row). */
+  padding: 6px 18px 6px 8px;
+  text-align: right;
+  width: 48px;
+}
+
+.word-list-favorite-button {
+  align-items: center;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 20px;
+  height: 40px;
+  justify-content: center;
+  padding: 0;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+  width: 40px;
+}
+
+.word-list-favorite-button:hover {
+  background-color: rgba(28, 104, 181, 0.1);
+  transform: scale(1.05);
+}
+
+.word-list-favorite-button:active {
+  transform: scale(0.95);
+}
+
+.word-list-favorite-button:focus-visible {
+  outline: 2px solid var(--color-interactive);
+  outline-offset: 2px;
+}
+
+.word-list-favorite-button.is-saved {
+  color: var(--color-favorite);
+}
+
+.word-list-favorite-button i {
+  pointer-events: none;
+}
+
+/*
+ * Match the Norwegian heading in a Words multiple-result card.
+ */
+.word-list-norwegian {
+  color: var(--color-ink); /* Matches the headword, not a link */
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+.word-list-word-link {
+  color: inherit;
+  font: inherit;
+  text-decoration: none;
+}
+
+.word-list-word-link:focus-visible {
+  border-radius: 4px;
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 3px;
+}
+/*
+ * Match .english and .multiple-results-english.
+ */
+.word-list-english {
+  color: var(--color-text-strong);
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-size: 14px;
+  font-weight: 450;
+  line-height: 1.35;
+}
+
+/*
+ * Match .gender.multiple-results-gender-class.
+ */
+.word-list-class-badge {
+  align-items: center;
+  display: inline-flex;
+  font-size: 14px !important;
+  line-height: 1.2;
+  margin: 0 !important;
+  max-width: none;
+  min-width: max-content;
+  overflow-wrap: normal;
+  white-space: nowrap;
+  word-break: normal;
+}
+
+/*
+ * The table cell itself should remain an ordinary white cell.
+ * The colored CEFR badge will be placed inside it.
+ */
+.word-list-level {
+  color: var(--color-text-strong);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.word-list-level .game-cefr-label {
+  display: inline-block;
+}
+
+.word-list-strength {
+  color: var(--color-text-strong);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  text-align: center;
+}
+
+.word-strength-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.word-strength-dot {
+  color: var(--color-ink);
+  font-size: 8px;
+}
+
+.word-strength-dot.fa-regular {
+  color: #c7ccd1;
+}
+
+/* Prevent horizontal scrolling in All Words and My Words */
+
+.word-list-header,
+.word-list-controls,
+.word-list-control-group,
+.word-list-table-container,
+.word-list-table {
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* All Words / My Words behave as a view selector. */
+.word-list-control-group.word-list-view-controls {
+  background-color: var(--color-wash-blue);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 10px;
+  flex-wrap: nowrap;
+  gap: 4px;
+  padding: 4px;
+  width: fit-content;
+}
+
+.word-list-view-controls .word-list-export-button {
+  background-color: transparent;
+  box-shadow: none;
+  color: #3e5368;
+  min-height: 44px;
+}
+
+.word-list-view-controls .word-list-export-button:hover {
+  background-color: rgba(255, 255, 255, 0.7);
+  box-shadow: none;
+}
+
+.word-list-view-controls .word-list-export-button.is-active {
+  background-color: var(--color-ink);
+  color: var(--color-surface);
+  box-shadow: 0 2px 5px rgba(13, 58, 105, 0.22);
+}
+
+.word-list-row td,
+.word-list-norwegian,
+.word-list-english,
+.word-list-class,
+.word-list-level {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  word-break: normal;
+}
+
+.word-list-norwegian,
+.word-list-english {
+  hyphens: auto;
+  overflow-wrap: break-word;
+  white-space: normal;
+  word-break: normal;
+  width: 50%;
+}
+
+/* Shrink these columns to their contents */
+.word-list-row .word-list-class,
+.word-list-row .word-list-level,
+.word-list-row .word-list-strength,
+.word-list-row .word-list-favorite {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.word-list-row .word-list-favorite {
+  padding: 6px;
+  text-align: center;
+}
+
+.word-text-block {
+  display: flex;
+  flex-direction: column;
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-weight: 500;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Word-list table responsive behavior. */
+@media (max-width: 1024px) {
+  .word-gender {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    hyphens: auto;
+  }
+
+  .word-gender .gender {
+    margin-top: 10px;
+  }
+
+  .word-list-row .word-list-norwegian {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .word-list-row .word-list-english {
+    font-size: 14px;
+    padding: 6px;
+  }
+
+  .word-list-row .word-list-class,
+  .word-list-row .word-list-level,
+  .word-list-row .word-list-strength {
+    padding: 2px;
+  }
+
+  .word-strength-dot {
+    font-size: 6px;
+  }
+
+  .word-list-class-badge {
+    font-size: 14px !important;
+    padding: 2px 4px !important;
+  }
+
+  .word-list-level .game-cefr-label {
+    font-size: 14px;
+    min-width: 14px;
+    padding: 2px 5px;
+  }
+
+  .word-list-row .word-list-favorite {
+    padding: 2px;
+  }
+
+  .word-list-favorite-button {
+    height: 30px;
+    width: 30px;
+  }
+
+  .word-list-export-controls .word-list-export-button {
+    font-size: 14px;
+  }
+
+  .word-list-header {
+    margin: 0px 5px;
+    padding: 10px 20px;
+  }
+
+  .word-list-table-container {
+    padding: 0 5px;
+  }
+}
+
+/* My Words collection surface. */
+.word-list-header-summary {
+  align-items: flex-start;
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  gap: 12px;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.word-list-header-title {
+  color: var(--color-ink);
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: none;
+}
+
+p.word-list-header-description,
+p.word-list-empty-copy {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 4px 0 0;
+}
+
+.word-list-header-count {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 999px;
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+
+.word-list-empty-state {
+  text-align: center;
+}
+
+.word-list-empty-heading {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-caps-heading);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+}
+
+#word-list .word-list-header {
+  background: var(--color-wash-blue-pale);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(13, 58, 105, 0.08);
+  gap: 16px;
+  margin: 0 10px 18px;
+  padding: 20px 24px;
+  text-align: left;
+}
+
+#word-list .word-list-controls {
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 12px 16px;
+  justify-content: flex-start;
+}
+
+#word-list .word-list-control-group {
+  justify-content: flex-start;
+  width: auto;
+}
+
+#word-list .word-list-sort-controls {
+  margin-left: auto;
+}
+
+#word-list .word-list-my-words-actions,
+#word-list .word-list-export-controls {
+  border-top: 1px solid var(--color-wash-blue-border);
+  padding-top: 14px;
+  width: 100%;
+}
+
+#word-list .word-list-export-controls .word-list-export-button,
+#word-list .word-list-my-words-actions .word-list-export-button {
+  min-height: 40px;
+}
+
+#word-list .word-list-empty-state {
+  background: var(--color-wash-blue-pale);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 14px;
+  box-shadow: none;
+  margin: 0 10px;
+  padding: 28px 24px;
+}
+
+@media (min-width: 1025px) {
+  #word-list .word-list-header-title,
+  #word-list .word-list-empty-heading {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  #word-list .word-list-header {
+    margin: 0 5px 12px;
+    padding: 16px 14px;
+  }
+
+  #word-list .word-list-controls {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  #word-list .word-list-control-group,
+  #word-list .word-list-sort-controls {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  #word-list .word-list-view-controls .word-list-export-button {
+    flex: 1 1 0;
+  }
+
+  #word-list .word-list-sort-select-wrapper,
+  #word-list .word-list-sort-select {
+    width: 100%;
+  }
+
+  #word-list .word-list-empty-state {
+    margin: 0 5px;
+    padding: 22px 16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  :is(#word-list, .game-summary-missed, .my-stats-trouble) .word-list-table {
+    border-spacing: 0 8px;
+  }
+}
+
+/* One responsive vocabulary-list component is used by My Words, My Stats,
+   and the round summary. Keep all small-screen layout decisions here so the
+   three surfaces cannot drift apart. */
+@media (max-width: 768px) {
+  .word-list-table-container {
+    padding-inline: 0;
+  }
+
+  .word-list-table {
+    border-spacing: 0 7px;
+    display: block;
+  }
+
+  .word-list-table tbody {
+    display: block;
+  }
+
+  .word-list-row {
+    background: var(--color-surface);
+    border: 1px solid var(--color-wash-blue-border);
+    border-radius: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 1px 2px rgba(13, 58, 105, 0.06);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+    margin-bottom: 7px;
+    padding: 9px 10px;
+    width: 100%;
+  }
+
+  .word-list-row:last-child {
+    margin-bottom: 0;
+  }
+
+  .word-list-row td {
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .word-list-row td:first-child,
+  .word-list-row td:last-child {
+    border: 0;
+    border-radius: 0;
+  }
+
+  .word-list-row:hover td {
+    background: transparent;
+  }
+
+  .word-list-row .word-list-norwegian {
+    font-size: 15px;
+    grid-column: 1;
+    grid-row: 1;
+    line-height: 1.25;
+    padding: 0 8px 2px 0;
+    width: auto;
+  }
+
+  .word-list-row .word-list-english {
+    color: var(--color-text-muted);
+    font-family: "Source Sans 3", "Noto Sans", sans-serif;
+    font-size: 12.5px;
+    grid-column: 1;
+    grid-row: 2;
+    line-height: 1.25;
+    padding: 0 8px 0 0;
+    width: auto;
+  }
+
+  .word-list-row .word-list-class,
+  .word-list-row .word-list-level,
+  .word-list-row .word-list-strength {
+    align-self: center;
+    grid-row: 1 / span 2;
+    padding: 0 3px;
+    width: auto;
+  }
+
+  .word-list-row .word-list-class {
+    grid-column: 2;
+  }
+
+  .word-list-row .word-list-level {
+    grid-column: 3;
+  }
+
+  .word-list-row .word-list-strength {
+    display: none;
+  }
+
+  .word-list-row .word-list-favorite {
+    align-self: center;
+    grid-column: 4;
+    grid-row: 1 / span 2;
+    padding: 0 0 0 3px;
+    width: auto;
+  }
+
+  .word-list-class-badge,
+  .word-list-level .game-cefr-label {
+    font-size: 11px !important;
+    line-height: 1.1;
+    min-width: 0;
+    padding: 3px 5px !important;
+  }
+
+  .word-list-favorite-button {
+    font-size: 16px;
+    height: 36px;
+    width: 36px;
+  }
+
+  .alt-spelling {
+    font-size: 0.82em;
+  }
+}

@@ -1,0 +1,3575 @@
+/*
+ * Colors that repeat across this file (2+ uses), extracted into custom
+ * properties so each one has a single source of truth instead of a hex
+ * literal copy-pasted at every call site. Names describe the color's role,
+ * not its value, so a future dark theme can retarget these without hunting
+ * down every occurrence individually.
+ *
+ * Colors used only once are left as literals for now — extracting a value
+ * with no reuse doesn't reduce duplication, only completeness for a future
+ * dark-mode pass would justify it.
+ */
+:root {
+  /* Uppercase section headers & buttons (landing page, word-game intro,
+     My Stats -- see .landing-daily-quests h3, .game-intro-heading,
+     .my-stats-heading, #landing-daily-quests-start, etc.), split into two
+     tokens rather than one shared value: letter-spacing in em scales with
+     font-size, so the same value reads noticeably wider on a ~19-22px
+     heading than on ~11-13px button text. Button value matches the
+     0.03-0.04em already used elsewhere (#game-next-word-button,
+     .game-typed-submit, .sentence-btn); heading value is tighter so
+     larger caps text doesn't read as loud/overspaced. */
+  --letter-spacing-caps: 0.04em;
+  --letter-spacing-caps-heading: 0.02em;
+  /* Word Game corner-radius scale: one value for controls (buttons, inputs,
+     badges) and one for cards/panels, so rounding reads as a deliberate
+     choice instead of each component picking its own number. */
+  --radius-control: 8px;
+  --radius-card: 12px;
+  /* Brand blues. Four stops instead of the six this used to be
+     (--color-heading merged into --color-ink, --color-heading-accent
+     merged into --color-interactive) — the retired two were only
+     cosmetically different from their survivors. --color-accent stays
+     distinct on purpose: it's the hover-lightening target for ink-colored
+     buttons, a real, load-bearing role rather than a duplicate. */
+  --color-ink: #0d3a69;
+  --color-ink-active: #092c50;
+  /* This is --color-heading-accent's old value, not --color-link's: the
+     two merged candidates gave ~3.7:1 (--color-link, #3c88d4) vs ~5.7:1
+     (--color-heading-accent, #1c68b5) against a white card, and
+     --color-interactive is used as plain text color (links, the
+     clickable-word spans in definitions) where WCAG AA needs 4.5:1. Don't
+     lighten this back toward #3c88d4 without re-checking contrast — that
+     exact regression (axe's color-contrast rule, "Word lookup" page) is
+     why this comment exists. */
+  --color-interactive: #1c68b5;
+  --color-accent: #4a99ff;
+  /* Pale-blue hover/active "wash" — replaces a couple dozen near-identical
+     one-off pale blues that had been invented ad hoc per component across
+     every stylesheet. */
+  --color-wash-blue: #eaf1fb;
+  --color-wash-blue-active: #d9e8ff;
+  --color-wash-blue-border: #cbd9e8;
+  /* Notably whiter than --color-wash-blue on purpose — the landing page's
+     Today's Quests / Vocabulary Profile dashboard cards, which want to read
+     as barely-tinted white, not as a hover state. Keep these two in sync;
+     don't fold this into --color-wash-blue, they're deliberately not the
+     same shade. */
+  --color-wash-blue-pale: #f7f9fb;
+  /* Border paired with --color-wash-blue-active on a card's active/selected
+     state (daily-quest tiles, in both the Word Game and the landing-page
+     preview of the same quests). */
+  --color-wash-blue-active-border: #8daac7;
+  /* A muted, lower-contrast cousin of --color-interactive for hover borders
+     and underlines that want a hint of "tappable" without the full-strength
+     link blue. */
+  --color-interactive-muted: #a9bdd5;
+  /* Text — five tiers instead of eleven. Every retired token merged into
+     a survivor within ~10 points of lightness of it. */
+  --color-text: #333333;
+  --color-text-strong: #4a4a4a;
+  --color-text-muted: #666666;
+  --color-text-faint: #777777;
+  --color-text-slate: #5d6874;
+  --color-text-on-light-btn: #2a3a2f;
+  /* A quieter, more desaturated link treatment for secondary/provenance
+     links (e.g. "via Ordbokene", inflection hints) that shouldn't compete
+     with primary content links. */
+  --color-link-muted: #526c91;
+  --color-link-muted-underline: #aab8ca;
+  /* Small emphasized labels/numbers on the landing page's dashboard-style
+     cards (daily-quest count, progress legend) — a muted slate-navy, softer
+     than --color-ink so it doesn't compete with real headings. */
+  --color-text-emphasis: #243f5a;
+  /* Neutral surfaces / borders */
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f4f4f4;
+  --color-surface-hover: #f7f7f7;
+  --color-surface-strong: #e0e0e0;
+  --color-border: #cccccc;
+  --color-border-input: #a0a0a0;
+  /* Status: danger/red and success/green, each four stops (base, text,
+     background, border) instead of a scattered handful of near-duplicate
+     pale variants per feature. */
+  --color-danger: #951b1b;
+  --color-danger-text: #6b2814;
+  --color-danger-bg: #f0c1b3;
+  --color-danger-border: #c97861;
+  --color-success: #365f36;
+  --color-success-text: #254a1d;
+  --color-success-bg: #d7ecc9;
+  --color-success-border: #7cab62;
+  /* My Stats' practice-activity heatmap (myStats.js): a 4-step ramp using
+     the success family — --color-success-bg/-border/-success themselves are
+     steps 1/3/4, this fills the missing step 2. Step 0 (no activity) reuses
+     --color-surface-strong below, already documented as "gray for unknown
+     levels". */
+  --color-heatmap-2: #a8d18d;
+  /* Streak / favorite — already a coherent, low-duplication family; kept
+     as-is. */
+  --color-streak-bg: #fff3e0;
+  --color-streak-border: #f0c896;
+  --color-streak-text: #b3541e;
+  --color-streak-icon: #f2994a;
+  --color-favorite: #a66c00;
+  --color-level-mid: #f2d96b;
+  /* Feature-specific accents */
+  --color-bonus: #5a3d82;
+  --color-bonus-hover: #72529d;
+  --color-bg-stat: #f7f9fc;
+  --color-bg-chrome: #d2dce5;
+  /* CEFR difficulty ramp — three hue families (green/amber/rose-red), two
+     lightness steps each, A1 (easiest) through C2 (hardest). Each bg/text
+     pair is tuned together for contrast; don't cross-blend a bg from one
+     step with the text from another. */
+  --color-cefr-a1-bg: #cfe5c0;
+  --color-cefr-a1-text: #2a4d14;
+  --color-cefr-a2-bg: #b3d8a3;
+  --color-cefr-a2-text: #2f4f17;
+  --color-cefr-b1-bg: #f7e3b0;
+  --color-cefr-b1-text: #5c4b11;
+  --color-cefr-b2-bg: #f0d39a;
+  --color-cefr-b2-text: #604b0e;
+  --color-cefr-c1-bg: #e9c3b4;
+  --color-cefr-c1-text: #5a2d25;
+  --color-cefr-c2-bg: #e0af92;
+  --color-cefr-c2-text: #5a2e18;
+  /* Third-party brand colors — do not retarget these at app tokens above;
+     they're exact external specs (Google Sign-In button), not app palette
+     choices. */
+  --color-border-google: #dadce0;
+  --color-google-text: #3c4043;
+}
+
+/* Visually hides content while keeping it in the accessibility tree —
+   e.g. a <label> that duplicates a control's aria-label for sighted users
+   who don't use assistive tech, or the skip-link below before it's focused. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10000;
+  padding: 10px 16px;
+  background: var(--color-ink);
+  color: var(--color-surface);
+  border-radius: 4px;
+  text-decoration: none;
+  /* Off-screen by a multiple of the link's own rendered height, rather
+     than a guessed fixed pixel offset (the previous top:-40px left part
+     of it visibly poking into the corner, since the real rendered height
+     was ~46px). A transform relative to the element's own size stays
+     fully off-screen regardless of font size, padding, or zoom. */
+  transform: translateY(-250%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* focusViewAfterNavigation() moves focus to the new view's heading after
+   route changes, purely so screen readers announce it -- the target isn't
+   interactive. Desktop Chromium's :focus-visible heuristics already hide
+   the ring for that kind of programmatic focus, but WebKit (all iOS
+   browsers, Chrome on iOS included) draws its default ring regardless, so
+   suppress it explicitly for this pattern. */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+a {
+  color: var(--color-interactive);
+}
+
+.alt-spelling {
+  display: block;
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 2px;
+  opacity: 0.75; /* Very subtle */
+}
+
+audio {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+}
+
+#back-button,
+#speed-btn,
+#toggle-english-btn {
+  background-color: var(--color-surface-subtle); /* Neutral light gray */
+  border: var(--color-border) 1px solid;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 115px;
+  padding: 0.5em 1em;
+  position: relative;
+  text-transform: uppercase;
+  transition: background-color 0.3s ease;
+  z-index: 1;
+}
+
+#back-button:hover,
+#speed-btn:hover,
+#toggle-english-btn:hover {
+  background-color: gainsboro; /* Slightly darker purple on hover */
+}
+
+/* Fixed, not just the shared rule's min-width: 115px — "Show English" and
+   "Hide English" aren't the same rendered width, so leaving it to
+   min-width let the button visibly resize every time the label toggled.
+   138px comfortably fits the wider of the two ("Show English", ~135px)
+   with a little breathing room. */
+#toggle-english-btn {
+  box-sizing: border-box;
+  width: 138px;
+}
+
+#audio-player {
+  display: none !important; /* Always hidden */
+}
+
+.back-navigation {
+  display: block; /* Block-level element to allow centering */
+  line-height: 30px; /* Matches height for vertical centering */
+  margin: 0 0 10px 0; /* Remove auto margin and set bottom margin only */
+  margin-bottom: 10px;
+  background-color: var(--color-surface); /* Subtle, lighter background */
+  color: var(--color-danger-text); /* Subtle maroon text */
+  border-radius: 6px; /* Slightly rounded corners */
+  padding: 8px 14px; /* Larger padding for a more clickable feel */
+  font-family:
+    "Source Sans 3", "Noto Sans", sans-serif; /* Clean, modern font */
+  font-size: 14px; /* Smaller font size for subtlety */
+  font-weight: 500; /* Slightly bolder text */
+  text-transform: uppercase; /* Uppercase for consistency */
+  letter-spacing: 0.03em; /* Slight letter spacing */
+  cursor: pointer; /* Pointer on hover */
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+  touch-action: manipulation; /* Helps reduce delay on mobile */
+  box-shadow:
+    0 4px 8px rgba(135, 135, 135, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  width: fit-content;
+  height: 30px;
+}
+
+.back-navigation:hover {
+  background-color: var(
+    --color-surface-hover
+  ); /* Slightly darker background on hover */
+  box-shadow:
+    0 6px 12px rgba(135, 135, 135, 0.3),
+    0 3px 6px rgba(0, 0, 0, 0.15); /* Slightly larger shadow */
+}
+
+button:disabled {
+  color: var(--color-border);
+  cursor: not-allowed;
+}
+
+/* Disable hover effects for disabled buttons */
+button:disabled:hover {
+  cursor: not-allowed; /* Keep the not-allowed cursor */
+}
+
+button:disabled i {
+  color: var(--color-border);
+  cursor: not-allowed;
+}
+
+.button-container i {
+  color: var(--color-ink);
+  margin-bottom: 10px;
+}
+
+.button-pron {
+  background-color: var(--color-surface-subtle); /* Neutral light gray */
+  border: var(--color-border) 1px solid;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  color: var(--color-text-on-light-btn);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-weight: 500;
+  padding: 0.5em 1em;
+  position: relative;
+  transition: background-color 0.3s ease;
+  z-index: 1;
+}
+
+.button-pron:hover {
+  background-color: gainsboro; /* Slightly darker purple on hover */
+}
+
+.cefr-audio-block {
+  display: flex;
+  flex-direction: column; /* stack vertically */
+  align-items: flex-start; /* left-align both items */
+  gap: 10px; /* small vertical gap between CEFR and icon */
+}
+
+.cefr-value {
+  border-radius: 4px;
+  color: var(--color-text-strong); /* Default text color */
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 3px 7px;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: nowrap;
+  width: 18px;
+}
+
+.cefr-value.a1,
+.sticky-cefr-label.a1 {
+  background-color: var(--color-cefr-a1-bg);
+  color: var(--color-cefr-a1-text);
+}
+
+.cefr-value.a2,
+.sticky-cefr-label.a2 {
+  background-color: var(--color-cefr-a2-bg);
+  color: var(--color-cefr-a2-text);
+}
+
+.cefr-value.b1,
+.sticky-cefr-label.b1 {
+  background-color: var(--color-cefr-b1-bg);
+  color: var(--color-cefr-b1-text);
+}
+
+.cefr-value.b2,
+.sticky-cefr-label.b2 {
+  background-color: var(--color-cefr-b2-bg);
+  color: var(--color-cefr-b2-text);
+}
+
+.cefr-value.c1,
+.sticky-cefr-label.c1 {
+  background-color: var(--color-cefr-c1-bg);
+  color: var(--color-cefr-c1-text);
+}
+
+.cefr-value.c2,
+.sticky-cefr-label.c2 {
+  background-color: var(--color-cefr-c2-bg);
+  color: var(--color-cefr-c2-text);
+}
+
+.cefr-value.cefr-unknown,
+.sticky-cefr-label.cefr-unknown {
+  background-color: var(--color-surface-strong); /* Gray for unknown levels */
+  color: var(--color-text-strong);
+}
+
+.clickable-definition-word {
+  cursor: pointer;
+  color: var(--color-interactive);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: rgba(60, 136, 212, 0.4);
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.clickable-definition-word:hover {
+  color: #1f4f80; /* darker and cooler than #2b6ca3 */
+  text-decoration-color: transparent; /* fades underline out smoothly */
+}
+
+#cloze-sentence {
+  font-weight: normal;
+  font-size: 1.2em;
+  line-height: 1.35; /* Preferred */
+  overflow: visible; /* Let text overflow if necessary */
+}
+
+.default-hidden-content {
+  display: none;
+}
+
+.definition {
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 25px;
+}
+
+/* First-visit data loading is long enough to be noticeable on slower
+   connections. This reserves the space occupied by the destination instead
+   of showing a blank page, while the small shimmer signals active progress
+   without competing with the page's primary heading. */
+.vocabulary-loading-shell {
+  min-height: 235px;
+  padding: 34px;
+  text-align: center;
+}
+
+.vocabulary-loading-shell h2 {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 22px;
+  margin: 0;
+}
+
+.vocabulary-loading-shell .vocabulary-loading-description {
+  color: var(--color-text-strong);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 15px;
+  margin: 10px 0 24px;
+}
+
+.vocabulary-loading-skeleton {
+  display: grid;
+  gap: 12px;
+  margin: 0 auto;
+  max-width: 440px;
+}
+
+.vocabulary-loading-skeleton-line {
+  animation: vocabulary-loading-shimmer 1.4s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    var(--color-surface-subtle) 20%,
+    var(--color-wash-blue) 50%,
+    var(--color-surface-subtle) 80%
+  );
+  background-size: 200% 100%;
+  border-radius: 999px;
+  height: 14px;
+}
+
+.vocabulary-loading-skeleton-line:nth-child(2) {
+  animation-delay: 0.12s;
+  width: 84%;
+}
+
+.vocabulary-loading-skeleton-line:nth-child(3) {
+  animation-delay: 0.24s;
+  width: 68%;
+}
+
+@keyframes vocabulary-loading-shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: -100% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vocabulary-loading-skeleton-line {
+    animation: none;
+  }
+}
+
+.definition-content {
+  display: grid;
+  column-gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.definition-content i {
+  margin-right: 8px;
+  color: var(--color-danger); /* Dark red color */
+  font-size: 18px; /* Slightly larger than the text */
+  width: 24px; /* Fixed width for uniformity */
+  text-align: center; /* Centers the icons within their block */
+  display: inline-block; /* Ensures icons behave like a fixed block */
+  vertical-align: middle; /* Ensures the icon is vertically aligned with the text */
+}
+
+.definition-content p {
+  color: var(--color-danger); /* Ensure text is also dark red */
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.definition p,
+li {
+  color: var(--color-text);
+  font-size: 20px;
+  line-height: 1.4;
+  margin: 10px 0 10px 0;
+}
+
+.english,
+.etymology,
+.pronunciation {
+  color: var(--color-text-strong) !important;
+  font-size: 16px !important;
+  font-weight: 500;
+}
+
+.distractor-muted {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.english-sentence {
+  color: var(--color-text-muted); /* Set a different color for English text */
+  font-family: "Source Serif 4", "Noto Serif", serif;
+}
+
+.english-title {
+  color: var(--color-text-muted);
+  font-family:
+    "Source Sans 3", "Noto Sans", sans-serif; /* English-specific font */
+  font-size: 14px;
+  -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
+  -webkit-line-clamp: 1; /* Limits the text to 1 line */
+}
+
+.error-message {
+  align-content: center;
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 25px;
+  color: var(--color-danger); /* Error type in a similar error color */
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Specific styling for the error message */
+.error-message h2 {
+  color: var(--color-danger); /* Error title in a distinct color */
+  font-size: 24px;
+}
+
+.error-message p {
+  color: var(--color-text-strong);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.example {
+  font-size: 16px !important;
+}
+
+#game-banner-placeholder {
+  align-self: baseline;
+  background-color: #f8f8f8;
+  color: var(--color-text-strong); /* Gray color, matching the scorecard */
+  text-align: center;
+  padding: 0px 6px !important; /* Smaller padding for a more compact banner */
+  border-radius: var(--radius-control);
+  font-size: 16px !important; /* Smaller font size to fit the text on one line */
+  font-family:
+    "Source Serif 4", "Noto Serif", serif; /* Using Source Serif 4, Noto Serif, sans-serif */
+  margin: 0 1px; /* Reduced spacing between banner and the rest */
+  margin-bottom: 5px;
+  max-width: 60%;
+  transition: opacity 0.5s ease-in-out; /* Smooth transition */
+  font-weight: 400;
+  user-select: none;
+}
+
+#game-banner-placeholder p {
+  line-height: 1.2;
+  margin: 1px !important;
+  overflow-wrap: anywhere;
+  width: 100%;
+}
+
+/* The label row has room for two banner lines. Keep that boundary explicit
+   so a celebration can never paint into the prompt below, even before the
+   measured font fitting in fitGameBannerText() runs (or if scripting is
+   unavailable). Normal messages retain their usual size; only text that
+   needs more than two lines is stepped down just enough to fit. */
+#game-banner-placeholder > div {
+  align-items: center;
+  display: flex;
+  max-height: 2.4em;
+  overflow: hidden;
+  width: 100%;
+}
+
+.game-my-words-star {
+  flex: 0 0 40px;
+}
+
+/* .word-list-favorite-button's own height (40px) gets narrowed to 30px
+   under max-width:1024px for the My Words list -- the flex-basis above
+   already re-pins the width back to 40px in that case, but height needs
+   the same explicit override, or the circle renders as a 40x30 oval.
+   Needs the two-class selector (not just .game-my-words-star) to
+   out-specificity that mobile override regardless of source order. */
+.word-list-favorite-button.game-my-words-star {
+  height: 40px;
+}
+
+/* Both empty and filled stars are muted before answering. */
+.game-my-words-star:disabled,
+.game-my-words-star.is-saved:disabled {
+  background-color: transparent;
+  color: #b5b5b5;
+  cursor: not-allowed;
+  opacity: 0.65;
+  transform: none;
+}
+
+.game-my-words-star:disabled:hover,
+.game-my-words-star.is-saved:disabled:hover {
+  background-color: transparent;
+  transform: none;
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-gap: 15px; /* Slightly increase space between the cards */
+  min-height: 159px;
+  /* Without this, a grid container defaults to hugging its content's width
+     rather than filling its parent — invisible in the word game's own
+     layout (a plain block parent, where that's the same thing), but the
+     placement test reuses .game-intro-card as its wrapper, whose
+     align-items:center centers flex children at their content width
+     instead of stretching them, collapsing this to two cramped columns. */
+  width: 100%;
+}
+
+/* Says what a question is actually asking for — previously the word/
+   sentence and four choices appeared with no instruction at all (see
+   getGameInstructionText() in wordGame.js). Sits above the gender/CEFR
+   row inside .game-word-card, so it reads first. */
+.game-instruction {
+  color: #4d6883; /* Softer than the original #3f5b7a (7.0:1 contrast) —
+     5.8:1 against white, comfortably clear of the 4.5:1 AA minimum for
+     this text size, just less attention-grabbing so the Norwegian word/
+     sentence in the card below reads as the main event. */
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  margin: 4px 0 8px;
+  overflow: hidden;
+  text-align: center;
+  /* Guarantees a single line regardless of viewport width or how long a
+     future instruction string might be — the mobile font-size below is
+     tuned so the longest current string ("Choose the word that completes
+     the sentence") fits without needing this ellipsis fallback at all. */
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.game-cefr-label {
+  align-self: flex-start; /* Align the label to the left */
+  padding: 3px 7px; /* Smaller padding */
+  font-size: 14px; /* Smaller font size */
+  color: var(--color-text-strong);
+  font-weight: 600;
+  border-radius: var(--radius-control);
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  white-space: nowrap; /* Prevent text wrapping */
+  min-width: 17.5px;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Same three-family ramp as .cefr-value above, at each family's darker
+   step, so the game's simplified easy/medium/hard badge and the word-page
+   full six-level badge read as the same system rather than two
+   independently-chosen palettes. */
+.game-cefr-label.easy,
+.game-cefr-label.a1,
+.game-cefr-label.a2 {
+  background-color: var(--color-cefr-a2-bg);
+}
+
+.game-cefr-label.medium,
+.game-cefr-label.b1,
+.game-cefr-label.b2 {
+  background-color: var(--color-cefr-b2-bg);
+}
+
+.game-cefr-label.hard,
+.game-cefr-label.c,
+.game-cefr-label.c1,
+.game-cefr-label.c2 {
+  background-color: var(--color-cefr-c2-bg);
+}
+
+.game-cefr-spacer {
+  align-items: safe flex-end;
+  display: flex;
+  flex: 0 0 60px;
+  gap: 5px; /* Optional: Space between the elements */
+  height: 60px;
+  max-height: 60px;
+  min-height: 60px;
+  overflow-y: auto;
+  text-align: center;
+  flex-direction: row;
+  width: 100%;
+}
+
+/* Example Sentences */
+.game-cefr-spacer p {
+  color: #413e3e;
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-size: 14px !important;
+  flex: 1; /* Makes each <p> element take up equal width */
+  text-align: center;
+  margin: 0;
+  line-height: 1.5;
+  hyphens: auto;
+  overflow-wrap: break-word;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* The prompt and its post-answer teaching content are separate surfaces
+   inside one fixed-size stage. The reveal shelf exists from the first frame,
+   so grading changes content and color only — never document geometry. */
+.game-learning-stage {
+  display: grid;
+  gap: 8px;
+  grid-template-rows: 180px 132px;
+  height: 320px;
+  margin-bottom: 15px;
+  width: 100%;
+}
+
+.game-learning-stage .game-word-card {
+  background: var(--color-surface);
+  border-color: #cfd9e2;
+  border-radius: 14px;
+  height: 180px;
+  justify-content: flex-start;
+  margin-bottom: 0 !important;
+  max-height: 180px;
+  min-height: 180px;
+  padding: 10px 14px;
+}
+
+.game-learning-stage .game-labels-container {
+  min-height: 44px;
+}
+
+.game-learning-stage .game-word {
+  flex: 1 1 auto;
+  height: auto;
+  max-height: none;
+  min-height: 76px;
+}
+
+.game-teaching-reveal {
+  align-items: stretch;
+  background-color: #f8fafc;
+  border: 1px solid #d8e1e8;
+  border-radius: 12px;
+  box-sizing: border-box;
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  height: 132px;
+  justify-content: center;
+  max-height: 132px;
+  min-height: 132px;
+  overflow: hidden;
+  padding: 9px 16px;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.game-teaching-reveal[data-state="correct"] {
+  border-color: var(--color-success-border);
+}
+
+.game-teaching-reveal[data-state="incorrect"] {
+  border-color: var(--color-danger-border);
+}
+
+.game-teaching-reveal[data-state="almost"] {
+  border-color: var(--color-streak-border);
+}
+
+.game-teaching-reveal[data-state="introduction"] {
+  background-color: #f6f9fd;
+  border-color: var(--color-wash-blue-border);
+  /* The card's height is fixed by the surrounding game-learning-stage
+     grid, so it can't grow to fit a wrapped note (see
+     .game-teaching-note-wrap below). Scroll rather than clip: a
+     short scroll is recoverable, a silently cut-off sentence is not. */
+  overflow: hidden auto;
+}
+
+.game-introduction-meaning {
+  color: #173a5e;
+  flex: 0 0 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.25;
+  margin: 0 0 2px;
+  text-align: left;
+}
+
+.game-introduction-target {
+  background: var(--color-streak-bg);
+  border-radius: 3px;
+  color: inherit;
+  padding: 0 2px;
+}
+
+.game-grid.game-introduction-grid {
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #d8e1e8;
+  border-radius: 12px;
+  box-sizing: border-box;
+  color: #587086;
+  min-height: 60px;
+  padding: 9px 16px;
+  text-align: center;
+}
+
+.game-introduction-grid p {
+  display: flex;
+  flex-direction: column;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  gap: 1px;
+  margin: 0;
+}
+
+.game-introduction-grid strong {
+  color: #20364d;
+  font-weight: 650;
+}
+
+.game-introduction-grid span {
+  font-size: 14px;
+}
+
+.game-teaching-reveal-placeholder {
+  color: #8796a4;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  text-align: center;
+}
+
+.game-teaching-cue {
+  display: -webkit-box;
+  color: #687b8c !important;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+  overflow: hidden;
+  text-align: center;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.game-teaching-outcome {
+  color: #20364d;
+  align-items: center;
+  display: flex;
+  flex: 0 0 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  gap: 8px;
+  line-height: 1.25;
+  min-height: 22px;
+}
+
+.game-teaching-outcome strong {
+  display: block;
+  font-weight: 550;
+  min-width: 0;
+  overflow: visible;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+.game-teaching-outcome-icon {
+  align-items: center;
+  border-radius: 50%;
+  border: 1.5px solid transparent;
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 24px;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+
+.game-teaching-outcome-icon svg {
+  display: block;
+  height: 12px;
+  width: 12px;
+}
+
+.game-teaching-outcome--correct .game-teaching-outcome-icon {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
+  color: var(--color-success-text);
+}
+
+.game-teaching-outcome--incorrect .game-teaching-outcome-icon {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+  color: var(--color-danger-text);
+}
+
+.game-teaching-outcome--almost .game-teaching-outcome-icon {
+  background-color: var(--color-streak-bg);
+  border-color: var(--color-streak-border);
+  color: var(--color-streak-text);
+}
+
+.game-teaching-context {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  justify-content: safe center;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-block: 1px;
+}
+
+.game-morphology-repair-note,
+.game-morphology-contrast {
+  color: #52697d;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
+  margin: 3px 0 0;
+  text-align: center;
+}
+
+.game-morphology-contrast {
+  color: #20364d;
+  font-weight: 650;
+  margin: 0;
+  text-align: left;
+}
+
+.game-teaching-sentence {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  color: #20364d;
+  cursor: pointer;
+  display: block;
+  flex: 0 0 auto;
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-size: 15px;
+  line-height: 1.35;
+  margin: 2px 0 0;
+  overflow: visible;
+  padding: 0;
+  text-align: left;
+}
+
+.game-teaching-sentence:focus-visible {
+  border-radius: 3px;
+  outline: 2px solid var(--color-interactive);
+  outline-offset: 2px;
+}
+
+.game-teaching-translation {
+  color: #687b8c !important;
+  display: block;
+  flex: 0 0 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.3;
+  margin: 2px 0 0;
+  overflow: visible;
+  text-align: left;
+}
+
+.game-teaching-note {
+  color: #587086;
+  flex: 0 0 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.2;
+  margin: 2px 0 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The word/answer pairing is the useful part of these notes, so let them
+   wrap instead of truncating behind an ellipsis. The card they sit in has a
+   fixed height (see [data-state="introduction"] above), so a wrap that
+   overflows it scrolls rather than clips. */
+.game-teaching-note-wrap {
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-teaching-reveal {
+    transition: none;
+  }
+
+  .game-correct-card,
+  .game-incorrect-card {
+    animation: none;
+  }
+}
+
+.game-correct-card {
+  background-color: #dce9d8 !important;
+  border-color: #7d9e73 !important;
+  color: #294622 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: game-card-pop 0.35s ease-out;
+}
+
+/*
+ * background-color above is !important, and CSS Animations can never win
+ * against an !important static declaration for the same property — so the
+ * feedback motion here is built from transform/box-shadow instead, which
+ * these cards don't otherwise set.
+ */
+@keyframes game-card-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.07);
+    box-shadow: 0 0 0 3px rgba(42, 77, 20, 0.35);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.game-english-translation {
+  color: gray !important;
+  cursor: default;
+}
+
+.game-gender {
+  align-self: flex-start; /* Align the label to the left */
+  background-color: var(--color-surface-subtle);
+  border-radius: var(--radius-control);
+  color: var(--color-text-strong) !important;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  padding: 3px 7px;
+  font-size: 14px; /* Smaller font size */
+  font-weight: 600 !important;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0px 0px 6px 0px !important;
+  min-width: fit-content;
+  user-select: none; /* Prevent text selection */
+}
+
+.game-incorrect-card {
+  background-color: #f2deda !important;
+  border-color: #b9867d !important;
+  color: #682f27 !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: game-card-shake 0.4s ease-in-out;
+}
+
+@keyframes game-card-shake {
+  10%,
+  90% {
+    transform: translateX(-1px);
+  }
+  20%,
+  80% {
+    transform: translateX(2px);
+  }
+  30%,
+  50%,
+  70% {
+    transform: translateX(-4px);
+  }
+  40%,
+  60% {
+    transform: translateX(4px);
+  }
+}
+
+.game-label-subgroup {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  flex-direction: column;
+}
+
+/* Keep the game-card controls horizontal. align-items:center (rather than
+   flex-start) matters here because the star button is a fixed 40x40px
+   circle while the tricky-word badge is much shorter — top-aligning them
+   left their midpoints at different heights, so they didn't read as being
+   on the same row. Centering lines up their visual middles regardless of
+   the size difference. */
+.game-label-subgroup.game-card-actions-subgroup {
+  align-items: center;
+  flex-direction: row;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.game-card-actions-subgroup .game-tricky-word {
+  align-self: center;
+}
+
+/* Three real columns (rather than the banner spanning grid-column:1/-1
+   over the same row as the other two) so the banner has its own space and
+   can't visually overlap or touch the icon group on the right. The two
+   outer columns share a floor (72px — roughly the icon group's own
+   width, the wider of the two sides) rather than each sizing to just
+   its own content — with plain `auto` columns, a bare `1fr auto 1fr`,
+   or anything else where the columns can end up different widths, the
+   banner (centered within just the middle track) drifts off-center from
+   the card as a whole. A shared floor keeps both tracks — and so the
+   middle track and the banner in it — the same width and centered,
+   while `justify-self` below still pins each side's actual content to
+   its outer edge, so nothing visually shifts inward. */
+.game-labels-container {
+  align-items: start;
+  display: grid;
+  grid-template-columns: minmax(72px, 1fr) auto minmax(72px, 1fr);
+  gap: 10px;
+  min-height: 58px;
+  width: 100%;
+}
+
+.game-labels-container > .game-label-subgroup:first-child {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: start;
+}
+
+.game-labels-container > #game-banner-placeholder {
+  box-sizing: border-box;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  margin: 0 0 5px;
+  max-width: 100%;
+}
+
+.game-labels-container > .game-card-actions-subgroup {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+}
+
+#game-next-word-button {
+  margin-top: 15px;
+  width: 100%;
+  background-color: #173a5e;
+  color: var(--color-surface);
+  border: 1px solid #173a5e;
+  box-shadow: none;
+  border-radius: 9px;
+  padding: 17px 15px;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 550;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  user-select: none; /* Prevent text selection */
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+}
+
+/* Typed recall has one full-width answer card rather than a two-row choice
+   grid. Keep just a small separation before the primary action. */
+.game-typed-grid ~ .game-next-button-container #game-next-word-button {
+  margin-top: 15px;
+}
+
+#game-next-word-button:hover {
+  background-color: var(
+    --color-accent
+  ); /* Same hover treatment as the search button */
+  border-color: var(--color-accent);
+}
+
+#game-next-word-button:active {
+  background-color: var(--color-ink-active); /* Darker background on click */
+  border-color: var(--color-ink-active);
+}
+
+#game-next-word-button:disabled {
+  background-color: var(--color-ink);
+  color: var(--color-surface);
+  border-color: var(--color-ink);
+  cursor: not-allowed; /* Disabled cursor */
+  box-shadow: none; /* No shadow when disabled */
+  opacity: 0.4;
+}
+
+.game-pronunciation {
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.02rem;
+  margin: 0;
+}
+
+.game-pronunciation-slot {
+  align-items: center;
+  color: var(--color-text-slate);
+  display: flex;
+  flex: 0 0 22px;
+  justify-content: center;
+  min-height: 22px;
+  width: 100%;
+}
+
+.game-tricky-word {
+  align-self: flex-end; /* Align to the top */
+  padding: 3px 7px; /* Same padding as CEFR label */
+  font-size: 14px; /* Same font size as CEFR label */
+  color: var(--color-text-strong);
+  font-weight: 600;
+  border-radius: var(--radius-control);
+  text-transform: uppercase;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  white-space: nowrap; /* Prevent text wrapping */
+  background-color: #fae5c3;
+  visibility: hidden; /* Initially hidden but space is reserved */
+}
+
+.game-tricky-word.visible {
+  visibility: visible; /* When the label should be shown */
+}
+
+/* Stats Card Styling */
+.game-stats-content {
+  align-items: stretch; /* Keeps the two side boxes and the middle progress
+     bar/instruction column on one visual row regardless of their differing
+     heights — flex-start (the previous value) top-aligned them instead,
+     which left the middle column looking offset whenever it was shorter
+     (or taller, e.g. with Quit & see stats above it) than the side boxes. */
+  display: flex;
+  width: 100%; /* Ensure the content takes up full width */
+  gap: 16px;
+  margin: 0 0 12px;
+}
+
+/* .game-instruction (the question prompt, e.g. "Choose the English
+   meaning") is rendered nested inside .game-stats-progress-wrapper (see
+   renderStats(), wordGame.js), stacked directly under the bar rather than
+   as a separate full-width line below the whole stats row. A separate row
+   there sized to the shorter correct/incorrect boxes' own height, but
+   still had to extend for the instruction text anyway -- leaving a blank
+   gutter beside those boxes before the word card. Nesting it here means
+   the row's total height is just whichever column is naturally tallest,
+   with no leftover dead space. Was tuned (font-size, white-space:nowrap)
+   to fit as a single line spanning the full stats row; this column is
+   much narrower, so it needs to wrap instead. */
+.game-stats-progress-wrapper > .game-instruction {
+  color: #4e6986;
+  font-size: 15px;
+  font-weight: 400;
+  margin: 10px 0 0;
+  text-transform: none;
+  overflow: visible;
+  text-overflow: clip;
+  white-space: normal;
+}
+
+/* Correct box styling */
+.game-stats-correct-box {
+  background-color: #f8fafc;
+  border: 1px solid #d8e1e8;
+  border-radius: 12px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  text-align: center;
+  color: var(--color-surface);
+  min-width: 80px;
+  max-width: 92px; /* Keep it compact — the label used to stretch this
+     as wide as it needed to avoid wrapping at all; this caps it and lets
+     the label wrap onto a second line instead. */
+  /* .game-stats-content now uses align-items:flex-start (rather than
+     the flex default, stretch) specifically so this box sizes to its own
+     content instead of stretching to match the middle column's height —
+     this centering is what keeps the label+number stack tidy within
+     that now-content-driven height. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Incorrect box styling */
+.game-stats-incorrect-box {
+  background-color: #f8fafc;
+  border: 1px solid #d8e1e8;
+  border-radius: 12px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  text-align: center;
+  color: var(--color-surface);
+  min-width: 80px;
+  max-width: 92px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Text styling for the numbers — scoped to the number itself (rather than
+   a blanket "p" selector) so the caption added above it
+   (.game-stat-label, see renderStats() in wordGame.js) can use its own,
+   much smaller size/color without this rule's !important winning. Colors
+   darkened from the original #6b9461/#b5634d (~2.2-2.5:1 against their
+   box backgrounds, well under WCAG AA's 4.5:1 minimum for this size/
+   weight of text) to #254a1d/#6b2814 (7.3:1 / 5.4:1). */
+.game-stats-correct-box #streak-count {
+  color: #20364d !important;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0;
+  user-select: none; /* Prevent text selection */
+}
+
+.game-stats-incorrect-box #review-count {
+  color: #20364d !important;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 24px;
+  font-weight: 400;
+  margin: 0;
+  user-select: none; /* Prevent text selection */
+}
+
+/* Shared caption styling for the three stat labels — "Correct in a row",
+   "Words to review", and "Round progress"/"Recent accuracy" — that make
+   the two side counters and the middle progress bar/percentage
+   self-explanatory instead of bare numbers. */
+.game-stat-label {
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.3;
+  margin: 2px 0 0;
+  text-align: center;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.game-stats-correct-box .game-stat-label {
+  color: #58708a;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.game-stats-incorrect-box .game-stat-label {
+  color: #58708a;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.game-stats-progress-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.game-stats-progress-wrapper .game-stat-label {
+  color: var(--color-text-muted);
+}
+
+.game-progress-heading {
+  color: #4e6986;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  margin: 0 0 10px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.game-translation-card {
+  appearance: none;
+  background-color: var(--color-surface); /* Same as the word card */
+  border: 1px solid #c9d5df;
+  border-radius: 10px;
+  box-sizing: border-box;
+  padding: 10px;
+  position: relative; /* Anchors the correct/incorrect ::after badge */
+  text-align: center; /* Centered text */
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  /* Smaller than the card's 1.2em original so a 2-3 word phrase still
+     clears the fixed card height below without needing to scroll. */
+  font-size: 1.05em !important;
+  color: #20364d;
+  font-weight: 500;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease;
+  cursor: pointer; /* Make it clickable */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 72px;
+  max-height: 72px;
+  min-height: 72px;
+  min-width: 0;
+  margin: 0;
+  line-height: 1.25em; /* Reduce line spacing slightly */
+  /* Long words (Norwegian compounds especially, e.g. "salgsrepresentanten")
+     wrap at real syllable boundaries with a hyphen instead of getting cut
+     at an arbitrary character — needs each card's lang attribute (set per
+     card below, since options can be Norwegian or English depending on
+     the exercise direction) so the browser picks the right hyphenation
+     dictionary. overflow-wrap is just the fallback for the rare word a
+     dictionary doesn't cover. */
+  hyphens: auto;
+  overflow-wrap: break-word;
+  /* The card's height is fixed (never grows to fit long text), so an
+     overflowing answer must be clipped, not scrollable — a scrollbar here
+     would need room to be seen/used, which a 72px answer card doesn't have. */
+  overflow-y: hidden;
+}
+
+.game-translation-card:hover {
+  background-color: #f3f7fb;
+  border-color: #9fb5c8;
+}
+
+/* Grading disables every answer card to prevent a second response. Keep the
+   answer text at its normal readable color instead of inheriting the global
+   pale-gray disabled-button treatment; color and animation already explain
+   which answer was right. */
+.game-translation-card:disabled {
+  color: var(--color-text);
+  cursor: default;
+}
+
+.game-translation-card:focus-visible {
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 3px;
+}
+
+/* Typed recall occupies the same answer area and uses the same type, border,
+   radius, and primary blue as the existing cards/buttons. It is a
+   new interaction, but not a new visual language. */
+.game-grid.game-typed-grid {
+  align-content: start;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 0;
+}
+
+.game-typed-answer-form {
+  height: auto;
+  overflow: visible;
+  width: 100%;
+}
+
+.game-typed-answer-row {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+
+.game-norwegian-letter-keys {
+  align-items: stretch;
+  display: flex;
+  gap: 5px;
+}
+
+.game-norwegian-letter-key {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 1.15em;
+  font-weight: 400;
+  min-width: 38px;
+  padding: 8px 9px;
+}
+
+.game-norwegian-letter-key:hover {
+  background-color: #f3f7fb;
+  border-color: #9fb5c8;
+}
+
+.game-norwegian-letter-key:focus-visible {
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 3px;
+}
+
+.game-norwegian-letter-key:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.game-typed-answer-input {
+  appearance: none;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--color-text);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 1.2em;
+  min-height: 60px;
+  min-width: 0;
+  padding: 10px 15px;
+  text-align: center;
+  width: 100%;
+}
+
+.game-typed-answer-input:focus,
+.game-typed-answer-input:focus-visible {
+  border-color: var(--color-border);
+  outline: none;
+}
+
+.game-typed-submit {
+  background-color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-control);
+  color: var(--color-surface);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  padding: 10px 28px;
+  text-transform: uppercase;
+}
+
+.game-typed-submit:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.game-typed-submit:focus-visible {
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 3px;
+}
+
+.game-typed-submit:disabled {
+  cursor: default;
+  opacity: 0.4;
+}
+
+.game-typed-answer-form.is-correct .game-typed-answer-input {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
+}
+
+.game-typed-answer-form.is-incorrect .game-typed-answer-input {
+  background-color: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
+}
+
+.game-typed-answer-form.is-almost .game-typed-answer-input {
+  background-color: var(--color-streak-bg);
+  border-color: var(--color-streak-border);
+}
+
+/* Rendered inside #game-banner-placeholder (see updateTypedAnswerFeedback,
+   wordGame.js) — the gray box itself, its text color included, is
+   #game-banner-placeholder's own background/padding/radius/color, same as
+   every other banner that lives there (streak, cleared-practice, saved/
+   removed word), so nothing needs restating here. */
+
+/* Answer feedback is announced to assistive technology without introducing
+   a new visible message; the existing green/red treatment remains the sole
+   visual feedback. */
+.game-answer-status {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.game-word {
+  align-items: safe center; /* Center short prompts; start long overflow safely. */
+  display: flex;
+  flex: 0 0 7rem;
+  height: 7rem;
+  justify-content: safe center;
+  max-height: 7rem;
+  min-height: 7rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+  text-align: center;
+  cursor: default;
+  user-select: none;
+  width: 100%;
+}
+
+/* Sentences (cloze) land in this tier far more often than single vocab
+   words do — a smaller step down from the default than "long" so a
+   typical short sentence doesn't still read at near-heading size. */
+.game-word.game-prompt-medium h2 {
+  font-size: clamp(18px, 2.6vw, 23px) !important;
+  line-height: 1.3;
+}
+
+.game-word.game-prompt-long h2 {
+  font-size: clamp(17px, 2.1vw, 21px) !important;
+  line-height: 1.3;
+}
+
+.game-word.game-prompt-extra-long h2 {
+  font-size: clamp(15px, 1.7vw, 18px) !important;
+  line-height: 1.3;
+}
+
+.game-word-audio {
+  cursor: pointer;
+}
+
+/* Text prompts retain their bounded vertical scrolling for unusually long
+   words/sentences. The listening prompt contains only a fixed-size audio
+   control, so clipping it creates hard horizontal cuts through the button's
+   shadow. Let that shadow paint into the prompt card's reserved breathing
+   room instead. */
+.game-word.game-listening-prompt {
+  overflow: visible;
+}
+
+.game-listening-prompt .game-listening-icon {
+  /* The dark circular control and its lower shadow carry more visual weight
+     than the empty space above them. A small trailing margin centers that
+     combined shape optically without changing the prompt card's geometry. */
+  margin-bottom: 8px;
+}
+
+.game-word h2 {
+  /* Higher specificity than the shared h2{font-size:30px} rule, so this
+     wins without needing !important — the tiers above still take over via
+     their extra class the moment a prompt stops being a short word. */
+  font-size: clamp(20px, 3.4vw, 28px);
+  line-height: 1.25;
+  margin: 0;
+  color: #173a5e;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-weight: 500 !important;
+}
+
+/* Listening questions show this in place of the word's text pre-answer —
+   styled as its own solid circular button (rather than plain text-sized
+   glyph) so it clearly reads as "tap to play" rather than as inert
+   decoration, with a slow pulse to draw the eye to it on first render. */
+.game-listening-icon {
+  align-items: center;
+  background-color: var(--color-ink);
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(13, 58, 105, 0.35);
+  color: var(--color-surface);
+  /* Font Awesome's own base rule (.fas/.fa-solid) was winning the cascade
+     and resolving this to display:block, which silently made
+     align-items/justify-content inert (they only affect flex/grid
+     containers) — the glyph was landing in normal block/inline flow
+     instead: left-aligned and pinned to the top of the box, not centered
+     either direction. !important guarantees this wins regardless of how
+     Font Awesome's own selector is written. */
+  display: flex !important;
+  font-size: 2.25rem;
+  height: 5.5rem;
+  width: 5.5rem;
+  justify-content: center;
+  /* The fa-volume-up glyph's own ink (speaker cone + sound-wave arcs) bulges
+     right of center within its character box — a flex-centered box alone
+     still reads as visually off-center. Nudging the content left with
+     padding (rather than the box itself) fixes the optical centering
+     without moving the button. */
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.15s ease;
+  animation: game-listening-icon-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes game-listening-icon-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-listening-icon {
+    animation: none;
+  }
+}
+
+.game-word-audio:hover .game-listening-icon {
+  background-color: var(--color-interactive);
+  box-shadow: 0 6px 14px rgba(13, 58, 105, 0.45);
+}
+
+.game-word-audio:active .game-listening-icon {
+  transform: scale(0.94);
+}
+
+.game-word-audio:focus-visible .game-listening-icon {
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 3px;
+}
+
+/* Word Game intro screen — mode picker shown before every round. */
+.game-intro-card {
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.game-today-practice {
+  background: #f6f9fd;
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: var(--radius-card);
+  box-sizing: border-box;
+  margin-bottom: 18px;
+  padding: 18px;
+  text-align: left;
+  width: 100%;
+}
+
+.game-today-practice-heading-row,
+.game-daily-quests-heading-row {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.game-today-practice-eyebrow {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0 0 2px;
+  text-transform: uppercase;
+}
+
+.game-today-practice .game-intro-heading {
+  margin-bottom: 0;
+  text-align: left;
+}
+
+.game-today-practice-count {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 1.1em;
+  white-space: nowrap;
+}
+
+.game-today-practice-note {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  margin: 9px 0 10px;
+}
+
+.game-today-practice-progress {
+  background-color: #dfe7ef;
+  border-radius: 999px;
+  height: 8px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.game-today-practice-progress span {
+  background-color: #6b9e5e;
+  display: block;
+  height: 100%;
+  transition: width 0.25s ease;
+}
+
+.game-today-practice--emerald {
+  border-color: #b9d9ca;
+}
+
+.game-today-practice--ruby {
+  border-color: #e2bbc3;
+}
+
+.game-today-practice--ruby .game-today-practice-progress span {
+  background-color: #b94b5b;
+}
+
+.game-today-practice--sapphire {
+  border-color: #b9cfe5;
+}
+
+.game-today-practice--sapphire .game-today-practice-progress span {
+  background-color: #3478b9;
+}
+
+.game-today-practice-btn {
+  align-items: center;
+  background-color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-control);
+  color: var(--color-surface);
+  cursor: pointer;
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 7px;
+  justify-content: center;
+  letter-spacing: var(--letter-spacing-caps);
+  margin-top: 14px;
+  min-height: 44px;
+  padding: 10px 16px;
+  text-transform: uppercase;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  width: 100%;
+}
+
+.game-today-practice-btn:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.game-today-practice-btn.is-complete {
+  background-color: var(--color-success);
+  border-color: var(--color-success);
+}
+
+.game-today-practice-btn.is-bonus {
+  background-color: var(--color-bonus);
+  border-color: var(--color-bonus);
+}
+
+.game-today-practice-btn.is-bonus:hover {
+  background-color: var(--color-bonus-hover);
+  border-color: var(--color-bonus-hover);
+}
+
+/* Advanced choices are intentionally one disclosure below the recommended
+   daily round. The selected My Words percentage remains visible once open,
+   without requiring a separate settings destination. */
+.game-more-practice {
+  border-top: 1px solid var(--color-border);
+  margin-top: 24px;
+  padding-top: 4px;
+  text-align: left;
+  width: 100%;
+}
+
+.game-more-practice > summary {
+  align-items: center;
+  color: #35516d;
+  cursor: pointer;
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  justify-content: space-between;
+  letter-spacing: 0.04em;
+  list-style: none;
+  padding: 14px 0;
+  text-transform: uppercase;
+}
+
+.game-more-practice > summary::-webkit-details-marker {
+  display: none;
+}
+
+.game-more-practice > summary::after {
+  color: var(--color-text-faint);
+  content: "+";
+  font-size: 1.35em;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.game-more-practice[open] > summary::after {
+  content: "−";
+}
+
+.game-more-practice > summary:focus-visible,
+.game-secondary-drill-btn:focus-visible {
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 3px;
+}
+
+.game-more-practice-content {
+  display: grid;
+  gap: 22px;
+  padding: 5px 0 2px;
+}
+
+.game-my-words-mix,
+.game-custom-rounds,
+.game-secondary-drill {
+  border-top: 1px solid var(--color-border);
+  padding-top: 18px;
+}
+
+.game-option-heading-row {
+  align-items: center;
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+}
+
+.game-option-heading-row h3 {
+  color: #35516d;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.game-option-heading-row p {
+  color: #4e6986;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 5px 0 0;
+}
+
+.game-option-heading-row p strong {
+  color: #35516d;
+  font-weight: 600;
+}
+
+/* These short setup notes introduce a control group rather than belonging
+   to the controls themselves. Give that relationship a visible pause so
+   the copy never appears stuck to the first row of buttons. */
+.game-my-words-mix .game-option-heading-row,
+.game-custom-rounds .game-option-heading-row {
+  margin-bottom: 13px;
+}
+
+.game-secondary-drill-btn {
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 6px;
+  letter-spacing: 0.03em;
+  padding: 9px 11px;
+  text-transform: uppercase;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.game-secondary-drill-btn:hover {
+  background-color: var(--color-wash-blue);
+  border-color: var(--color-accent);
+  color: var(--color-ink);
+}
+
+.game-daily-quests {
+  text-align: left;
+  width: 100%;
+}
+
+.game-daily-quests-heading-row h3 {
+  color: var(--color-ink);
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: 1.1em;
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-caps-heading);
+  margin: 0;
+}
+
+.game-daily-quests-heading-row > span {
+  color: var(--color-text-faint);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+}
+
+.game-daily-quest-list {
+  display: grid;
+  gap: 9px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.game-daily-quest {
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 1px solid #d6dce2;
+  border-radius: var(--radius-card);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 178px;
+  padding: 15px 10px 12px;
+  text-align: center;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.game-daily-quest--active {
+  background-color: var(--color-wash-blue-active);
+  border-color: var(--color-wash-blue-active-border);
+  box-shadow: 0 5px 16px rgba(13, 58, 105, 0.1);
+  transform: translateY(-2px);
+}
+
+.game-daily-quest--locked {
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-faint);
+}
+
+.game-daily-quest--complete {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
+}
+
+.game-daily-quest-gem {
+  display: block;
+  filter: drop-shadow(0 3px 4px rgba(28, 42, 58, 0.18));
+  flex: 0 0 auto;
+  height: 68px;
+  overflow: visible;
+  width: 68px;
+}
+
+.game-daily-quest-gem--emerald {
+  --quest-gem-dark: #087158;
+  --quest-gem-edge: #075342;
+  --quest-gem-light: #66d6b0;
+  --quest-gem-mid: #19a77c;
+}
+
+.game-daily-quest-gem--ruby {
+  --quest-gem-dark: #942f4a;
+  --quest-gem-edge: #712338;
+  --quest-gem-light: #f08da2;
+  --quest-gem-mid: #d14d69;
+}
+
+.game-daily-quest-gem--sapphire {
+  --quest-gem-dark: #315f9d;
+  --quest-gem-edge: #244875;
+  --quest-gem-light: #8db6e5;
+  --quest-gem-mid: #4d83c5;
+}
+
+.quest-gem-frame {
+  fill: var(--quest-gem-mid);
+  stroke: var(--quest-gem-edge);
+  stroke-linejoin: round;
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.quest-gem-facet {
+  stroke: var(--quest-gem-edge);
+  stroke-linejoin: round;
+  stroke-width: 0.65;
+  vector-effect: non-scaling-stroke;
+}
+
+.quest-gem-facet--top-left,
+.quest-gem-facet--lower-right {
+  fill: var(--quest-gem-light);
+}
+
+.quest-gem-facet--top-center,
+.quest-gem-facet--lower-left {
+  fill: var(--quest-gem-mid);
+}
+
+.quest-gem-facet--top-right,
+.quest-gem-facet--lower-center {
+  fill: var(--quest-gem-dark);
+}
+
+.quest-gem-highlight {
+  fill: rgba(255, 255, 255, 0.72);
+}
+
+.quest-gem-earned-mark {
+  display: none;
+}
+
+.game-daily-quest--complete .quest-gem-earned-mark,
+.landing-daily-quest-step--complete .quest-gem-earned-mark,
+.game-daily-quest-gem--earned .quest-gem-earned-mark {
+  display: block;
+}
+
+.quest-gem-earned-mark circle {
+  fill: var(--color-surface);
+  stroke: #39735d;
+  stroke-width: 1.5;
+}
+
+.quest-gem-earned-mark path {
+  fill: none;
+  stroke: #39735d;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+.game-daily-quest--locked .game-daily-quest-gem {
+  filter: none;
+}
+
+.game-daily-quest--locked .quest-gem-frame,
+.landing-daily-quest-step--locked .quest-gem-frame {
+  fill: var(--color-surface-subtle);
+  stroke: #8793a0;
+}
+
+.game-daily-quest--locked .quest-gem-facet,
+.landing-daily-quest-step--locked .quest-gem-facet {
+  fill: transparent;
+  stroke: #a2abb5;
+}
+
+.game-daily-quest--locked .quest-gem-highlight,
+.landing-daily-quest-step--locked .quest-gem-highlight {
+  display: none;
+}
+
+.game-daily-quest-copy {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.game-daily-quest-title {
+  color: #31465b;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.game-daily-quest-target,
+.game-daily-quest-status {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.game-daily-quest-status {
+  font-weight: 600;
+  margin-top: auto;
+  text-transform: uppercase;
+}
+
+.game-daily-quest--complete .game-daily-quest-status {
+  color: var(--color-success);
+}
+
+.game-intro-divider {
+  align-items: center;
+  color: var(--color-text-faint);
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  gap: 10px;
+  letter-spacing: 0.04em;
+  margin: 22px 0 8px;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.game-intro-divider::before,
+.game-intro-divider::after {
+  background-color: #d9dde2;
+  content: "";
+  flex: 1;
+  height: 1px;
+}
+
+.game-intro-heading {
+  color: var(--color-ink);
+  font-size: 1.4em;
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-caps-heading);
+  margin: 0 0 8px 0;
+}
+
+.game-intro-subheading {
+  color: var(--color-text-muted);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 0.95em;
+  margin: 0 0 18px 0;
+}
+
+/* Both pickers below (round size, My Words mix) share one calm, minimal
+   card language — plain surface + border by default, a light blue "wash"
+   on hover, and a slightly deeper wash for a persisted selection (never a
+   solid fill) — the same active/selected treatment as the Daily quests
+   gem cards above and the Words/Sentences/Stories mode tabs. Each picker
+   is always exactly one row: as many equal columns as it has buttons, so
+   nothing wraps to a second line. */
+.game-intro-options {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+}
+
+.game-intro-option,
+.game-my-words-option {
+  align-items: center;
+  background-color: #f8fafc;
+  border: 1px solid #d8e1e8;
+  border-radius: 10px;
+  color: #35516d;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  gap: 4px;
+  justify-content: center;
+  padding: 14px 6px;
+  text-align: center;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.15s ease;
+  user-select: none;
+}
+
+.game-intro-option:hover,
+.game-my-words-option:hover {
+  background-color: #f3f7fb;
+  border-color: #b8c8d6;
+}
+
+.game-intro-option:active,
+.game-my-words-option:active {
+  transform: scale(0.97);
+}
+
+.game-intro-option-count {
+  font-size: 1.4em;
+  font-weight: 700;
+}
+
+.game-intro-option-label {
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.game-intro-option-infinite i {
+  font-size: 1.4em;
+}
+
+.game-my-words-options {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  width: 100%;
+}
+
+/* A persisted setting (unlike the round-size buttons, which just fire an
+   action), so it keeps a visible resting state — the same wash-blue-active
+   fill + border as an active Daily quest card, not the heavier solid-color
+   fill this used before. */
+.game-my-words-option.is-selected {
+  background-color: #eaf2f8;
+  border-color: #9fb5c8;
+  color: #35516d;
+}
+
+.game-my-words-option-value {
+  font-size: 1.25em;
+  font-weight: 700;
+}
+
+.game-my-words-option-label {
+  font-size: 14px;
+  letter-spacing: 0.02em;
+}
+
+.placement-card {
+  gap: 10px;
+}
+
+.placement-option-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.placement-option-btn {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 0.95em;
+  padding: 14px 16px;
+  text-align: left;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.placement-option-btn:hover {
+  background-color: var(--color-wash-blue);
+  border-color: var(--color-accent);
+}
+
+.placement-option-btn:focus-visible {
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 2px;
+}
+
+.placement-start-btn {
+  align-items: center;
+  background-color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-control);
+  color: var(--color-surface);
+  cursor: pointer;
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  justify-content: center;
+  margin-top: 6px;
+  min-height: 44px;
+  padding: 10px 16px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  width: 100%;
+}
+
+.placement-start-btn:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.placement-progress {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  margin: 0 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.placement-retake-link {
+  background: none;
+  border: 0;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  justify-self: start;
+  margin: -4px 0 0;
+  padding: 4px 0;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.placement-retake-link:hover {
+  color: var(--color-accent);
+  text-decoration-color: currentColor;
+}
+
+.placement-retake-link:focus-visible {
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .game-intro-card {
+    padding: 20px 12px;
+  }
+
+  .game-today-practice {
+    padding: 14px;
+  }
+
+  .game-daily-quest-list {
+    gap: 6px;
+  }
+
+  .game-daily-quest {
+    min-height: 166px;
+    padding: 11px 5px 9px;
+  }
+
+  .game-daily-quest-gem {
+    height: 54px;
+    width: 54px;
+  }
+
+  .game-daily-quest-title {
+    font-size: 14px;
+  }
+
+  .game-daily-quest-target,
+  .game-daily-quest-status {
+    font-size: 14px;
+  }
+}
+
+/* Word Game round-summary screen — shown when a bounded round finishes or
+   an infinite round is manually ended (see the toolbar control in
+   35-navigation.css). */
+.game-summary-card {
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column;
+  padding: 32px 24px 24px;
+  text-align: center;
+}
+
+.game-summary-hero {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+
+.game-summary-check {
+  align-items: center;
+  background-color: var(--color-success-bg);
+  border: 1px solid var(--color-success-border);
+  border-radius: 50%;
+  color: var(--color-success);
+  display: inline-flex;
+  font-size: 1.15em;
+  height: 42px;
+  justify-content: center;
+  width: 42px;
+}
+
+.game-summary-check--listening {
+  background-color: var(--color-wash-blue);
+  border-color: var(--color-wash-blue-border);
+  color: var(--color-ink);
+}
+
+.game-summary-reward-gem {
+  filter: drop-shadow(0 4px 6px rgba(28, 42, 58, 0.16));
+  height: 58px;
+  width: 58px;
+}
+
+p.game-summary-eyebrow {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  margin: 0;
+  text-transform: uppercase;
+}
+
+.game-summary-heading {
+  color: var(--color-ink);
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: 1.55em;
+  font-weight: 600;
+  margin: 0 0 18px;
+}
+
+.game-summary-gems {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: -6px 0 20px;
+  width: 100%;
+}
+
+.game-summary-gem {
+  align-items: center;
+  background-color: var(--color-bg-stat);
+  border: 1px solid #d8dee5;
+  border-radius: var(--radius-card);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 4px;
+  max-width: 110px;
+  padding: 9px 6px;
+}
+
+/* Shown when recordStreakActivity() (streak.js) reports an active streak
+   after this round — see showWordGameRoundSummary() in wordGame.js. */
+.game-summary-streak {
+  align-items: center;
+  background-color: var(--color-streak-bg);
+  border: 1px solid var(--color-streak-border);
+  border-radius: var(--radius-card);
+  color: var(--color-streak-text);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  margin: -2px 0 16px;
+  padding: 8px 0px;
+  width: 100%;
+}
+
+.game-summary-streak-count {
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 1.1em;
+  font-weight: 700;
+}
+
+.game-summary-streak .fa-fire {
+  color: var(--color-streak-icon);
+  margin-right: 4px;
+}
+
+.game-summary-streak-note {
+  color: #8a5a2e;
+  font-size: 14px;
+  margin: 0;
+  width: 100%;
+}
+
+.game-summary-stats {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 18px;
+  width: 100%;
+}
+
+.game-summary-stat {
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: 13px 10px;
+}
+
+.game-summary-stat:first-child {
+  background-color: var(--color-wash-blue);
+  border-color: var(--color-wash-blue-border);
+}
+
+/* The "p." tag qualifier isn't decorative — both are always literally
+   <p> tags (see wordGame.js's round summary and myStats.js's
+   createStatTile), and My Stats now nests them inside a .definition card
+   (for its own single-paper redesign). .definition p, li's global 20px
+   otherwise wins on specificity over these classes' 1.5em/0.8em alone,
+   flattening value and label to the same size and losing the
+   big-number/small-label hierarchy entirely. */
+p.game-summary-stat-value {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 1.5em;
+  font-weight: 700;
+  margin: 0;
+}
+
+p.game-summary-stat-label {
+  color: var(--color-text-muted);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.03em;
+  margin: 4px 0 0 0;
+  text-transform: uppercase;
+}
+
+.game-summary-primary-btn {
+  background-color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-control);
+  box-shadow: none;
+  color: var(--color-surface);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 550;
+  letter-spacing: 0.04em;
+  padding: 13px 16px;
+  text-transform: uppercase;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  user-select: none;
+  width: 100%;
+}
+
+.game-summary-actions {
+  display: grid;
+  gap: 9px;
+  margin-bottom: 18px;
+  width: 100%;
+}
+
+.game-summary-secondary-btn {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 550;
+  padding: 11px 16px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  width: 100%;
+}
+
+.game-summary-secondary-btn:hover {
+  background-color: var(--color-wash-blue);
+  border-color: var(--color-accent);
+  color: var(--color-ink);
+}
+
+.game-summary-secondary-btn:focus-visible,
+.game-summary-primary-btn:focus-visible {
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 3px;
+}
+
+.game-summary-primary-btn:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.game-summary-primary-btn:active {
+  background-color: var(--color-ink-active);
+  border-color: var(--color-ink-active);
+}
+
+/* The shared vocabulary-list component renders words missed during the
+   round. This section only controls its summary disclosure and height. */
+.game-summary-missed {
+  border-top: 1px solid var(--color-border);
+  margin: 0;
+  padding-top: 4px;
+  text-align: left;
+  width: 100%;
+}
+
+.game-summary-missed > summary {
+  align-items: center;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  justify-content: space-between;
+  letter-spacing: 0.04em;
+  list-style: none;
+  padding: 13px 0;
+  text-transform: uppercase;
+}
+
+.game-summary-missed > summary::-webkit-details-marker {
+  display: none;
+}
+
+.game-summary-missed > summary::after {
+  color: var(--color-text-faint);
+  content: "+";
+  font-size: 1.35em;
+  font-weight: 400;
+}
+
+.game-summary-missed[open] > summary::after {
+  content: "−";
+}
+
+.game-summary-missed > summary span {
+  background-color: var(--color-surface-subtle);
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  font-size: 0.9em;
+  margin-left: auto;
+  margin-right: 10px;
+  padding: 2px 7px;
+}
+
+.game-summary-missed-heading {
+  color: var(--color-text-muted);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  margin: 0 0 10px 0;
+  text-transform: uppercase;
+}
+
+.game-summary-missed-table-container {
+  max-height: 260px;
+  padding: 0;
+}
+
+.game-summary-missed-more {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin: 8px 0 0 0;
+  text-align: center;
+}
+
+.game-minimal-pairs-missed-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.game-minimal-pairs-missed-list li {
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+  font-size: 0.9em;
+  padding: 8px 0;
+}
+
+.game-minimal-pairs-missed-list li:last-child {
+  border-bottom: none;
+}
+
+/* Deliberately not .distractor-muted: that class sets pointer-events:none,
+   right for the regular game's true wrong-distractor cards, wrong here —
+   with only two cards total, the unchosen one is never an irrelevant
+   distractor, just the other word in the pair, and it must stay clickable
+   for audio replay (see handleMinimalPairAnswer). */
+.game-minimal-pairs-unselected {
+  opacity: 0.6;
+}
+
+/* Plain block wrapper so the round-progress row below stacks under the
+   stats bar instead of becoming a flex sibling of it (#game-session-stats
+   itself is a .game-stats-content flex row). */
+.game-stats-wrapper {
+  width: 100%;
+}
+
+/* Bounded-round progress ("Word 4 of 20"), filling with green as the round
+   advances — shown where infinite mode's level-progress-bar-bg/-fill sit,
+   since session rounds don't level up/down and that bar has nothing left
+   to communicate there (see renderStats() and evaluateProgression() in
+   wordGame.js). Mirrors .level-progress-bar-bg/-fill's colors so the two
+   read as the same component in different modes. */
+.game-session-progress-bg {
+  background-color: #dce5ed;
+  border-radius: 999px;
+  flex-grow: 1;
+  overflow: hidden;
+  position: relative;
+}
+
+.game-session-progress-fill {
+  background-color: #4f8067;
+  transition: width 0.3s ease;
+}
+
+/* Wraps the accuracy/progress bar and the Quit & see stats button below it
+   (see renderStats() in wordGame.js) — stacked at every width, not just
+   mobile, so the button reads as clearly separate from the bar rather
+   than crowding beside it. */
+.game-stats-accuracy-row {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.game-stats-accuracy-row .level-progress-bar-bg,
+.game-stats-accuracy-row .game-session-progress-bg {
+  flex-grow: 1;
+  /* Explicit rather than relying on align-items:stretch — the mobile
+     override below switches this row to flex-direction:column (see
+     .game-stats-accuracy-row in the max-width:600px block), where stretch
+     only affects width. level-progress-bar-bg also has no in-flow content
+     (its percentage text is position:absolute) to otherwise establish a
+     height; game-session-progress-bg is given the same explicit height
+     for consistency now that Quit & see stats sits beside it too. */
+  height: 8px;
+  min-height: 8px;
+}
+
+.game-session-progress-label,
+.level-progress-label {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute !important;
+  white-space: nowrap;
+  width: 1px !important;
+}
+
+.header-top-row {
+  align-items: center;
+}
+
+.game-word-card {
+  align-items: center; /* Center the content horizontally */
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-sizing: border-box;
+  color: var(--color-text);
+  display: flex;
+  flex-direction: column; /* Stack the label and word vertically */
+  font-size: 1.2em;
+  height: 250px;
+  justify-content: center; /* Center the content vertically */
+  margin-bottom: 15px !important;
+  overflow: hidden; /* Prevent overflowing content from changing layout */
+  padding: 10px; /* Reduce padding at the top, add more below */
+  /* Without this, a block-level box like this one would still default to
+     filling its parent's width — true in the word game's own layout, a
+     plain block parent. But the placement test wraps this in
+     .game-intro-card instead, whose align-items:center centers flex
+     children at their own content width rather than stretching them,
+     which otherwise collapsed this into a tall, narrow sliver. */
+  width: 100%;
+  position: relative; /* Allow for flexible layout */
+  max-height: 250px;
+  min-height: 250px;
+}
+
+.gender {
+  align-self: flex-start; /* Align the label to the left */
+  background-color: var(--color-surface-subtle);
+  color: var(--color-text-muted) !important;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  padding: 3px 4px; /* Smaller padding */
+  font-size: 14px; /* Smaller font size */
+  font-weight: 500 !important;
+  border-radius: 4px;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 10px 0px 5px 0px !important; /* Space between the label and the word */
+  min-width: fit-content;
+  user-select: none; /* Prevent text selection */
+}
+
+h1 {
+  color: var(--color-ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+h2 {
+  /* Darker than --color-interactive on purpose — this is the headword/
+     prompt-word display (word-entry pages, Word Game's prompt), never a
+     clickable link, so it needs a color that reads as "the word," not as
+     "tap me." */
+  color: var(--color-ink);
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: 30px;
+  font-weight: bold;
+  margin: -5px 0 -5px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+h3 {
+  user-select: none;
+}
+
+h4 {
+  user-select: none;
+}
+
+/* Shared primitives and Word Game responsive behavior. */
+@media (max-width: 1024px) {
+  #back-button,
+  #speed-btn,
+  #toggle-english-btn {
+    font-size: 11px;
+    min-width: 80px;
+  }
+
+  /* Fixed, not just min-width: 80px above — speed/toggle stack in one
+     column and must match each other exactly so that column doesn't jitter
+     width as their text changes. #back-button is excluded: it sits under
+     the badges row in its own column and should stretch to match that
+     row's width (via the column's default flex stretch), not clamp to 80px
+     and end up narrower than the badges above it. */
+  #speed-btn,
+  #toggle-english-btn {
+    width: 80px;
+    /* Horizontal-only trim (vertical padding unchanged, so button height —
+       carefully matched to the favorite-star row on the other side of the
+       header, see .sticky-row's comment — doesn't shift). Frees a little
+       width back to the audio player, which shares this row on mobile and
+       needs all the width it can get: iOS's native <audio controls>
+       widget collapses to a bare play button with no scrubber below some
+       undocumented internal width threshold. */
+    padding: 0.5em 0.35em;
+  }
+
+  .cefr-audio-block {
+    flex-direction: row;
+  }
+
+  .definition {
+    margin-bottom: 10px;
+    padding: 20px;
+  }
+
+  .english,
+  .etymology,
+  .pronunciation {
+    line-height: 1.4 !important;
+  }
+
+  .error-message {
+    margin: 5px 0px;
+  }
+
+  .game-cefr-spacer p {
+    font-size: 14px !important;
+  }
+
+  .game-grid {
+    grid-gap: 10px;
+    min-height: 154px;
+  }
+
+  .game-typed-answer-form {
+    height: auto;
+  }
+
+  .game-cleared-practice-banner,
+  .game-removed-word-banner,
+  .game-saved-word-banner,
+  .game-streak-banner,
+  .game-typed-answer-note {
+    font-size: 0.9em !important;
+  }
+
+  .game-translation-card {
+    font-size: 1em !important;
+  }
+
+  .game-stats-content {
+    align-items: center;
+    gap: 10px;
+    margin: 0px 0px 4px 0px;
+  }
+
+  /* Desktop's .game-progress-heading margin-bottom (10px, base rule) is
+     generous enough on mobile that the middle column — heading + accuracy
+     bar + instruction — runs taller than the score boxes beside it, so
+     the whole stats row (and the word card sitting right below it) ends
+     up governed by this one gap rather than by any of the actual content.
+     Matches the 4px rhythm the rest of this mobile block already uses. */
+  .game-progress-heading {
+    margin-bottom: 4px;
+  }
+
+  .game-stats-progress-wrapper > .game-instruction {
+    align-items: center;
+    display: flex;
+    height: 38px;
+    justify-content: center;
+    line-height: 1.25;
+    margin-top: 1px;
+    max-height: 38px;
+    min-height: 38px;
+  }
+
+  .game-stats-accuracy-row .level-progress-bar-bg,
+  .game-stats-accuracy-row .game-session-progress-bg {
+    height: 8px;
+  }
+
+  .game-session-progress-label,
+  .level-progress-label {
+    display: none;
+  }
+
+  .game-stats-accuracy-row {
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .game-stats-correct-box,
+  .game-stats-incorrect-box {
+    flex: 0 0 clamp(88px, 12vw, 104px);
+    max-width: none;
+    min-height: 50px;
+    min-width: 0;
+    padding: 4px 8px;
+    width: clamp(88px, 12vw, 104px);
+  }
+
+  .game-stats-correct-box .game-stat-label,
+  .game-stats-incorrect-box .game-stat-label {
+    font-size: 12px;
+  }
+
+  .game-stats-correct-box #streak-count,
+  .game-stats-incorrect-box #review-count {
+    font-size: 16px;
+  }
+
+  /* Once the fixed response zone, prompt card, and header have their space,
+     give every remaining pixel on a tall mobile viewport to the teaching
+     reveal. The viewport-derived value stays constant between questions, so
+     longer context gets room without bringing back content-driven jumps.
+     Bounds and offset both shifted +20px from their original 132/152/712:
+     the mobile toolbar's icon row dropped from 52px to 38px and the stats
+     block's heading margin from 10px to 4px (35-navigation.css and this
+     file's own .game-progress-heading override, above), so that's real
+     space now available for the reveal instead of the icons/margin. */
+  @media (min-height: 701px) {
+    body.word-game-mode .game-learning-stage {
+      --game-mobile-reveal-height: clamp(152px, calc(100dvh - 692px), 172px);
+      grid-template-rows: 180px var(--game-mobile-reveal-height);
+      height: calc(188px + var(--game-mobile-reveal-height));
+    }
+
+    body.word-game-mode .game-teaching-reveal {
+      height: var(--game-mobile-reveal-height);
+      max-height: var(--game-mobile-reveal-height);
+      min-height: var(--game-mobile-reveal-height);
+    }
+  }
+
+  .game-typed-answer-row {
+    gap: 10px;
+  }
+
+  .game-typed-grid ~ .game-next-button-container #game-next-word-button {
+    margin-top: 10px;
+  }
+
+  .game-word-card {
+    margin-bottom: 10px !important;
+  }
+
+  h2 {
+    font-size: 7vw;
+    hyphens: auto;
+    overflow-wrap: break-word;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  body.word-game-mode .game-word {
+    min-width: 0;
+    width: 100%;
+  }
+
+  body.word-game-mode .game-word h2 {
+    font-size: clamp(22px, 6vw, 34px);
+    hyphens: none;
+    line-height: 1.25;
+    max-width: 100%;
+    overflow: visible;
+    overflow-wrap: anywhere;
+    text-overflow: clip;
+    white-space: normal;
+    word-break: normal;
+  }
+
+  body.word-game-mode .game-listening-icon {
+    font-size: clamp(28px, 8vw, 40px);
+    height: clamp(64px, 20vw, 88px);
+    width: clamp(64px, 20vw, 88px);
+  }
+
+  /* At the unshrunk 14px desktop size, the gender pill reads much louder
+     than the 11px CEFR badge stacked right under it — a bigger gap than
+     this label column needs on a phone screen where .game-word (the
+     actual word/sentence) should be the loudest thing in the card. Still
+     kept a size above CEFR's, not matched to it exactly: gender is the
+     more useful-at-a-glance of the two, so it stays the slightly larger,
+     first-read label rather than becoming a second identical tag. */
+  body.word-game-mode .game-gender {
+    font-size: 12.5px;
+    padding: 2px 6px;
+    /* The base rule relies on min-width:fit-content and ample desktop
+       width to stay on one line; neither guarantees that at phone widths,
+       where the longest values ("noun - en-ei-et", "interjection") are
+       wide enough to wrap onto a second line without this. A pill is not
+       meant to wrap, so let it overflow its column instead — that reads
+       fine here since nothing else shares this row. */
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  /* Smaller and tighter than the desktop badge, so it reads as a light
+     tag rather than competing with the gender pill above it. Kept stacked
+     under the gender pill (not moved beside it) — a shorter badge next to
+     a taller pill reads as mismatched, and a wide gender word beside it
+     could push into the banner column. Shrinking the badge's own box is
+     what shortens this column instead, giving .game-word more room to
+     grow into below (see .game-learning-stage .game-word's flex-grow). */
+  body.word-game-mode .game-cefr-label {
+    font-size: 12.5px;
+    line-height: 1;
+    margin-top: -2px;
+    padding: 4px 5px;
+  }
+}
+
+@media (max-width: 1024px) and (max-height: 700px) {
+  /* 120px/290px shifted to 140px/310px — same +20px reclaimed from the
+     mobile toolbar's icon row and the stats heading's margin as the
+     min-height:701px tier above; see that tier's comment. */
+  body.word-game-mode .game-learning-stage {
+    grid-template-rows: 162px 140px;
+    height: 310px;
+  }
+
+  body.word-game-mode .game-learning-stage .game-word-card {
+    height: 162px;
+    max-height: 162px;
+    min-height: 162px;
+  }
+
+  body.word-game-mode .game-teaching-reveal {
+    height: 140px;
+    max-height: 140px;
+    min-height: 140px;
+    padding-block: 7px;
+  }
+
+  body.word-game-mode .game-cefr-spacer {
+    flex-basis: 48px;
+    height: 48px;
+    max-height: 48px;
+    min-height: 48px;
+  }
+
+  body.word-game-mode
+    .game-word-card:not(.game-learning-stage .game-word-card) {
+    height: 232px;
+    max-height: 232px;
+    min-height: 232px;
+  }
+
+  /* 76px (not the 6.5rem/104px used above max-height:701px) is what's
+     actually left over once padding (20px), the label row, and the fixed
+     22px pronunciation slot are subtracted from this breakpoint's 162px
+     card — 104px overflowed the card by ~28px, clipping the pronunciation
+     text under game-word-card's overflow:hidden on short phones (verified
+     on a 375×667 viewport; pre-existing, not caused by the label-row
+     shrink above, which only *reduced* how much this overflowed). */
+  body.word-game-mode .game-word {
+    flex-basis: 76px;
+    height: 76px;
+    max-height: 76px;
+    min-height: 76px;
+  }
+
+  /* The width-based clamp on .game-listening-icon (see above max-width:
+     1024px) sizes it to ~75px at typical phone widths — which, centered in
+     this breakpoint's now-76px-tall .game-word box, leaves it touching the
+     label row outright (0px gap, confirmed empirically), before even
+     accounting for the pulse animation growing it further. Shrinking the
+     icon here, where the box is shortest, keeps a real gap above it. */
+  body.word-game-mode .game-listening-icon {
+    font-size: 26px;
+    height: 58px;
+    width: 58px;
+  }
+
+  body.word-game-mode .game-grid {
+    min-height: 138px;
+  }
+
+  body.word-game-mode .game-translation-card {
+    height: 64px;
+    max-height: 64px;
+    min-height: 64px;
+  }
+
+  body.word-game-mode .game-grid.game-typed-grid {
+    min-height: 0;
+  }
+
+  body.word-game-mode .game-typed-answer-form {
+    height: auto;
+  }
+
+  body.word-game-mode #game-next-word-button {
+    margin-top: 10px;
+    min-height: 48px;
+    padding: 12px 15px;
+  }
+}
+
+@media (max-width: 600px) and (max-height: 700px) {
+  /* Short phones need the vertical space for the actual exercise and its
+     fixed response zone (header hiding itself is handled unconditionally
+     for this width in 01-document-shell.css, not gated on round-active). */
+
+  /* An iPhone SE-class viewport has no spare space beneath the reveal: the
+     fixed answer grid begins immediately afterward. Keep the prompt card's
+     useful 162px height, but shorten the empty/context shelf enough to leave
+     a real gap above the responses. Longer answered context can still use
+     the shelf's inner overflow fallback. The compact, equal stats gaps below
+     recover 7px; spend 4px of that on the reveal and use the remaining 3px
+     to pull this entire two-card stage upward. */
+  body.word-game-mode .game-learning-stage {
+    grid-template-rows: 162px 128px;
+    height: 298px;
+  }
+
+  body.word-game-mode .game-teaching-reveal {
+    height: 135px;
+    max-height: 135px;
+    min-height: 135px;
+    padding-block: 7px;
+  }
+
+  /* Typed recall uses one compact response row instead of the four-card
+     answer grid, leaving substantial unused space above it on an SE. Once
+     the answer is graded, spend that real viewport space on the explanation
+     rather than clipping its translation inside the generic 124px shelf.
+     The clamp keeps very short phones at the safe base height and preserves
+     a gap above the fixed typed response zone at taller SE-class heights.
+     Its bounds and viewport offset receive the same 4px reveal increase as
+     this tier's base shelf height above. */
+  body.word-game-mode.word-game-round-active
+    #results-container:has(.game-grid.game-typed-grid)
+    .game-learning-stage:has(
+      .game-teaching-reveal:not([data-state="question"])
+    ) {
+    --game-se-answered-reveal-height: clamp(128px, calc(100dvh - 486px), 208px);
+    grid-template-rows: 162px var(--game-se-answered-reveal-height);
+    height: calc(170px + var(--game-se-answered-reveal-height));
+  }
+
+  body.word-game-mode.word-game-round-active
+    #results-container:has(.game-grid.game-typed-grid)
+    .game-teaching-reveal:not([data-state="question"]) {
+    height: var(--game-se-answered-reveal-height);
+    max-height: var(--game-se-answered-reveal-height);
+    min-height: var(--game-se-answered-reveal-height);
+  }
+
+  /* The center column on a 375px-wide SE is narrow enough that the longest
+     instruction otherwise becomes three lines and spills out of the stable
+     slot. A modest type reduction keeps it readable and consistently two
+     lines without narrowing the newly widened score boxes. */
+  .game-stats-progress-wrapper > .game-instruction {
+    font-size: 14px;
+    height: 32px;
+    line-height: 1.2;
+    max-height: 32px;
+    min-height: 32px;
+  }
+
+  .game-stats-content {
+    margin: 0 0 4px 0;
+  }
+
+  .game-stat-label {
+    margin: 0 0 1px;
+  }
+
+  .game-stats-correct-box,
+  .game-stats-incorrect-box {
+    padding: 4px 6px;
+  }
+
+  .game-stats-accuracy-row {
+    gap: 4px;
+  }
+
+  .game-word-card {
+    padding: 8px;
+  }
+}
+
+/* Keep the sole forward action in one stable, thumb-reachable location for
+   the entire question. Its disabled/enabled styling changes after grading,
+   but its position does not. Round summaries and the intro have no matching
+   container, so the dock naturally disappears on those screens. */
+@media (max-width: 600px) {
+  /* The answer field remains the primary control on a narrow screen. Keep
+     the three letter keys compact while preserving their shared 60px row
+     height, then trim the Check button's horizontal padding. */
+  .game-typed-answer-row {
+    gap: 8px;
+  }
+
+  .game-norwegian-letter-keys {
+    gap: 3px;
+  }
+
+  /* 44px matches the search bar's letter keys (styles/35-navigation.css) —
+     the accepted minimum touch-target size, for the same keyboard-less
+     Norwegian learner reaching for these on every typed-answer question.
+     The row is already a comfortable 60px tall (stretched to the answer
+     field's height); only the width needed the floor raised. */
+  .game-norwegian-letter-key {
+    font-size: 1.05em;
+    min-width: 44px;
+    padding: 8px 4px;
+  }
+
+  .game-typed-submit {
+    padding-inline: 16px;
+  }
+
+  /* The visible stats row used to have 5px above it, then two stacked 4px
+     bottom margins below it. Make those edges equal and slightly tighter:
+     3px on either side. This moves both learning cards upward by 7px while
+     retaining deliberate separation from the toolbar and prompt card. */
+  body.word-game-mode.word-game-round-active #results-container {
+    margin-top: 3px;
+  }
+
+  body.word-game-mode.word-game-round-active #game-session-stats {
+    margin-bottom: 3px;
+  }
+
+  body.word-game-mode.word-game-round-active
+    #game-session-stats
+    > .game-stats-wrapper
+    > .game-stats-content {
+    margin-bottom: 0;
+  }
+
+  /* Taller phones use a viewport-derived shelf. Give the reveal 4px of the
+     recovered stats space; the remaining 3px raises the overall stage end
+     while still pulling both cards visibly upward. */
+  @media (min-height: 701px) {
+    body.word-game-mode .game-learning-stage {
+      --game-mobile-reveal-height: clamp(156px, calc(100dvh - 688px), 176px);
+    }
+  }
+
+  .game-typed-answer-input {
+    /* iOS Safari zooms the viewport when a focused form control is below
+       16px. Keep the answer field at the native no-zoom threshold. */
+    font-size: 16px;
+  }
+
+  body.word-game-mode.word-game-round-active #results-container {
+    padding-bottom: calc(244px + env(safe-area-inset-bottom));
+  }
+
+  body.word-game-mode.word-game-round-active
+    #results-container:has(.game-grid.game-typed-grid) {
+    padding-bottom: calc(150px + env(safe-area-inset-bottom));
+  }
+
+  /* The response controls and Next action form one bottom action zone. Both
+     are fixed, with the response grid exactly one compact gap above Next,
+     so scrolling long prompts never separates the decision from its action. */
+  body.word-game-mode.word-game-round-active .game-grid {
+    background: #f4f4f4;
+    bottom: calc(max(8px, env(safe-area-inset-bottom)) + 74px);
+    left: 50%;
+    position: fixed;
+    transform: translateX(-50%);
+    width: calc(100vw - 18px);
+    z-index: 24;
+  }
+
+  body.word-game-mode .game-next-button-container {
+    background: rgba(255, 255, 255, 0.97);
+    border: 1px solid #d8e1e8;
+    border-radius: 12px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    box-shadow: 0 8px 24px rgba(20, 38, 58, 0.16);
+    box-sizing: border-box;
+    left: 50%;
+    padding: 7px;
+    position: fixed;
+    transform: translateX(-50%);
+    width: calc(100vw - 18px);
+    z-index: 25;
+  }
+
+  body.word-game-mode .game-next-button-container #game-next-word-button,
+  body.word-game-mode
+    .game-typed-grid
+    ~ .game-next-button-container
+    #game-next-word-button {
+    margin-top: 0;
+    min-height: 52px;
+    padding: 13px 15px;
+  }
+}
+
+@media (min-width: 1025px) {
+  /* Desktop has ample space below the teaching shelf. Reserve enough of it
+     for a two-line sentence plus its translation before scrolling is ever
+     considered, while keeping the shelf identical across questions. */
+  body.word-game-mode .game-learning-stage {
+    grid-template-rows: 180px 160px;
+    height: 348px;
+  }
+
+  /* Same goal as the mobile CEFR-badge shrink — shorten the label column so
+     .game-word (already set to grow into whatever's left, see
+     .game-learning-stage .game-word) gets more of the card to center in —
+     but without resizing the badge itself: side by side instead of
+     stacked, which on mobile made the badge and the taller gender pill
+     read as mismatched. At full size, next to the gender pill, they're
+     close enough in height for that not to be a problem. The card's
+     content area is ~600px+ here (vs ~335px on mobile), so this pairing
+     sits nowhere near the centered banner column even for the longest
+     gender labels ("interjection", "conjunction"). */
+  body.word-game-mode .game-learning-stage .game-label-subgroup:first-child {
+    align-items: center;
+    flex-direction: row;
+    gap: 6px;
+  }
+
+  body.word-game-mode .game-learning-stage .game-gender {
+    margin: 0 !important;
+  }
+
+  /* Narrower and slightly smaller text than the desktop default (31.5px
+     wide, 14px font), but the vertical padding is bumped up enough to keep
+     its height matching the gender pill's exactly (28.4px) — next to a
+     shorter badge, this row would look bottom-heavy on one side. */
+  body.word-game-mode .game-learning-stage .game-cefr-label {
+    font-size: 13px;
+    padding: 4px 5px;
+  }
+
+  /* The full-size listening icon (88px) was already found to graze the
+     label row at its default size — confirmed empirically at 0px gap even
+     before the row-shortening change above, so this isn't something that
+     change caused. Shrinking it here is the same fix already applied for
+     the shortest mobile breakpoint (see max-width:1024px and
+     max-height:700px), just sized for this wider box: 72px leaves a real
+     6px gap, safely clearing the pulse animation's growth. */
+  body.word-game-mode .game-learning-stage .game-listening-icon {
+    font-size: 30px;
+    height: 72px;
+    width: 72px;
+  }
+
+  body.word-game-mode .game-teaching-reveal {
+    height: 160px;
+    max-height: 160px;
+    min-height: 160px;
+  }
+
+  /* The stats component is nested inside #game-session-stats, and both layers
+     inherit the base bottom margin. On desktop that doubled the whitespace
+     below the instruction (for example, "Type the word you hear") before the
+     prompt card. Collapse the inner margin and retain one compact outer gap so
+     the complete exercise below rises as a single unit. */
+  body.word-game-mode.word-game-round-active #game-session-stats {
+    margin-bottom: 4px;
+  }
+
+  body.word-game-mode.word-game-round-active
+    #game-session-stats
+    > .game-stats-wrapper
+    > .game-stats-content {
+    margin-bottom: 0;
+  }
+
+  .game-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .game-translation-card {
+    box-sizing: border-box;
+    height: 72px;
+    max-height: 72px;
+    min-height: 72px;
+    min-width: auto;
+    overflow-wrap: normal;
+    padding: 15px;
+  }
+}

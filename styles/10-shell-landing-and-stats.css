@@ -1,0 +1,2431 @@
+.auth-container {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+/* Account menu: one entry point in the corner for every "about you / about
+   the app" page — My Stats, Settings, About, What's New — replacing the
+   standalone My Stats icon that used to sit here alone (that read fine with
+   one destination; it stopped scaling once Settings/About needed a home
+   too). Read-only/occasional-use pages like these don't need to compete
+   for space in the primary mode nav (#mode-nav — see
+   styles/35-navigation.css), so a single small icon button in the corner
+   alongside the streak badge/sign-in button covers all four. */
+.account-menu {
+  position: relative;
+  /* Establish the whole menu as one elevated layer. Raising only the panel
+     is not enough if a nearby positioned toolbar creates its own stacking
+     context (the reading toolbar reaches 1000). Keep this below dialogs
+     (2000+) while ensuring ordinary page chrome cannot cover the menu. */
+  z-index: 1100;
+}
+
+/* A permanent tinted chip, not just a hover state — same visual language
+   as .streak-badge right next to it (background + border, always
+   visible), so it reads as a real control at a glance instead of
+   disappearing against the header until the pointer happens to land on
+   it. aria-expanded gets the same active treatment as :hover so the chip
+   visibly stays "on" while the panel below it is open. */
+.account-menu-btn {
+  align-items: center;
+  background-color: var(--color-wash-blue);
+  border: 0.5px solid var(--color-wash-blue-border);
+  border-radius: 6px;
+  color: var(--color-ink);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 16px;
+  height: 34px;
+  justify-content: center;
+  padding: 0;
+  width: 34px;
+}
+
+.account-menu-btn:hover,
+.account-menu-btn[aria-expanded="true"] {
+  background-color: var(--color-wash-blue-active);
+  border-color: var(--color-wash-blue-active-border);
+}
+
+/* Prefer growing left from the trigger's right edge. JavaScript switches to
+   .account-menu-panel--opens-right when that would cross the viewport's
+   left gutter; in that case the panel grows right from the trigger instead.
+   The width cap is a final safeguard for very narrow/zoomed viewports. */
+.account-menu-panel {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(13, 58, 105, 0.16);
+  box-sizing: border-box;
+  max-width: min(
+    calc(100vw - 16px),
+    var(--account-menu-available-width, calc(100vw - 16px))
+  );
+  min-width: min(
+    190px,
+    var(--account-menu-available-width, calc(100vw - 16px))
+  );
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: max-content;
+  z-index: 1;
+}
+
+.account-menu-panel--opens-right {
+  left: 0;
+  right: auto;
+}
+
+.account-menu-item {
+  align-items: center;
+  border-radius: 6px;
+  color: var(--color-text-strong);
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 10px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 9px 10px;
+  text-decoration: none;
+  /* The panel may be deliberately narrowed at high zoom or on a small
+     viewport. Let labels wrap in that exceptional case instead of painting
+     beyond the panel; ordinary menu widths still render as one line. */
+  white-space: normal;
+}
+
+.account-menu-item:hover {
+  background-color: var(--color-surface-subtle);
+}
+
+.account-menu-item i {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  text-align: center;
+  width: 16px;
+}
+
+/* Day-streak trigger and menu sit just left of the sign-in button/user pill.
+   Keeping gems in this menu avoids adding another permanent counter to the
+   already compact mobile header. */
+.streak-menu {
+  position: relative;
+  z-index: 1100;
+}
+
+.streak-badge {
+  align-items: center;
+  background-color: var(--color-streak-bg);
+  border: 0.5px solid var(--color-streak-border);
+  border-radius: 6px;
+  color: var(--color-streak-text);
+  cursor: pointer;
+  display: flex;
+  font-size: 14px;
+  font-weight: 700;
+  gap: 4px;
+  height: 34px;
+  padding: 6px 10px;
+  user-select: none;
+}
+
+.streak-badge:hover,
+.streak-badge[aria-expanded="true"] {
+  background-color: #ffe7cc;
+  border-color: #e5ad6f;
+}
+
+.streak-badge .fa-fire {
+  color: var(--color-streak-icon);
+}
+
+.streak-menu-panel {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(13, 58, 105, 0.16);
+  box-sizing: border-box;
+  max-width: min(
+    calc(100vw - 16px),
+    var(--streak-menu-available-width, calc(100vw - 16px))
+  );
+  min-width: min(
+    260px,
+    var(--streak-menu-available-width, calc(100vw - 16px))
+  );
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 280px;
+  z-index: 1;
+}
+
+.streak-menu-panel--opens-right {
+  left: 0;
+  right: auto;
+}
+
+.streak-menu-heading {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 7px 10px 0;
+}
+
+.streak-menu-status {
+  color: var(--color-text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.35;
+  margin: 2px 10px 10px;
+}
+
+.streak-menu-wallet {
+  border-bottom: 1px solid var(--color-border);
+  border-top: 1px solid var(--color-border);
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0 4px 10px;
+  padding: 7px 3px;
+}
+
+.streak-menu-gem {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 11px;
+  font-weight: 500;
+  gap: 1px;
+}
+
+.streak-menu-gem .streak-menu-gem-icon {
+  filter: none;
+  height: 21px;
+  width: 21px;
+}
+
+.streak-menu-gem-count {
+  color: var(--color-text-strong);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.streak-menu-gem--emerald { color: #087158; }
+.streak-menu-gem--ruby { color: #942f4a; }
+.streak-menu-gem--sapphire { color: #315f9d; }
+
+.streak-menu-freeze-heading {
+  color: var(--color-text-strong);
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0 10px 4px;
+}
+
+.streak-menu-freeze-options {
+  display: grid;
+  gap: 1px;
+}
+
+.streak-menu-freeze-option {
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 0;
+  border-radius: 6px;
+  color: var(--color-text-strong);
+  cursor: pointer;
+  display: flex;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 10px;
+  text-align: left;
+}
+
+.streak-menu-freeze-option .streak-menu-gem-icon {
+  filter: none;
+  flex: 0 0 auto;
+  height: 18px;
+  margin-right: 8px;
+  width: 18px;
+}
+
+.streak-menu-freeze-available {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.streak-menu-freeze-option:hover:not(:disabled) {
+  background-color: var(--color-surface-subtle);
+}
+
+.streak-menu-freeze-option:disabled {
+  color: var(--color-text-muted);
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+.streak-menu-note {
+  color: var(--color-text-muted);
+  font-size: 12px;
+  line-height: 1.35;
+  margin: 8px 10px 5px;
+}
+
+/* Mirrors .auth-container's positioning on the opposite corner, and
+   .google-signin-btn's white background/border so the two corner
+   buttons read as a matched pair. Hidden everywhere except while
+   reading an individual story — the story list page doesn't get one,
+   since "an issue" isn't scoped to any one story there. */
+.story-report-issue-btn {
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 0.5px solid var(--color-border-input);
+  border-radius: 6px;
+  color: var(--color-text-strong);
+  cursor: pointer;
+  display: none;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 6px;
+  left: 12px;
+  letter-spacing: 0.03em;
+  padding: 6px 12px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 12px;
+  touch-action: manipulation;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+  white-space: nowrap;
+  z-index: 3;
+}
+
+html.reading .story-report-issue-btn {
+  display: inline-flex;
+}
+
+.story-report-issue-btn i {
+  color: var(--color-danger);
+  font-size: 12px;
+}
+
+.story-report-issue-btn:hover {
+  background-color: var(--color-surface-subtle);
+  border-color: var(--color-text-muted);
+}
+
+.story-report-issue-btn:focus-visible {
+  outline: 2px solid var(--color-text-strong);
+  outline-offset: 2px;
+}
+
+.google-signin-btn,
+.google-signout-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-surface);
+  color: var(--color-google-text);
+  border: 1px solid var(--color-border-google);
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.google-signin-btn:hover,
+.google-signout-btn:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.22);
+}
+
+.google-signin-btn-logo {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.google-signin-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+/* Persistent, low-key cue that there's a reason to sign in — pairs with
+   the one-time .signin-nudge-banner (shown after the first completed
+   round), but stays up for as long as the visitor remains signed out,
+   unlike that banner. */
+/* Match .account-menu-btn's 34px rendered height so the two corner
+   controls line up when signed out. */
+.google-signin-btn {
+  position: relative;
+  box-sizing: border-box;
+  height: 34px;
+}
+
+.google-signin-btn::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-streak-icon);
+  border: 1.5px solid var(--color-surface);
+}
+
+.google-signin-btn:disabled::after {
+  display: none;
+}
+
+/* Shown at most once ever, per browser — see maybeShowSignInNudge() in
+   myWordsAuth.js. Fixed to the bottom of the viewport so it appears the
+   same way regardless of which page/scroll position triggered it. */
+.signin-nudge-banner {
+  align-items: center;
+  background-color: var(--color-ink);
+  border-radius: 10px;
+  bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  color: var(--color-surface);
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  gap: 12px;
+  left: 50%;
+  max-width: 480px;
+  padding: 14px 16px;
+  position: fixed;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  z-index: 10;
+}
+
+.signin-nudge-banner > .fa-cloud-arrow-up {
+  color: #8fc4ff;
+  font-size: 1.3em;
+}
+
+.signin-nudge-banner p {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.signin-nudge-signin-btn {
+  background-color: var(--color-surface);
+  border: none;
+  border-radius: 6px;
+  color: var(--color-ink);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 14px;
+  transition: background-color 0.2s ease;
+}
+
+.signin-nudge-signin-btn:hover {
+  background-color: var(--color-wash-blue-active);
+}
+
+.signin-nudge-signin-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.signin-nudge-dismiss-btn {
+  background: none;
+  border: none;
+  color: #b7c8dd;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 14px;
+  padding: 4px;
+}
+
+.signin-nudge-dismiss-btn:hover {
+  color: var(--color-surface);
+}
+
+@media (max-width: 1024px) {
+  /* #mode-nav is a fixed bottom bar at mobile/tablet widths and the shell
+     reserves 84px for it (01-document-shell.css). Keep this fixed banner
+     above that same reserved area, plus a small visual gap, instead of
+     letting the nav cover its actions and copy. */
+  .signin-nudge-banner {
+    bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 600px) {
+  /* Slightly smaller than the 14px default -- .game-instruction now lives
+     inside the narrow .game-stats-progress-wrapper column (see the base
+     rule in 00-foundations-and-game.css) and wraps across 2-3 lines there rather than
+     needing to fit a single line, but a touch less text per line still
+     keeps that from running unnecessarily tall. */
+  .game-instruction {
+    font-size: 14px;
+  }
+
+  /* #auth-container's own position:static + justify-content:right (see
+     its dedicated mobile rule below) keeps the streak badge/Google
+     sign-in pill pinned to the right on its own — no need for this row
+     itself to be a flex container now that the "Quit & see stats" button
+     that used to share it lives in the toolbar (.cefr-filter-group) on
+     every screen size instead. Just the spacing before the title. */
+  .header-top-row {
+    margin-bottom: 8px;
+  }
+
+  .signin-nudge-banner {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .signin-nudge-banner p {
+    order: 1;
+    text-align: center;
+    width: 100%;
+  }
+
+  .signin-nudge-signin-btn {
+    order: 2;
+  }
+
+  .signin-nudge-dismiss-btn {
+    order: 3;
+  }
+}
+
+.auth-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-google);
+  border-radius: 6px;
+  padding: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-google-text);
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12);
+}
+
+.auth-google-logo {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* Shown instead of .auth-google-logo for a non-Google sign-in (email
+   link) — toggled in updateAuthUI() (myWordsAuth.js). */
+.auth-generic-logo {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+/* The badge's Google-blue border/text only makes sense paired with the
+   Google logo above — neutral for anyone signed in another way. */
+.auth-user-info.non-google-provider {
+  border-color: var(--color-border);
+  color: var(--color-text-strong);
+}
+
+.auth-user-name {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.google-signout-btn {
+  border-color: transparent;
+  box-shadow: none;
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+.google-signout-btn:hover {
+  box-shadow: none;
+}
+
+/* Shown when a My Words/word-strength/game-level write to Firestore fails.
+   Amber rather than red: nothing is actually lost (localStorage is always
+   the source of truth, per this app's local-first design) — it just means
+   cross-device sync is temporarily behind, and it retries automatically. */
+.sync-status {
+  display: inline-flex;
+  align-items: center;
+  color: #b8860b;
+  font-size: 14px;
+  cursor: help;
+}
+
+@media (max-width: 600px) {
+  .auth-container {
+    position: static;
+    justify-content: right;
+    /* The mobile header has a 10px top inset and a 15px side inset. Nudge
+       this right-side control group out by the difference so its visible
+       right edge has the same 10px breathing room as the top edge. */
+    margin-right: -5px;
+  }
+
+  /* A signed-in account needs to remain recognisable, but it should not
+     dominate the compact header. The avatar, a concise name, sync status,
+     and sign-out action still fit while freeing meaningful room for the
+     adjacent account and streak controls. */
+  .auth-user-info {
+    gap: 5px;
+    padding: 4px;
+  }
+
+  .auth-google-logo {
+    height: 18px;
+    width: 18px;
+  }
+
+  .auth-user-name {
+    max-width: 64px;
+  }
+
+  .google-signout-btn {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  /* Icon-only on mobile — the full-width label pushed this into the
+     streak badge/auth pill on the opposite corner once the header's
+     right-side content grew (see .streak-badge). aria-label/title on the
+     button still name it for screen readers. */
+  .story-report-issue-btn-label {
+    display: none;
+  }
+
+  .story-report-issue-btn {
+    /* Match the account-menu trigger's 34px square touch target exactly. */
+    height: 34px;
+    justify-content: center;
+    padding: 0;
+    width: 34px;
+  }
+
+  /* The My Words star (.single-result-my-words-controls) sits absolutely
+     positioned at top:25px/right:25px, 40px square — a 65px-from-the-edge
+     footprint that isn't reserved by normal text flow. A long single word
+     (or the alt-spelling line under a comma-containing entry) can otherwise
+     wrap right underneath it. Scoped to word-text-block specifically, not
+     the whole .word-gender header, so the shorter gender/English/CEFR
+     lines below it keep using the full card width. */
+  .single-result-definition .word-text-block {
+    padding-right: 48px;
+  }
+
+  /* Scoped with #landing-card so these win regardless of source order
+     against the later, equal-specificity base .landing-card-* rules. */
+  #landing-card .landing-card-icon-chip {
+    width: 56px;
+    height: 56px;
+  }
+
+  #landing-card .landing-card-image {
+    width: 30px;
+    height: 30px;
+  }
+
+  #landing-card .landing-card-title {
+    margin-top: 10px;
+    margin-bottom: 4px;
+  }
+
+  #landing-card .button-container p {
+    margin: 4px 0;
+  }
+
+  #landing-card .landing-feature-list {
+    margin-top: 4px;
+  }
+
+  /* Single column below 600px — the inherited 2-column grid (set at the
+     1024px breakpoint further down) squeezes each tile's feature bullets
+     into a ~150px-wide column on a phone, wrapping every bullet across
+     3-4 lines. Full card width lets most bullets fit on 1-2 lines instead. */
+  #landing-card .landing-card-button-grid {
+    gap: 10px;
+    grid-template-columns: 1fr;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+
+input[type="text"] {
+  border: none;
+  flex-grow: 1;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 16px;
+  outline: none;
+  overflow: hidden;
+  padding: 12px 16px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Smaller than the typed-text size above -- reads as a hint, not content.
+   #search-bar's own 16px 32px total horizontal padding comes out of its
+   content box (box-sizing: content-box), which was previously left out
+   of account when checking this against the input's rendered width --
+   with that actually subtracted, "Search in Norwegian or English" needs
+   14px or smaller to fit even where .clear-btn's freed-up space (see
+   below) gives it the most room, on a fairly wide desktop window. */
+#search-bar::placeholder {
+  color: var(--color-text-faint);
+  font-size: 14px;
+}
+
+/* Covers what button:disabled (above) can't reach — text inputs aren't
+   buttons. Mirrors it with the same --color-border token rather than a
+   separate hardcoded gray, so the two stay in sync. */
+input[type="text"]:disabled {
+  color: var(--color-border);
+  cursor: not-allowed;
+}
+
+input[type="text"]:focus + label,
+input[type="text"]:not(:placeholder-shown) + label {
+  color: var(--color-ink);
+  font-size: 14px;
+  top: -10px;
+}
+
+.japanese-sentence {
+  color: var(--color-text); /* Set a color for Japanese text */
+  font-family: "Source Serif 4", "Noto Serif", serif;
+}
+
+.story-word {
+  border-radius: 3px;
+  border-bottom: 1px dotted rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.story-word:hover {
+  background-color: rgba(28, 104, 181, 0.12);
+}
+
+/* Matches the gold of a filled My Words star (.is-saved below) — a word
+   already saved stands out while reading without needing to be clicked. */
+.story-word-known {
+  color: var(--color-favorite);
+  font-weight: 600;
+}
+
+/* Click-to-define popover — positioned near the tapped word (see
+   positionStoryWordPopover in stories.js). Deliberately minimal: a gloss
+   and a My Words star per sense, nothing else. */
+.story-word-popover {
+  background-color: var(--color-surface);
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  max-width: min(280px, calc(100vw - 16px));
+  position: fixed;
+  z-index: 2100;
+}
+
+/* One row per resolved sense — most words show just one, but e.g.
+   "hjelper" (verb "helps" vs. noun "helper") shows both, stacked.
+   justify-content: space-between keeps every row's star pinned to the
+   same right edge regardless of how long that row's own gloss text is —
+   without it, a short gloss ("help") would leave its star sitting right
+   next to the text instead of lined up under a longer row's star
+   ("helper"). */
+.story-word-popover-row {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 6px 8px 6px 14px;
+}
+
+.story-word-popover-row + .story-word-popover-row {
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.story-word-popover-empty {
+  align-items: flex-start;
+  color: var(--color-text-faint);
+  display: flex;
+  flex-direction: column;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-style: italic;
+  gap: 6px;
+  padding: 10px 14px;
+}
+
+.story-word-popover-flag-btn {
+  appearance: none;
+  background: none;
+  border: none;
+  color: var(--color-interactive);
+  cursor: pointer;
+  font-size: 14px;
+  font-style: normal;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.story-word-popover-flag-btn:hover {
+  color: var(--color-ink);
+}
+
+.story-word-popover-translation {
+  color: var(--color-text);
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.japanese-title {
+  color: var(--color-text-strong);
+  display: block;
+  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.3;
+  /* Caps this at 2 lines without -webkit-line-clamp: on WebKit/Blink,
+     -webkit-line-clamp's own generated box comes out a hair short of what
+     the font's real descenders need, so g/j/p/q/y on the clamped line get
+     sheared flat -- reproduced directly (a plain max-height + overflow box
+     at the same line-height renders every descender intact, only the
+     -webkit-box/-webkit-line-clamp combination clips them, regardless of
+     how much extra line-height or padding is added). No title in
+     norwegianStories.csv is long enough to actually need the ellipsis
+     -webkit-line-clamp would have added at this width, so a hard 2-line
+     cap loses nothing today; it's here only as a future safety net. */
+  max-height: 2.6em;
+  overflow: hidden; /* Hides the overflowing text */
+  letter-spacing: 0.1px;
+}
+
+label {
+  color: var(--color-text-strong);
+  left: 10px;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+#landing-card {
+  --landing-border: var(--color-wash-blue-border);
+  --landing-radius-control: 8px;
+  --landing-radius-panel: 10px;
+  --landing-radius-shell: 12px;
+  --landing-shadow-hover: 0 4px 12px rgba(13, 35, 55, 0.07);
+  background-color: var(--color-surface);
+  border: 1px solid var(--landing-border);
+  border-radius: var(--landing-radius-shell);
+  box-shadow: 0 4px 18px rgba(13, 35, 55, 0.06);
+  margin: 20px auto;
+  /* Wide enough for the dashboard sections and three feature columns to
+     breathe on desktop, while the percentage width below preserves the
+     existing compact, centered treatment on narrower screens. */
+  max-width: 920px;
+  padding: 25px;
+  text-align: center;
+  width: 90%;
+}
+
+/*
+ * On the landing page, keep the card near the top (right under the search
+ * bar, like most sites) and push any leftover space below it instead,
+ * so the footer still lands at the bottom of the viewport (via main's
+ * flex:1, same as every other page) without stranding a dead gap between
+ * the card and the footer.
+ * #search-container's own `margin: auto` must be reset to 0 on every side
+ * here — as a flex item, `main`'s default cross-axis stretch (which is what
+ * normally makes it span full width) is suppressed by auto side margins,
+ * and its own auto top/bottom margin would otherwise compete with the card
+ * for the same leftover space instead of staying put at the top.
+ */
+html.landing main {
+  display: flex;
+  flex-direction: column;
+}
+
+html.landing #search-container {
+  margin: 0;
+}
+
+html.landing #landing-card {
+  margin-bottom: auto;
+}
+
+#landing-card h2 {
+  color: var(--color-ink);
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: 32px !important;
+  font-weight: 600;
+  margin: 0 0 10px;
+  letter-spacing: -0.015em;
+  user-select: none;
+  line-height: 1.3;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+/* Adjust the paragraph text inside the landing card to be more similar to definition content */
+#landing-card p {
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px !important; /* Matches the font size of other definition content */
+  color: var(--color-text-strong); /* Similar color to definition content */
+  line-height: 1.6; /* Increase line height for readability */
+  text-align: left;
+  user-select: none;
+}
+
+.landing-card-btn {
+  box-sizing: border-box;
+  display: block; /* Block-level element to allow centering */
+  width: fit-content; /* Keep links content-sized like the button elements */
+  max-width: 100%;
+  margin: 0 auto; /* Centering with smaller vertical margins */
+  margin-bottom: 15px;
+  margin-top: 15px;
+  background-color: var(--color-surface);
+  color: var(
+    --color-ink
+  ); /* Brand navy, matching the header/filters/badges rather
+                      than a disconnected neutral gray */
+  border: 1px solid #b7c9e2; /* Soft navy-tinted border instead of gray */
+  border-radius: 6px; /* Slightly rounded corners */
+  padding: 8px 14px; /* Larger padding for a more clickable feel */
+  font-family:
+    "Source Sans 3", "Noto Sans", sans-serif; /* Clean, modern font */
+  font-size: 14px; /* Smaller font size for subtlety */
+  font-weight: 500; /* Slightly bolder text */
+  text-transform: uppercase; /* Uppercase for consistency */
+  letter-spacing: 0.03em; /* Slight letter spacing */
+  cursor: pointer; /* Pointer on hover */
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease; /* Subtle transitions */
+  touch-action: manipulation; /* Helps reduce delay on mobile */
+  box-shadow:
+    0 4px 8px rgba(135, 135, 135, 0.2),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 140px;
+  text-decoration: none;
+}
+
+.landing-card-btn:hover {
+  background-color: var(
+    --color-wash-blue
+  ); /* Same navy tint as the icon chip/word-count
+                                 badge, so hover reads as part of the same
+                                 color family instead of a plain gray */
+  border-color: var(--color-ink);
+}
+
+.landing-card-btn i {
+  color: var(--color-danger-text);
+  margin-right: 8px; /* Adds space between the icon and text */
+}
+
+.landing-card-button-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* Each tile is the click target itself — an <a> or <button>, not a div
+   wrapping a separate nested button — styled as a real bordered card. CSS
+   Grid already stretches every card in a row to match its tallest
+   neighbor, so cards line up into a clean block even though card content
+   length varies. flex-grow on the paragraph (below) absorbs that leftover
+   height so each tile's tag anchors to the same bottom edge on every
+   card. The reset properties (appearance/color/font/text-decoration/etc.)
+   strip the default <a>/<button> look so both tags present identically. */
+.button-container {
+  align-items: center;
+  appearance: none;
+  background-color: var(--color-wash-blue-pale);
+  border: 1px solid var(--landing-border);
+  border-radius: var(--landing-radius-panel);
+  box-shadow: none;
+  box-sizing: border-box;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  font: inherit;
+  margin: 0;
+  padding: 22px 18px 20px;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.button-container:hover {
+  border-color: var(--color-interactive-muted);
+  box-shadow: var(--landing-shadow-hover);
+  transform: translateY(-2px);
+}
+
+.button-container:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.button-container p,
+.button-container .landing-feature-list {
+  align-self: stretch;
+  flex-grow: 1;
+}
+
+/* Overrides the global ".definition p, li" 20px rule (00-foundations-and-
+   game.css) — these bullets are card metadata, not body copy. */
+#landing-card .landing-feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  text-align: left;
+}
+
+#landing-card .landing-feature-list li {
+  color: var(--color-text-slate);
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+#landing-card .landing-feature-list li::before {
+  color: var(--color-interactive);
+  content: "•";
+  left: 2px;
+  position: absolute;
+}
+
+/* The tile's name — plain typography now that the card itself is the
+   click target, rather than a bordered pill button nested inside it. */
+.landing-card-title {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin: 14px 0 6px;
+  text-transform: none;
+}
+
+.landing-card-image {
+  width: 32px;
+  height: 32px;
+}
+
+/* Icon chip: a soft navy-tinted circle behind each tile's icon. The icons
+   themselves are external <img>s (SVGs with stroke:#000, no fill) that CSS
+   can't recolor directly, so the color has to come from behind them
+   instead. One shared tint (not one per tile) deliberately — it ties every
+   chip to the same brand navy used in the header/buttons/badges, and to
+   .landing-word-count-badge below, rather than reading as six unrelated
+   colors picked at random. */
+.landing-card-icon-chip {
+  align-items: center;
+  background-color: var(--color-wash-blue);
+  border-radius: 50%;
+  display: flex;
+  height: 56px;
+  justify-content: center;
+  margin: 0 auto;
+  width: 56px;
+}
+
+/* The landing hero introduces the product; the search above and guided daily
+   lesson below establish the page's primary learning path. */
+#landing-card p.landing-hero-copy {
+  color: var(--color-text-strong);
+  margin: 4px auto 0;
+  max-width: 560px;
+  text-align: center;
+}
+
+#landing-card p.landing-proof-line {
+  color: var(--color-text-slate);
+  font-size: 14px !important;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 14px auto 0;
+  text-align: center;
+}
+
+.landing-proof-line span {
+  color: #9aabba;
+  margin: 0 5px;
+}
+
+.landing-explore-heading {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin: 22px 0 0;
+  text-align: left;
+  text-transform: none;
+}
+
+@media (max-width: 480px) {
+  #landing-card p.landing-proof-line {
+    font-size: clamp(10px, 3vw, 12px) !important;
+    letter-spacing: 0;
+    line-height: 1.3;
+    margin-top: 8px;
+    text-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  .landing-proof-line span {
+    margin: 0 2px;
+  }
+}
+
+/* Returning-user shortcut: a compact preview of the same three gem rounds
+   shown inside Word Game. It spans the landing card above the feature grid,
+   so the day's most useful action is visible without displacing a tool tile. */
+.landing-daily-quests {
+  background: var(--color-wash-blue-pale);
+  border: 1px solid var(--landing-border);
+  border-radius: var(--landing-radius-panel);
+  box-sizing: border-box;
+  margin-top: 18px;
+  padding: 15px;
+  text-align: left;
+  width: 100%;
+}
+
+.landing-daily-quests-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+#landing-card p.landing-daily-quests-eyebrow {
+  color: var(--color-text-slate);
+  font-size: 14px !important;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  margin: 0 0 3px;
+  text-transform: none;
+}
+
+#landing-card .landing-daily-quests h3 {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: none;
+}
+
+#landing-card p.landing-daily-quests-intro {
+  color: var(--color-text-slate);
+  font-size: 14px !important;
+  line-height: 1.45;
+  margin: 5px 0 0;
+  max-width: 510px;
+}
+
+.landing-daily-quests-count {
+  background-color: var(--color-wash-blue);
+  border-radius: 999px;
+  color: var(--color-ink);
+  flex: 0 0 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+.landing-daily-quest-track {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(3, 64px);
+  justify-content: center;
+  margin: 11px auto;
+  width: fit-content;
+}
+
+/* Each step is a mini version of the full .game-daily-quest card on the
+   game-selection screen -- same background/border/lift per state, not
+   just a filter on the gem. A glow on the gem alone (tried first) stayed
+   too subtle at this size to tell "active" (not done) apart from
+   "complete" at a glance; the full card's background+border treatment is
+   what actually reads clearly there, so this reuses it directly rather
+   than reinventing a smaller-scale cue. */
+.landing-daily-quest-step {
+  align-items: center;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--landing-radius-control);
+  color: #41566b;
+  display: flex;
+  flex-direction: column;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 4px;
+  padding: 6px 4px 5px;
+  text-align: center;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.landing-daily-quest-gem {
+  height: 46px;
+  width: 46px;
+}
+
+.landing-daily-quest-step--locked {
+  background-color: var(--color-surface-subtle);
+  color: #6b6b6b;
+}
+
+.landing-daily-quest-step--locked .landing-daily-quest-gem {
+  filter: none;
+}
+
+.landing-daily-quest-step--active {
+  background-color: var(--color-wash-blue-active);
+  border-color: var(--color-wash-blue-active-border);
+  box-shadow: none;
+  transform: translateY(-2px);
+}
+
+.landing-daily-quest-step--complete {
+  background-color: var(--color-success-bg);
+  border-color: var(--color-success-border);
+}
+
+.landing-daily-quests-action {
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  border-top: 1px solid var(--landing-border);
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  padding: 12px 0 0;
+}
+
+.landing-daily-quests-action > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.landing-daily-quests-action strong {
+  color: var(--color-text-emphasis);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.landing-daily-quests-action span {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  margin-top: 2px;
+}
+
+.landing-daily-quests-action button {
+  align-items: center;
+  background-color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+  border-radius: var(--landing-radius-control);
+  box-shadow: none;
+  color: var(--color-surface);
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 6px;
+  justify-content: center;
+  letter-spacing: 0;
+  min-height: 38px;
+  padding: 8px 12px;
+  text-transform: none;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.landing-daily-quests-action button:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  box-shadow: 0 3px 9px rgba(13, 35, 55, 0.14);
+}
+
+.landing-daily-quests-action button.is-bonus {
+  background-color: var(--color-bonus);
+  border-color: var(--color-bonus);
+}
+
+.landing-daily-quests-action button.is-bonus:hover {
+  background-color: var(--color-bonus-hover);
+  border-color: var(--color-bonus-hover);
+}
+
+.landing-daily-quests-action button:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  #landing-card {
+    padding-top: 16px;
+  }
+
+  #landing-card h2 {
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  #landing-card p.landing-hero-copy {
+    line-height: 1.45;
+  }
+
+  #landing-card p.landing-proof-line {
+    margin-top: 8px;
+  }
+
+  .landing-daily-quests {
+    margin-top: 8px;
+    padding: 13px;
+  }
+
+  .landing-daily-quests-header {
+    gap: 10px;
+  }
+
+  .landing-daily-quests-count {
+    font-size: 14px;
+    padding: 5px 8px;
+  }
+
+  /* The compact base track already fits comfortably within a 375px phone,
+     so the same gem proportions can remain consistent across breakpoints. */
+
+  .landing-daily-quests-action {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .landing-daily-quests-action button {
+    width: 100%;
+  }
+}
+
+.landing-progress-summary {
+  /* Flat, matching .landing-daily-quests' own background exactly — these
+     two boxes stack directly on the landing page and read as one pair. */
+  background: var(--color-wash-blue-pale);
+  border: 1px solid var(--landing-border);
+  border-radius: var(--landing-radius-panel);
+  box-sizing: border-box;
+  margin-top: 14px;
+  padding: 18px;
+  text-align: left;
+  width: 100%;
+}
+
+.landing-progress-summary-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+#landing-card p.landing-progress-summary-eyebrow {
+  color: var(--color-text-slate);
+  font-size: 14px !important;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  margin: 0 0 3px;
+  text-transform: none;
+}
+
+#landing-card .landing-progress-summary h3 {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin: 0;
+  text-transform: none;
+}
+
+.landing-progress-summary-count {
+  background-color: var(--color-wash-blue);
+  border-radius: 999px;
+  color: var(--color-ink);
+  flex: 0 0 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+
+#landing-card p.landing-progress-summary-intro {
+  color: var(--color-text-slate);
+  font-size: 14px !important;
+  line-height: 1.45;
+  margin: 5px 0 14px;
+  max-width: 510px;
+}
+
+#landing-card p.landing-progress-summary-empty {
+  color: var(--color-text-slate);
+  font-size: 14px !important;
+  line-height: 1.5;
+  margin: 8px 0 0;
+}
+
+.landing-progress-bar {
+  background-color: var(--color-surface-subtle);
+  border-radius: 999px;
+  display: flex;
+  height: 10px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.landing-progress-segment {
+  height: 100%;
+}
+
+/* Learning-to-mastered ladder, ordered light to dark. */
+.landing-progress-segment--0 {
+  background-color: var(--color-wash-blue-border);
+}
+
+.landing-progress-segment--1 {
+  background-color: var(--color-wash-blue-border);
+}
+
+.landing-progress-segment--2 {
+  background-color: #6fa8dc;
+}
+
+.landing-progress-segment--3 {
+  background-color: var(--color-success-border);
+}
+
+.landing-progress-segment--4 {
+  background-color: var(--color-success);
+}
+
+.landing-progress-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  margin-top: 10px;
+}
+
+.landing-progress-legend-item {
+  align-items: center;
+  color: var(--color-text-slate);
+  display: inline-flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  gap: 5px;
+}
+
+.landing-progress-legend-item strong {
+  color: var(--color-text-emphasis);
+  font-weight: 600;
+}
+
+.landing-progress-legend-dot {
+  border-radius: 50%;
+  flex: 0 0 auto;
+  height: 8px;
+  width: 8px;
+}
+
+.landing-progress-legend-dot--0 {
+  background-color: var(--color-wash-blue-border);
+}
+
+.landing-progress-legend-dot--1 {
+  background-color: var(--color-wash-blue-border);
+}
+
+.landing-progress-legend-dot--2 {
+  background-color: #6fa8dc;
+}
+
+.landing-progress-legend-dot--3 {
+  background-color: var(--color-success-border);
+}
+
+.landing-progress-legend-dot--4 {
+  background-color: var(--color-success);
+}
+
+.landing-progress-summary-action {
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  border-top: 1px solid var(--landing-border);
+  display: flex;
+  gap: 14px;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 12px 0 0;
+}
+
+.landing-progress-summary-action span {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+}
+
+.landing-progress-summary-action button {
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  border-radius: var(--landing-radius-control);
+  box-shadow: none;
+  color: var(--color-interactive);
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  justify-content: center;
+  letter-spacing: 0;
+  min-height: 32px;
+  padding: 6px 4px;
+  text-decoration: underline;
+  text-decoration-color: var(--color-interactive-muted);
+  text-underline-offset: 3px;
+  text-transform: none;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.landing-progress-summary-action button:hover {
+  background-color: transparent;
+  color: var(--color-ink);
+  text-decoration-color: currentColor;
+}
+
+.landing-progress-summary-action button:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .landing-progress-summary {
+    margin-top: 10px;
+    padding: 14px;
+  }
+
+  .landing-progress-summary-action {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .landing-progress-summary-action button {
+    align-self: flex-start;
+    width: auto;
+  }
+}
+
+/* My Stats page (myStats.js) — one single .definition "paper" (same as
+   #landing-card) containing a plain-text header plus one light-blue
+   .my-stats-box per section, mirroring the landing page's own
+   .landing-daily-quests / .landing-progress-summary boxes exactly rather
+   than stacking separate white cards. Every text element below sets
+   "Source Sans 3" explicitly, matching how the rest of the app's UI/prose
+   text does it — body's own default is "Noto Serif" (see body{} above), and
+   it only ever gets overridden per-element, not inherited from a container,
+   so a class that skips it silently renders in the serif body font instead. */
+/* 14px / 10px (mobile) matches the landing page's own stacked-box gap
+   between .landing-daily-quests and .landing-progress-summary — the
+   closest precedent for one dashboard-style box sitting directly under
+   another, tighter than the 20px .definition falls back to when it's used
+   for an unrelated list (e.g. stacked search results). */
+/* .account-page is the same layout, adopted by Settings/About (see
+   settings.js/about.js) so those two reuse this whole box/heading/danger-
+   action component set instead of duplicating it under new names — three
+   account-menu destinations sharing one "personal page" visual language. */
+.my-stats,
+.account-page {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+@media (max-width: 600px) {
+  .my-stats,
+  .account-page {
+    gap: 10px;
+  }
+}
+
+/* Shared light-blue box treatment for each section — identical to
+   .landing-daily-quests / .landing-progress-summary on the landing page,
+   which the .my-stats paper is deliberately mirroring. */
+.my-stats-box {
+  background: var(--color-surface);
+  border: 0;
+  border-radius: 0;
+  box-sizing: border-box;
+  box-shadow: none;
+  padding: 22px 24px;
+  text-align: left;
+  width: 100%;
+}
+
+.my-stats-heading {
+  color: var(--color-ink);
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0;
+  margin: 0 0 5px;
+  text-transform: none;
+}
+
+/* "p." here (and on several other selectors in this file) because this is
+   always a <p> tag, and .definition p's global 20px/10px-margin otherwise
+   beats a plain class selector on specificity alone — (0,1,1) vs (0,1,0). */
+p.my-stats-subheading {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 0;
+}
+
+.my-stats-section-heading {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-caps-heading);
+  margin: 0 0 16px;
+  text-transform: uppercase;
+}
+
+.my-stats-overview-action {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
+/* Five tiles in a row rather than .game-summary-stats' shared 2-column
+   grid (still used as-is by Word Game's own round summary, which this
+   deliberately leaves alone). At 2 columns each tile was wide enough to
+   swallow a lot of dead space to the right of its left-aligned number —
+   there simply isn't enough content (a 1-2 digit number, one short word)
+   to fill a ~380px-wide box. Five narrower, centered tiles use that width
+   instead of wasting it, and read as one cohesive strip rather than five
+   separate cards each mostly empty. */
+.my-stats-overview-grid {
+  gap: 10px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-bottom: 0;
+}
+
+@media (max-width: 620px) {
+  .my-stats-overview-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .my-stats-overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+/* Scaled down from the shared 1.5em/700 — at 2 columns the number was the
+   loudest thing on the page; at 4 narrower columns it doesn't need to be
+   as large to still read as the tile's headline. */
+.my-stats-overview-grid p.game-summary-stat-value {
+  font-size: 19px;
+}
+
+/* The shared label has no font-weight of its own (inherits normal/400),
+   which is legible enough as a single label under a big number but reads
+   as flimsy once four of them sit in a tight row — a heavier weight here
+   gives it enough presence to hold its own against the value above it. */
+.my-stats-overview-grid p.game-summary-stat-label {
+  font-weight: 600;
+}
+
+/* Proficiency card — two KPI tiles (Words You Know, Estimated Level) in the
+   same bolded stat-tile style as the Overview card right above (the
+   combined selector below), plus a derived CEFR mastery bar. The numbers
+   are the point of this card, so they lead; supporting text stays to a
+   single short chart label. Deliberately not the raw abilityScore; see the
+   comment in myStats.js's createProficiencyCard for why. */
+.my-stats-proficiency-grid {
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-bottom: 16px;
+}
+
+.my-stats-overview-grid .game-summary-stat,
+.my-stats-proficiency-grid .game-summary-stat {
+  background-color: var(--color-wash-blue-pale);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 9px;
+  padding: 12px 6px;
+  text-align: center;
+}
+
+.my-stats-proficiency-grid p.game-summary-stat-value {
+  font-size: 32px;
+}
+
+.my-stats-proficiency-grid p.game-summary-stat-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+p.my-stats-proficiency-level-note {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+
+/* A short chart title, not a sentence — the bars themselves already carry
+   their own percentage and a hover title with the full breakdown. */
+p.my-stats-cefr-bar-caption {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: var(--letter-spacing-caps-heading);
+  margin: 0;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.my-stats-cefr-bar {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding-top: 10px;
+}
+
+.my-stats-cefr-segment {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 48px;
+}
+
+.my-stats-cefr-segment-percent {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.my-stats-cefr-segment-track {
+  align-items: flex-end;
+  background-color: var(--color-surface-strong);
+  border-radius: 4px;
+  display: flex;
+  height: 72px;
+  overflow: hidden;
+  width: 100%;
+}
+
+.my-stats-cefr-segment-fill {
+  display: block;
+  min-height: 3px;
+  width: 100%;
+}
+
+.my-stats-cefr-segment-fill--a1 { background-color: var(--color-cefr-a1-bg); }
+.my-stats-cefr-segment-fill--a2 { background-color: var(--color-cefr-a2-bg); }
+.my-stats-cefr-segment-fill--b1 { background-color: var(--color-cefr-b1-bg); }
+.my-stats-cefr-segment-fill--b2 { background-color: var(--color-cefr-b2-bg); }
+.my-stats-cefr-segment-fill--c1 { background-color: var(--color-cefr-c1-bg); }
+
+.my-stats-cefr-segment-label {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Practice-activity heatmap — GitHub-contribution-calendar style. Horizontal
+   scroll (like .word-list-table-container elsewhere) rather than shrinking
+   cells to fit narrow screens, so a cell stays a comfortable tap/hover
+   target on mobile. */
+.my-stats-heatmap-scroll {
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.my-stats-heatmap-inner {
+  width: max-content;
+}
+
+.my-stats-heatmap-months-row {
+  display: flex;
+}
+
+/* Matches .my-stats-heatmap-day-labels' width exactly, so the month row
+   above lines up with the day grid below it. Also sticky (see that class)
+   so the top-left corner stays a clean solid block, not a half-scrolled
+   month label, while the row scrolls under it. */
+.my-stats-heatmap-day-col-spacer {
+  background: var(--color-surface);
+  flex-shrink: 0;
+  left: 0;
+  position: sticky;
+  width: 24px;
+  z-index: 1;
+}
+
+.my-stats-heatmap-months {
+  display: flex;
+  gap: 3px;
+  overflow: visible;
+}
+
+/* Width matches .my-stats-heatmap-cell so a label lines up with the column
+   it names; text overflows rightward into the following (unlabeled) slots,
+   the same trick GitHub's own contribution graph uses. */
+.my-stats-heatmap-month-slot {
+  color: var(--color-text-slate);
+  flex-shrink: 0;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  width: 11px;
+  white-space: nowrap;
+}
+
+.my-stats-heatmap-body-row {
+  display: flex;
+}
+
+/* Sticky so Mon/Wed/Fri stay visible even though the grid defaults to
+   scrolled-to-today (see buildActivityHeatmapGrid's scrollLeft) — without
+   this, the day labels would start off-screen to the left on any viewport
+   narrower than the full 53-week grid. */
+.my-stats-heatmap-day-labels {
+  background: var(--color-surface);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 3px;
+  left: 0;
+  position: sticky;
+  width: 24px;
+  z-index: 1;
+}
+
+.my-stats-heatmap-day-labels span {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 9px;
+  height: 11px;
+  line-height: 11px;
+  padding-right: 4px;
+  text-align: right;
+}
+
+.my-stats-heatmap-grid {
+  display: flex;
+  gap: 3px;
+  width: max-content;
+}
+
+.my-stats-heatmap-column {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.my-stats-heatmap-cell {
+  background-color: var(--color-surface-strong);
+  border-radius: 2px;
+  display: block;
+  height: 11px;
+  width: 11px;
+}
+
+.my-stats-heatmap-cell--future {
+  background-color: transparent;
+}
+
+.my-stats-heatmap-cell--0 { background-color: var(--color-surface-strong); }
+.my-stats-heatmap-cell--1 { background-color: var(--color-success-bg); }
+.my-stats-heatmap-cell--2 { background-color: var(--color-heatmap-2); }
+.my-stats-heatmap-cell--3 { background-color: var(--color-success-border); }
+.my-stats-heatmap-cell--4 { background-color: var(--color-success); }
+
+.my-stats-heatmap-legend {
+  align-items: center;
+  color: var(--color-text-slate);
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 12px;
+  gap: 4px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.my-stats-heatmap-legend .my-stats-heatmap-cell {
+  height: 10px;
+  width: 10px;
+}
+
+/* Skills breakdown — one bordered tile per SpacedRepetition skill
+   (recognition, production/"Recall", listening, context/"Sentences",
+   semantic/"Word Connections"). Each tile is its own box (same wash-blue
+   treatment as the KPI/gem tiles elsewhere on this page) so five skills in
+   a row read as five distinct things, not one continuous block of text.
+   Reading order inside a tile is a deliberate hierarchy — see the comment
+   in myStats.js's createSkillsCard. */
+.my-stats-skills-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.my-stats-skill-tile {
+  background-color: var(--color-wash-blue-pale);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 9px;
+  padding: 14px 16px;
+}
+
+/* A small identifying eyebrow, not a competing headline — the percentage
+   below is the tile's actual headline. */
+p.my-stats-skill-label {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-caps-heading);
+  margin: 0 0 6px;
+  text-transform: uppercase;
+}
+
+.my-stats-skill-value-row {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+/* The single largest, boldest piece of text in the tile on purpose — this
+   number is what a learner opens this card to see. */
+.my-stats-skill-value {
+  color: var(--color-ink);
+  flex-shrink: 0;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 52px;
+}
+
+.my-stats-skill-bar-bg {
+  background-color: var(--color-surface);
+  border-radius: 6px;
+  flex: 1 1 auto;
+  height: 10px;
+  overflow: hidden;
+}
+
+.my-stats-skill-bar-fill {
+  background-color: var(--color-success-border);
+  display: block;
+  height: 100%;
+}
+
+p.my-stats-skill-description {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0 0 8px;
+}
+
+p.my-stats-skill-count {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 11px;
+  margin: 0;
+}
+
+.my-stats-gems-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.my-stats-gems-header .my-stats-section-heading {
+  margin-bottom: 0;
+}
+
+.my-stats-gems-row {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+}
+
+.my-stats-gems-tile {
+  align-items: center;
+  background-color: var(--color-wash-blue-pale);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 10px;
+  text-align: center;
+}
+
+/* .game-daily-quest-gem's own base size (68px, tuned for the word-game
+   intro screen's full quest cards) is too large for this compact tile --
+   this scales it down to match .game-summary-stat-value's proportions. */
+.my-stats-gems-icon {
+  filter: drop-shadow(0 2px 3px rgba(28, 42, 58, 0.14));
+  height: 30px;
+  width: 30px;
+}
+
+.my-stats-vocabulary-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.my-stats-vocabulary-header .my-stats-section-heading {
+  margin-bottom: 0;
+}
+
+p.my-stats-vocabulary-intro {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  margin: 0 0 16px;
+}
+
+/* "p." here for the same reason as p.game-summary-stat-value above: this
+   is always a <p> tag, and .definition p's global 20px otherwise beats
+   this class's own 13px on specificity alone. */
+p.my-stats-empty {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.my-stats-see-all-link {
+  color: var(--color-ink);
+  display: inline-block;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  margin-top: 14px;
+  text-decoration: none;
+  text-decoration-color: var(--color-wash-blue-border);
+  text-underline-offset: 4px;
+}
+
+.my-stats-see-all-link:hover {
+  text-decoration: underline;
+  text-decoration-color: currentColor;
+}
+
+/* Same capped-height, scrollable treatment as the round-summary's missed
+   words table (.game-summary-missed-table-container) — taller here since
+   this table is the main content of a whole page rather than one part of
+   a small modal-like card. */
+.word-list-table-container.my-stats-trouble-table-container {
+  max-height: 420px;
+  margin-top: 4px;
+}
+
+/* My Stats/Settings/About report surface and section-specific controls. */
+#my-stats.definition.my-stats,
+#settings.definition.account-page,
+#about.definition.account-page {
+  background: var(--color-surface);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(13, 58, 105, 0.05);
+  gap: 0;
+  margin: 0 0 24px;
+  overflow: hidden;
+  padding: 0;
+}
+
+.my-stats-header {
+  border-bottom: 1px solid var(--color-wash-blue-border);
+  padding: 24px;
+  text-align: left;
+}
+
+.my-stats-box + .my-stats-box {
+  border-top: 1px solid var(--color-wash-blue-border);
+}
+
+.my-stats-overview-grid p.game-summary-stat-label,
+.my-stats-gems-tile p.game-summary-stat-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.my-stats-overview-action .game-summary-primary-btn {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 8px;
+  box-shadow: none;
+  color: var(--color-ink);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 14px;
+  width: auto;
+}
+
+.my-stats-overview-action .game-summary-primary-btn:hover {
+  background-color: var(--color-surface-hover);
+  border-color: var(--color-wash-blue-border);
+}
+
+/* "p." because this is always a <p> tag, and .definition p's global
+   20px/10px-margin otherwise beats a plain class selector on specificity
+   alone — (0,1,1) vs (0,1,0). Same fix as p.my-stats-subheading etc. above. */
+p.my-stats-danger-text {
+  color: var(--color-text-slate);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.my-stats-danger-action {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
+/* Outlined rather than filled — this is the one destructive control on the
+   page, not a call to action to compete with "Practice Now" above. */
+.my-stats-danger-btn {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-danger-border);
+  border-radius: 8px;
+  box-shadow: none;
+  color: var(--color-danger);
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 14px;
+}
+
+.my-stats-danger-btn:hover {
+  background-color: var(--color-danger-bg);
+}
+
+.my-stats-danger-btn:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.my-stats-gems-tile p.game-summary-stat-value {
+  font-size: 18px;
+}
+
+@media (max-width: 480px) {
+  #my-stats.definition.my-stats {
+    margin-bottom: 16px;
+  }
+
+  .my-stats-header,
+  .my-stats-box {
+    padding: 18px 16px;
+  }
+
+  .my-stats-header {
+    padding: 18px 16px;
+  }
+
+  .my-stats-heading {
+    font-size: 22px;
+  }
+
+  .my-stats-overview-action .game-summary-primary-btn,
+  .my-stats-danger-btn {
+    width: 100%;
+  }
+
+  .my-stats-proficiency-grid p.game-summary-stat-value {
+    font-size: 26px;
+  }
+
+  .my-stats-cefr-segment {
+    width: 40px;
+  }
+
+  .my-stats-cefr-segment-percent {
+    font-size: 10px;
+  }
+
+  .my-stats-cefr-segment-track {
+    height: 60px;
+  }
+}
+
+/* Progress bar container and fill */
+.level-progress-bar-bg {
+  background-color: var(--color-surface-subtle);
+  border-radius: 999px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  position: relative;
+}
+
+.level-progress-bar-fill {
+  background-color: var(--color-success-bg);
+  height: 100%;
+  transition: width 0.3s ease;
+}
+
+li {
+  color: var(--color-ink);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-control {
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: var(--color-ink);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 8px;
+  height: 38px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0 14px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+a.footer-control {
+  text-decoration: none;
+}
+
+.footer-control:hover {
+  background-color: var(--color-wash-blue);
+  border-color: var(--color-ink);
+  box-shadow: 0 2px 5px rgba(13, 58, 105, 0.12);
+  color: var(--color-ink);
+  transform: translateY(-1px);
+}
+
+.footer-control[aria-current="page"] {
+  background-color: var(--color-wash-blue);
+  border-color: var(--color-ink);
+}
+
+.footer-control:focus-visible,
+footer a:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+.linkedin-icon {
+  height: auto;
+  width: 16px;
+}
+
+.feedback-footer-btn i,
+.updates-footer-link i {
+  font-size: 14px;
+}
+
+.site-switcher-select.footer-control {
+  font-size: 14px;
+  padding-right: 10px;
+  text-transform: none;
+}
+
+.site-switcher-select.footer-control:hover {
+  transform: none;
+}
+
+/* Landing page, form, and footer responsive behavior. */
+@media (max-width: 1024px) {
+  input[type="text"] {
+    padding: 10px 10px;
+  }
+
+  #landing-card {
+    margin: 5px auto;
+    padding: 20px;
+    width: 85%;
+  }
+
+  #landing-card h2 {
+    font-size: 26px !important;
+    /* The global mobile h2 rule enables dictionary-style hyphenation for
+       long Norwegian words. This short English hero heading has natural
+       spaces and should wrap only between words, never as "vo-cabulary". */
+    hyphens: none;
+    overflow-wrap: normal;
+    text-wrap: balance;
+    word-break: normal;
+  }
+
+  #landing-card h3 {
+    font-size: 14px;
+  }
+
+  #landing-card h4 {
+    font-size: 14px;
+  }
+
+  #landing-card p {
+    font-size: 14px !important;
+  }
+
+  #landing-card .landing-feature-list li {
+    font-size: 14px;
+  }
+
+  .landing-card-btn {
+    font-size: 14px;
+    padding: 6px 8px;
+  }
+
+  .footer-control {
+    font-size: 14px;
+    gap: 6px;
+    height: 36px;
+    padding: 0 8px;
+  }
+
+  .landing-card-button-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .linkedin-icon {
+    width: 14px;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: center;
+    margin: 5px 0 5px 0;
+  }
+}

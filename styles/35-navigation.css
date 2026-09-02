@@ -1,0 +1,1432 @@
+/*
+ * Shared navigation toolbar
+ * -------------------------
+ * Base and responsive behavior for the mode, filter, search, and Word Game
+ * toolbar controls. Rules retain their former relative order to preserve the
+ * cascade while giving the component a single source file.
+ */
+
+/* Explicit disabled states for toolbar actions. */
+/* .search-btn and .clear-btn each set their own color/cursor (and their
+   own icon color) in their base rule below, so the generic button:disabled
+   above isn't guaranteed to win over them — these give each one an
+   explicit disabled override instead of leaving that to a specificity
+   tie-break. */
+.search-btn:disabled,
+.clear-btn:disabled {
+  color: var(--color-border);
+  cursor: not-allowed;
+}
+
+.search-btn:disabled i,
+.clear-btn:disabled i {
+  color: var(--color-border);
+}
+
+/* Mode switching (Words/Sentences/Stories/Word Game/My Words) now lives in
+   #mode-nav — a top tab strip on desktop, a fixed bottom tab bar on mobile
+   (see #mode-nav rules further down this file, and the component itself in
+   index.html right after <header>). #type-select stays in the DOM as the
+   internal state store every mode-reading call site across scripts.js/
+   wordList.js/stories.js/wordGame.js/myStats.js still trusts (see
+   syncModeNav() in scripts.js) — it's just never shown. !important beats
+   the per-breakpoint display overrides further below that still address
+   .type-filter as part of the shared filter-pill selector groups. */
+.type-filter {
+  display: none !important;
+}
+
+/* Primary mode nav: #mode-nav in index.html, right after <header>. One
+   set of markup, styled by breakpoint below into either a top tab strip
+   (desktop) or a fixed Instagram-style bottom tab bar (mobile/tablet) —
+   never a hidden dropdown at either size. Each .mode-tab-icon gets its
+   mask-image set inline per icon (index.html), reusing the same
+   single-color SVGs the landing page's mode cards already use
+   (Resources/Photos/*.svg), recolored per active/inactive state via
+   mask instead of duplicating them as tinted image assets — a url()
+   inside a --custom-property's value resolves relative to the
+   stylesheet that consumes it via var(), not to index.html, so the
+   image itself can't be wired up that way here (only the non-URL mask
+   properties below are shared in one place). */
+#mode-nav {
+  display: flex;
+}
+
+.mode-tab {
+  align-items: center;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  text-decoration: none;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+/* mask-image itself is set inline per icon (index.html), not via a
+   custom property here: a url() inside a --custom-property's value
+   resolves relative to the stylesheet that consumes it via var() (this
+   file, one level under the site root) rather than relative to
+   index.html, breaking these paths on load. An inline style's url()
+   resolves against the document instead, which is correct at any
+   deployed subpath — only the non-URL parts belong here. */
+.mode-tab-icon {
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  background-color: currentColor;
+  flex-shrink: 0;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+.mode-tab-label {
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.mode-tab:hover {
+  background-color: var(--color-wash-blue);
+  color: var(--color-ink);
+}
+
+.mode-tab.active {
+  color: var(--color-ink);
+}
+
+/* The active tab's bold weight has to be set on the label itself, not on
+   .mode-tab.active above: .mode-tab-label's own font-weight: 500 is an
+   explicit declaration, which always beats an inherited value regardless of
+   specificity — a font-weight on .mode-tab.active alone would never reach
+   this text. Without this, the active tab was distinguished by color alone. */
+.mode-tab.active .mode-tab-label {
+  font-weight: 600;
+}
+
+/* Search-field clear control. */
+/* A round, inset icon button — same footprint/hover language as
+   .word-list-favorite-button elsewhere (soft tinted-blue circle + slight
+   scale on hover, not a flush edge-to-edge rectangle) rather than a
+   bespoke look just for this button. */
+.clear-btn {
+  align-items: center;
+  appearance: none;
+  aspect-ratio: 1;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: none;
+  flex-shrink: 0;
+  font-size: 16px;
+  height: 36px;
+  width: 36px;
+  justify-content: center;
+  margin: 0 4px;
+  padding: 0;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* display, not visibility: with .search-btn now a fixed width instead of
+   being sized by flex-shrink competition with its siblings, hiding this
+   button's box entirely gives that space back to #search-bar (the only
+   flex-grow item left in the row) instead of it going to waste — real
+   room the placeholder needs when the field is empty, which is exactly
+   when this button isn't shown anyway. placeholder=" " on #search-bar
+   (see its markup) means :placeholder-shown is only true when the field
+   is genuinely empty — including after a programmatic clearInput(), not
+   just while the user is typing — so this stays in sync with the
+   field's actual state without any JS. */
+#search-bar:not(:placeholder-shown) ~ .clear-btn {
+  display: flex;
+}
+
+.clear-btn:hover {
+  background-color: rgba(28, 104, 181, 0.1);
+  color: var(--color-interactive);
+  transform: scale(1.08);
+}
+
+.clear-btn:active {
+  transform: scale(0.92);
+}
+
+.clear-btn:focus-visible {
+  outline: 2px solid var(--color-interactive);
+  outline-offset: 2px;
+}
+
+.clear-btn i {
+  color: inherit;
+  font-size: 16px;
+  pointer-events: none;
+}
+
+/* The letter keys take space from the search pill's left side while the whole
+   search group keeps its original boundary. Each key remains a separate
+   control, matching the Word Game rather than becoming part of the field. */
+.search-norwegian-letter-keys {
+  align-items: stretch;
+  display: flex;
+  flex: 0 0 auto;
+  gap: 5px;
+  height: 42px;
+}
+
+.search-norwegian-letter-key {
+  align-items: center;
+  appearance: none;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  box-sizing: border-box;
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  flex: 0 0 34px;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 16px;
+  justify-content: center;
+  padding: 0;
+}
+
+.search-norwegian-letter-key:hover {
+  background-color: #f3f7fb;
+}
+
+.search-norwegian-letter-key:focus-visible {
+  outline: 2px solid var(--color-interactive);
+  outline-offset: -3px;
+}
+
+.search-norwegian-letter-key:disabled {
+  color: var(--color-border);
+  cursor: not-allowed;
+}
+
+/* Word Game end-session control. */
+/* The "end early" control. Uppercase/letter-spaced to match the filter
+   pills' (.type-filter select etc.) "suave" button language, and given
+   enough padding to read as a real button rather than a thin strip — but
+   deliberately outlined rather than solid-filled, and sized modestly:
+   this is an "opt out early" action, not one worth visually competing
+   with Next Word or the answer cards for attention.
+
+   #game-end-session-btn is a static button in the toolbar (index.html, in
+   .cefr-filter-group — the same spot the CEFR filter occupies outside
+   Word Game mode) shown only mid-round via
+   updateEndSessionToolbarButtonVisibility() (wordGame.js), on every
+   screen size: the word game hides .cefr-filter entirely, which is what
+   leaves the room for this button to sit there instead of needing to
+   relocate on mobile. */
+.game-end-session-btn {
+  align-items: center;
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-ink);
+  border-radius: 8px;
+  color: var(--color-ink);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  justify-content: center;
+  letter-spacing: 0.04em;
+  padding: 9px 14px;
+  text-transform: uppercase;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.game-end-session-btn:hover {
+  background-color: var(--color-wash-blue);
+}
+
+.game-end-session-btn:active {
+  background-color: var(--color-wash-blue-active);
+}
+
+/* Hidden by default — .hidden (index.html) covers the "no round active"
+   case via JS, but the base class above still defaults to display:flex,
+   so the toolbar instance needs its own baseline of display:none here,
+   overridden only within word-game mode. */
+#game-end-session-btn {
+  display: none;
+}
+
+#search-container-inner.word-game-active #game-end-session-btn {
+  display: flex;
+  /* Matches the 42px height of its toolbar neighbors (.cefr-filter,
+     .type-filter, etc. — see the shared height:42px rule) instead of the
+     shorter, content-driven height .game-end-session-btn gets on its
+     own. The mobile rule further below matches it to the row's shorter
+     38px height instead. */
+  height: 42px;
+  padding: 0 14px;
+}
+
+.genre-filter {
+  display: none;
+}
+
+/* Word Game level lock. */
+#lock-icon {
+  color: var(--color-surface);
+  cursor: pointer;
+  display: none;
+  font-size: 16px;
+  margin: 0 5px 0 4px;
+  padding: 14px;
+  order: 2;
+  pointer-events: auto;
+  transition: all 0.2s ease;
+}
+
+#lock-icon.locked {
+  color: var(--color-success-bg); /* light green for locked */
+  transform: scale(1.1);
+}
+
+#lock-icon.unlocked {
+  color: var(--color-surface); /* default white */
+  transform: scale(1);
+}
+
+/* Shared toolbar containers, filters, and actions. */
+.search-bar-wrapper,
+.type-filter,
+.pos-filter,
+.cefr-filter,
+.genre-filter,
+.game-english-filter {
+  align-items: center;
+  display: flex;
+  height: 42px;
+  flex: 1;
+}
+
+/* Filters read as visually secondary to #mode-nav's solid-navy active
+   tab — a light, outlined "ghost" pill instead of the same solid navy the
+   mode switcher used to share with them, so it's clear at a glance which
+   one is navigation and which are just narrowing the current view. */
+.type-filter,
+.pos-filter,
+.cefr-filter,
+.genre-filter,
+.game-english-filter {
+  align-items: center;
+  background-color: var(--color-wash-blue);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 15px;
+  box-sizing: border-box;
+  display: flex;
+  height: 42px;
+  flex: 1;
+  padding: 0;
+  position: relative;
+  min-width: 180px;
+  transition: all 0.3s ease;
+}
+
+.type-filter i,
+.pos-filter i,
+.cefr-filter i,
+.genre-filter i,
+.game-english-filter i {
+  color: var(--color-ink);
+  font-size: 18px;
+  pointer-events: none;
+  right: 15px;
+  z-index: 0; /* Ensures the icon is underneath the select element */
+}
+
+.type-filter:not(.disabled):hover,
+.pos-filter:not(.disabled):hover,
+.cefr-filter:not(.disabled):hover,
+.genre-filter:not(.disabled):hover,
+.game-english-filter:not(.disabled):hover {
+  background-color: var(--color-wash-blue-active);
+  border-color: var(--color-wash-blue-active-border);
+}
+
+.type-filter select:focus,
+.pos-filter select:focus,
+.cefr-filter select:focus,
+.genre-filter select:focus,
+.game-english-filter select:focus {
+  outline: none;
+}
+
+.type-filter select:focus-visible,
+.pos-filter select:focus-visible,
+.cefr-filter select:focus-visible,
+.genre-filter select:focus-visible,
+.game-english-filter select:focus-visible {
+  outline: 2px solid var(--color-surface);
+  outline-offset: 2px;
+}
+
+/* .cefr-filter keeps its own flex:1/min-width:180px from the shared
+   filter rule above (untouched) — that's its real floor, enough room for
+   "A1"/"B2" etc. to render in full. This group has no min-width of its
+   own, so its automatic minimum is simply the sum of that 180px floor
+   plus the button's natural size: enough space for the button comes from
+   the row growing a little wider, not from shrinking .cefr-filter's own
+   legible floor. The type/POS/genre/show-english dropdowns, as separate
+   flex:1 siblings of this group in the row, are unaffected either way. */
+.cefr-filter-group {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  /* Matches the row's own gap between filter groups (#search-container-inner,
+     .selectors-wrapper), so the space before this button feels consistent
+     with the spacing everywhere else in the row rather than looking cramped
+     against its neighbor. */
+  gap: 10px;
+}
+
+/* My Stats/Settings/About have nothing left to search or filter now that
+   mode-switching lives in #mode-nav and the old My Words shortcut button
+   is gone — handleTypeChange's "my-stats"/"settings"/"about" branches
+   (scripts.js) already hide every individual toolbar control, which would
+   otherwise leave an empty, padded band with nothing in it. Hide the whole
+   toolbar instead. */
+body.my-stats-mode #search-container,
+body.account-page-mode #search-container {
+  display: none;
+}
+
+/* Word Game's toolbar has nothing in it either, except during an actual
+   round (the translations/report/quit controls — see .game-english-filter
+   and .game-round-menu further down this file, both scoped to
+   word-game-round-active). Outside a round — the mode-picker intro,
+   placement test, and round summary — hide the same empty band My Stats
+   hides above, rather than leaving an unstyled empty strip. */
+body.word-game-mode:not(.word-game-round-active) #search-container {
+  display: none;
+}
+
+/* Hidden outside Word Game mode — shown only via the same
+   #search-container-inner.word-game-active flag the lock icon uses.
+   Styled as its own light chip button (like .report-issue-btn on the
+   definition card) rather than blending into the dark blue toolbar. */
+.toolbar-report-issue-btn {
+  align-items: center;
+  background-color: var(--color-surface-subtle);
+  border: none;
+  border-radius: 8px;
+  color: var(--color-danger);
+  cursor: pointer;
+  display: none;
+  flex: 0 0 auto;
+  font-size: 16px;
+  justify-content: center;
+  padding: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+#search-container-inner.word-game-active .toolbar-report-issue-btn {
+  display: inline-flex;
+}
+
+.toolbar-report-issue-btn:hover {
+  background-color: var(--color-surface-strong);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+}
+
+.toolbar-report-issue-btn:focus-visible {
+  outline: 2px solid var(--color-surface);
+  outline-offset: 2px;
+}
+
+.game-english-toggle-btn {
+  align-items: center;
+  background-color: var(--color-surface-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+  cursor: pointer;
+  display: none;
+  flex: 0 0 42px;
+  font-size: 18px;
+  height: 42px;
+  justify-content: center;
+  line-height: 1;
+  padding: 0;
+  transition:
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+  width: 42px;
+}
+
+/* Kept separate from the [aria-pressed="true"] rule below, not combined
+   into one selector list: a touch tap satisfies :hover too, and mobile
+   browsers commonly leave it applied after the tap ends (no pointer to
+   move away and clear it) instead of only for the pointer actually
+   resting over the button. Combined, that left the "hide" state looking
+   permanently highlighted/pressed after tapping it on a phone, real
+   state notwithstanding. Scoping :hover to hover-capable pointers avoids
+   that stuck look; [aria-pressed="true"] still always shows the active
+   background regardless of input type, which is correct — that one
+   reflects real state, not a transient pointer position. */
+@media (hover: hover) {
+  .game-english-toggle-btn:hover {
+    background-color: var(--color-wash-blue);
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.16);
+  }
+}
+
+.game-english-toggle-btn[aria-pressed="true"] {
+  background-color: var(--color-wash-blue);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.16);
+}
+
+.game-english-toggle-btn:focus-visible {
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 2px;
+}
+
+.game-round-menu {
+  flex: 0 0 auto;
+  position: relative;
+  z-index: 101;
+}
+
+.game-round-menu-panel {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(20, 38, 58, 0.24);
+  box-sizing: border-box;
+  display: grid;
+  gap: 4px;
+  min-width: 205px;
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 7px);
+  z-index: 102;
+}
+
+#search-container-inner.word-game-active
+  .game-round-menu-panel
+  .toolbar-report-issue-btn,
+#search-container-inner.word-game-active
+  .game-round-menu-panel
+  .game-end-session-btn {
+  align-items: center;
+  background-color: transparent;
+  border: 0;
+  border-radius: 7px;
+  box-shadow: none;
+  box-sizing: border-box;
+  color: var(--color-text);
+  display: flex;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 10px;
+  height: auto;
+  justify-content: flex-start;
+  letter-spacing: 0;
+  min-height: 42px;
+  padding: 9px 11px;
+  text-transform: none;
+  width: 100%;
+}
+
+#search-container-inner.word-game-active
+  .game-round-menu-panel
+  .toolbar-report-issue-btn:hover,
+#search-container-inner.word-game-active
+  .game-round-menu-panel
+  .game-end-session-btn:hover {
+  background-color: var(--color-wash-blue);
+}
+
+.game-round-menu-panel .toolbar-report-issue-btn i {
+  color: var(--color-danger);
+  width: 16px;
+}
+
+.game-round-menu-panel .game-end-session-btn i {
+  color: var(--color-ink);
+  width: 16px;
+}
+
+.game-round-menu-panel button:focus-visible {
+  outline: 3px solid var(--color-interactive);
+  outline-offset: 2px;
+}
+
+/* Keep the open panel above the stats/card immediately below the toolbar,
+   including inside the mobile stacking context. */
+body.word-game-mode.word-game-round-active #search-container,
+body.word-game-mode.word-game-round-active #search-container-inner,
+body.word-game-mode.word-game-round-active .selectors-wrapper,
+body.word-game-mode.word-game-round-active .cefr-filter-group {
+  overflow: visible;
+}
+
+body.word-game-mode.word-game-round-active #search-container {
+  position: relative;
+  z-index: 100;
+}
+
+body.word-game-mode.word-game-round-active .cefr-filter-group {
+  flex: 0 0 auto;
+}
+
+.search-btn {
+  align-items: center;
+  background-color: var(--color-ink);
+  border: none;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 15px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  height: 100%;
+  width: 66px;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.search-btn:hover {
+  background-color: var(--color-accent);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.search-btn i {
+  color: var(--color-surface);
+  font-size: 16px;
+  margin: 0;
+}
+
+.search-and-random-wrapper {
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+/* The Norwegian letter keys and the search field are one control group.
+   Word Game has no search control, so hide the group as a unit instead of
+   relying on JS to hide only .search-bar-wrapper and accidentally leaving
+   the three keys behind. This is intentionally outside the desktop media
+   query so the contract is identical at every viewport width. */
+body.word-game-mode .search-and-random-wrapper {
+  display: none;
+}
+
+.search-bar-wrapper {
+  border: 1px solid var(--color-border);
+  border-radius: 15px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  flex-grow: 1;
+  min-width: 320px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+/* Keyboard-focus indicator that follows the pill shape, instead of a plain
+   rectangular outline clipped/mismatched against the rounded corners. */
+.search-bar-wrapper:has(input:focus-visible) {
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.1),
+    0 0 0 2px var(--color-ink);
+}
+
+#search-container {
+  display: flex;
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  margin: auto;
+  padding: 10px 0;
+  position: sticky;
+  text-align: center;
+  top: 0;
+  z-index: 100;
+}
+
+#search-container-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin: 0 auto;
+}
+
+.selectors-wrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/* Native select and disabled-filter behavior. */
+/* Gray out both the select text and the arrow when disabled */
+.cefr-filter.disabled select,
+.type-filter.disabled select,
+.pos-filter.disabled select,
+.genre-filter.disabled select,
+.game-english-filter.disabled select {
+  color: var(--color-border);
+  cursor: not-allowed;
+}
+
+.cefr-filter.disabled i,
+.type-filter.disabled i,
+.pos-filter.disabled i,
+.genre-filter.disabled i,
+.game-english-filter.disabled i {
+  color: var(--color-border); /* Gray out the arrow */
+  pointer-events: none; /* Prevent interaction with the arrow */
+}
+
+.type-filter select,
+.pos-filter select,
+.cefr-filter select,
+.genre-filter select,
+.game-english-filter select {
+  appearance: none;
+  background-color: inherit;
+  border: none;
+  border-radius: inherit;
+  box-sizing: border-box;
+  color: var(--color-ink);
+  cursor: pointer;
+  flex: 1 1 auto;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  height: 100%;
+  letter-spacing: 0.05em;
+  min-width: 0;
+  padding: 0 42px 0 15px;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  width: 100%;
+}
+
+.type-filter > .fa-chevron-down,
+.pos-filter > .fa-chevron-down,
+.cefr-filter > .fa-chevron-down,
+.genre-filter > .fa-chevron-down,
+.game-english-filter > .fa-chevron-down {
+  pointer-events: none;
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+@media (max-width: 1024px) {
+  /* Instagram-style fixed bottom tab bar. body's own padding-bottom
+     (styles/01-document-shell.css) reserves scroll room so page content
+     can clear it. Hidden mid-round — see the word-game-round-active rule
+     near the bottom of this block, next to the collision it avoids. */
+  #mode-nav {
+    background-color: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    bottom: 0;
+    box-sizing: border-box;
+    justify-content: space-around;
+    left: 0;
+    /* The bar spans edge-to-edge (left/right: 0), so its first and last
+       tabs sit flush against the screen's physical edges. Safari's
+       standalone/PWA chrome keeps content clear of the display's curved
+       corners on its own, but a plain fixed-position bar (e.g. an iOS
+       Chrome "Add to Home Screen" web app, which also runs without
+       browser chrome) does not get that adjustment for free — pad the
+       sides with the same safe-area inset already used for the bottom
+       edge above. */
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    position: fixed;
+    right: 0;
+    width: 100%;
+    z-index: 30;
+  }
+
+  .mode-tab {
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+    padding: 8px 4px 4px;
+  }
+
+  .mode-tab-icon {
+    height: 22px;
+    width: 22px;
+  }
+
+  .mode-tab-label {
+    font-size: 14px;
+    letter-spacing: 0.02em;
+  }
+
+  /* .game-next-button-container (00-foundations-and-game.css) is already
+     fixed to this same bottom edge while a round is active — hide the tab
+     bar rather than let the two collide. The toolbar itself already
+     collapses to a single compact row in this state, so this isn't a new
+     kind of exception. */
+  body.word-game-mode.word-game-round-active #mode-nav {
+    display: none;
+  }
+
+  .search-and-random-wrapper {
+    align-items: center;
+    box-sizing: border-box;
+    display: flex;
+    gap: 5px;
+    width: 100%;
+  }
+
+  #search-bar {
+    box-sizing: border-box;
+    flex: 1 1 0;
+    /* iOS zooms focused controls whose computed text size is below 16px. */
+    font-size: 16px;
+    height: 44px;
+    min-width: 0;
+    /* Tighter than the 16px base padding: the wider letter keys leave this
+       field less room than before, and height:44px above already replaces
+       the base rule's vertical padding, so there's nothing lost by giving
+       the horizontal side back too. */
+    padding: 0 12px;
+    width: 0;
+  }
+
+  /* One notch below the 14px base (#search-bar::placeholder, shared file)
+     to buy back some of the width the wider letter keys took from this
+     field — paired with text-overflow: ellipsis (input[type="text"], see
+     shared file) so whatever still doesn't fit truncates cleanly instead
+     of clipping mid-letter. */
+  #search-bar::placeholder {
+    font-size: 13px;
+  }
+
+  .search-bar-wrapper {
+    flex: 1 1 0;
+    height: 44px;
+    min-width: 0;
+    width: 0;
+  }
+
+  .search-btn {
+    height: 44px;
+    max-width: 44px;
+    min-width: 44px;
+    padding: 8px;
+  }
+
+  /* 44px matches the accepted minimum touch-target size. These three keys
+     are the ones a keyboard-less Norwegian learner reaches for on every
+     search, so they get the same floor the field/button now share here,
+     instead of the tighter 30px this breakpoint used before. */
+  .search-norwegian-letter-key {
+    flex-basis: 44px;
+  }
+
+  .search-norwegian-letter-keys {
+    flex: 0 0 142px;
+    height: 44px;
+    min-width: 142px;
+  }
+
+  .search-btn i {
+    font-size: 16px;
+    text-align: center;
+  }
+
+  #search-container {
+    box-sizing: border-box;
+    overflow: hidden;
+    padding: 10px 5px;
+  }
+
+  #search-container-inner {
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    min-width: 100%;
+  }
+
+  #search-container-inner.word-game-active {
+    gap: 0;
+  }
+
+  #search-container-inner.word-game-active .cefr-filter select {
+    padding-right: 30px;
+  }
+
+  /* Now that mode-switching lives in #mode-nav (see index.html + this
+     file's #mode-nav rules), .selectors-wrapper only ever holds contextual
+     filters — at most 3 at once (Stories: genre + favorites + level). A
+     plain wrapping flex row handles that without a per-mode grid; the
+     grids this used to need (a 2x2 for Stories' 4 pills, a 3-column for
+     Word Game's type+translations+level) are gone along with the type
+     pill that made them necessary. */
+  .selectors-wrapper {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: flex-start;
+    width: 100%;
+  }
+
+  /* Low enough that Stories' worst case — 3 filters (favorites + genre +
+     level) — still fits in one row on a phone-width screen instead of
+     wrapping a lone third pill onto its own line; flex:1 (shared base
+     rule above) still splits the row evenly whenever fewer filters are
+     showing. */
+  .pos-filter,
+  .cefr-filter,
+  .genre-filter,
+  .game-english-filter {
+    box-sizing: border-box;
+    min-width: 0;
+  }
+
+  .pos-filter,
+  .genre-filter,
+  .game-english-filter,
+  .search-bar-wrapper {
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .pos-filter i,
+  .cefr-filter i,
+  .genre-filter i,
+  .game-english-filter i {
+    font-size: 12px;
+    pointer-events: none;
+  }
+
+  .type-filter select,
+  .pos-filter select,
+  .cefr-filter select,
+  .genre-filter select,
+  .game-english-filter select {
+    box-sizing: border-box;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    min-width: 0;
+    padding: 0 22px 0 8px;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+  }
+
+  .pos-filter > .fa-chevron-down,
+  .cefr-filter > .fa-chevron-down,
+  .genre-filter > .fa-chevron-down,
+  .game-english-filter > .fa-chevron-down {
+    right: 8px;
+  }
+
+  /* Word Game uses the same toolbar as a compact study control strip —
+     the base flex-wrap row above is enough now that it only ever holds
+     the translations pill and the level/round-options group. */
+  body.word-game-mode .game-english-filter,
+  body.word-game-mode .cefr-filter-group,
+  body.word-game-mode .cefr-filter {
+    height: 38px;
+  }
+
+  body.word-game-mode .cefr-filter select {
+    height: 38px;
+  }
+
+  body.word-game-mode #cefr-select {
+    flex: 1 1 0;
+    width: 0;
+  }
+
+  body.word-game-mode #lock-icon {
+    flex: 0 0 16px;
+    font-size: 13px;
+    margin: 0 10px 0 4px;
+    padding: 0;
+  }
+
+  body.word-game-mode .toolbar-report-issue-btn {
+    align-self: stretch;
+    flex: 0 0 auto;
+    font-size: 14px;
+    height: auto;
+    padding: 4px 13px;
+  }
+
+  body.word-game-mode .game-english-toggle-btn {
+    flex-basis: 38px;
+    height: 38px;
+    width: 38px;
+  }
+
+  #search-container-inner.word-game-active #game-end-session-btn {
+    align-self: stretch;
+    flex: 0 0 auto;
+    font-size: 14px;
+    height: auto;
+    letter-spacing: 0.01em;
+    padding: 4px 6px;
+  }
+
+  body.word-game-mode .game-english-filter select {
+    height: 38px;
+    line-height: 1.05;
+    padding: 1px 24px 1px 6px;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  body.word-game-mode .game-english-filter > .fa-chevron-down {
+    right: 10px;
+  }
+}
+
+/* Keep the toolbar to one compact row of plain, equal-width labeled
+   buttons — translations, report, and quit — the same flattening desktop
+   already does for Report/Quit (further below in this file), just
+   applied to all three controls and sized for a phone/tablet. No more
+   "..." disclosure hiding them: a control someone taps every round
+   shouldn't need an extra tap just to reveal it. Matches #mode-nav's own
+   ≤1024px fixed-bottom-bar breakpoint, not a narrower phone-only one —
+   anything below 1025px that isn't covered here falls through to this
+   file's base (non-media) .game-round-menu-panel rules, which are a
+   real absolute-positioned popover meant for a genuine disclosure
+   trigger. This file no longer has one (the mobile summary button was
+   removed along with the rest of the <details> markup), so on a
+   601–1024px viewport that gap silently un-flattens these three buttons
+   back into that stray floating popover instead of the intended row.
+
+   Icons dropped on mobile (both the 🇬🇧 translations glyph and the
+   FontAwesome report/quit icons — see the display:none rule below):
+   three rarely-tapped controls don't earn a whole second stacked row
+   each on a phone screen that's fighting for every pixel. Text-only
+   labels also read as clearly at a glance, so the row can shrink from a
+   52px icon+label stack to a single 38px text line — that reclaimed
+   space is spent on .game-teaching-reveal (00-foundations-and-game.css)
+   so answered questions get more room for the sentence translation.
+   Desktop keeps its icons; this is scoped to this media query only. */
+@media (max-width: 1024px) {
+  /* A live mobile round is a viewport-bound game screen. Its answer grid and
+     Next control are fixed deliberately, so the document itself must not
+     expose a redundant scrollbar from their reserved bottom space. */
+  body.word-game-mode.word-game-round-active {
+    height: 100dvh;
+    overflow-y: hidden;
+  }
+
+  body.word-game-mode.word-game-round-active .game-english-filter {
+    display: none !important;
+  }
+
+  /* Mode-switching (the "game selector" this comment used to describe)
+     has moved to #mode-nav, so the only thing left in this row mid-round
+     is the flattened round-options group below — let it claim the whole
+     row instead of clustering at one side now that nothing else shares it. */
+  body.word-game-mode.word-game-round-active .selectors-wrapper {
+    align-items: center;
+  }
+
+  body.word-game-mode.word-game-round-active .cefr-filter-group {
+    display: contents;
+  }
+
+  body.word-game-mode .game-round-menu:not(.hidden) {
+    display: flex;
+    flex: 1 1 auto;
+    max-width: 100%;
+    min-width: 0;
+    position: static;
+  }
+
+  body.word-game-mode .game-round-menu-panel {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    display: flex;
+    flex: 1 1 auto;
+    gap: 6px;
+    min-width: 0;
+    padding: 0;
+    position: static;
+    width: 100%;
+  }
+
+  /* Keep this compact enough for the game to remain viewport-bound while
+     retaining a readable label size. */
+  body.word-game-mode.word-game-round-active
+    .game-english-toggle-btn:not(.hidden),
+  #search-container-inner.word-game-active
+    .toolbar-report-issue-btn:not(.hidden),
+  #search-container-inner.word-game-active #game-end-session-btn:not(.hidden) {
+    align-items: center;
+    background-color: #f8fafc;
+    border: 1px solid #d8e1e8;
+    border-radius: 10px;
+    box-shadow: none;
+    box-sizing: border-box;
+    display: flex;
+    flex: 1 1 0;
+    color: #35516d;
+    height: 38px;
+    /* This file's base (non-media) .game-round-menu-panel popover rule
+       gives the report/quit buttons min-height:42px for their desktop
+       disclosure-menu appearance. That rule isn't scoped to this media
+       query, so it still applies here and would otherwise floor these
+       two taller than the translations button's 38px — min-height isn't
+       set at all by that rule for .game-english-toggle-btn, which is why
+       only two of the three needed this override, not all three. */
+    min-height: 0;
+    justify-content: center;
+    min-width: 0;
+    overflow: hidden;
+    padding: 4px 6px;
+    width: 0;
+  }
+
+  body.word-game-mode.word-game-round-active
+    .game-english-toggle-btn[aria-pressed="true"] {
+    background-color: #f8fafc;
+    border-color: #d8e1e8;
+    box-shadow: none;
+  }
+
+  @media (hover: hover) {
+    body.word-game-mode.word-game-round-active
+      .game-round-menu-panel
+      button:hover {
+      background-color: #f3f7fb;
+      border-color: #b8c8d6;
+    }
+  }
+
+  /* Every icon in this row — the plain-text 🇬🇧 translations glyph and
+     the FontAwesome report/quit glyphs alike — is dropped on mobile (see
+     this media query's opening comment), leaving each button's label as
+     its only visible content. */
+  .game-round-menu-panel button > :first-child {
+    display: none;
+  }
+
+  .game-round-menu-panel .game-english-toggle-label,
+  .game-round-menu-panel .toolbar-report-issue-btn span,
+  .game-round-menu-panel .game-end-session-btn span {
+    display: block;
+    font-family: "Source Sans 3", "Noto Sans", sans-serif;
+    color: #4e6986;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.2;
+    max-width: 100%;
+    overflow: hidden;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* "Show/Hide Translations" is the longest of the three labels — at
+     14px it's wider than this equal-thirds button ever gets on a phone,
+     which is what was pushing it onto a second line before nowrap was
+     added above (turning it into silent clipping instead). Shrinking
+     just this label keeps it a single legible line at any width this
+     media query covers, without touching the other two, which already
+     fit at 14px. */
+  .game-round-menu-panel .game-english-toggle-label {
+    font-size: 12.5px;
+  }
+}
+
+/* Desktop navigation contract. */
+@media (min-width: 1025px) {
+  /* Top tab strip, docked directly above the filter toolbar. A full-bleed
+     white band — rather than just sitting on the page's own gray
+     background like an unstyled strip — so it reads as a distinct nav
+     component the way the mobile bottom bar already does
+     (background-color: var(--color-surface) there too). Own bottom
+     border by default, for a deliberate edge on pages with no filter
+     toolbar below it (My Stats, Word Game outside a round, and any
+     standalone static page like updates/ that only ever includes
+     #mode-nav) — otherwise the white band would just end in whatever raw
+     color-contrast edge the page background happens to create, not a
+     real, intentional-looking boundary. Suppressed via the two rules
+     below wherever #search-container is visible right after it, so
+     THAT'S bottom border carries the combined white block's edge instead
+     and the two rows read as one continuous surface rather than being
+     cut by a doubled-up seam between them. The active tab is a solid
+     filled pill — the same visual weight .type-filter used to carry as
+     the old dropdown — specifically to outrank the now-lighter filter
+     pills below it (see .pos-filter etc. further down this file) and
+     make the primary/secondary distinction obvious at a glance. */
+  #mode-nav {
+    background-color: var(--color-surface);
+    border-bottom: none;
+    box-sizing: border-box;
+    gap: 6px;
+    justify-content: center;
+    padding: 10px 24px;
+    width: 100%;
+  }
+
+  /* Border back on wherever #search-container isn't right there to carry
+     it instead: standalone static pages with no #search-container
+     element at all (updates/ — :has() tests DOM presence, not visibility,
+     so this rule alone doesn't fire on the app shell, which always has
+     one somewhere in the markup even when hidden), and the app shell's
+     own states where that element exists but is hidden. */
+  body:not(:has(#search-container)) #mode-nav,
+  body.my-stats-mode #mode-nav,
+  body.account-page-mode #mode-nav,
+  body.word-game-mode:not(.word-game-round-active) #mode-nav {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .mode-tab {
+    /* Reserves the active pill's 1px border on every tab (transparent when
+       inactive) so gaining/losing that border on activation doesn't shift
+       the tab's box size. */
+    border: 1px solid transparent;
+    border-radius: 10px;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    gap: 8px;
+    padding: 10px 18px;
+  }
+
+  .mode-tab-icon {
+    height: 18px;
+    width: 18px;
+  }
+
+  .mode-tab-label {
+    font-size: 14px;
+  }
+
+  /* Active tab: a pale filled pill rather than a solid dark box, so it
+     reads as "current section" without the heavy contrast spike a full
+     --color-ink fill created. */
+  .mode-tab.active,
+  .mode-tab.active:hover {
+    background-color: var(--color-wash-blue-pale);
+    border: 1px solid var(--color-wash-blue-border);
+    color: var(--color-ink);
+  }
+
+  #search-container {
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    padding: 12px 24px;
+  }
+
+  #search-container-inner {
+    align-items: center;
+    gap: 12px;
+    justify-content: flex-start;
+    width: min(calc(100% - 48px), 1120px);
+  }
+
+  .selectors-wrapper {
+    flex: 0 0 auto;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+
+  .type-filter,
+  .pos-filter,
+  .cefr-filter,
+  .genre-filter,
+  .game-english-filter,
+  .cefr-filter-group {
+    box-sizing: border-box;
+    flex: 0 0 184px;
+    height: 44px;
+    min-width: 0;
+  }
+
+  .cefr-filter-group {
+    gap: 8px;
+  }
+
+  .cefr-filter-group .cefr-filter {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .type-filter select,
+  .pos-filter select,
+  .cefr-filter select,
+  .genre-filter select,
+  .game-english-filter select {
+    font-size: 14px;
+    padding-left: 16px;
+  }
+
+  .search-and-random-wrapper {
+    align-items: center;
+    flex: 1 1 300px;
+    gap: 8px;
+    min-width: 250px;
+  }
+
+  .search-bar-wrapper {
+    box-sizing: border-box;
+    height: 44px;
+    min-width: 0;
+  }
+
+  .search-norwegian-letter-keys {
+    height: 44px;
+  }
+
+  #search-bar {
+    box-sizing: border-box;
+    height: 44px;
+    padding: 0 16px;
+  }
+
+  .search-btn {
+    height: 44px;
+    min-width: 44px;
+    width: 44px;
+  }
+
+  body.word-game-mode #search-container-inner {
+    justify-content: center;
+  }
+
+  body.word-game-mode .cefr-filter-group {
+    flex: 0 0 auto;
+    min-width: 0;
+  }
+
+  /* The mobile toolbar already owns the accessible translations toggle.
+     Desktop uses that same control instead of keeping a second, legacy
+     native select in front of it. The select stays in the DOM as a synced
+     compatibility control for existing JS, but is not part of the desktop
+     round toolbar. */
+  body.word-game-mode.word-game-round-active .game-english-filter {
+    display: none !important;
+  }
+
+  /* Desktop has room to lay the round actions out with labels, unlike
+     the icon-only compact row at mobile widths. */
+  body.word-game-mode .game-round-menu:not(.hidden) {
+    display: flex;
+    position: static;
+  }
+
+  body.word-game-mode .game-round-menu-panel {
+    align-items: center;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    display: flex;
+    gap: 8px;
+    min-width: 0;
+    padding: 0;
+    position: static;
+  }
+
+  /* Mirror the mobile sequence and give all three actions the same quiet,
+     text-only treatment: Translations, Report Question, Quit & See Stats. */
+  #search-container-inner.word-game-active
+    .game-round-menu-panel
+    .game-english-toggle-btn,
+  #search-container-inner.word-game-active
+    .game-round-menu-panel
+    .toolbar-report-issue-btn,
+  #search-container-inner.word-game-active
+    .game-round-menu-panel
+    .game-end-session-btn {
+    align-items: center;
+    background-color: #f8fafc;
+    border: 1px solid #d8e1e8;
+    border-radius: 10px;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: #35516d;
+    display: flex;
+    flex: 0 0 auto;
+    font-family: "Source Sans 3", "Noto Sans", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    height: 44px;
+    justify-content: center;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+    min-height: 0;
+    min-width: 0;
+    padding: 0 14px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    width: auto;
+  }
+
+  #search-container-inner.word-game-active
+    .game-round-menu-panel
+    .game-english-toggle-btn {
+    order: 1;
+  }
+
+  #search-container-inner.word-game-active
+    .game-round-menu-panel
+    .toolbar-report-issue-btn {
+    order: 2;
+  }
+
+  #search-container-inner.word-game-active
+    .game-round-menu-panel
+    .game-end-session-btn {
+    order: 3;
+  }
+
+  .game-round-menu-panel .game-english-toggle-btn > span[aria-hidden="true"],
+  .game-round-menu-panel .toolbar-report-issue-btn i,
+  .game-round-menu-panel .game-end-session-btn i {
+    display: none;
+  }
+
+  .game-round-menu-panel .game-english-toggle-label,
+  .game-round-menu-panel .toolbar-report-issue-btn span,
+  .game-round-menu-panel .game-end-session-btn span {
+    color: #4e6986;
+    display: block;
+  }
+
+  body.word-game-mode.word-game-round-active
+    .game-english-toggle-btn[aria-pressed="true"] {
+    background-color: #f8fafc;
+    border-color: #d8e1e8;
+    box-shadow: none;
+  }
+
+  #search-container-inner.word-game-active
+    .game-round-menu-panel button:hover {
+    background-color: #f3f7fb;
+    border-color: #b8c8d6;
+  }
+}

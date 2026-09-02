@@ -1,0 +1,178 @@
+/*
+ * Feedback dialog
+ * ---------------
+ * Shared report-an-issue modal used by definition cards and Word Game.
+ */
+
+.feedback-dialog-overlay {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.45);
+  box-sizing: border-box;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 20px;
+  position: fixed;
+  z-index: 2000;
+}
+
+.feedback-dialog {
+  background-color: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  max-width: 380px;
+  padding: 20px;
+  text-align: left;
+  width: 100%;
+}
+
+.feedback-dialog h3 {
+  color: var(--color-ink);
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 16px;
+  margin: 0 0 15px;
+  word-break: break-word;
+}
+
+.feedback-dialog-label {
+  color: var(--color-text-strong);
+  display: block;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  left: auto;
+  margin: 12px 0 5px;
+  pointer-events: auto;
+  position: static;
+  top: auto;
+  transform: none;
+}
+
+.feedback-dialog select,
+.feedback-dialog textarea {
+  border: 1px solid var(--color-border-input);
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  padding: 8px 10px;
+  width: 100%;
+}
+
+.feedback-dialog textarea {
+  resize: vertical;
+}
+
+.feedback-dialog select:focus-visible,
+.feedback-dialog textarea:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 1px;
+}
+
+.feedback-dialog-status {
+  color: var(--color-text-strong);
+  font-size: 14px;
+  margin: 12px 0 0;
+  min-height: 1.2em;
+}
+
+.feedback-dialog-status-error {
+  color: var(--color-danger-text);
+}
+
+.feedback-dialog-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 15px;
+}
+
+.feedback-dialog-cancel,
+.feedback-dialog-submit {
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 14px;
+}
+
+.feedback-dialog-cancel {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-input);
+  color: var(--color-text-strong);
+}
+
+.feedback-dialog-cancel:hover {
+  background-color: var(--color-surface-subtle);
+}
+
+.feedback-dialog-submit {
+  background-color: var(--color-ink);
+  border: 1px solid var(--color-ink);
+  color: var(--color-surface);
+}
+
+.feedback-dialog-submit:hover {
+  background-color: #0a2e54;
+}
+
+.feedback-dialog-cancel:disabled,
+.feedback-dialog-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.65;
+}
+
+/* Sign-in chooser + account-recovery + email-link-confirmation dialogs.
+   Reuse the .feedback-dialog* shape/classes above (this file's own name
+   predates there being more than one dialog family); only pieces with no
+   existing analog get their own rules below. See openSignInChooserDialog(),
+   renderProviderRecoveryState(), and promptForEmailLinkConfirmation() in
+   myWordsAuth.js. */
+.feedback-dialog input[type="email"] {
+  border: 1px solid var(--color-border-input);
+  border-radius: 6px;
+  box-sizing: border-box;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 16px; /* iOS zooms focused controls below 16px. */
+  padding: 8px 10px;
+  width: 100%;
+}
+
+.feedback-dialog input[type="email"]:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 1px;
+}
+
+.auth-dialog-divider {
+  align-items: center;
+  color: var(--color-text-muted);
+  display: flex;
+  font-size: 12px;
+  gap: 10px;
+  margin: 16px 0;
+  text-transform: uppercase;
+}
+
+.auth-dialog-divider::before,
+.auth-dialog-divider::after {
+  background-color: var(--color-border);
+  content: "";
+  flex: 1;
+  height: 1px;
+}
+
+/* Full-width and centered at the dialog's narrower fixed width, unlike the
+   header's own compact version of this same class. */
+.auth-dialog-google-btn {
+  justify-content: center;
+  width: 100%;
+}
+
+/* The header button's "there's a reason to sign in" notification dot
+   (.google-signin-btn::after) doesn't belong on a button already inside an
+   open sign-in dialog. */
+.auth-dialog-google-btn::after {
+  display: none;
+}
