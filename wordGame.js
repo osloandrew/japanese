@@ -738,16 +738,28 @@ async function renderClozeQuestion(randomWordObj, uniqueDisplayedTranslations) {
       const joinedWithSpace = group.join(" ").toLowerCase();
       const joinedWithHyphen = group.join("-").toLowerCase();
 
-      if (
-        matchesInflectedForm(baseWord, joinedWithSpace, randomWordObj.gender)
-      ) {
-        clozedForm = group.join(" ");
+      // These return the matched span itself (e.g. "急いで"), not just a
+      // boolean — Japanese has no spaces, so `group` is often an entire
+      // clause with more text glued on after the word we're clozing, and
+      // only the matched prefix should become the blank.
+      const spaceMatch = matchesInflectedForm(
+        baseWord,
+        joinedWithSpace,
+        randomWordObj.gender,
+        randomWordObj.uttale
+      );
+      if (spaceMatch) {
+        clozedForm = group.join(" ").slice(0, spaceMatch.length);
         break;
       }
-      if (
-        matchesInflectedForm(baseWord, joinedWithHyphen, randomWordObj.gender)
-      ) {
-        clozedForm = group.join("-");
+      const hyphenMatch = matchesInflectedForm(
+        baseWord,
+        joinedWithHyphen,
+        randomWordObj.gender,
+        randomWordObj.uttale
+      );
+      if (hyphenMatch) {
+        clozedForm = group.join("-").slice(0, hyphenMatch.length);
         break;
       }
     }
@@ -1156,9 +1168,6 @@ function escapeRegExp(str) {
 function shortGenderLabel(gender = "") {
   const map = {
     noun: "Noun",
-    masculine: "N - Masc",
-    feminine: "N - Fem",
-    neuter: "N - Neut",
     adjective: "Adj",
     adverb: "Adv",
     conjunction: "Conj",
@@ -1858,15 +1867,8 @@ async function fetchRandomWord() {
     filteredResults = filteredResults.filter((r) => {
       const gender = r.gender ? r.gender.toLowerCase() : "";
 
-      // Handle nouns: Include "en", "et", "ei" but exclude "pronoun"
       if (selectedPOS === "noun") {
-        return (
-          (gender.startsWith("noun") ||
-            gender.startsWith("masculine") ||
-            gender.startsWith("feminine") ||
-            gender.startsWith("neuter")) &&
-          gender !== "pronoun"
-        );
+        return gender.startsWith("noun") && gender !== "pronoun";
       }
 
       // For non-noun POS, filter based on the selectedPOS value
@@ -2008,561 +2010,343 @@ function shuffleArray(array) {
   return array;
 }
 
-function getEndingPattern(form) {
-  // normalize to the last lexical token (ignore "se")
-  const tok =
-    form
-      .toLowerCase()
-      .replace(/\bse\b/g, "")
-      .trim()
-      .split(/\s+/)
-      .pop() || form.toLowerCase();
-
-  // VERB endings (present, l-participle slices, infinitive)
-  const verbEndings = [
-    "amo",
-    "emo",
-    "imo",
-    "ate",
-    "ete",
-    "ite",
-    "aju",
-    "ju",
-    "am",
-    "em",
-    "im",
-    "aš",
-    "eš",
-    "iš",
-    "a",
-    "e",
-    "i",
-    "u",
-    "ao",
-    "la",
-    "lo",
-    "li",
-    "le",
-    "ti",
-    "ći",
-  ];
-
-  // NOUN/ADJ endings (common case/number markers)
-  const nomAdjEndings = [
-    "og",
-    "om",
-    "oj",
-    "im",
-    "ima",
-    "ama",
-    "em",
-    "u",
-    "a",
-    "e",
-    "i",
-    "o",
-  ];
-
-  // pick the longest matching known ending
-  const all = [...verbEndings, ...nomAdjEndings].sort(
-    (a, b) => b.length - a.length
-  );
-  const hit = all.find((suf) => tok.endsWith(suf));
-
-  // precise pattern if we found a grammar ending; otherwise fall back to last 2 chars
-  return hit
-    ? new RegExp(hit + "$", "i")
-    : new RegExp((tok.slice(-2) || tok.slice(-1)) + "$", "i");
+function buildEndingPattern(word) {
+  // Match distractors that share the clozed form's trailing characters.
+  // Japanese verbs/adjectives inflect by swapping the tail while keeping
+  // the stem (食べる/食べます/食べた, 高い/高く/高かった), so the last 1-2
+  // characters approximate "same conjugation/okurigana" the way suffix
+  // lists do for languages with alphabetic endings. Script-agnostic, so
+  // it works for kana, kanji, and any stray Latin loanwords alike.
+  if (!word) return /./; // no signal to match on — treat everything as similar
+  const ending = word.slice(-Math.min(2, word.length));
+  const escaped = ending.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return new RegExp(escaped + "$", "i");
 }
 
-function matchesInflectedForm(base, token, gender) {
+// ============================================================
+// Japanese verb & adjective conjugation (minimal, dictionary-form based)
+//
+// Replaces the Spanish AR/ER/IR verb and masculine/feminine/adjective
+// declension logic that was left over from this app's Norwegian →
+// Spanish → Croatian → Japanese lineage. The CSV's "gender" column
+// actually holds part-of-speech ("noun", "verb", "adjective", ...), and
+// only "verb" and "adjective" need real inflection here — other POS
+// values (noun, adverb, particle, etc.) are invariant in Japanese, so
+// both functions below fall through to exact-match / unchanged-lemma
+// for them, same as before.
+// ============================================================
+
+// Kana whose vowel is /i/ or /e/ — used to tell ichidan (る-drop) verbs
+// apart from godan verbs ending in る, based on the character that
+// precedes the final る in the word's *reading* (kanji spelling alone
+// can't distinguish them, e.g. 見る vs 帰る both end "kanji + る").
+const JA_IROW = new Set([
+  "い", "き", "ぎ", "し", "じ", "ち", "ぢ", "に", "ひ", "び", "ぴ", "み", "り",
+]);
+const JA_EROW = new Set([
+  "え", "け", "げ", "せ", "ぜ", "て", "で", "ね", "へ", "べ", "ぺ", "め", "れ",
+]);
+
+// Common verbs ending in る that are godan despite the reading looking
+// ichidan-shaped (帰る=かえる has え before る but is godan, etc.) — a
+// short, best-effort override list rather than a full exception dictionary.
+const JA_GODAN_RU_EXCEPTIONS = new Set([
+  "帰る", "入る", "走る", "知る", "要る", "減る", "切る", "滑る", "蹴る",
+  "焦る", "限る", "握る", "喋る", "参る", "茂る", "照る", "散る", "練る",
+  "罵る", "戻る",
+]);
+
+const JA_GODAN_ROWS = {
+  う: ["わ", "い", "う", "え", "お"],
+  く: ["か", "き", "く", "け", "こ"],
+  ぐ: ["が", "ぎ", "ぐ", "げ", "ご"],
+  す: ["さ", "し", "す", "せ", "そ"],
+  つ: ["た", "ち", "つ", "て", "と"],
+  ぬ: ["な", "に", "ぬ", "ね", "の"],
+  ぶ: ["ば", "び", "ぶ", "べ", "ぼ"],
+  む: ["ま", "み", "む", "め", "も"],
+  る: ["ら", "り", "る", "れ", "ろ"],
+};
+
+// て/た-form sound changes (音便) for godan verbs, keyed by the
+// dictionary-form's final kana.
+function jaEuphonicSuffix(endChar, isTe) {
+  switch (endChar) {
+    case "く":
+      return isTe ? "いて" : "いた";
+    case "ぐ":
+      return isTe ? "いで" : "いだ";
+    case "う":
+    case "つ":
+    case "る":
+      return isTe ? "って" : "った";
+    case "ぬ":
+    case "ぶ":
+    case "む":
+      return isTe ? "んで" : "んだ";
+    case "す":
+      return isTe ? "して" : "した";
+    default:
+      return isTe ? "て" : "た";
+  }
+}
+
+// `reading` is the word's hiragana pronunciation (CSV "pronunciation" /
+// `uttale` column), used to disambiguate ichidan vs. godan verbs ending
+// in る. It's optional — without it we fall back to reading the kanji
+// lemma itself, which works whenever the character before る is already
+// written in kana (okurigana).
+function classifyJaVerb(lemma, reading) {
+  if (lemma === "する" || lemma.endsWith("する")) {
+    return { type: "suru", stem: lemma.slice(0, -2) };
+  }
+  if (lemma === "来る" || lemma === "くる") {
+    return { type: "kuru", stem: lemma === "来る" ? "来" : "" };
+  }
+  if (lemma.endsWith("る") && lemma.length >= 1) {
+    const ref = reading && reading.endsWith("る") ? reading : lemma;
+    const before = ref.length >= 2 ? ref.slice(-2, -1) : "";
+    const looksIchidan = JA_IROW.has(before) || JA_EROW.has(before);
+    if (looksIchidan && !JA_GODAN_RU_EXCEPTIONS.has(lemma)) {
+      return { type: "ichidan", stem: lemma.slice(0, -1) };
+    }
+    return { type: "godan", stem: lemma.slice(0, -1), row: JA_GODAN_ROWS["る"] };
+  }
+  const last = lemma.slice(-1);
+  if (JA_GODAN_ROWS[last]) {
+    return { type: "godan", stem: lemma.slice(0, -1), row: JA_GODAN_ROWS[last] };
+  }
+  // no recognizable verb ending (e.g. a particle mistagged as "verb") —
+  // leave the lemma untouched rather than guessing
+  return { type: "unknown", stem: lemma };
+}
+
+// A handful of common forms — enough to cover what actually shows up in
+// the example sentences (ます/ました/ません polite forms, て/た for
+// plain past and the ~ています progressive, ない for plain negative).
+function jaVerbForms(lemma, reading) {
+  const cls = classifyJaVerb(lemma, reading);
+
+  if (cls.type === "suru") {
+    const s = cls.stem;
+    return {
+      dict: lemma,
+      masu: s + "します",
+      masen: s + "しません",
+      mashita: s + "しました",
+      nai: s + "しない",
+      te: s + "して",
+      ta: s + "した",
+    };
+  }
+  if (cls.type === "kuru") {
+    // 来 alone already carries the き/こ reading depending on what
+    // follows it (来ます=kimasu, 来ない=konai) — don't add き/こ again.
+    // The pure-kana spelling くる has no such kanji, so it needs them.
+    const isKanji = lemma === "来る";
+    return isKanji
+      ? {
+          dict: lemma,
+          masu: "来ます",
+          masen: "来ません",
+          mashita: "来ました",
+          nai: "来ない",
+          te: "来て",
+          ta: "来た",
+        }
+      : {
+          dict: lemma,
+          masu: "きます",
+          masen: "きません",
+          mashita: "きました",
+          nai: "こない",
+          te: "きて",
+          ta: "きた",
+        };
+  }
+  if (cls.type === "ichidan") {
+    const s = cls.stem;
+    return {
+      dict: lemma,
+      masu: s + "ます",
+      masen: s + "ません",
+      mashita: s + "ました",
+      nai: s + "ない",
+      te: s + "て",
+      ta: s + "た",
+    };
+  }
+  if (cls.type === "godan") {
+    const s = cls.stem;
+    const endChar = lemma.slice(-1);
+    const isIku = lemma === "行く";
+    const [aRow, iRow] = cls.row;
+    return {
+      dict: lemma,
+      masu: s + iRow + "ます",
+      masen: s + iRow + "ません",
+      mashita: s + iRow + "ました",
+      nai: s + aRow + "ない",
+      te: s + (isIku ? "って" : jaEuphonicSuffix(endChar, true)),
+      ta: s + (isIku ? "った" : jaEuphonicSuffix(endChar, false)),
+    };
+  }
+
+  return {
+    dict: lemma,
+    masu: lemma,
+    masen: lemma,
+    mashita: lemma,
+    nai: lemma,
+    te: lemma,
+    ta: lemma,
+  };
+}
+
+// Guesses which of the forms above a surface token represents, from its
+// ending alone (the token may have further particles/copulas glued onto
+// it, e.g. "食べています", since Japanese has no word-boundary spaces).
+function guessJaVerbFormKey(token) {
+  if (!token) return "dict";
+  if (token.includes("ました")) return "mashita";
+  if (token.includes("ません")) return "masen";
+  if (token.includes("ます")) return "masu";
+  if (
+    token.includes("なかった") ||
+    token.includes("ないで") ||
+    token.includes("ない")
+  )
+    return "nai";
+  if (/(った|いた|んだ|した|いだ)/.test(token) || /[ただ]$/.test(token))
+    return "ta";
+  if (/(って|いて|んで|して|いで)/.test(token) || /[てで]$/.test(token))
+    return "te";
+  return "dict";
+}
+
+function classifyJaAdjective(lemma) {
+  if (lemma === "いい" || lemma === "良い" || lemma === "よい")
+    return { type: "ii" };
+  if (lemma.endsWith("い") && lemma.length > 1)
+    return { type: "i", stem: lemma.slice(0, -1) };
+  return { type: "na", stem: lemma };
+}
+
+// i-adjectives (高い) and na-adjectives (シンプル) inflect differently —
+// this POS bucket in the CSV covers both, distinguished by whether the
+// dictionary form ends in い.
+function jaAdjectiveForms(lemma) {
+  const cls = classifyJaAdjective(lemma);
+
+  if (cls.type === "ii") {
+    // いい/良い is irregular: negative/past use the よ- stem, not い-.
+    return {
+      dict: lemma,
+      desu: lemma + "です",
+      negative: "よくない",
+      pastNeg: "よくなかった",
+      past: "よかった",
+      te: "よくて",
+    };
+  }
+  if (cls.type === "i") {
+    const s = cls.stem;
+    return {
+      dict: lemma,
+      desu: lemma + "です",
+      negative: s + "くない",
+      pastNeg: s + "くなかった",
+      past: s + "かった",
+      te: s + "くて",
+    };
+  }
+  const s = cls.stem;
+  return {
+    dict: lemma,
+    desu: s + "です",
+    negative: s + "じゃない",
+    pastNeg: s + "じゃなかった",
+    past: s + "だった",
+    te: s + "で",
+  };
+}
+
+function guessJaAdjFormKey(token) {
+  if (!token) return "dict";
+  if (token.includes("なかった")) return "pastNeg";
+  if (token.includes("かった")) return "past";
+  if (
+    token.includes("じゃない") ||
+    token.includes("ではない") ||
+    token.includes("くない")
+  )
+    return "negative";
+  if (token.includes("くて") || /で$/.test(token)) return "te";
+  if (token.includes("です")) return "desu";
+  return "dict";
+}
+
+// Does `token` look like an inflected form of `base` (a verb or
+// adjective dictionary-form lemma)? Used to locate which token in an
+// example sentence corresponds to the vocab word being tested.
+//
+// Returns the matched span (a prefix of `token`) rather than a plain
+// boolean — Japanese has no spaces between words, so a "token" here is
+// often a whole clause with more text glued on after the word we care
+// about (e.g. base "急ぐ" against token "急いで駅に行きます"). Callers
+// that only need a yes/no can still use the result directly in an `if`,
+// since a real match is always a non-empty (truthy) string.
+function matchesInflectedForm(base, token, gender, reading) {
   if (!base || !token) return false;
 
   const lowerBase = base.toLowerCase();
   const lowerToken = token.toLowerCase();
 
-  // --- 1. Exact match ---
-  if (lowerToken === lowerBase) return true;
+  if (lowerToken === lowerBase) return lowerBase;
 
-  // --- 2. Skip prefix heuristics for short words (avoid "a" → "al") ---
-  if (lowerBase.length <= 2) return false;
+  const pos = (gender || "").toLowerCase();
 
-  // --- 3. Nouns (comprehensive Spanish gender/number patterns) ---
-  if (
-    gender.startsWith("masculine") ||
-    gender.startsWith("feminine") ||
-    gender.startsWith("neuter")
-  ) {
-    const lemma = lowerBase;
-    const token = lowerToken;
-
-    // feminine -a nouns (casa → casas)
-    if (lemma.endsWith("a") && gender.startsWith("feminine")) {
-      const stem = lemma.slice(0, -1);
-      const femEndings = [
-        "a", // singular
-        "as", // plural
-      ];
-      if (femEndings.some((e) => token === stem + e)) return true;
-    }
-
-    // masculine -o nouns (libro → libros)
-    if (lemma.endsWith("o") && gender.startsWith("masculine")) {
-      const stem = lemma.slice(0, -1);
-      const mascEndings = ["o", "os"];
-      if (mascEndings.some((e) => token === stem + e)) return true;
-    }
-
-    // nouns ending in -e (calle → calles)
-    if (lemma.endsWith("e")) {
-      const stem = lemma.slice(0, -1);
-      const eEndings = ["e", "es"];
-      if (eEndings.some((e) => token === stem + e)) return true;
-    }
-
-    // consonant-ending nouns (papel → papeles, mujer → mujeres)
-    if (/[bcdfghjklmnñpqrstvwxyz]$/.test(lemma)) {
-      const mascConEndings = ["", "es"];
-      if (mascConEndings.some((e) => token === lemma + e)) return true;
-      // handle z → c change (luz → luces)
-      if (lemma.endsWith("z") && token === lemma.slice(0, -1) + "ces")
-        return true;
-    }
-
-    // fallback catch-all: common plural variants
-    const genericEndings = ["", "s", "es", "ces"];
-    if (genericEndings.some((e) => token === lemma + e)) return true;
+  let forms = null;
+  if (pos.startsWith("verb")) {
+    forms = jaVerbForms(lowerBase, (reading || "").toLowerCase());
+  } else if (pos.startsWith("adjective")) {
+    forms = jaAdjectiveForms(lowerBase);
+  } else {
+    // Every other POS (noun, adverb, particle, ...) is invariant in
+    // Japanese, so exact match (checked above) is the only valid match.
+    return false;
   }
 
-  // --- 4. Adjectives ---
-  if (gender.startsWith("adjective")) {
-    const adjStem = lowerBase.replace(/(o|a|e|os|as|es)$/, "");
-    const adjEndings = [
-      "",
-      "o",
-      "a",
-      "os",
-      "as",
-      "e",
-      "es",
-      "ísimo",
-      "ísima",
-      "ísimos",
-      "ísimas",
-    ];
-    if (adjEndings.some((ending) => lowerToken === adjStem + ending))
-      return true;
+  // Prefer the longest matching form so e.g. "ました" wins over a
+  // shorter form that happens to also be a prefix.
+  const candidates = Object.values(forms)
+    .filter(Boolean)
+    .sort((a, b) => b.length - a.length);
+  for (const form of candidates) {
+    if (lowerToken.startsWith(form)) return form;
   }
-
-  // --- 5. Verbs (comprehensive Spanish conjugation logic) ---
-  if (gender.startsWith("verb")) {
-    const verbEndings = [
-      "ar",
-      "er",
-      "ir",
-      "ando",
-      "iendo",
-      "ado",
-      "ido",
-      "é",
-      "aste",
-      "ó",
-      "amos",
-      "aron",
-      "í",
-      "iste",
-      "ió",
-      "imos",
-      "ieron",
-      "aba",
-      "abas",
-      "aba",
-      "ábamos",
-      "aban",
-      "ía",
-      "ías",
-      "ía",
-      "íamos",
-      "ían",
-      "aré",
-      "arás",
-      "ará",
-      "aremos",
-      "arán",
-      "eré",
-      "erás",
-      "erá",
-      "eremos",
-      "erán",
-      "iré",
-      "irás",
-      "irá",
-      "iremos",
-      "irán",
-      "aría",
-      "arías",
-      "aríamos",
-      "arían",
-      "ería",
-      "erías",
-      "eríamos",
-      "erían",
-      "iría",
-      "irías",
-      "iríamos",
-      "irían",
-      "e",
-      "es",
-      "emos",
-      "éis",
-      "en",
-      "a",
-      "as",
-      "amos",
-      "áis",
-      "an",
-    ];
-
-    // --- 5a. Identify infinitive group ---
-    let baseStem = lowerBase.replace(/(ar|er|ir)$/, "");
-
-    // --- 5b. Simple conjugations ---
-    if (verbEndings.some((end) => lowerToken === baseStem + end)) return true;
-
-    // --- 5c. Stem-changing verbs (e→ie, o→ue, e→i) ---
-    const stemChanges = [
-      { from: "e", to: "ie" },
-      { from: "o", to: "ue" },
-      { from: "e", to: "i" },
-    ];
-    for (const { from, to } of stemChanges) {
-      const idx = baseStem.lastIndexOf(from);
-      if (idx !== -1) {
-        const changedStem =
-          baseStem.slice(0, idx) + to + baseStem.slice(idx + 1);
-        if (verbEndings.some((end) => lowerToken === changedStem + end))
-          return true;
-      }
-    }
-
-    // --- 5d. Orthographic changes (buscar → busqué, pagar → pagué, empezar → empecé) ---
-    const orthoPatterns = [
-      { regex: /car$/, repl: "qué" },
-      { regex: /gar$/, repl: "gué" },
-      { regex: /zar$/, repl: "cé" },
-    ];
-    for (const pat of orthoPatterns) {
-      if (pat.regex.test(lowerBase) && lowerToken.endsWith(pat.repl))
-        return true;
-    }
-
-    // --- 5e. Irregular verb families ---
-    const irregularMap = {
-      ser: [
-        "soy",
-        "eres",
-        "es",
-        "somos",
-        "sois",
-        "son",
-        "fui",
-        "fuiste",
-        "fue",
-        "fuimos",
-        "fueron",
-      ],
-      estar: [
-        "estoy",
-        "estás",
-        "está",
-        "estamos",
-        "están",
-        "estuve",
-        "estuvo",
-        "estuvieron",
-      ],
-      ir: ["voy", "vas", "va", "vamos", "vais", "van", "fui", "fue", "fueron"],
-      tener: [
-        "tengo",
-        "tienes",
-        "tiene",
-        "tenemos",
-        "tienen",
-        "tuve",
-        "tuvimos",
-      ],
-      venir: ["vengo", "vienes", "viene", "venimos", "vienen"],
-      poder: ["puedo", "puedes", "puede", "podemos", "pueden", "pude", "podía"],
-      hacer: ["hago", "haces", "hace", "hacemos", "hacen", "hizo", "hecho"],
-      decir: ["digo", "dices", "dice", "decimos", "dicen", "dije", "dicho"],
-      poner: ["pongo", "pones", "pone", "pusimos", "puso", "puesto"],
-      saber: ["sé", "sabes", "sabe", "supimos", "supe", "sabía"],
-      querer: ["quiero", "quieres", "quiere", "queremos", "quieren", "quise"],
-      ver: ["veo", "ves", "ve", "vemos", "ven", "vio", "visto"],
-      dar: ["doy", "das", "da", "damos", "dan", "di", "dio", "dado"],
-      oír: ["oigo", "oyes", "oye", "oímos", "oyen", "oí", "oía", "oído"],
-    };
-    if (irregularMap[lowerBase] && irregularMap[lowerBase].includes(lowerToken))
-      return true;
-
-    // --- 5f. Reflexive forms (lavarse → me lavo, te lavas, se lava, etc.) ---
-    const reflPronouns = ["me ", "te ", "se ", "nos ", "os "];
-    if (
-      reflPronouns.some((p) => lowerToken.startsWith(p)) &&
-      matchesInflectedForm(
-        base,
-        lowerToken.replace(/^(me|te|se|nos|os)\s+/, ""),
-        "verb"
-      )
-    )
-      return true;
-
-    // --- 5g. Fallback heuristic (shared stem prefix) ---
-    if (lowerToken.startsWith(baseStem.slice(0, -1))) return true;
-  }
-
   return false;
 }
 
-function applyInflection(base, gender, targetTokenInSentence) {
+// Produces the inflected form of `base` that matches the grammatical
+// form used by `targetTokenInSentence` (the real clozed word, which
+// belongs to a *different* lemma) — e.g. if the sentence uses ました,
+// a distractor verb should also come back in its own ました form.
+function applyInflection(base, gender, targetTokenInSentence, reading) {
   if (!base) return base;
 
-  let lemma = base.toLowerCase().trim();
+  const lemma = base.toLowerCase().trim();
   const token = targetTokenInSentence?.toLowerCase?.() || null;
+  const pos = (gender || "").toLowerCase();
 
-  // -------------------- helpers --------------------
-  const endsWithCons = (s) => /[bcdfghjklmnñpqrstvwxyz]$/.test(s);
-  const strip = (s, re) => s.replace(re, "");
-  const pick = (arr, i) => (i >= 0 && i < arr.length ? arr[i] : arr[0]);
-
-  // -------------------- Spanish feature guessers --------------------
-  function guessVerbFeatures(tok) {
-    if (!tok) return null;
-    // present indicative endings
-    if (/(amos|emos|imos)$/.test(tok))
-      return { tense: "pres", person: 1, number: "pl" };
-    if (/(áis|éis|ís)$/.test(tok))
-      return { tense: "pres", person: 2, number: "pl" };
-    if (/(an|en)$/.test(tok)) return { tense: "pres", person: 3, number: "pl" };
-    if (/(o|oy)$/.test(tok)) return { tense: "pres", person: 1, number: "sg" };
-    if (/(as|es)$/.test(tok)) return { tense: "pres", person: 2, number: "sg" };
-    if (/(a|e)$/.test(tok)) return { tense: "pres", person: 3, number: "sg" };
-    // simple past
-    if (/(é|í)$/.test(tok)) return { tense: "past", person: 1, number: "sg" };
-    if (/(aste|iste)$/.test(tok))
-      return { tense: "past", person: 2, number: "sg" };
-    if (/(ó|ió)$/.test(tok)) return { tense: "past", person: 3, number: "sg" };
-    if (/(aron|ieron)$/.test(tok))
-      return { tense: "past", person: 3, number: "pl" };
-    // participle
-    if (/(ado|ido)$/.test(tok)) return { tense: "pp" };
-    // infinitive
-    if (/(ar|er|ir)$/.test(tok)) return { tense: "inf" };
-    return null;
+  if (pos.startsWith("verb")) {
+    const forms = jaVerbForms(lemma, (reading || "").toLowerCase());
+    return forms[guessJaVerbFormKey(token)] || lemma;
   }
 
-  function guessNounFeatures(tok) {
-    if (!tok) return null;
-    if (/s$/.test(tok)) return { number: "pl" };
-    return { number: "sg" };
-  }
-
-  function guessAdjFeatures(tok) {
-    if (!tok) return null;
-    if (/os$/.test(tok)) return { gender: "m", number: "pl" };
-    if (/as$/.test(tok)) return { gender: "f", number: "pl" };
-    if (/o$/.test(tok)) return { gender: "m", number: "sg" };
-    if (/a$/.test(tok)) return { gender: "f", number: "sg" };
-    if (/es$/.test(tok)) return { gender: "x", number: "pl" };
-    if (/e$/.test(tok)) return { gender: "x", number: "sg" };
-    return null;
-  }
-
-  // -------------------- reflexives --------------------
-  if (lemma.endsWith("se")) {
-    const v = lemma.replace(/se$/, "");
-    const features = guessVerbFeatures(token);
-    const inf = inflectVerb(v, features);
-    const seFirst = token && /^se\b/.test(token);
-    return seFirst ? `se ${inf}` : `${inf}se`;
-  }
-
-  // ====================================================
-  // ================ VERB INFLECTION ===================
-  // ====================================================
-  function classifyVerb(lem) {
-    if (/ar$/.test(lem)) return { cls: "AR", stem: lem.slice(0, -2) };
-    if (/er$/.test(lem)) return { cls: "ER", stem: lem.slice(0, -2) };
-    if (/ir$/.test(lem)) return { cls: "IR", stem: lem.slice(0, -2) };
-    return { cls: "OTHER", stem: lem.replace(/(ar|er|ir)$/, "") };
-  }
-
-  function buildPresent(lem) {
-    const irregularPresent = {
-      ser: ["soy", "eres", "es", "somos", "sois", "son"],
-      estar: ["estoy", "estás", "está", "estamos", "estáis", "están"],
-      ir: ["voy", "vas", "va", "vamos", "vais", "van"],
-      tener: ["tengo", "tienes", "tiene", "tenemos", "tenéis", "tienen"],
-      venir: ["vengo", "vienes", "viene", "venimos", "venís", "vienen"],
-      poder: ["puedo", "puedes", "puede", "podemos", "podéis", "pueden"],
-      hacer: ["hago", "haces", "hace", "hacemos", "hacéis", "hacen"],
-      decir: ["digo", "dices", "dice", "decimos", "decís", "dicen"],
-      poner: ["pongo", "pones", "pone", "ponemos", "ponéis", "ponen"],
-      saber: ["sé", "sabes", "sabe", "sabemos", "sabéis", "saben"],
-      querer: ["quiero", "quieres", "quiere", "queremos", "queréis", "quieren"],
-      ver: ["veo", "ves", "ve", "vemos", "veis", "ven"],
-      dar: ["doy", "das", "da", "damos", "dais", "dan"],
-      oír: ["oigo", "oyes", "oye", "oímos", "oís", "oyen"],
-    };
-    if (irregularPresent[lem]) return irregularPresent[lem].slice();
-
-    const { cls, stem } = classifyVerb(lem);
-    if (cls === "AR")
-      return [
-        stem + "o",
-        stem + "as",
-        stem + "a",
-        stem + "amos",
-        stem + "áis",
-        stem + "an",
-      ];
-    if (cls === "ER")
-      return [
-        stem + "o",
-        stem + "es",
-        stem + "e",
-        stem + "emos",
-        stem + "éis",
-        stem + "en",
-      ];
-    if (cls === "IR")
-      return [
-        stem + "o",
-        stem + "es",
-        stem + "e",
-        stem + "imos",
-        stem + "ís",
-        stem + "en",
-      ];
-    return [
-      stem + "o",
-      stem + "es",
-      stem + "e",
-      stem + "emos",
-      stem + "éis",
-      stem + "en",
-    ];
-  }
-
-  function buildParticiple(lem) {
-    const { cls, stem } = classifyVerb(lem);
-    if (cls === "AR") return stem + "ado";
-    if (cls === "ER" || cls === "IR") return stem + "ido";
-    return stem + "ado";
-  }
-
-  function inflectVerb(lem, feat) {
-    const present = buildPresent(lem);
-    if (feat && feat.tense === "pres") {
-      const idx = feat.person - 1 + (feat.number === "pl" ? 3 : 0);
-      return pick(present, idx);
-    }
-    if (feat && feat.tense === "pp") return buildParticiple(lem);
-    if (feat && feat.tense === "inf") return lem;
-    // default: 1sg present
-    return present[0];
-  }
-
-  // ====================================================
-  // =============== NOUN INFLECTION ====================
-  // ====================================================
-  function nounForms(lem, g) {
-    // returns a minimal number system for Spanish nouns
-    const forms = { sg: {}, pl: {} };
-    if (/(a|o|e)$/.test(lem)) {
-      const s = lem;
-      forms.sg.nom = s;
-      if (/z$/.test(lem)) {
-        forms.pl.nom = lem.slice(0, -1) + "ces";
-      } else if (endsWithCons(lem)) {
-        forms.pl.nom = lem + "es";
-      } else {
-        forms.pl.nom = lem + "s";
-      }
-      return forms;
-    }
-    if (endsWithCons(lem)) {
-      forms.sg.nom = lem;
-      forms.pl.nom = lem + "es";
-      return forms;
-    }
-    forms.sg.nom = lem;
-    forms.pl.nom = lem + "s";
-    return forms;
-  }
-
-  // ====================================================
-  // ============== ADJECTIVE ENDINGS ===================
-  // ====================================================
-  function adjForms(lem) {
-    const base = lem.replace(/(o|a|e|os|as|es)$/, "");
-    const out = { sg: { m: {}, f: {} }, pl: { m: {}, f: {} } };
-
-    out.sg.m.nom = base + "o";
-    out.sg.f.nom = base + "a";
-    out.pl.m.nom = base + "os";
-    out.pl.f.nom = base + "as";
-
-    // adjectives ending in -e or consonant are invariable for gender
-    if (/(e|ista)$/.test(lem) || endsWithCons(lem)) {
-      out.sg.m.nom = base + "e";
-      out.sg.f.nom = base + "e";
-      out.pl.m.nom = base + "es";
-      out.pl.f.nom = base + "es";
-    }
-
-    return out;
-  }
-
-  // ====================================================
-  // =============== MAIN DISPATCH ======================
-  // ====================================================
-  if (gender.startsWith("verb")) {
-    const feat = guessVerbFeatures(token) || {
-      tense: "pres",
-      person: 1,
-      number: "sg",
-    };
-    return inflectVerb(lemma, feat);
-  }
-
-  if (
-    gender.startsWith("masculine") ||
-    gender.startsWith("feminine") ||
-    gender.startsWith("neuter")
-  ) {
-    const grid = nounForms(lemma, gender);
-    const nf = token ? guessNounFeatures(token) : null;
-    if (nf && nf.number === "pl") return grid.pl.nom || lemma;
-    return grid.sg.nom || lemma;
-  }
-
-  if (gender.startsWith("adjective")) {
-    const grid = adjForms(lemma);
-    const af = token ? guessAdjFeatures(token) : null;
-    if (af) {
-      if (af.number === "pl") {
-        return af.gender === "f"
-          ? grid.pl.f.nom
-          : grid.pl.m.nom || grid.pl.f.nom;
-      } else {
-        return af.gender === "f"
-          ? grid.sg.f.nom
-          : grid.sg.m.nom || grid.sg.f.nom;
-      }
-    }
-    // default masculine singular
-    return grid.sg.m.nom;
+  if (pos.startsWith("adjective")) {
+    const forms = jaAdjectiveForms(lemma);
+    return forms[guessJaAdjFormKey(token)] || lemma;
   }
 
   return lemma;
@@ -2573,15 +2357,7 @@ function generateClozeDistractors(baseWord, clozedForm, CEFR, gender) {
   const formattedBase = baseWord.toLowerCase();
   const isUninflected = clozedForm.trim() === baseWord.trim(); // key fix
 
-  // --- derive a dynamic ending pattern from the actual clozed form ---
-  const dynamicEnding = formattedClozed.match(/([a-zćčđšž]{1,4})$/i);
-  const dynamicEndingPattern = dynamicEnding
-    ? new RegExp(dynamicEnding[1] + "$", "i")
-    : null;
-
-  // fallback to your existing general heuristic
-  const endingPattern =
-    dynamicEndingPattern || getEndingPattern(formattedClozed);
+  const endingPattern = buildEndingPattern(formattedClozed);
 
   const bannedWordClasses = ["numeral", "pronoun", "possessive", "determiner"];
   let strictDistractors = [];
@@ -2607,16 +2383,17 @@ function generateClozeDistractors(baseWord, clozedForm, CEFR, gender) {
   const inflected = baseCandidates
     .map((r) => {
       const raw = r.ord.split(",")[0].trim().toLowerCase();
+      const reading = (r.uttale || "").split(",")[0].trim().toLowerCase();
       let inflectedForm = isUninflected
         ? raw
-        : applyInflection(raw, gender, formattedClozed);
+        : applyInflection(raw, gender, formattedClozed, reading);
 
       return inflectedForm;
     })
     .filter(
       (w) =>
         w !== formattedClozed &&
-        /^[a-zA-ZæøåÆØÅ]/.test(w) &&
+        /^\p{L}/u.test(w) &&
         (isUninflected || endingPattern.test(w))
     );
 
@@ -2634,16 +2411,17 @@ function generateClozeDistractors(baseWord, clozedForm, CEFR, gender) {
       })
       .map((r) => {
         const raw = r.ord.split(",")[0].trim().toLowerCase();
+        const reading = (r.uttale || "").split(",")[0].trim().toLowerCase();
         let inflectedForm = isUninflected
           ? raw
-          : applyInflection(raw, gender, formattedClozed);
+          : applyInflection(raw, gender, formattedClozed, reading);
 
         return inflectedForm;
       })
       .filter(
         (w) =>
           w !== formattedClozed &&
-          /^[a-zA-ZæøåÆØÅ]/.test(w) &&
+          /^\p{L}/u.test(w) &&
           (isUninflected || endingPattern.test(w))
       );
 

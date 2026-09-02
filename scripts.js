@@ -112,37 +112,23 @@ function togglePronunciationGuide() {
   pronunciationWrapper.classList.toggle("hidden"); // Toggle hidden class
 }
 
-// Filter results based on selected part of speech (POS)
+// Filter results based on selected part of speech (POS). The CSV's
+// "gender" column actually holds the part of speech itself (noun, verb,
+// adjective, ...) for this Japanese data, not grammatical gender.
 function filterResultsByPOS(results, selectedPOS) {
   if (!selectedPOS) return results;
 
-  return results.filter((r) => {
-    // Handle nouns based on gender
-    if (selectedPOS === "noun") {
-      return (
-        r.gender &&
-        ["masculine", "feminine", "neuter"].some((genderVal) =>
-          r.gender.toLowerCase().includes(genderVal)
-        )
-      );
-    }
-
-    // Handle all other POS types like "verb," "adjective," etc.
-    return (
+  return results.filter(
+    (r) =>
       r.gender && r.gender.toLowerCase().startsWith(selectedPOS.toLowerCase())
-    );
-  });
+  );
 }
 
-// Helper function to format 'gender' (grammatical gender) based on its value
+// Helper function to format the 'gender' column for display. It's named
+// for grammatical gender (a leftover from this app's Spanish-language
+// version), but here it just holds the part of speech.
 function formatGender(gender) {
-  if (!gender) return "";
-  const g = gender.toLowerCase().trim();
-  // If it starts with a Japanese gender, mark as noun
-  if (["masculine", "feminine", "neuter"].some((x) => g.startsWith(x))) {
-    return "noun - " + gender;
-  }
-  return gender;
+  return gender || "";
 }
 
 // Clear the search input field
@@ -823,15 +809,10 @@ async function search(queryOverride = null) {
         return wordMatch || englishMatch;
       });
 
-      // Handle POS filtering for nouns and other parts of speech
+      // Handle POS filtering
       return (
         matchesQuery &&
-        (!selectedPOS ||
-          (selectedPOS === "noun" &&
-            ["masculine", "feminine", "neuter"].some((gender) =>
-              r.gender.toLowerCase().includes(gender)
-            )) ||
-          r.gender.toLowerCase().includes(selectedPOS)) &&
+        (!selectedPOS || r.gender.toLowerCase().includes(selectedPOS)) &&
         (!selectedCEFR || r.CEFR === selectedCEFR)
       );
     });
@@ -873,12 +854,7 @@ async function search(queryOverride = null) {
         );
         return (
           matchesInexact &&
-          (!selectedPOS ||
-            (selectedPOS === "noun" &&
-              ["masculine", "feminine", "neuter"].some((gender) =>
-                r.gender.toLowerCase().includes(gender)
-              )) ||
-            r.gender.toLowerCase().includes(selectedPOS)) &&
+          (!selectedPOS || r.gender.toLowerCase().includes(selectedPOS)) &&
           (!selectedCEFR || r.CEFR === selectedCEFR)
         );
       });
@@ -1100,13 +1076,7 @@ function checkForSentences(word, pos) {
     // Find matching word entry by both word and POS
     const matchingWordEntry = results.find((result) => {
       const wordMatch = result.ord.toLowerCase().includes(wordPart);
-      // Handle POS matching for nouns and other parts of speech
-      const posMatch =
-        (pos === "noun" &&
-          ["masculine", "feminine", "neuter"].some((gender) =>
-            result.gender.toLowerCase().includes(gender)
-          )) ||
-        result.gender.toLowerCase().includes(pos.toLowerCase());
+      const posMatch = result.gender.toLowerCase().includes(pos.toLowerCase());
       return wordMatch && posMatch; // Ensure both word and POS match
     });
 
@@ -1756,15 +1726,7 @@ function displaySearchResults(results, query = "") {
   // Limit to a maximum of 10 results
   results.slice(0, 10).forEach((result) => {
     result.gender = formatGender(result.gender);
-    // Directly handle the POS based on the gender field
-    {
-      const g = (result.gender || "").toLowerCase();
-      result.pos = ["masculine", "feminine", "neuter"].some((x) =>
-        g.includes(x)
-      )
-        ? "noun"
-        : g;
-    }
+    result.pos = (result.gender || "").toLowerCase();
 
     // Convert the word to lowercase and trim spaces when generating the ID
     const normalizedWord = result.ord.toLowerCase().trim();
@@ -2421,13 +2383,7 @@ function highlightQuery(sentence, query) {
   const matchingWordEntry = results.find((result) =>
     result.ord.toLowerCase().includes(query)
   );
-  const pos = matchingWordEntry
-    ? ["masculine", "feminine", "neuter"].some((gender) =>
-        matchingWordEntry.gender.toLowerCase().includes(gender)
-      )
-      ? "noun"
-      : matchingWordEntry.gender.toLowerCase()
-    : "";
+  const pos = matchingWordEntry ? matchingWordEntry.gender.toLowerCase() : "";
 
   // Generate word variations using the external function
   const wordVariations = generateWordVariationsForSentences(query, pos);
@@ -2552,15 +2508,9 @@ function renderWordDefinition(word, selectedPOS = "") {
   const matchingResults = results.filter((r) => {
     const wordMatch = r.ord.toLowerCase().trim() === trimmedWord;
 
-    // Check for noun gender match when selectedPOS is 'noun'
-    const posMatch =
-      selectedPOS === "noun"
-        ? ["masculine", "feminine", "neuter"].some((gender) =>
-            r.gender.toLowerCase().includes(gender)
-          )
-        : selectedPOS
-        ? r.gender.toLowerCase().includes(selectedPOS)
-        : true;
+    const posMatch = selectedPOS
+      ? r.gender.toLowerCase().includes(selectedPOS)
+      : true;
 
     return wordMatch && posMatch;
   });
