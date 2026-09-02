@@ -1225,6 +1225,109 @@ function initializeModeNav() {
   });
 }
 
+// Toggleable dropdown for the account menu (#account-menu-btn/
+// #account-menu-panel) -- just About for now. Ported from Norwegian's
+// initializeAccountMenu(), trimmed (no app-menu:open broadcast -- that
+// exists there to stay mutually exclusive with a streak menu that
+// doesn't exist here).
+function positionAccountMenuPanel(button, panel) {
+  const viewportGutter = 8;
+  panel.classList.remove("account-menu-panel--opens-right");
+  panel.style.removeProperty("--account-menu-available-width");
+
+  const buttonRect = button.getBoundingClientRect();
+  const panelWidth = panel.getBoundingClientRect().width;
+  const viewportWidth = document.documentElement.clientWidth;
+  const wouldOverflowLeft = buttonRect.right - panelWidth < viewportGutter;
+  const availableWidth = wouldOverflowLeft
+    ? viewportWidth - buttonRect.left - viewportGutter
+    : buttonRect.right - viewportGutter;
+
+  panel.classList.toggle("account-menu-panel--opens-right", wouldOverflowLeft);
+  panel.style.setProperty(
+    "--account-menu-available-width",
+    `${Math.max(0, availableWidth)}px`
+  );
+}
+
+function initializeAccountMenu() {
+  const button = document.getElementById("account-menu-btn");
+  const panel = document.getElementById("account-menu-panel");
+  if (!button || !panel) return;
+
+  const isOpen = () => !panel.classList.contains("hidden");
+
+  const closeMenu = () => {
+    panel.classList.add("hidden");
+    button.setAttribute("aria-expanded", "false");
+  };
+
+  const openMenu = () => {
+    panel.classList.remove("hidden");
+    positionAccountMenuPanel(button, panel);
+    button.setAttribute("aria-expanded", "true");
+  };
+
+  button.addEventListener("click", (event) => {
+    event.stopPropagation();
+    isOpen() ? closeMenu() : openMenu();
+  });
+
+  panel.addEventListener("click", (event) => {
+    if (event.target.closest(".account-menu-item")) closeMenu();
+  });
+
+  document.addEventListener("click", (event) => {
+    if (isOpen() && !event.target.closest(".account-menu")) closeMenu();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && isOpen()) {
+      closeMenu();
+      button.focus();
+    }
+  });
+
+  window.addEventListener("resize", () => {
+    if (isOpen()) positionAccountMenuPanel(button, panel);
+  });
+
+  // Same click-interception every other #mode-nav-style link uses:
+  // a real href for crawlers/middle-click, a plain left-click runs the
+  // in-page transition instead of a full reload.
+  panel.querySelectorAll(".account-menu-item[data-mode]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      if (!isPlainLeftClick(event)) return;
+      event.preventDefault();
+      selectType(link.dataset.mode);
+    });
+  });
+}
+
+// A short, static page describing the app. No vocabulary data, no
+// personal state -- renders immediately regardless of dictionary-load
+// state. Reuses .definition, the same card styling as a word result,
+// rather than inventing new layout classes for a one-off page.
+function renderAboutPage() {
+  const section = document.createElement("section");
+  section.className = "definition about-page";
+  section.innerHTML = `
+    <h2>About</h2>
+    <p>
+      Japanese Dictionary is a free, browser-based tool for learning
+      Japanese — word and sentence search with audio, short stories at
+      every CEFR level, and a Word Game that adapts to your level as you
+      practice.
+    </p>
+    <p>
+      Found a word that's missing? A word search with no exact match
+      offers a "Flag Missing Word Entry" button. For anything else, reach
+      out via the links in the footer below.
+    </p>
+  `;
+  resultsContainer.appendChild(section);
+}
+
 function enableSearchControls() {
   const searchBar = document.getElementById("search-bar");
   const searchBtn = document.getElementById("search-btn");
@@ -1405,6 +1508,24 @@ function handleTypeChange(type) {
     disableSearchControls();
     // Now call the pronunciation module
     initPronunciation();
+  } else if (type === "about") {
+    genreFilterContainer.style.display = "none";
+    storyFavoritesFilterContainer.style.display = "none";
+    searchBarWrapper.style.display = "none";
+    randomBtn.style.display = "none";
+    posFilterContainer.style.display = "none";
+    cefrLock.style.display = "none";
+
+    searchContainerInner.classList.remove("word-game-active");
+    gameActive = false;
+
+    showLandingCard(false);
+    clearInput();
+    clearContainer();
+    disableSearchControls();
+
+    document.title = "About - Japanese Dictionary";
+    renderAboutPage();
   } else {
     // Handle default case (e.g., "Words" type)
     genreFilterContainer.style.display = "none"; // Hide genre dropdown
@@ -3077,6 +3198,7 @@ window.onload = function () {
   }, 100);
 
   initializeModeNav();
+  initializeAccountMenu();
 
   // Add event listener to POS filter dropdown
   document

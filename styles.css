@@ -2913,24 +2913,111 @@ ul {
 }
 
 /*
- * My Words sign-in/sync UI, ported from norwegian's
- * styles/10-shell-landing-and-stats.css. Norwegian's version sits inside a
- * larger .header-top-row alongside a streak badge and an account-menu (My
- * Stats/Settings/About/What's New) -- none of which exist here yet, so
- * .auth-container is positioned directly in the header instead of inside
- * that row. Add the row back if/when those other corner controls get
- * ported, rather than duplicating positioning logic here and there.
+ * Header corner controls, ported from norwegian's
+ * styles/10-shell-landing-and-stats.css. .header-top-row holds the
+ * account menu and the sign-in/sync UI side by side -- Norwegian's also
+ * has a streak badge here, which doesn't exist in this app yet (deferred
+ * this session; add it to this row too if it gets ported later, rather
+ * than duplicating positioning logic elsewhere).
  */
-.auth-container {
+.header-top-row {
   position: absolute;
   top: 12px;
   right: 12px;
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.auth-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-family: "Noto Sans", sans-serif;
   letter-spacing: normal;
   text-transform: none;
+}
+
+.account-menu {
+  position: relative;
+  z-index: 1100;
+}
+
+.account-menu-btn {
+  align-items: center;
+  background-color: var(--color-wash-blue);
+  border: 0.5px solid var(--color-wash-blue-border);
+  border-radius: 6px;
+  color: var(--color-ink);
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  font-size: 16px;
+  height: 34px;
+  justify-content: center;
+  padding: 0;
+  width: 34px;
+}
+
+.account-menu-btn:hover,
+.account-menu-btn[aria-expanded="true"] {
+  background-color: var(--color-wash-blue-active);
+  border-color: var(--color-wash-blue-active-border);
+}
+
+.account-menu-panel {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-wash-blue-border);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(13, 58, 105, 0.16);
+  box-sizing: border-box;
+  max-width: min(
+    calc(100vw - 16px),
+    var(--account-menu-available-width, calc(100vw - 16px))
+  );
+  min-width: min(
+    190px,
+    var(--account-menu-available-width, calc(100vw - 16px))
+  );
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: max-content;
+  z-index: 1;
+}
+
+.account-menu-panel--opens-right {
+  left: 0;
+  right: auto;
+}
+
+.account-menu-item {
+  align-items: center;
+  border-radius: 6px;
+  color: var(--color-text-strong);
+  display: flex;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 10px;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 9px 10px;
+  text-decoration: none;
+  white-space: normal;
+}
+
+.account-menu-item:hover {
+  background-color: var(--color-surface-subtle);
+}
+
+.account-menu-item i {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  text-align: center;
+  width: 16px;
 }
 
 .google-signin-btn,

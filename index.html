@@ -87,7 +87,44 @@
 
   <body>
     <header>
-      <div id="auth-container" class="auth-container">
+      <div class="header-top-row">
+        <!-- Single entry point for "about the app" pages that don't belong
+             in #mode-nav (that's for browsing modes -- see its own comment).
+             Just About for now; Norwegian's equivalent also has My
+             Stats/Settings/What's New, none of which exist here yet (need
+             backend this app doesn't have -- deferred earlier this
+             session). -->
+        <div class="account-menu">
+          <button
+            type="button"
+            id="account-menu-btn"
+            class="account-menu-btn"
+            aria-haspopup="menu"
+            aria-expanded="false"
+            aria-controls="account-menu-panel"
+            aria-label="Account menu"
+            title="Account menu"
+          >
+            <i class="fas fa-circle-user" aria-hidden="true"></i>
+          </button>
+          <div
+            id="account-menu-panel"
+            class="account-menu-panel hidden"
+            role="menu"
+          >
+            <a
+              href="?type=about"
+              class="account-menu-item"
+              data-mode="about"
+              role="menuitem"
+            >
+              <i class="fas fa-circle-info" aria-hidden="true"></i>
+              About
+            </a>
+          </div>
+        </div>
+
+        <div id="auth-container" class="auth-container">
         <button
           id="google-signin-btn"
           type="button"
@@ -137,6 +174,7 @@
           >
             Sign out
           </button>
+        </div>
         </div>
       </div>
 
