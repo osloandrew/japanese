@@ -469,6 +469,35 @@ function serveFromQueue_repairMode(firstWordInQueue) {
     const uniqueDisplayedTranslations =
       ensureUniqueDisplayedValues(allTranslations);
     renderListeningGameUI(item.wordObj, uniqueDisplayedTranslations, true);
+  } else if (item.exerciseType === "reverse") {
+    const incorrectJapaneseWords = fetchIncorrectJapaneseWords(
+      item.wordObj.gender,
+      item.wordObj.ord,
+      item.wordObj.CEFR
+    );
+    const allJapaneseWords = shuffleArray([
+      item.wordObj.ord,
+      ...incorrectJapaneseWords,
+    ]);
+    const uniqueJapaneseWords = ensureUniqueDisplayedValues(allJapaneseWords);
+    if (uniqueJapaneseWords.length < 4) {
+      let incorrectTranslations = fetchIncorrectTranslations(
+        item.wordObj.gender,
+        correctTranslation,
+        item.wordObj.CEFR
+      );
+      const allTranslations = shuffleArray([
+        correctTranslation,
+        ...incorrectTranslations,
+      ]);
+      renderWordGameUI(
+        item.wordObj,
+        ensureUniqueDisplayedValues(allTranslations),
+        true
+      );
+    } else {
+      renderReverseGameUI(item.wordObj, uniqueJapaneseWords, true);
+    }
   } else {
     let incorrectTranslations = fetchIncorrectTranslations(
       item.wordObj.gender,
@@ -583,6 +612,35 @@ function serveFromQueue_nonRepairMode(firstWordInQueue) {
       uniqueDisplayedTranslations,
       true
     );
+  } else if (firstWordInQueue.exerciseType === "reverse") {
+    const incorrectJapaneseWords = fetchIncorrectJapaneseWords(
+      firstWordInQueue.wordObj.gender,
+      firstWordInQueue.wordObj.ord,
+      firstWordInQueue.wordObj.CEFR
+    );
+    const allJapaneseWords = shuffleArray([
+      firstWordInQueue.wordObj.ord,
+      ...incorrectJapaneseWords,
+    ]);
+    const uniqueJapaneseWords = ensureUniqueDisplayedValues(allJapaneseWords);
+    if (uniqueJapaneseWords.length < 4) {
+      let incorrectTranslations = fetchIncorrectTranslations(
+        firstWordInQueue.wordObj.gender,
+        correctTranslation,
+        firstWordInQueue.wordObj.CEFR
+      );
+      const allTranslations = shuffleArray([
+        correctTranslation,
+        ...incorrectTranslations,
+      ]);
+      renderWordGameUI(
+        firstWordInQueue.wordObj,
+        ensureUniqueDisplayedValues(allTranslations),
+        true
+      );
+    } else {
+      renderReverseGameUI(firstWordInQueue.wordObj, uniqueJapaneseWords, true);
+    }
   } else {
     let incorrectTranslations = fetchIncorrectTranslations(
       firstWordInQueue.wordObj.gender,
@@ -644,16 +702,17 @@ function maybeServeFromRepairQueue() {
 
 function pickQuestionType(cefr) {
   const questionWeights = {
-    A1: { cloze: 0.2, listening: 0.25 }, // matching 0.55
-    A2: { cloze: 0.35, listening: 0.25 }, // matching 0.40
-    B1: { cloze: 0.5, listening: 0.25 }, // matching 0.25
-    B2: { cloze: 0.6, listening: 0.25 }, // matching 0.15
-    C: { cloze: 0.7, listening: 0.2 }, // matching 0.10
+    A1: { cloze: 0.2, listening: 0.25, reverse: 0.1 }, // matching 0.45
+    A2: { cloze: 0.35, listening: 0.25, reverse: 0.15 }, // matching 0.25
+    B1: { cloze: 0.5, listening: 0.25, reverse: 0.15 }, // matching 0.10
+    B2: { cloze: 0.6, listening: 0.25, reverse: 0.1 }, // matching 0.05
+    C: { cloze: 0.7, listening: 0.2, reverse: 0.05 }, // matching 0.05
   };
   const weights = questionWeights[cefr] || questionWeights["A1"];
   const r = Math.random();
   if (r < weights.cloze) return "cloze";
   if (r < weights.cloze + weights.listening) return "listening";
+  if (r < weights.cloze + weights.listening + weights.reverse) return "reverse";
   return "flashcard";
 }
 
@@ -844,6 +903,24 @@ async function serveNewWord() {
     await renderClozeQuestion(randomWordObj, uniqueDisplayedTranslations);
   } else if (questionType === "listening") {
     renderListeningGameUI(randomWordObj, uniqueDisplayedTranslations, false);
+  } else if (questionType === "reverse") {
+    const incorrectJapaneseWords = fetchIncorrectJapaneseWords(
+      randomWordObj.gender,
+      randomWordObj.ord,
+      randomWordObj.CEFR
+    );
+    const allJapaneseWords = shuffleArray([
+      randomWordObj.ord,
+      ...incorrectJapaneseWords,
+    ]);
+    const uniqueJapaneseWords = ensureUniqueDisplayedValues(allJapaneseWords);
+    // Not enough same-gender/CEFR Japanese distractors to fill the grid --
+    // fall back to a regular flashcard rather than showing a short one.
+    if (uniqueJapaneseWords.length < 4) {
+      renderWordGameUI(randomWordObj, uniqueDisplayedTranslations, false);
+    } else {
+      renderReverseGameUI(randomWordObj, uniqueJapaneseWords, false);
+    }
   } else {
     renderWordGameUI(randomWordObj, uniqueDisplayedTranslations, false);
   }
@@ -973,6 +1050,86 @@ function fetchIncorrectTranslations(gender, correctTranslation, currentCEFR) {
   return incorrectTranslations;
 }
 
+// Mirrors fetchIncorrectTranslations above, but pulls wrong Japanese words
+// instead of wrong English glosses -- used by "reverse" questions (English
+// shown, learner picks the matching Japanese word). No capitalization
+// heuristic here: that's an English-orthography concern, irrelevant to
+// Japanese script.
+function fetchIncorrectJapaneseWords(gender, correctWord, currentCEFR) {
+  let incorrectResults = results.filter((r) => {
+    return (
+      r.gender === gender &&
+      r.ord !== correctWord &&
+      r.CEFR === currentCEFR &&
+      !noRandom.includes(r.ord.toLowerCase())
+    );
+  });
+
+  incorrectResults = shuffleArray(incorrectResults);
+
+  const displayedWordsSet = new Set();
+  const incorrectWords = [];
+
+  for (
+    let i = 0;
+    i < incorrectResults.length && incorrectWords.length < 3;
+    i++
+  ) {
+    const displayedWord = incorrectResults[i].ord.split(",")[0].trim();
+    if (!displayedWordsSet.has(displayedWord)) {
+      incorrectWords.push(incorrectResults[i].ord);
+      displayedWordsSet.add(displayedWord);
+    }
+  }
+
+  if (incorrectWords.length < 4) {
+    let additionalResults = results.filter((r) => {
+      return (
+        r.gender === gender &&
+        r.ord !== correctWord &&
+        !noRandom.includes(r.ord.toLowerCase()) &&
+        !displayedWordsSet.has(r.ord.split(",")[0].trim())
+      );
+    });
+
+    for (
+      let i = 0;
+      i < additionalResults.length && incorrectWords.length < 3;
+      i++
+    ) {
+      const displayedWord = additionalResults[i].ord.split(",")[0].trim();
+      if (!displayedWordsSet.has(displayedWord)) {
+        incorrectWords.push(additionalResults[i].ord);
+        displayedWordsSet.add(displayedWord);
+      }
+    }
+  }
+
+  if (incorrectWords.length < 4) {
+    let fallbackResults = results.filter((r) => {
+      return (
+        r.ord !== correctWord &&
+        !noRandom.includes(r.ord.toLowerCase()) &&
+        !displayedWordsSet.has(r.ord.split(",")[0].trim())
+      );
+    });
+
+    for (
+      let i = 0;
+      i < fallbackResults.length && incorrectWords.length < 3;
+      i++
+    ) {
+      const displayedWord = fallbackResults[i].ord.split(",")[0].trim();
+      if (!displayedWordsSet.has(displayedWord)) {
+        incorrectWords.push(fallbackResults[i].ord);
+        displayedWordsSet.add(displayedWord);
+      }
+    }
+  }
+
+  return incorrectWords;
+}
+
 // ───────────────── 5) UI Builders ─────────────────
 
 function buildCEFRLabel(level) {
@@ -1036,7 +1193,7 @@ function smoothReplace(contentHTML) {
 }
 
 function renderGameUI({
-  mode, // "flashcard" | "cloze" | "listening"
+  mode, // "flashcard" | "cloze" | "listening" | "reverse"
   wordObj,
   translations, // array of strings
   isReintroduced = false,
@@ -1069,6 +1226,9 @@ function renderGameUI({
     <h2 id="hidden-word" style="display:none;">${hidden}</h2>
   </div>
 `;
+  } else if (mode === "reverse") {
+    const displayedGloss = wordObj.engelsk.split(",")[0].trim();
+    wordAreaHTML = `<h2>${displayedGloss}</h2>`;
   }
 
   // 2) Build HTML shell once
@@ -1144,7 +1304,8 @@ function renderGameUI({
         handleListeningAnswer(selected, wo);
       } else {
         // pass the questionType so the cloze behavior after a correct answer still updates the sentence
-        const qType = mode === "cloze" ? "cloze" : "flashcard";
+        const qType =
+          mode === "cloze" ? "cloze" : mode === "reverse" ? "reverse" : "flashcard";
         handleTranslationClick(selected, wo, qType);
       }
     });
@@ -1166,6 +1327,21 @@ function renderWordGameUI(wordObj, translations, isReintroduced = false) {
     mode: "flashcard",
     wordObj,
     translations,
+    isReintroduced,
+  });
+}
+
+// English shown, learner picks the matching Japanese word. Mirrors
+// renderClozeGameUI's clozeAnswer trick: rather than reassigning the
+// shared correctTranslation global (which stays the real English gloss
+// everywhere else), the correct-answer override for this one question
+// lives on wordObj.reverseAnswer, checked in handleTranslationClick.
+function renderReverseGameUI(wordObj, japaneseWords, isReintroduced = false) {
+  wordObj.reverseAnswer = wordObj.ord.split(",")[0].trim();
+  renderGameUI({
+    mode: "reverse",
+    wordObj,
+    translations: japaneseWords,
     isReintroduced,
   });
 }
@@ -1272,7 +1448,9 @@ async function handleTranslationClick(
   });
 
   // Extract the part before the comma for both correct and selected translations
-  const correctTranslationPart = (wordObj.clozeAnswer || correctTranslation)
+  const correctTranslationPart = (
+    wordObj.clozeAnswer || wordObj.reverseAnswer || correctTranslation
+  )
     .split(",")[0]
     .trim();
   const selectedTranslationPart = selectedTranslation.split(",")[0].trim();
