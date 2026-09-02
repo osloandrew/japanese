@@ -146,6 +146,66 @@
       <p id="site-subtitle">Search in Japanese or English</p>
     </header>
 
+    <!-- Primary mode nav: a top tab strip on desktop, a fixed bottom tab bar
+         on mobile. Ported from norwegian/index.html's #mode-nav, trimmed to
+         the modes that exist here (no My Words/My Stats/Settings/About --
+         those need backend this app doesn't have yet; no Pronunciation --
+         it isn't in Norwegian's nav either, reached only via its own
+         landing-page card there too). Each tab carries a real href for
+         crawlers/no-JS visitors/middle-click; a plain click is intercepted
+         in initializeModeNav() (scripts.js) to call the existing
+         selectType(), the same in-page transition the type-select dropdown
+         already used -- no pretty-path rewriting needed here since this
+         app has no captured static pages to anchor against (see
+         norwegian's anchorAppNavigationLinks() for why it needs that and
+         this app doesn't). -->
+    <nav id="mode-nav" aria-label="Primary">
+      <a class="mode-tab" data-mode="words" href="?type=words">
+        <span
+          class="mode-tab-icon"
+          style="
+            mask-image: url(Resources/Photos/words.svg);
+            -webkit-mask-image: url(Resources/Photos/words.svg);
+          "
+          aria-hidden="true"
+        ></span>
+        <span class="mode-tab-label">Words</span>
+      </a>
+      <a class="mode-tab" data-mode="sentences" href="?type=sentences">
+        <span
+          class="mode-tab-icon"
+          style="
+            mask-image: url(Resources/Photos/sentences.svg);
+            -webkit-mask-image: url(Resources/Photos/sentences.svg);
+          "
+          aria-hidden="true"
+        ></span>
+        <span class="mode-tab-label">Sentences</span>
+      </a>
+      <a class="mode-tab" data-mode="stories" href="?type=stories">
+        <span
+          class="mode-tab-icon"
+          style="
+            mask-image: url(Resources/Photos/stories.svg);
+            -webkit-mask-image: url(Resources/Photos/stories.svg);
+          "
+          aria-hidden="true"
+        ></span>
+        <span class="mode-tab-label">Stories</span>
+      </a>
+      <a class="mode-tab" data-mode="word-game" href="?type=word-game">
+        <span
+          class="mode-tab-icon"
+          style="
+            mask-image: url(Resources/Photos/word-game.svg);
+            -webkit-mask-image: url(Resources/Photos/word-game.svg);
+          "
+          aria-hidden="true"
+        ></span>
+        <span class="mode-tab-label">Word Game</span>
+      </a>
+    </nav>
+
     <!-- Shown after a completed word-game round, if the visitor isn't
          signed in -- see maybeShowSignInNudge() in myWordsAuth.js. -->
     <div id="signin-nudge-banner" class="signin-nudge-banner hidden" role="status">
@@ -670,6 +730,16 @@
       </div>
       <p class="copyright">© 2025 Japanese Dictionary</p>
     </footer>
+
+    <!-- Reserves scroll room below the footer so the fixed mobile bottom
+         tab bar (#mode-nav, styles.css) never covers it. A dedicated
+         element rather than margin/padding on footer or body: body's
+         height:100% column-flex layout doesn't reliably extend the page's
+         scrollable area for a trailing margin on its last flex item (a
+         real, measured browser quirk, not a guess -- margin-bottom on
+         footer computed correctly but contributed ~0 to scrollHeight). -->
+    <div id="mobile-nav-spacer" aria-hidden="true"></div>
+
     <script>
       // Language site switcher -> navigates to https://osloandrew.github.io/{slug}/
       document.addEventListener("DOMContentLoaded", () => {

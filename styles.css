@@ -2238,7 +2238,159 @@ ul {
   }
 }
 
+/*
+ * Primary mode nav, ported from norwegian's #mode-nav (styles/35-
+ * navigation.css) and trimmed to the 4 modes this app has (Words/
+ * Sentences/Stories/Word Game -- no My Words/My Stats/Settings/About,
+ * no Pronunciation; see index.html's #mode-nav comment for why). One set
+ * of markup, styled by breakpoint below into a top tab strip (desktop)
+ * or a fixed bottom tab bar (mobile/tablet) -- never a hidden dropdown
+ * at either size.
+ */
+#mode-nav {
+  display: flex;
+}
+
+.mode-tab {
+  align-items: center;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  display: flex;
+  flex: 1;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.mode-tab-icon {
+  -webkit-mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  background-color: currentColor;
+  flex-shrink: 0;
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+.mode-tab-label {
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.mode-tab:hover {
+  background-color: var(--color-wash-blue);
+  color: var(--color-ink);
+}
+
+.mode-tab.active {
+  color: var(--color-ink);
+}
+
+/* Has to be set on the label itself: .mode-tab-label's own font-weight:
+   500 above is an explicit declaration, which always beats an inherited
+   value regardless of specificity -- a font-weight on .mode-tab.active
+   alone would never reach this text. */
+.mode-tab.active .mode-tab-label {
+  font-weight: 600;
+}
+
+#mobile-nav-spacer {
+  display: none;
+}
+
+@media (min-width: 1025px) {
+  /* Top tab strip, docked directly above the search toolbar. A full-bleed
+     white band so it reads as a distinct nav component the way the
+     mobile bottom bar does too. The active tab is a pale filled pill. */
+  #mode-nav {
+    background-color: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+    box-sizing: border-box;
+    gap: 6px;
+    justify-content: center;
+    padding: 10px 24px;
+    width: 100%;
+  }
+
+  .mode-tab {
+    border: 1px solid transparent;
+    border-radius: 10px;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    gap: 8px;
+    padding: 10px 18px;
+  }
+
+  .mode-tab-icon {
+    height: 18px;
+    width: 18px;
+  }
+
+  .mode-tab-label {
+    font-size: 14px;
+  }
+
+  .mode-tab.active,
+  .mode-tab.active:hover {
+    background-color: var(--color-wash-blue-pale);
+    border: 1px solid var(--color-wash-blue-border);
+    color: var(--color-ink);
+  }
+}
+
 @media (max-width: 1024px) {
+  /* Reserves scroll room so page content can clear the fixed bottom tab
+     bar below (measured rendered height ~62px; a few px of margin on top
+     of that). See index.html's #mobile-nav-spacer comment for why this
+     is a dedicated element instead of padding/margin on body or footer. */
+  #mobile-nav-spacer {
+    display: block;
+    /* Without this, body's flex-direction: column + fixed height: 100%
+       (base rules) lets its default flex-shrink compress this empty,
+       content-less div's main-axis size toward 0 whenever the column's
+       total content overflows -- which it always does on this page. This
+       is also why margin-bottom on footer itself didn't work as a fix
+       here: same shrink behavior, applied to the trailing space instead
+       of an element's own box. */
+    flex-shrink: 0;
+    height: calc(68px + env(safe-area-inset-bottom));
+  }
+
+  /* Instagram-style fixed bottom tab bar. */
+  #mode-nav {
+    background-color: var(--color-surface);
+    border-top: 1px solid var(--color-border);
+    bottom: 0;
+    box-sizing: border-box;
+    justify-content: space-around;
+    left: 0;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    position: fixed;
+    right: 0;
+    width: 100%;
+    z-index: 30;
+  }
+
+  .mode-tab {
+    flex-direction: column;
+    gap: 2px;
+    justify-content: center;
+    padding: 8px 4px 4px;
+  }
+
+  .mode-tab-icon {
+    height: 22px;
+    width: 22px;
+  }
+
+  .mode-tab-label {
+    font-size: 12px;
+    letter-spacing: 0.02em;
+  }
+
   #back-button,
   #speed-btn,
   #toggle-english-btn,

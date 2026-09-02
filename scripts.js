@@ -1188,6 +1188,43 @@ function selectType(type) {
   handleTypeChange(type);
 }
 
+// Marks the #mode-nav tab matching the current mode as active. Called from
+// handleTypeChange() itself, so every navigation path stays in sync
+// automatically instead of needing to be updated at each entry point.
+function syncModeNav(type) {
+  document.querySelectorAll(".mode-tab").forEach((tab) => {
+    const active = tab.dataset.mode === type;
+    tab.classList.toggle("active", active);
+    tab.setAttribute("aria-current", active ? "page" : "false");
+  });
+}
+
+function isPlainLeftClick(event) {
+  return (
+    !event.defaultPrevented &&
+    event.button === 0 &&
+    !event.metaKey &&
+    !event.ctrlKey &&
+    !event.shiftKey &&
+    !event.altKey
+  );
+}
+
+// #mode-nav's tabs ship real hrefs (?type=words etc.) so crawlers/no-JS
+// visitors/middle-click all get a working destination directly from the
+// attribute. A plain left-click is intercepted here to run the same
+// instant, no-reload selectType() transition the old type-select dropdown
+// always used, instead of a full page load.
+function initializeModeNav() {
+  document.querySelectorAll(".mode-tab[data-mode]").forEach((tab) => {
+    tab.addEventListener("click", (event) => {
+      if (!isPlainLeftClick(event)) return;
+      event.preventDefault();
+      selectType(tab.dataset.mode);
+    });
+  });
+}
+
 function enableSearchControls() {
   const searchBar = document.getElementById("search-bar");
   const searchBtn = document.getElementById("search-btn");
@@ -1230,6 +1267,13 @@ function disableSearchControls() {
 function handleTypeChange(type) {
   // If type is not passed in (e.g., called from dropdown), get it from the dropdown
   type = type || document.getElementById("type-select").value;
+
+  // Keep #mode-nav's active tab in sync regardless of how this was
+  // triggered (the dropdown, a landing-page card, or a #mode-nav tab
+  // itself) -- one call site here instead of updating it at every
+  // navigation entry point separately.
+  syncModeNav(type);
+
   const query = document
     .getElementById("search-bar")
     .value.toLowerCase()
@@ -2818,6 +2862,7 @@ function loadStateFromURL() {
   // If there's a story in the URL, display that story and exit
   if (storyTitle) {
     document.title = `${decodeURIComponent(storyTitle)} - Japanese Story`;
+    syncModeNav("stories");
     displayStory(decodeURIComponent(storyTitle)); // Display the specific story
     return; // Exit function as story is being displayed
   }
@@ -2829,6 +2874,7 @@ function loadStateFromURL() {
       if (word) {
         // Set title to the word
         document.title = `${word} - Japanese Dictionary`;
+        syncModeNav("words");
         showLandingCard(false);
         resultsContainer.innerHTML = "";
 
@@ -2842,6 +2888,10 @@ function loadStateFromURL() {
       // Continue with regular URL-based loading if no specific word is in the URL
       document.getElementById("search-bar").value = query;
       document.getElementById("type-select").value = type;
+      // Unconditional (not left to handleTypeChange below): the "words"
+      // branch never calls handleTypeChange at all, so #mode-nav would
+      // otherwise show no tab active on a plain page load/reload.
+      syncModeNav(type);
       if (selectedPOS) {
         document.getElementById("pos-select").value = selectedPOS;
       }
@@ -3025,6 +3075,8 @@ window.onload = function () {
       loadStateFromURL(); // This checks the URL for query/type/POS and triggers the appropriate search
     }
   }, 100);
+
+  initializeModeNav();
 
   // Add event listener to POS filter dropdown
   document
