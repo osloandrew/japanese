@@ -1,0 +1,10 @@
+{
+  "indexes": [],
+  "fieldOverrides": [
+    {
+      "collectionGroup": "progressShards",
+      "fieldPath": "payload",
+      "indexes": []
+    }
+  ]
+}

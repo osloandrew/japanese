@@ -1,0 +1,17 @@
+{
+  "name": "japanese-dictionary",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Japanese Dictionary — vanilla JS/HTML/CSS.",
+  "scripts": {
+    "emulators": "PATH=\"/opt/homebrew/opt/openjdk@21/bin:$PATH\" firebase emulators:start --only firestore",
+    "dev": "concurrently -n app,firestore -c blue,yellow \"python3 -m http.server 8936\" \"npm run emulators\""
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.5",
+    "firebase-tools": "^15.28.2"
+  }
+}

@@ -2759,3 +2759,264 @@ ul {
     margin-top: 10px;
   }
 }
+
+/*
+ * My Words sign-in/sync UI, ported from norwegian's
+ * styles/10-shell-landing-and-stats.css. Norwegian's version sits inside a
+ * larger .header-top-row alongside a streak badge and an account-menu (My
+ * Stats/Settings/About/What's New) -- none of which exist here yet, so
+ * .auth-container is positioned directly in the header instead of inside
+ * that row. Add the row back if/when those other corner controls get
+ * ported, rather than duplicating positioning logic here and there.
+ */
+.auth-container {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: "Noto Sans", sans-serif;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.google-signin-btn,
+.google-signout-btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-surface);
+  color: var(--color-google-text);
+  border: 1px solid var(--color-border-google);
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.google-signin-btn:hover,
+.google-signout-btn:hover {
+  background-color: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.22);
+}
+
+.google-signin-btn-logo {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.google-signin-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  box-shadow: none;
+}
+
+/* Persistent, low-key cue that there's a reason to sign in. */
+.google-signin-btn {
+  position: relative;
+  box-sizing: border-box;
+  height: 34px;
+}
+
+.google-signin-btn::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--color-streak-icon);
+  border: 1.5px solid var(--color-surface);
+}
+
+.google-signin-btn:disabled::after {
+  display: none;
+}
+
+.auth-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-google);
+  border-radius: 6px;
+  padding: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-google-text);
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12);
+}
+
+.auth-google-logo {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+/* Shown instead of .auth-google-logo for a non-Google sign-in (email
+   link) -- toggled in updateAuthUI() (myWordsAuth.js). */
+.auth-generic-logo {
+  color: var(--color-text-muted);
+  flex-shrink: 0;
+  font-size: 18px;
+}
+
+.auth-user-info.non-google-provider {
+  border-color: var(--color-border);
+  color: var(--color-text-strong);
+}
+
+.auth-user-name {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.google-signout-btn {
+  border-color: transparent;
+  box-shadow: none;
+  padding: 4px 8px;
+  font-size: 14px;
+}
+
+.google-signout-btn:hover {
+  box-shadow: none;
+}
+
+/* Shown when a sync write to Firestore fails. Amber rather than red:
+   nothing is actually lost (localStorage is always the source of truth) --
+   it just means cross-device sync is temporarily behind, and it retries
+   automatically. */
+.sync-status {
+  display: inline-flex;
+  align-items: center;
+  color: #b8860b;
+  font-size: 14px;
+  cursor: help;
+}
+
+/* Shown after a completed word-game round, if the visitor isn't signed
+   in -- see maybeShowSignInNudge() in myWordsAuth.js. */
+.signin-nudge-banner {
+  align-items: center;
+  background-color: var(--color-ink);
+  border-radius: 10px;
+  bottom: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  color: var(--color-surface);
+  display: flex;
+  font-family: "Noto Sans", sans-serif;
+  gap: 12px;
+  left: 50%;
+  max-width: 480px;
+  padding: 14px 16px;
+  position: fixed;
+  transform: translateX(-50%);
+  width: calc(100% - 40px);
+  z-index: 10;
+}
+
+.signin-nudge-banner > .fa-cloud-arrow-up {
+  color: #8fc4ff;
+  font-size: 1.3em;
+}
+
+.signin-nudge-banner p {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.signin-nudge-signin-btn {
+  background-color: var(--color-surface);
+  border: none;
+  border-radius: 6px;
+  color: var(--color-ink);
+  cursor: pointer;
+  flex-shrink: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 8px 14px;
+  transition: background-color 0.2s ease;
+}
+
+.signin-nudge-signin-btn:hover {
+  background-color: var(--color-wash-blue-active);
+}
+
+.signin-nudge-signin-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.signin-nudge-dismiss-btn {
+  background: none;
+  border: none;
+  color: #b7c8dd;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 14px;
+  padding: 4px;
+}
+
+.signin-nudge-dismiss-btn:hover {
+  color: var(--color-surface);
+}
+
+@media (max-width: 600px) {
+  .auth-container {
+    position: static;
+    justify-content: right;
+    margin-right: -5px;
+  }
+
+  .auth-user-info {
+    gap: 5px;
+    padding: 4px;
+  }
+
+  .auth-google-logo {
+    height: 18px;
+    width: 18px;
+  }
+
+  .auth-user-name {
+    max-width: 64px;
+  }
+
+  .google-signout-btn {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+
+  .signin-nudge-banner {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .signin-nudge-banner p {
+    order: 1;
+    text-align: center;
+    width: 100%;
+  }
+
+  .signin-nudge-signin-btn {
+    order: 2;
+  }
+
+  .signin-nudge-dismiss-btn {
+    order: 3;
+  }
+}

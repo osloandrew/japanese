@@ -1,0 +1,20 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /myWordsUsers/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+
+      match /progressShards/{shardId} {
+        allow read: if request.auth != null && request.auth.uid == userId;
+        allow write: if request.auth != null
+          && request.auth.uid == userId
+          && shardId.matches('^[0-9]{2}$')
+          && request.resource.data.schemaVersion == 4
+          && request.resource.data.payload is string
+          && request.resource.data.payload.size() < 900000
+          && request.resource.data.updatedAt is timestamp;
+      }
+    }
+  }
+}
