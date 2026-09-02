@@ -1168,6 +1168,20 @@ li {
   justify-content: center;
 }
 
+/* Was inline styles on the <select> in index.html -- moved here so it
+   follows the same convention as every other footer control. */
+.site-switcher {
+  background: var(--color-surface);
+  border: 1px solid var(--color-ink);
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  letter-spacing: 0.3px;
+  padding: 5px;
+  text-transform: uppercase;
+}
+
 .linkedin-btn {
   align-items: center;
   background-color: white;
