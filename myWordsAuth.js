@@ -7,9 +7,9 @@
    * These values are public client identifiers, not secrets, so it's fine to commit them.
    */
   const FIREBASE_CONFIG = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
+    apiKey: "AIzaSyC1hLSdPLx7z4_KFu1usIFsW1A8sZoYH34",
+    authDomain: "japanese-dictionary-ea7d1.firebaseapp.com",
+    projectId: "japanese-dictionary-ea7d1",
   };
 
   // Google's OAuth 2.0 web client ID for this Firebase project (Firebase
@@ -26,7 +26,8 @@
   // keeps the whole exchange inside a popup Google itself manages and
   // delivers the result to a JS callback on this page, without depending on
   // storage written on a third-party origin surviving the round trip.
-  const GOOGLE_OAUTH_CLIENT_ID = "YOUR_GOOGLE_OAUTH_CLIENT_ID";
+  const GOOGLE_OAUTH_CLIENT_ID =
+    "95208101605-94ubg5ncrkr101nn1r2dvtco05800s55.apps.googleusercontent.com";
 
   // The Firebase SDK (~3 blocking scripts) is only needed by the minority of
   // visitors who actually sign in. Loading it eagerly on every pageview was
@@ -99,7 +100,10 @@
   const QUOTA_COOLDOWN_MS = 5 * 60 * 1000;
 
   const isFirebaseConfigured =
-    Boolean(FIREBASE_CONFIG.apiKey) && FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY";
+    Boolean(FIREBASE_CONFIG.apiKey) &&
+    FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY" &&
+    Boolean(GOOGLE_OAUTH_CLIENT_ID) &&
+    GOOGLE_OAUTH_CLIENT_ID !== "YOUR_GOOGLE_OAUTH_CLIENT_ID";
 
   const signInButton = document.getElementById("google-signin-btn");
   const signOutButton = document.getElementById("google-signout-btn");
@@ -187,7 +191,7 @@
     return Date.now() < quotaCooldownUntil;
   }
 
-  const SIGN_IN_READY_TITLE = "Sign in to sync My Words across devices";
+  const SIGN_IN_READY_TITLE = "Sign in to sync your preferences across devices";
   const SIGN_IN_LOADING_TITLE = "Preparing sign-in…";
 
   // Google Identity Services' requestAccessToken() must run directly inside
@@ -250,15 +254,15 @@
   // here. The remaining keys belong to modules that load after this one
   // (wordGame.js, streak.js), so those stay literal.
   const LOCAL_USER_DATA_KEYS = [
-    window.MyWordsAPI.STORAGE_KEY,
-    window.WordStrengthAPI.STORAGE_KEY,
+    window.MyWordsAPI?.STORAGE_KEY,
+    window.WordStrengthAPI?.STORAGE_KEY,
     "japanese-dictionary-streak-v1",
     "japanese-dictionary-ability-v1",
     "japanese-dictionary-game-level-v1",
     "japanese-dictionary-daily-practice-v2",
     "japanese-dictionary-best-word-streak-v1",
-    window.StoryFavoritesAPI.STORAGE_KEY,
-  ];
+    window.StoryFavoritesAPI?.STORAGE_KEY,
+  ].filter(Boolean);
 
   function clearLocalUserDataAndReload() {
     try {
@@ -275,14 +279,14 @@
   // show/hide-English display preference — neither of which the "learning"
   // status this feature exists to clear away has anything to do with.
   const PROGRESS_RESET_STORAGE_KEYS = [
-    window.MyWordsAPI.STORAGE_KEY,
-    window.WordStrengthAPI.STORAGE_KEY,
+    window.MyWordsAPI?.STORAGE_KEY,
+    window.WordStrengthAPI?.STORAGE_KEY,
     "japanese-dictionary-streak-v1",
     "japanese-dictionary-ability-v1",
     "japanese-dictionary-game-level-v1",
     "japanese-dictionary-daily-practice-v2",
     "japanese-dictionary-best-word-streak-v1",
-  ];
+  ].filter(Boolean);
 
   // Wipes every word/streak/quest record this account has, remotely first
   // (when signed in) and only then locally — reversing that order would let
@@ -2093,9 +2097,9 @@
     // must be called before any other Firestore operation, which this is —
     // nothing above touches `db`.
     if (["localhost", "127.0.0.1"].includes(window.location.hostname)) {
-      db.useEmulator("localhost", 8080);
+      db.useEmulator("localhost", 8081);
       console.info(
-        "Firestore: using local emulator (localhost:8080) — run `npm run emulators` if it's not already running.",
+        "Firestore: using local emulator (localhost:8081) — run `npm run emulators` if it's not already running.",
       );
     }
 
