@@ -1,5 +1,89 @@
+/*
+ * Design tokens ported from norwegian/styles/00-foundations-and-game.css,
+ * the app family's shared palette. Kept as one block (not split by file,
+ * since this app's CSS isn't split into files yet) so the two apps' colors
+ * stay easy to diff against each other. Values and rationale comments
+ * carried over verbatim; only add/change a token here in a way that also
+ * makes sense back in Norwegian, or the two will start drifting again.
+ */
+:root {
+  --letter-spacing-caps: 0.04em;
+  --letter-spacing-caps-heading: 0.02em;
+  --radius-control: 8px;
+  --radius-card: 12px;
+  /* Brand blues. */
+  --color-ink: #0d3a69;
+  --color-ink-active: #092c50;
+  /* WCAG AA needs 4.5:1 for plain text (links, clickable-word spans); this
+     is the ~5.7:1 value, not the older ~3.7:1 #3c88d4 some call sites here
+     still used pre-port. Don't lighten back toward #3c88d4. */
+  --color-interactive: #1c68b5;
+  --color-accent: #4a99ff;
+  --color-wash-blue: #eaf1fb;
+  --color-wash-blue-active: #d9e8ff;
+  --color-wash-blue-border: #cbd9e8;
+  --color-wash-blue-pale: #f7f9fb;
+  --color-wash-blue-active-border: #8daac7;
+  --color-interactive-muted: #a9bdd5;
+  --color-text: #333333;
+  --color-text-strong: #4a4a4a;
+  --color-text-muted: #666666;
+  --color-text-faint: #777777;
+  --color-text-slate: #5d6874;
+  --color-text-on-light-btn: #2a3a2f;
+  --color-link-muted: #526c91;
+  --color-link-muted-underline: #aab8ca;
+  --color-text-emphasis: #243f5a;
+  /* Neutral surfaces / borders */
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f4f4f4;
+  --color-surface-hover: #f7f7f7;
+  --color-surface-strong: #e0e0e0;
+  --color-border: #cccccc;
+  --color-border-input: #a0a0a0;
+  /* Status: danger/red and success/green, four stops each. */
+  --color-danger: #951b1b;
+  --color-danger-text: #6b2814;
+  --color-danger-bg: #f0c1b3;
+  --color-danger-border: #c97861;
+  --color-success: #365f36;
+  --color-success-text: #254a1d;
+  --color-success-bg: #d7ecc9;
+  --color-success-border: #7cab62;
+  --color-heatmap-2: #a8d18d;
+  --color-streak-bg: #fff3e0;
+  --color-streak-border: #f0c896;
+  --color-streak-text: #b3541e;
+  --color-streak-icon: #f2994a;
+  --color-favorite: #a66c00;
+  --color-level-mid: #f2d96b;
+  --color-bonus: #5a3d82;
+  --color-bonus-hover: #72529d;
+  --color-bg-stat: #f7f9fc;
+  --color-bg-chrome: #d2dce5;
+  /* CEFR difficulty ramp -- A1 (easiest) through C2 (hardest). Don't
+     cross-blend a bg from one step with the text from another. */
+  --color-cefr-a1-bg: #cfe5c0;
+  --color-cefr-a1-text: #2a4d14;
+  --color-cefr-a2-bg: #b3d8a3;
+  --color-cefr-a2-text: #2f4f17;
+  --color-cefr-b1-bg: #f7e3b0;
+  --color-cefr-b1-text: #5c4b11;
+  --color-cefr-b2-bg: #f0d39a;
+  --color-cefr-b2-text: #604b0e;
+  --color-cefr-c1-bg: #e9c3b4;
+  --color-cefr-c1-text: #5a2d25;
+  --color-cefr-c2-bg: #e0af92;
+  --color-cefr-c2-text: #5a2e18;
+  /* Third-party brand colors -- do not retarget these at app tokens above;
+     they're exact external specs (LinkedIn, Buy Me a Coffee), not app
+     palette choices. */
+  --color-border-google: #dadce0;
+  --color-google-text: #3c4043;
+}
+
 a {
-  color: #3c88d4;
+  color: var(--color-interactive);
 }
 
 .alt-spelling {
@@ -24,7 +108,7 @@ audio {
   align-items: center;
   width: 88px;
   height: 88px;
-  background: radial-gradient(circle at 30% 30%, #4ea3f7, #1c68b5);
+  background: radial-gradient(circle at 30% 30%, #4ea3f7, var(--color-interactive));
   border-radius: 50%;
   box-shadow: 0 6px 20px rgba(28, 104, 181, 0.35);
   cursor: pointer;
@@ -34,7 +118,7 @@ audio {
 .audio-button:hover {
   transform: scale(1.08);
   box-shadow: 0 8px 28px rgba(28, 104, 181, 0.45);
-  background: radial-gradient(circle at 30% 30%, #5ab0ff, #1c68b5);
+  background: radial-gradient(circle at 30% 30%, #5ab0ff, var(--color-interactive));
 }
 
 .audio-button:active {
@@ -87,11 +171,11 @@ audio {
 #speed-btn,
 #toggle-english-btn,
 .toggle-kanji-btn {
-  background-color: #f4f4f4; /* Neutral light gray */
+  background-color: var(--color-surface-subtle); /* Neutral light gray */
   border: #bbb 1px solid;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  color: #2a3a2f;
+  color: var(--color-text-on-light-btn);
   cursor: pointer;
   font-family: "Noto Sans", sans-serif;
   font-weight: 500;
@@ -118,7 +202,7 @@ audio {
   line-height: 30px; /* Matches height for vertical centering */
   margin: 0 0 10px 0; /* Remove auto margin and set bottom margin only */
   margin-bottom: 10px;
-  background-color: #ffffff; /* Subtle, lighter background */
+  background-color: var(--color-surface); /* Subtle, lighter background */
   color: #5a1a1a; /* Subtle maroon text */
   border-radius: 6px; /* Slightly rounded corners */
   padding: 8px 14px; /* Larger padding for a more clickable feel */
@@ -137,12 +221,12 @@ audio {
 }
 
 .back-navigation:hover {
-  background-color: #f7f7f7; /* Slightly darker background on hover */
+  background-color: var(--color-surface-hover); /* Slightly darker background on hover */
   box-shadow: 0 6px 12px rgba(135, 135, 135, 0.3), 0 3px 6px rgba(0, 0, 0, 0.15); /* Slightly larger shadow */
 }
 
 body {
-  background-color: #f4f4f4;
+  background-color: var(--color-surface-subtle);
   display: flex;
   flex-direction: column;
   font-family: "Noto Serif", serif;
@@ -154,7 +238,7 @@ body {
 }
 
 button:disabled {
-  color: #ccc;
+  color: var(--color-border);
   cursor: not-allowed;
 }
 
@@ -164,12 +248,12 @@ button:disabled:hover {
 }
 
 button:disabled i {
-  color: #ccc;
+  color: var(--color-border);
   cursor: not-allowed;
 }
 
 .button-container i {
-  color: #0d3a69;
+  color: var(--color-ink);
   margin-bottom: 10px;
 }
 
@@ -179,11 +263,11 @@ button:disabled i {
 }
 
 .button-pron {
-  background-color: #f4f4f4; /* Neutral light gray */
+  background-color: var(--color-surface-subtle); /* Neutral light gray */
   border: #bbb 1px solid;
   border-radius: 5px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  color: #2a3a2f;
+  color: var(--color-text-on-light-btn);
   cursor: pointer;
   font-family: "Noto Sans", sans-serif;
   font-weight: 500;
@@ -237,43 +321,43 @@ button:disabled i {
 
 .cefr-value.a1,
 .sticky-cefr-label.a1 {
-  background-color: #cfe5c0; /* Soft olive green for A1 (new grass) */
-  color: #2a4d14; /* Dark forest green for high contrast */
+  background-color: var(--color-cefr-a1-bg); /* Soft olive green for A1 (new grass) */
+  color: var(--color-cefr-a1-text); /* Dark forest green for high contrast */
 }
 
 .cefr-value.a2,
 .sticky-cefr-label.a2 {
-  background-color: #b3d8a3; /* Bright meadow green for A2 (spring leaves) */
-  color: #2f4f17; /* Deep moss green for high contrast */
+  background-color: var(--color-cefr-a2-bg); /* Bright meadow green for A2 (spring leaves) */
+  color: var(--color-cefr-a2-text); /* Deep moss green for high contrast */
 }
 
 .cefr-value.b1,
 .sticky-cefr-label.b1 {
-  background-color: #f7e3b0; /* Gentle wheat yellow for B1 (warm sunlight) */
-  color: #5c4b11; /* Warm brown for legibility and contrast */
+  background-color: var(--color-cefr-b1-bg); /* Gentle wheat yellow for B1 (warm sunlight) */
+  color: var(--color-cefr-b1-text); /* Warm brown for legibility and contrast */
 }
 
 .cefr-value.b2,
 .sticky-cefr-label.b2 {
-  background-color: #f0d39a; /* Brighter golden yellow for B2 (ripe fields) */
-  color: #604b0e; /* Rich amber brown for sharp contrast */
+  background-color: var(--color-cefr-b2-bg); /* Brighter golden yellow for B2 (ripe fields) */
+  color: var(--color-cefr-b2-text); /* Rich amber brown for sharp contrast */
 }
 
 .cefr-value.c1,
 .sticky-cefr-label.c1 {
-  background-color: #e9c3b4; /* Muted rose pink for C1 (wild roses) */
-  color: #5a2d25; /* Deep reddish-brown for readability and aesthetic balance */
+  background-color: var(--color-cefr-c1-bg); /* Muted rose pink for C1 (wild roses) */
+  color: var(--color-cefr-c1-text); /* Deep reddish-brown for readability and aesthetic balance */
 }
 
 .cefr-value.c2,
 .sticky-cefr-label.c2 {
-  background-color: #e0af92; /* Bright terracotta orange for C2 (sunlit clay) */
-  color: #5a2e18; /* Burnt sienna for clear contrast */
+  background-color: var(--color-cefr-c2-bg); /* Bright terracotta orange for C2 (sunlit clay) */
+  color: var(--color-cefr-c2-text); /* Burnt sienna for clear contrast */
 }
 
 .cefr-value.cefr-unknown,
 .sticky-cefr-label.cefr-unknown {
-  background-color: #e0e0e0; /* Gray for unknown levels */
+  background-color: var(--color-surface-strong); /* Gray for unknown levels */
   color: #444444; /* Dark charcoal gray for readability */
 }
 
@@ -295,12 +379,12 @@ button:disabled i {
 }
 
 .clear-btn:hover i {
-  color: #666; /* Slightly darker shade for hover */
+  color: var(--color-text-muted); /* Slightly darker shade for hover */
 }
 
 .clickable-definition-word {
   cursor: pointer;
-  color: #3c88d4;
+  color: var(--color-interactive);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
@@ -339,7 +423,7 @@ button:disabled i {
 }
 
 .definition {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
@@ -354,7 +438,7 @@ button:disabled i {
 
 .definition-content i {
   margin-right: 8px;
-  color: #951b1b; /* Dark red color */
+  color: var(--color-danger); /* Dark red color */
   font-size: 18px; /* Slightly larger than the text */
   width: 24px; /* Fixed width for uniformity */
   text-align: center; /* Centers the icons within their block */
@@ -363,14 +447,14 @@ button:disabled i {
 }
 
 .definition-content p {
-  color: #951b1b; /* Ensure text is also dark red */
+  color: var(--color-danger); /* Ensure text is also dark red */
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
 .definition-label {
-  color: #951b1b;
+  color: var(--color-danger);
   font-family: "Noto Sans", sans-serif;
   font-size: 12px;
   font-weight: 500;
@@ -380,7 +464,7 @@ button:disabled i {
 
 .definition p,
 li {
-  color: #333;
+  color: var(--color-text);
   font-size: 20px;
   line-height: 1.4;
   margin: 10px 0 10px 0;
@@ -405,7 +489,7 @@ li {
 }
 
 .english-title {
-  color: #666;
+  color: var(--color-text-muted);
   font-family: "Noto Sans", sans-serif; /* English-specific font */
   font-size: 12.5px;
   -webkit-box-orient: vertical; /* Specifies vertical stacking of lines */
@@ -414,7 +498,7 @@ li {
 
 .error-message {
   align-content: center;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
@@ -423,12 +507,12 @@ li {
 
 /* Specific styling for the error message */
 .error-message h2 {
-  color: #951b1b; /* Error title in a distinct color */
+  color: var(--color-danger); /* Error title in a distinct color */
   font-size: 24px;
 }
 
 .error-message {
-  color: #951b1b; /* Error type in a similar error color */
+  color: var(--color-danger); /* Error type in a similar error color */
   font-size: 16px;
   font-weight: 600;
 }
@@ -444,9 +528,9 @@ li {
 }
 
 footer {
-  background-color: #d2dce5;
+  background-color: var(--color-bg-chrome);
   bottom: 0;
-  color: #0d3a69;
+  color: var(--color-ink);
   font-family: "Noto Sans", sans-serif;
   padding: 20px 0;
   position: relative;
@@ -460,13 +544,13 @@ footer p {
 }
 
 footer p a {
-  color: #3c88d4;
+  color: var(--color-interactive);
   font-weight: bold;
   text-decoration: none;
 }
 
 footer p a:hover {
-  color: #0d3a69;
+  color: var(--color-ink);
   text-decoration: underline;
 }
 
@@ -527,7 +611,7 @@ footer .copyright {
 .game-cefr-label.medium,
 .game-cefr-label.b1,
 .game-cefr-label.b2 {
-  background-color: #f2d96b; /* Yellow for 'B1, B2' */
+  background-color: var(--color-level-mid); /* Yellow for 'B1, B2' */
 }
 
 .game-cefr-label.hard,
@@ -630,9 +714,9 @@ footer .copyright {
 #game-next-word-button {
   margin-top: 15px;
   width: 100%;
-  background-color: #f8d9b0; /* Subtle, lighter background */
-  color: #8a7063; /* Subtle maroon text */
-  border: 1px solid #b8a58b; /* Slightly darker border for depth */
+  background-color: #173a5e;
+  color: var(--color-surface);
+  border: 1px solid #173a5e;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); /* More prominent shadow */
   border-radius: 6px; /* Slightly rounded corners */
   padding: 20px 15px;
@@ -647,15 +731,20 @@ footer .copyright {
     transform 0.2s ease; /* Subtle transitions */
 }
 
+#game-next-word-button:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
 #game-next-word-button:active {
-  background-color: #f2c18c; /* Darker background on click */
-  border-color: #8a7063; /* Border matches text color on click */
+  background-color: var(--color-ink-active); /* Darker background on click */
+  border-color: var(--color-ink-active);
 }
 
 #game-next-word-button:disabled {
-  background-color: #f0e5d2; /* Lighter background when disabled */
-  color: #c5b3a6; /* More muted text color when disabled */
-  border-color: #d1c4b5; /* Muted border when disabled */
+  background-color: var(--color-ink);
+  color: var(--color-surface);
+  border-color: var(--color-ink);
   cursor: not-allowed; /* Disabled cursor */
   box-shadow: none; /* No shadow when disabled */
 }
@@ -737,13 +826,13 @@ footer .copyright {
 
 .game-translation-card {
   background-color: white; /* Same as the word card */
-  border: 1px solid #ccc; /* Same border */
+  border: 1px solid var(--color-border); /* Same border */
   border-radius: 10px; /* Same rounded corners */
   padding: 15px; /* Reduced padding to make the cards less bulky */
   text-align: center; /* Centered text */
   font-family: "Noto Sans", sans-serif;
   font-size: 1.2em !important; /* Consistent font size */
-  color: #333; /* Same text color */
+  color: var(--color-text); /* Same text color */
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1); /* Same shadow */
   transition: background-color 0.3s ease; /* Smooth hover effect */
   cursor: pointer; /* Make it clickable */
@@ -776,10 +865,10 @@ footer .copyright {
 .game-word-card {
   align-items: center; /* Center the content horizontally */
   background-color: white;
-  border: 1px solid #ccc;
+  border: 1px solid var(--color-border);
   border-radius: 10px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-  color: #333;
+  color: var(--color-text);
   display: flex;
   flex-direction: column; /* Stack the label and word vertically */
   font-size: 1.2em;
@@ -812,14 +901,14 @@ footer .copyright {
 }
 
 h1 {
-  color: #293a78;
+  color: var(--color-ink);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 h2 {
-  color: #1c68b5;
+  color: var(--color-interactive);
   font-size: 30px;
   font-weight: bold;
   margin: -5px 0 -5px 0;
@@ -836,8 +925,8 @@ h4 {
 }
 
 header {
-  background-color: #d2dce5;
-  color: #0d3a69;
+  background-color: var(--color-bg-chrome);
+  color: var(--color-ink);
   font-family: "Noto Sans", sans-serif;
   letter-spacing: 0.05rem;
   padding: 20px;
@@ -891,7 +980,7 @@ input[type="text"] {
 
 input[type="text"]:focus + label,
 input[type="text"]:not(:placeholder-shown) + label {
-  color: #293a78;
+  color: var(--color-ink);
   font-size: 12px;
   top: -10px;
 }
@@ -926,7 +1015,7 @@ label {
 
 /* Modify the landing card styling to match definition cards */
 #landing-card {
-  background-color: #ffffff; /* Matches the background of definition cards */
+  background-color: var(--color-surface); /* Matches the background of definition cards */
   border-radius: 12px; /* Same border radius as definition cards */
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Same box shadow */
   margin: 20px auto; /* Matches the margin of definition cards */
@@ -938,7 +1027,7 @@ label {
 
 /* Adjust the heading size and color to match the word titles in definition cards */
 #landing-card h2 {
-  color: #0d3a69; /* Matches the heading color of definition cards */
+  color: var(--color-ink); /* Matches the heading color of definition cards */
   font-family: "Grenze Gotisch", serif;
   font-size: 38px !important; /* Matches the font size of definition card headings */
   margin-bottom: 10px;
@@ -962,9 +1051,9 @@ label {
   margin: 0 auto; /* Centering with smaller vertical margins */
   margin-bottom: 15px;
   margin-top: 15px;
-  background-color: #fff; /* Subtle, lighter background */
-  color: #4a4a4a; /* Soft gray text */
-  border: 0.5px solid #a0a0a0; /* Light gray border */
+  background-color: var(--color-surface); /* Subtle, lighter background */
+  color: var(--color-text-strong); /* Soft gray text */
+  border: 0.5px solid var(--color-border-input); /* Light gray border */
   border-radius: 6px; /* Slightly rounded corners */
   padding: 8px 14px; /* Larger padding for a more clickable feel */
   font-family: "Noto Sans", sans-serif; /* Clean, modern font */
@@ -1023,7 +1112,7 @@ label {
 }
 
 li {
-  color: #1c68b5;
+  color: var(--color-interactive);
 }
 
 .links {
@@ -1182,7 +1271,7 @@ ul {
 
 .random-btn {
   align-items: center;
-  background-color: #0d3a69;
+  background-color: var(--color-ink);
   border: none;
   border-radius: 15px;
   color: white;
@@ -1197,13 +1286,13 @@ ul {
 }
 
 .random-btn:hover {
-  background-color: #3c88d4;
+  background-color: var(--color-interactive);
   box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
 }
 
 .return-btn {
   background-color: #f1f1f1;
-  color: #333;
+  color: var(--color-text);
   padding: 10px 20px;
   border: none;
   cursor: pointer;
@@ -1220,7 +1309,7 @@ ul {
 
 .result-header {
   align-content: center;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 25px;
@@ -1231,7 +1320,7 @@ ul {
 
 .result-header h2 {
   margin: 0; /* Reset margin for the title */
-  color: #951b1b;
+  color: var(--color-danger);
   font-family: "Noto Sans", sans-serif;
   font-size: 1.3em;
   font-weight: 400;
@@ -1241,7 +1330,7 @@ ul {
 }
 
 .result-header i {
-  color: #951b1b;
+  color: var(--color-danger);
   position: absolute;
   left: 15px; /* Position the icon on the far left */
   cursor: pointer;
@@ -1279,7 +1368,7 @@ ul {
 .genre-filter,
 .game-english-filter {
   align-items: center;
-  background-color: #0d3a69;
+  background-color: var(--color-ink);
   border-radius: 15px;
   box-sizing: border-box;
   display: flex;
@@ -1303,7 +1392,7 @@ ul {
 
 .search-btn {
   align-items: center;
-  background-color: #0d3a69;
+  background-color: var(--color-ink);
   border: none;
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 15px;
@@ -1318,7 +1407,7 @@ ul {
 }
 
 .search-btn:hover {
-  background-color: #4a99ff;
+  background-color: var(--color-accent);
   box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
 }
 
@@ -1349,7 +1438,7 @@ ul {
 #search-container {
   display: flex;
   background-color: white;
-  border-bottom: 1px solid #ccc;
+  border-bottom: 1px solid var(--color-border);
   font-family: "Noto Sans", sans-serif;
   margin: auto;
   padding: 10px 0;
@@ -1427,14 +1516,14 @@ ul {
 }
 
 .sentence-audio-icon:hover {
-  background-color: #e0e0e0;
+  background-color: var(--color-surface-strong);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* stronger shadow on hover */
   transform: translateY(-1px); /* tiny lift */
 }
 
 .sentence-box-practice {
   align-content: center;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 25px;
@@ -1444,7 +1533,7 @@ ul {
 }
 
 .sentence-btn {
-  background-color: #ffffff; /* Subtle, lighter background */
+  background-color: var(--color-surface); /* Subtle, lighter background */
   border: none !important; /* Thin maroon border */
   border-radius: 9px; /* Slightly rounded corners */
   box-shadow: 0 4px 8px rgba(135, 135, 135, 0.2), 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -1467,7 +1556,7 @@ ul {
 }
 
 .sentence-btn:hover {
-  background-color: #f7f7f7; /* Slightly darker background on hover */
+  background-color: var(--color-surface-hover); /* Slightly darker background on hover */
   box-shadow: 0 6px 12px rgba(135, 135, 135, 0.3), 0 3px 6px rgba(0, 0, 0, 0.15); /* Slightly larger shadow */
 }
 
@@ -1491,7 +1580,7 @@ ul {
 }
 
 .sentence-cefr-label.medium {
-  background-color: #f2d96b; /* Yellow for 'B1, B2' */
+  background-color: var(--color-level-mid); /* Yellow for 'B1, B2' */
 }
 
 .sentence-cefr-label.hard {
@@ -1500,7 +1589,7 @@ ul {
 
 .sentence-box-english,
 .sentence-box-norwegian {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 12.5px;
@@ -1572,7 +1661,7 @@ ul {
 }
 
 #site-title {
-  color: #293a78;
+  color: var(--color-ink);
   cursor: pointer;
   margin: -5px 0px 10px 0px;
   transition: color 0.2s ease, text-shadow 0.2s ease;
@@ -1644,15 +1733,14 @@ ul {
 }
 
 .sticky-genre i {
-  color: #333; /* Icon color */
+  color: var(--color-text); /* Icon color */
 }
 
 #sticky-header {
   align-items: center;
-  background-color: white;
-  border-top: 1px solid #ccc; /* Subtle gray border at the top */
+  background-color: var(--color-surface);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  color: black;
+  color: var(--color-text);
   display: flex;
   gap: 1.5em;
   position: sticky;
@@ -1710,7 +1798,7 @@ ul {
 }
 
 .story-card-favorite-button:focus-visible {
-  outline: 2px solid #0d3a69;
+  outline: 2px solid var(--color-ink);
   outline-offset: 2px;
 }
 
@@ -1745,7 +1833,7 @@ ul {
 }
 
 .sticky-title-english {
-  color: #666;
+  color: var(--color-text-muted);
   font-family: "Noto Sans", sans;
   font-size: 1em;
   font-weight: 400;
@@ -1763,7 +1851,7 @@ ul {
 }
 
 .stories-back-btn {
-  color: #951b1b;
+  color: var(--color-danger);
   margin-left: 20px;
   margin-right: 190px;
   font-size: 1.5em;
@@ -1777,9 +1865,9 @@ ul {
 
 .stories-english-btn {
   background-color: #f0f0f0; /* Subtle, lighter background */
-  border: 1px solid #a0a0a0; /* Light gray border */
+  border: 1px solid var(--color-border-input); /* Light gray border */
   border-radius: 6px; /* Slightly rounded corners */
-  color: #4a4a4a; /* Soft gray text */
+  color: var(--color-text-strong); /* Soft gray text */
   cursor: pointer; /* Pointer on hover */
   display: block; /* Block-level element to allow centering */
   padding: 6px 12px; /* Smaller padding for a more compact feel */
@@ -1844,7 +1932,7 @@ ul {
 }
 
 .stories-genre i {
-  color: #333; /* Dark icon color for visibility */
+  color: var(--color-text); /* Dark icon color for visibility */
 }
 
 .stories-list {
@@ -1852,7 +1940,7 @@ ul {
 }
 
 .stories-list-item {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   margin: 0 0 15px 0;
@@ -1872,14 +1960,14 @@ ul {
 }
 
 .stories-list-item p {
-  color: #333;
+  color: var(--color-text);
   font-size: 20px;
   line-height: 1.6;
   margin: 10px 0 10px 0;
 }
 
 .stories-list-item h2 {
-  color: #0d3a69 !important;
+  color: var(--color-ink) !important;
   font-family: "Noto Sans", sans-serif !important;
   font-size: 16px;
   font-weight: 400;
@@ -1887,7 +1975,7 @@ ul {
 }
 
 .stories-rating {
-  background-color: #ffffff; /* Subtle, lighter background */
+  background-color: var(--color-surface); /* Subtle, lighter background */
   margin: 0 auto;
   text-align: center;
   border-radius: 6px; /* Slightly rounded corners */
@@ -1924,7 +2012,7 @@ ul {
 
 .stories-result-header {
   align-content: center;
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   padding: 25px;
@@ -1936,7 +2024,7 @@ ul {
 
 .stories-result-header h2 {
   margin: 0; /* Reset margin for the title */
-  color: #951b1b;
+  color: var(--color-danger);
   font-family: "Noto Sans", sans-serif;
   font-size: 1.3em;
   font-weight: 400;
@@ -1946,7 +2034,7 @@ ul {
 }
 
 .stories-result-header i {
-  color: #951b1b;
+  color: var(--color-danger);
   position: absolute;
   left: 15px; /* Position the icon on the far left */
   cursor: pointer;
@@ -1963,7 +2051,7 @@ ul {
 
 .stories-sentence-box-english,
 .stories-sentence-box-norwegian {
-  background-color: #ffffff;
+  background-color: var(--color-surface);
   border-radius: 12px;
   margin-bottom: 10px;
   padding: 10px 15px 10px 15px;
@@ -1994,7 +2082,7 @@ ul {
   font-size: 12px !important;
   font-weight: 350;
   overflow: hidden; /* Hides the overflowing text */
-  color: #666 !important;
+  color: var(--color-text-muted) !important;
   letter-spacing: 0.25px;
   margin: 0 !important;
   text-transform: uppercase;
@@ -2012,7 +2100,7 @@ ul {
 
 .stories-story-header h2 {
   margin: 0; /* Reset margin for the title */
-  color: #951b1b;
+  color: var(--color-danger);
   font-family: "Noto Sans", sans-serif;
   font-size: 1.3em;
   font-weight: 400;
@@ -2031,7 +2119,7 @@ ul {
 }
 
 #story-content {
-  background: #fff; /* Same white background as story list items */
+  background: var(--color-surface); /* Same white background as story list items */
   border: 1px solid #ddd; /* Light border for separation */
   border-radius: 12px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 10px;
@@ -2063,7 +2151,7 @@ ul {
 }
 
 .spinner {
-  color: #293a78;
+  color: var(--color-ink);
   display: none;
   font-size: 20px;
   margin: 20px;
@@ -2074,7 +2162,7 @@ ul {
   animation: spin 0.8s linear infinite;
   border: 3px solid rgba(0, 0, 0, 0.3);
   border-radius: 50%;
-  border-top-color: #293a78;
+  border-top-color: var(--color-ink);
   content: "";
   display: inline-block;
   height: 40px;
@@ -2088,7 +2176,7 @@ ul {
 .pos-filter.disabled select,
 .genre-filter.disabled select,
 .game-english-filter.disabled select {
-  color: #ccc;
+  color: var(--color-border);
   cursor: not-allowed;
 }
 
@@ -2097,7 +2185,7 @@ ul {
 .pos-filter.disabled i,
 .genre-filter.disabled i,
 .game-english-filter.disabled i {
-  color: #ccc; /* Gray out the arrow */
+  color: var(--color-border); /* Gray out the arrow */
   pointer-events: none; /* Prevent interaction with the arrow */
 }
 
@@ -2131,7 +2219,7 @@ ul {
 }
 
 .word-gender .gender {
-  color: #951b1b;
+  color: var(--color-danger);
   font-size: 14px;
   font-weight: 400;
   text-transform: uppercase;
@@ -2619,7 +2707,7 @@ ul {
   .genre-filter,
   .game-english-filter {
     box-sizing: border-box !important;
-    background-color: #0d3a69; /* Consistent background for all filters */
+    background-color: var(--color-ink); /* Consistent background for all filters */
     border-radius: 15px;
     padding: 5px 5px 5px 5px;
     min-width: 0px;
