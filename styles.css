@@ -1673,8 +1673,53 @@ ul {
 }
 
 .sticky-row {
+  align-items: center; /* the favorite star is taller than the genre/CEFR
+    badges beside it -- keeps them center-aligned instead of top-aligned */
   display: flex;
   gap: 5px; /* Space between genre and CEFR */
+}
+
+.sticky-favorite-slot {
+  display: flex;
+}
+
+.story-card-favorite-button {
+  align-items: center;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  border-radius: 50%;
+  color: #a9b0b8;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 18px;
+  height: 32px;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+  width: 32px;
+}
+
+.story-card-favorite-button:hover {
+  background-color: rgba(13, 58, 105, 0.08);
+  transform: scale(1.05);
+}
+
+.story-card-favorite-button:active {
+  transform: scale(0.95);
+}
+
+.story-card-favorite-button:focus-visible {
+  outline: 2px solid #0d3a69;
+  outline-offset: 2px;
+}
+
+.story-card-favorite-button.is-saved {
+  color: #d4a017;
+}
+
+.story-card-favorite-button i {
+  pointer-events: none;
 }
 
 .sticky-title-container {

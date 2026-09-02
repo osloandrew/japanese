@@ -1257,6 +1257,9 @@ function handleTypeChange(type) {
   // Filter containers for POS, Genre, and CEFR
   const posFilterContainer = document.querySelector(".pos-filter");
   const genreFilterContainer = document.getElementById("genre-filter"); // Get the Genre filter container
+  const storyFavoritesFilterContainer = document.getElementById(
+    "story-favorites-filter"
+  );
   const cefrFilterContainer = document.querySelector(".cefr-filter"); // Get the CEFR filter container
 
   // Filter dropdowns for POS, Genre, and CEFR
@@ -1276,6 +1279,8 @@ function handleTypeChange(type) {
   if (type === "stories") {
     genreFilterContainer.style.display = "inline-flex"; // Show genre dropdown in story mode
     genreSelect.value = ""; // Reset to default genre
+    storyFavoritesFilterContainer.style.display = "inline-flex";
+    document.getElementById("story-favorites-select").value = "";
 
     searchBarWrapper.style.display = "inline-flex"; // Hide search-bar-wrapper
     posFilterContainer.style.display = "none";
@@ -1305,6 +1310,7 @@ function handleTypeChange(type) {
     setEnglishVisible(true);
     // Show POS and CEFR dropdowns, hide Genre dropdown
     genreFilterContainer.style.display = "none"; // Hide genre dropdown in sentences mode
+    storyFavoritesFilterContainer.style.display = "none";
 
     searchBarWrapper.style.display = "inline-flex";
     randomBtn.style.display = "block";
@@ -1343,6 +1349,7 @@ function handleTypeChange(type) {
     // Same UI adjustments you already had…
     setEnglishVisible(true);
     genreFilterContainer.style.display = "none";
+    storyFavoritesFilterContainer.style.display = "none";
     searchBarWrapper.style.display = "inline-flex";
     randomBtn.style.display = "block";
     posFilterContainer.style.display = "inline-flex";
@@ -1357,6 +1364,7 @@ function handleTypeChange(type) {
   } else {
     // Handle default case (e.g., "Words" type)
     genreFilterContainer.style.display = "none"; // Hide genre dropdown
+    storyFavoritesFilterContainer.style.display = "none";
 
     searchBarWrapper.style.display = "inline-flex"; // Show search-bar-wrapper
     randomBtn.style.display = "block"; // Show random button

@@ -107,6 +107,59 @@ function getCefrClass(cefrLevel) {
   return "cefr-unknown"; // Default
 }
 
+function isFavoriteStoriesFilterActive() {
+  return (
+    document.getElementById("story-favorites-select")?.value === "favorites"
+  );
+}
+
+function updateStoryFavoriteButton(button, titleJapanese) {
+  const isSaved = Boolean(window.StoryFavoritesAPI?.isSaved?.(titleJapanese));
+  const action = isSaved ? "Remove" : "Add";
+  const destination = isSaved ? "from favorite stories" : "to favorite stories";
+
+  button.classList.toggle("is-saved", isSaved);
+  button.setAttribute("aria-pressed", String(isSaved));
+  button.setAttribute("aria-label", `${action} ${titleJapanese} ${destination}`);
+  button.title = `${action} ${titleJapanese} ${destination}`;
+  button.querySelector("i").className = `${isSaved ? "fas" : "far"} fa-star`;
+}
+
+function createStoryFavoriteButton(story) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "story-card-favorite-button";
+  button.dataset.storyTitle = story.titleJapanese;
+  button.innerHTML = '<i aria-hidden="true"></i>';
+
+  updateStoryFavoriteButton(button, story.titleJapanese);
+
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    window.StoryFavoritesAPI?.toggle?.(story.titleJapanese);
+  });
+
+  return button;
+}
+
+window.addEventListener("story-favorites:updated", () => {
+  document
+    .querySelectorAll(".story-card-favorite-button")
+    .forEach((button) =>
+      updateStoryFavoriteButton(button, button.dataset.storyTitle || "")
+    );
+
+  // An unfavorited card should leave a Favorites-only view immediately.
+  if (isStoriesTabActive() && isFavoriteStoriesFilterActive()) {
+    displayStoryList();
+  }
+});
+
+function handleStoryFavoritesFilterChange() {
+  displayStoryList();
+}
+
 function updateEnglishVisibility() {
   const englishSentences = document.querySelectorAll(".english-sentence");
   const toggleEnglishBtn = document.getElementById("toggle-english-btn"); // Dynamically find the button
@@ -154,6 +207,10 @@ async function displayStoryList(filteredStories = storyResults) {
     document.getElementById("stories-search") ||
     document.getElementById("global-search");
   const searchText = (searchInput?.value || "").toLowerCase().trim();
+  const showFavoritesOnly = isFavoriteStoriesFilterActive();
+  const favoriteTitles = showFavoritesOnly
+    ? new Set(window.StoryFavoritesAPI?.getFavoriteTitles?.() ?? [])
+    : null;
 
   // Filter stories based on selected CEFR and genre
   let filtered = filteredStories.filter((story) => {
@@ -171,8 +228,9 @@ async function displayStoryList(filteredStories = storyResults) {
         story.titleJapanese.toLowerCase().includes(searchText)) ||
       (story.titleEnglish &&
         story.titleEnglish.toLowerCase().includes(searchText));
+    const favoriteMatch = !showFavoritesOnly || favoriteTitles.has(story.titleJapanese);
 
-    return genreMatch && cefrMatch && hasJapanese && matchesSearch;
+    return genreMatch && cefrMatch && hasJapanese && matchesSearch && favoriteMatch;
   });
 
   // Shuffle the filtered stories using Fisher-Yates algorithm
@@ -231,6 +289,7 @@ async function displayStoryList(filteredStories = storyResults) {
 
     detail.appendChild(genreDiv);
     detail.appendChild(cefrDiv);
+    detail.appendChild(createStoryFavoriteButton(story));
 
     li.appendChild(titleContainer);
     li.appendChild(detail);
@@ -295,6 +354,7 @@ async function displayStory(titleJapanese) {
   sticky.innerHTML = `
   <div class="sticky-detail-container">
     <div class="sticky-row">
+      <div class="sticky-favorite-slot" id="sticky-favorite-slot"></div>
       <div class="sticky-genre" id="sticky-genre-slot"></div>
       <div class="sticky-cefr-label ${cefrClass}" id="sticky-cefr-slot">
         ${selectedStory.CEFR || "N/A"}
@@ -310,6 +370,11 @@ async function displayStory(titleJapanese) {
 
   const stickyHeaderEl = document.getElementById("sticky-header");
   const audioSlot = document.getElementById("sticky-audio-slot");
+
+  const favoriteSlot = document.getElementById("sticky-favorite-slot");
+  if (favoriteSlot) {
+    favoriteSlot.appendChild(createStoryFavoriteButton(selectedStory));
+  }
 
   stickyHeaderEl.style.display = "flex";
   stickyHeaderEl.style.alignItems = "center";
@@ -609,11 +674,13 @@ function storiesBackBtn() {
     if (toggles) toggles.remove();
   }
 
-  // 1) Capture current CEFR/Genre BEFORE changing the UI
+  // 1) Capture current CEFR/Genre/Favorites BEFORE changing the UI
   const cefrElBefore = document.getElementById("cefr-select");
   const genreElBefore = document.getElementById("genre-select");
+  const favoritesElBefore = document.getElementById("story-favorites-select");
   const savedCEFR = cefrElBefore ? cefrElBefore.value : "";
   const savedGenre = genreElBefore ? genreElBefore.value : "";
+  const savedFavorites = favoritesElBefore ? favoritesElBefore.value : "";
 
   // 2) Clear ONLY the search box (mirror JP)
   const searchEl =
@@ -630,8 +697,10 @@ function storiesBackBtn() {
   // 4) Re-grab the (possibly re-rendered) selects and restore values
   const cefrElAfter = document.getElementById("cefr-select");
   const genreElAfter = document.getElementById("genre-select");
+  const favoritesElAfter = document.getElementById("story-favorites-select");
   if (cefrElAfter) cefrElAfter.value = savedCEFR;
   if (genreElAfter) genreElAfter.value = savedGenre;
+  if (favoritesElAfter) favoritesElAfter.value = savedFavorites;
 
   // 5) Render the list using the restored dropdowns
   displayStoryList();
@@ -737,6 +806,8 @@ window.addEventListener("DOMContentLoaded", async () => {
       }
     });
   }
+
+  const cefrEl = document.getElementById("cefr-select");
   if (cefrEl) {
     cefrEl.addEventListener("change", () => {
       if (isStoriesTabActive()) {
@@ -745,6 +816,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+  const genreEl = document.getElementById("genre-select");
   if (genreEl) {
     genreEl.addEventListener("change", () => {
       if (isStoriesTabActive()) {
