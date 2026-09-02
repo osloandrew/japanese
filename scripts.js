@@ -1328,6 +1328,30 @@ function renderAboutPage() {
   resultsContainer.appendChild(section);
 }
 
+// Real counts from the loaded dictionary/story data, not a hardcoded
+// number that would silently go stale as content grows. Both `results`
+// (this file) and `storyResults` (stories.js) load asynchronously and
+// independently, so this polls briefly rather than assuming either is
+// ready by the time the landing page first paints.
+function updateLandingProofLine() {
+  const el = document.getElementById("landing-proof-line");
+  if (!el) return;
+
+  const tryRender = () => {
+    if (results.length === 0) return false;
+    if (typeof storyResults === "undefined" || storyResults.length === 0) {
+      return false;
+    }
+    el.innerHTML = `${results.length.toLocaleString("en-US")} dictionary entries <span aria-hidden="true">·</span> ${storyResults.length.toLocaleString("en-US")} stories <span aria-hidden="true">·</span> Free to use`;
+    return true;
+  };
+
+  if (tryRender()) return;
+  const poll = setInterval(() => {
+    if (tryRender()) clearInterval(poll);
+  }, 200);
+}
+
 function enableSearchControls() {
   const searchBar = document.getElementById("search-bar");
   const searchBtn = document.getElementById("search-btn");
@@ -3199,6 +3223,7 @@ window.onload = function () {
 
   initializeModeNav();
   initializeAccountMenu();
+  updateLandingProofLine();
 
   // Add event listener to POS filter dropdown
   document

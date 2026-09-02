@@ -455,6 +455,22 @@
           Click on one of the buttons below to get started.
         </p>
 
+        <!-- Real counts from the loaded dictionary/story data (set by
+             updateLandingProofLine() in scripts.js) rather than a
+             hardcoded number that would silently go stale as content
+             grows -- see Norwegian's own #landing-word-count for the
+             pattern this is based on, though that one shows a rounded
+             "30,000+" rather than an exact count. -->
+        <p
+          id="landing-proof-line"
+          class="landing-proof-line"
+          style="text-align: center"
+        ></p>
+
+        <!-- Support the Project moved to the footer only (it already lives
+             there too, see .coffee-btn) -- it isn't a browsing mode like
+             the rest of this grid, matching Norwegian's own landing page,
+             which doesn't give it a card here either. -->
         <div class="landing-card-button-grid">
           <!-- Dictionary Search Button -->
           <div class="button-container">
@@ -466,7 +482,11 @@
             <button class="landing-card-btn" onclick="selectType('words')">
               Dictionary Search
             </button>
-            <p>Discover words and their meanings with detailed examples.</p>
+            <ul class="landing-feature-list">
+              <li>Japanese-English definitions and translations</li>
+              <li>Word class and CEFR difficulty level</li>
+              <li>Audio pronunciation and example sentences</li>
+            </ul>
           </div>
 
           <!-- Sentence Search Button -->
@@ -479,7 +499,11 @@
             <button class="landing-card-btn" onclick="selectType('sentences')">
               Sentence Search
             </button>
-            <p>Explore real sentences in context using your chosen words.</p>
+            <ul class="landing-feature-list">
+              <li>Search real Japanese sentences by word</li>
+              <li>English translations alongside every sentence</li>
+              <li>Audio playback to hear the word in context</li>
+            </ul>
           </div>
 
           <!-- Japanese Stories Button -->
@@ -492,10 +516,11 @@
             <button class="landing-card-btn" onclick="selectType('stories')">
               Japanese Stories
             </button>
-            <p>
-              Immerse yourself in fiction and non-fiction to deepen your
-              language skills.
-            </p>
+            <ul class="landing-feature-list">
+              <li>Graded reading from CEFR A1 to C</li>
+              <li>Narrated audio with adjustable playback speed</li>
+              <li>Save favorites to read again later</li>
+            </ul>
           </div>
 
           <!-- Word Game Button -->
@@ -508,10 +533,11 @@
             <button class="landing-card-btn" onclick="selectType('word-game')">
               Word Game
             </button>
-            <p>
-              Master vocabulary with an interactive game that adapts to your
-              skill level.
-            </p>
+            <ul class="landing-feature-list">
+              <li>Flashcard, cloze, listening, and reverse-recall questions</li>
+              <li>Automatically adjusts to your CEFR level</li>
+              <li>Missed words come back for review until you've got them</li>
+            </ul>
           </div>
 
           <!-- Pronunciation Guide Button -->
@@ -528,28 +554,11 @@
             >
               Pronunciation Guide
             </button>
-            <p>Perfect your pronunciation by learning Japanese sounds.</p>
-          </div>
-
-          <!-- Support Button -->
-          <div class="button-container">
-            <img
-              class="landing-card-image"
-              src="Resources/Photos/support.svg"
-              alt="Support the Project"
-            />
-            <a
-              href="https://www.buymeacoffee.com/afeinberg4l"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="text-decoration: none"
-            >
-              <button class="landing-card-btn">Support the Project</button>
-            </a>
-            <p>
-              Help keep this resource free and growing — every little bit makes
-              a difference!
-            </p>
+            <ul class="landing-feature-list">
+              <li>IPA and Hepburn romanization reference</li>
+              <li>Vowel and consonant sound comparisons to English</li>
+              <li>Example words for each sound</li>
+            </ul>
           </div>
         </div>
         <div class="pronunciation-wrapper hidden">

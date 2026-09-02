@@ -1086,6 +1086,51 @@ label {
   margin-top: 20px;
 }
 
+/* Real word/story counts (updateLandingProofLine(), scripts.js). */
+.landing-proof-line {
+  color: var(--color-text-slate);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 10px auto 0;
+}
+
+.landing-proof-line span {
+  color: #9aabba;
+  margin: 0 5px;
+}
+
+/* Overrides .button-container p's 5px !important -- that rule is sized
+   for a different, much smaller caption context elsewhere; these bullets
+   are card body copy and need a selector at least as specific to win. */
+.button-container .landing-feature-list {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  text-align: left;
+}
+
+.button-container .landing-feature-list li {
+  color: var(--color-text-slate);
+  font-size: 13px !important;
+  line-height: 1.4;
+  margin: 0;
+  padding-left: 16px;
+  position: relative;
+  text-align: left !important;
+}
+
+.button-container .landing-feature-list li::before {
+  color: var(--color-interactive);
+  content: "•";
+  left: 2px;
+  position: absolute;
+}
+
 .landing-card-image {
   fill: #ff0000; /* changes the color to red */
   width: 80px;
