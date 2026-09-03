@@ -4183,6 +4183,17 @@ function loadStateFromURL() {
   const storyTitle = url.searchParams.get("story"); // Check for a specific story parameter
   const word = url.searchParams.get("word"); // Check for a specific word entry
 
+  // A captured /word/<slug>/ pretty-path page (see capture-word-pages.py)
+  // already has its exact renderWordDefinition() output baked in, and
+  // carries no ?word= param for the check below to recognize. Left alone,
+  // the default words-mode branch further down runs once the dictionary
+  // loads and calls clearContainer(), wiping that pre-rendered definition
+  // before this app's own JS ever gets a chance to show it again -- same
+  // failure mode the story preload below exists to prevent.
+  if (/\/word\/[^/]+\/?$/.test(url.pathname) && !word) {
+    return;
+  }
+
   // A captured /story/<slug>/ page embeds this one story's full data
   // directly (window.__PRELOADED_STORY__ — see
   // scripts/capture-story-pages.py) since that pretty-path URL carries no
