@@ -3645,207 +3645,81 @@ function renderWordDefinition(word, selectedPOS = "") {
   }
 }
 
-// Fetch and render sentences for a word or phrase, including handling comma-separated variations
-function fetchAndRenderSentences(word, pos, showEnglish = true) {
-  // Added showEnglish parameter with default value
-  const trimmedWord = word
-    .trim()
-    .toLowerCase()
-    .replace(/[\r\n]+/g, ""); // Remove any carriage returns or newlines
-  const button = document.querySelector(`button[data-word='${word}']`);
-  const sentenceContainer = document.getElementById(
-    `sentences-container-${trimmedWord}`
+// Word forms distinguish real inflections from an accidental substring (刻む
+// vs 刻んだ vs 時), the same problem Norwegian's definition page solves with
+// SentenceFormMatching + Inflections.getSentenceForms -- see that app's
+// scripts.js for the version this mirrors.
+function getSentenceCefrLabelHTML(cefrLevel) {
+  const cefrClass = getCefrClass(cefrLevel);
+  return cefrClass
+    ? `<div class="sentence-cefr-label ${cefrClass}" title="${getCefrTooltip(cefrLevel)}">${cefrLevel}</div>`
+    : "";
+}
+
+// Every dictionary row sharing a spelling with `entry` (comma/読点-separated
+// variants included) -- used to keep a homograph's own example from being
+// double-counted as a supplemental match for this entry. Small dictionary,
+// so a direct scan over `results` is simpler than maintaining an index.
+function getHomographEntries(entry) {
+  const forms = String(entry?.ord || "")
+    .split(/[,、]/)
+    .map((form) => form.trim().toLowerCase())
+    .filter(Boolean);
+  if (forms.length === 0) return [];
+  return results.filter((candidate) =>
+    String(candidate?.ord || "")
+      .split(/[,、]/)
+      .map((form) => form.trim().toLowerCase())
+      .some((form) => forms.includes(form)),
   );
+}
 
-  if (!sentenceContainer) {
-    console.error(`Sentence container not found for: ${trimmedWord}`);
-    return;
-  }
-
-  // Toggle visibility without re-fetching sentences
-  if (sentenceContainer.getAttribute("data-fetched") === "true") {
-    if (sentenceContainer.style.display === "block") {
-      sentenceContainer.style.display = "none";
-      button.innerText = "Show Sentences";
-      button.classList.remove("hide");
-      button.classList.add("show");
-    } else {
-      sentenceContainer.style.display = "block";
-      button.innerText = "Hide Sentences";
-      button.classList.remove("show");
-      button.classList.add("hide");
-    }
-    return;
-  }
-
-  sentenceContainer.innerHTML = ""; // Clear previous sentences
-
-  // Find the part of speech (POS) of the word
-  const matchingWordEntry = results.find(
-    (result) =>
-      result.ord.toLowerCase() === trimmedWord &&
-      result.gender.toLowerCase().includes((pos || "").toLowerCase())
+// SentenceFormMatching's blue spans distinguish search matches. Definition
+// examples are a teaching surface, so use the same yellow marker as the
+// word game's learning context while preserving its inflection-aware forms.
+function renderDefinitionSentenceHighlight(matcher, sentence) {
+  const highlightedSentence = matcher.highlight(sentence);
+  return highlightedSentence.replace(
+    /<span style="color: var\(--color-interactive\);">(.*?)<\/span>/gi,
+    '<mark class="definition-sentence-target">$1</mark>',
   );
-  if (!matchingWordEntry) {
-    console.error(`No matching word found for "${trimmedWord}".`);
-    return; // Stop if the word isn't found
-  }
+}
 
-  // Generate word variations using the external function
-  const wordVariations =
-    trimmedWord.length < 4
-      ? [trimmedWord]
-      : trimmedWord
-          .split(",")
-          .flatMap((w) => generateWordVariationsForSentences(w.trim(), pos));
+function renderDefinitionSentenceResults(
+  matchingResults,
+  primaryResults,
+  formMatcher,
+  primaryHighlightMatcher,
+  sentenceContainer,
+  button,
+  showEnglish,
+) {
+  if (matchingResults.length === 0) return false;
 
-  // First, filter results to get relevant entries
-  let relevantEntries = results.filter((r) => {
-    return wordVariations.some((variation) => {
-      if (
-        pos === "adverb" ||
-        pos === "conjunction" ||
-        pos === "preposition" ||
-        pos === "interjection" ||
-        pos === "numeral" ||
-        pos === "particle"
-      ) {
-        const regex = new RegExp(`(^|\\s)${variation}($|[\\s.,!?;])`, "gi");
-        return regex.test(r.eksempel);
-      } else {
-        // For other parts of speech, ensure the word starts a word
-        const regexStartOfWord = new RegExp(
-          `(^|[^\\wčćđšžČĆĐŠŽ])${variation}($|[^\\wčćđšžČĆĐŠŽ])`,
-          "i"
-        );
-        return regexStartOfWord.test(r.eksempel);
-      }
-    });
+  const primaryResultSet = new Set(primaryResults);
+  const highlightedResults = matchingResults.slice(0, 10).map((result) => {
+    const cleanSentence = result.eksempel.replace(
+      /<span style="color: var\(--color-interactive\);">(.*?)<\/span>/gi,
+      "$1",
+    );
+    const highlightMatcher = primaryResultSet.has(result)
+      ? primaryHighlightMatcher
+      : formMatcher;
+    return {
+      ...result,
+      eksempel: renderDefinitionSentenceHighlight(highlightMatcher, cleanSentence),
+    };
   });
 
-  // Use a Set to store unique sentences and translations
-  const uniqueSentences = new Set();
-  const uniqueTranslations = new Set();
-
-  // Now, split sentences and align translations
-  let matchingResults = [];
-  outerLoop: for (const r of relevantEntries) {
-    const sentences = r.eksempel.split(/(?<=[.!?])\s+/);
-    const translations = r.sentenceTranslation
-      ? r.sentenceTranslation.split(/(?<=[.!?])\s+/)
-      : [];
-
-    const matched = { matchedSentences: [], matchedTranslations: [] };
-
-    sentences.forEach((sentence, index) => {
-      const isMatched = wordVariations.some((variation) => {
-        const regex =
-          pos === "adverb" ||
-          pos === "conjunction" ||
-          pos === "preposition" ||
-          pos === "interjection" ||
-          pos === "numeral"
-            ? new RegExp(`(^|\\s)${variation}($|[\\s.,!?;])`, "gi")
-            : new RegExp(`(^|[^\\wčćđšžČĆĐŠŽ])${variation}`, "i");
-        return regex.test(sentence);
-      });
-
-      if (isMatched) {
-        if (!uniqueSentences.has(sentence)) {
-          uniqueSentences.add(sentence);
-          matched.matchedSentences.push(sentence);
-        }
-        if (
-          translations[index] &&
-          !uniqueTranslations.has(translations[index])
-        ) {
-          uniqueTranslations.add(translations[index]);
-          matched.matchedTranslations.push(translations[index]);
-        }
-      }
-    });
-
-    if (matched.matchedSentences.length > 0) {
-      matchingResults.push({
-        ...r,
-        eksempel: matched.matchedSentences.join(" "),
-        sentenceTranslation: matched.matchedTranslations.join(" "),
-      });
-    }
-
-    if (uniqueSentences.size >= 10) break outerLoop;
-  }
-
-  // Ensure each sentence in the primary 'eksempel' attribute from the matching word entry is added if unique
-  if (matchingWordEntry.eksempel) {
-    const primarySentences = matchingWordEntry.eksempel.split(/(?<=[.!?])\s+/);
-    const primaryTranslations = matchingWordEntry.sentenceTranslation
-      ? matchingWordEntry.sentenceTranslation.split(/(?<=[.!?])\s+/)
-      : [];
-
-    primarySentences.forEach((sentence, index) => {
-      // Check if each sentence is already in uniqueSentences before adding
-      if (!uniqueSentences.has(sentence)) {
-        uniqueSentences.add(sentence); // Track unique primary sentence
-
-        matchingResults.unshift({
-          ...matchingWordEntry,
-          eksempel: sentence, // Add only the unique sentence
-          sentenceTranslation: primaryTranslations[index] || "",
-        });
-      }
-    });
-  }
-
-  // Check if there are any matching results
-  if (matchingResults.length === 0) {
-    console.log(`No sentences found for the word variations.`);
-    return;
-  }
-
-  // Prioritize the matching results using the prioritizeResults function
-  matchingResults = prioritizeResults(
-    matchingResults,
-    trimmedWord,
-    "eksempel",
-    pos
-  );
-
-  // Apply highlighting for the new word and reset any previous highlighting
-  matchingResults.forEach((result) => {
-    wordVariations.forEach((variation) => {
-      const highlightedSentence = highlightQuery(result.eksempel, variation); // Highlight query in sentence
-      result.eksempel = highlightedSentence; // Set the highlighted sentence back
-    });
-  });
-
-  // Create the sentence content with CEFR labels
-  let sentenceContent = matchingResults
-    .slice(0, 10)
+  const sentenceContent = highlightedResults
     .map((result) => {
-      // Split example sentences by common sentence delimiters (period, question mark, exclamation mark)
-      const sentences = result.eksempel
-        ? result.eksempel.split(/(?<=[.!?])\s+/)
-        : [];
+      // eksempel/sentenceTranslation always hold exactly one sentence each.
+      const sentences = result.eksempel ? [result.eksempel] : [];
       const translations = result.sentenceTranslation
-        ? result.sentenceTranslation.split(/(?<=[.!?])\s+/)
+        ? [result.sentenceTranslation]
         : [];
+      const cefrLabel = getSentenceCefrLabelHTML(result.CEFR);
 
-      // Generate the CEFR label based on the result's CEFR value
-      let cefrLabel = "";
-      if (result.CEFR === "A1") {
-        cefrLabel = '<div class="sentence-cefr-label easy">A1</div>';
-      } else if (result.CEFR === "A2") {
-        cefrLabel = '<div class="sentence-cefr-label easy">A2</div>';
-      } else if (result.CEFR === "B1") {
-        cefrLabel = '<div class="sentence-cefr-label medium">B1</div>';
-      } else if (result.CEFR === "B2") {
-        cefrLabel = '<div class="sentence-cefr-label medium">B2</div>';
-      } else if (result.CEFR === "C") {
-        cefrLabel = '<div class="sentence-cefr-label hard">C</div>';
-      }
-
-      // For each sentence, map it to a card
       return sentences
         .map(
           (sentence, index) => `
@@ -3860,12 +3734,13 @@ function fetchAndRenderSentences(word, pos, showEnglish = true) {
                 ${
                   result.sentenceAudio === "X"
                     ? `<i class="fas fa-volume-up sentence-audio-icon"
+                          role="button" tabindex="0" aria-label="Play sentence audio"
                           data-sentence="${sentence
                             .replace(/<[^>]*>/g, "")
                             .trim()}"></i>`
                     : ""
-                }        
-                </div>            
+                }
+                </div>
                 <p class="sentence">${sentence}</p>
                   </div>
                 </div>
@@ -3880,28 +3755,146 @@ function fetchAndRenderSentences(word, pos, showEnglish = true) {
                     : ""
                 }
             </div>
-        `
+        `,
         )
         .join("");
     })
     .join("");
 
-  if (sentenceContent) {
-    sentenceContainer.innerHTML = sentenceContent;
-    sentenceContainer.style.display = "block"; // Show the container
+  if (!sentenceContent) return false;
 
-    // Find the button and display it if sentences exist
-    const englishButton = sentenceContainer.parentElement.querySelector(
-      ".english-toggle-btn"
-    );
-    if (englishButton) {
-      englishButton.style.display = "block"; // Make the button visible
-      englishButton.innerText = showEnglish ? "Hide English" : "Show English";
+  sentenceContainer.innerHTML = sentenceContent;
+  sentenceContainer.style.display = "block";
+  if (button) {
+    button.style.display = "block";
+    button.innerText = showEnglish ? "Hide English" : "Show English";
+  }
+  return true;
+}
+
+// Fetch and render sentences for one exact dictionary sense, using its full
+// conjugated word-forms paradigm (verb/adjective) or headword (every other
+// class) to search the corpus and highlight matches.
+async function fetchAndRenderSentences(word, pos, showEnglish = true) {
+  const trimmedWord = word
+    .trim()
+    .toLowerCase()
+    .replace(/[\r\n]+/g, ""); // Remove any carriage returns or newlines
+  const sentenceContainer = document.getElementById(
+    `sentences-container-${trimmedWord}`
+  );
+
+  if (!sentenceContainer) {
+    console.error(`Sentence container not found for: ${trimmedWord}`);
+    return;
+  }
+  const button = sentenceContainer.previousElementSibling?.querySelector(
+    ".english-toggle-btn",
+  );
+
+  // Toggle visibility without re-fetching sentences
+  if (sentenceContainer.getAttribute("data-fetched") === "true") {
+    if (!button) return;
+    if (sentenceContainer.style.display === "block") {
+      sentenceContainer.style.display = "none";
+      button.innerText = "Show Sentences";
+      button.classList.remove("hide");
+      button.classList.add("show");
+    } else {
+      sentenceContainer.style.display = "block";
+      button.innerText = "Hide Sentences";
+      button.classList.remove("show");
+      button.classList.add("hide");
     }
-  } else {
-    console.warn("No content to show for the word:", trimmedWord);
+    return;
   }
 
+  const matchingWordEntry = results.find(
+    (result) =>
+      result.ord.toLowerCase() === trimmedWord &&
+      result.gender.toLowerCase().includes((pos || "").toLowerCase())
+  );
+  if (!matchingWordEntry) {
+    console.error(`No matching word found for "${trimmedWord}".`);
+    return; // Stop if the word isn't found
+  }
+
+  sentenceContainer.innerHTML = ""; // Clear previous sentences
+
+  // Every dictionary entry already carries its own example in the main CSV.
+  // Render that immediately instead of holding it behind the word-forms
+  // lookup needed only for supplemental examples, so a cold or slow
+  // connection still shows useful content right away.
+  const headwords = matchingWordEntry.ord
+    .split(/[,、]/)
+    .map((form) => form.trim())
+    .filter(Boolean);
+  const citationMatcher = window.SentenceFormMatching.createMatcher(headwords);
+  const { primary: immediatePrimaryResults } =
+    window.SentenceFormMatching.collectExamples(
+      matchingWordEntry,
+      [],
+      citationMatcher,
+      0,
+    );
+  renderDefinitionSentenceResults(
+    immediatePrimaryResults,
+    immediatePrimaryResults,
+    citationMatcher,
+    citationMatcher,
+    sentenceContainer,
+    button,
+    showEnglish,
+  );
+  sentenceContainer.setAttribute("data-supplemental-loading", "true");
+
+  const homographEntries = getHomographEntries(matchingWordEntry);
+  const sentenceForms = await window.Inflections.getSupplementalSentenceForms(
+    matchingWordEntry,
+    homographEntries,
+  );
+  const primaryHighlightForms =
+    await window.Inflections.getSentenceForms(matchingWordEntry);
+  if (!sentenceContainer.isConnected) return;
+  const formMatcher = window.SentenceFormMatching.createMatcher(sentenceForms);
+  const primaryHighlightMatcher =
+    window.SentenceFormMatching.createMatcher(primaryHighlightForms);
+  const { primary: primaryResults, supplemental: supplementalResults } =
+    window.SentenceFormMatching.collectExamples(
+      matchingWordEntry,
+      results,
+      formMatcher,
+      100,
+      homographEntries.filter((entry) => entry !== matchingWordEntry),
+    );
+
+  // Rank supplemental examples without allowing them to move ahead of the
+  // primary entry's own example sentence(s).
+  const rankedSupplemental = prioritizeResults(
+    supplementalResults,
+    trimmedWord,
+    "eksempel",
+    pos,
+  );
+  const matchingResults = [...primaryResults, ...rankedSupplemental].slice(0, 10);
+
+  if (matchingResults.length === 0) {
+    sentenceContainer.removeAttribute("data-supplemental-loading");
+    sentenceContainer.setAttribute("data-fetched", "true");
+    return;
+  }
+
+  renderDefinitionSentenceResults(
+    matchingResults,
+    primaryResults,
+    formMatcher,
+    primaryHighlightMatcher,
+    sentenceContainer,
+    button,
+    showEnglish,
+  );
+
+  sentenceContainer.removeAttribute("data-supplemental-loading");
   sentenceContainer.setAttribute("data-fetched", "true");
 }
 

@@ -1,6 +1,16 @@
-// Exact, Unicode-aware matching for learner-facing example sentences. A form
-// must occupy a complete word/phrase boundary: "ugle" can match "ugla", when
-// that accepted form is supplied, but can never match the prefix of "uglasert".
+// Exact, Unicode-aware matching for learner-facing example sentences. Ported
+// from Norwegian's sentenceFormMatching.js, where a form must occupy a
+// complete word/phrase boundary ("ugle" can match "ugla" but never the
+// prefix of "uglasert") -- there, boundaries work because Bokmål separates
+// words with spaces, so any letter/digit neighbor means "still inside a
+// longer word." Japanese has no such delimiter: kana and kanji are
+// themselves Unicode letters, so requiring a non-letter neighbor on both
+// sides (Norwegian's \p{L}\p{N} check) is almost never satisfiable inside a
+// real sentence and silently matches nothing. The boundary here only
+// excludes ASCII/digit neighbors instead, guarding against a form matching
+// mid-word inside romaji or a number while still allowing any Japanese
+// script character on either side, which is effectively a plain substring
+// test for kana/kanji forms.
 (function () {
   "use strict";
 
@@ -21,7 +31,7 @@
           )
           .filter(Boolean),
       ),
-    ].sort((a, b) => b.length - a.length || a.localeCompare(b, "nb"));
+    ].sort((a, b) => b.length - a.length || a.localeCompare(b, "ja"));
   }
 
   function createMatcher(forms) {
@@ -37,7 +47,7 @@
     const alternatives = acceptedForms
       .map((form) => escapeRegExp(form).replace(/ /g, "\\s+"))
       .join("|");
-    const source = `(?<![\\p{L}\\p{N}])(?:${alternatives})(?![\\p{L}\\p{N}])`;
+    const source = `(?<![A-Za-z0-9])(?:${alternatives})(?![A-Za-z0-9])`;
     const testPattern = new RegExp(source, "iu");
     const highlightPattern = new RegExp(source, "giu");
 

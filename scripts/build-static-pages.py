@@ -95,7 +95,11 @@ def source_slugs(csv_path: Path, column: str, *, primary_word: bool = False) -> 
         for row in csv.DictReader(source):
             value = (row.get(column) or "").strip()
             if primary_word:
-                value = value.split(",", 1)[0].strip()
+                # Alternative spellings are separated by either an ASCII
+                # comma or the ideographic comma "、" (e.g. "あ、あっ") — see
+                # capture-word-pages.py's load_all_primary_words() for the
+                # full explanation.
+                value = re.split(r"[,、]", value)[0].strip()
             if not value:
                 continue
             current_slug = slugify(value)
@@ -143,13 +147,17 @@ def row_signature(row: dict[str, str]) -> tuple[tuple[str, str], ...]:
 
 
 def primary_word(row: dict[str, str]) -> str:
-    return (row.get("word") or "").split(",", 1)[0].strip()
+    # Alternative spellings are separated by either an ASCII comma or the
+    # ideographic comma "、" (e.g. "あ、あっ") — see capture-word-pages.py's
+    # load_all_primary_words() for the full explanation; scripts.js splits
+    # on the same /[,、]/ pattern everywhere it reads this column.
+    return re.split(r"[,、]", row.get("word") or "")[0].strip()
 
 
 def word_forms(row: dict[str, str]) -> tuple[str, ...]:
     return tuple(
         form.strip().lower()
-        for form in (row.get("word") or "").split(",")
+        for form in re.split(r"[,、]", row.get("word") or "")
         if form.strip()
     )
 

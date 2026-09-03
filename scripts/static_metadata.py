@@ -1,4 +1,19 @@
-"""Enrich captured pages with page-specific, non-visual metadata."""
+"""Enrich captured pages with page-specific, non-visual metadata.
+
+Deviates from norwegian/scripts/static_metadata.py in one load-bearing way:
+this app's updateWordMetadata()/updateStoryMetadata() (scripts.js,
+stories.js) deliberately set <link rel="canonical"> to the query-string
+lookup URL, not a pretty path — this app has no pretty-path routing at all
+(see index.html's #mode-nav comment), so that's correctly the only
+dereferenceable address *while running as the live SPA*. But the whole
+point of a captured static page is that IT becomes a second, real,
+dereferenceable address for that content — so the captured copy must
+canonicalize to itself, not to the page it was captured from. Norwegian
+doesn't need this fix because its client already sets canonical to the
+pretty path directly. set_canonical_link() below is applied by every
+capture script (word, story, feature, and stories-index) to correct this
+after capture.
+"""
 
 from __future__ import annotations
 
@@ -8,6 +23,26 @@ import re
 
 SITE = "https://osloandrew.github.io/japanese"
 STRUCTURED_DATA_ID = "page-structured-data"
+CANONICAL_LINK_RE = re.compile(
+    r'<link\s+[^>]*rel=["\']canonical["\'][^>]*>', re.IGNORECASE
+)
+
+
+def set_og_url(source: str, url: str) -> str:
+    """Public wrapper for capture scripts outside this module that also
+    need to correct a page's og:url (see set_canonical_link below and this
+    module's docstring)."""
+    return _set_meta(source, "property", "og:url", url)
+
+
+def set_canonical_link(source: str, canonical: str) -> str:
+    """Replace (or insert) <link rel="canonical"> so a captured page always
+    canonicalizes to its own captured URL, regardless of what the live app
+    set while rendering it."""
+    tag = f'<link rel="canonical" href="{html.escape(canonical, quote=True)}">'
+    if CANONICAL_LINK_RE.search(source):
+        return CANONICAL_LINK_RE.sub(tag, source, count=1)
+    return source.replace("</head>", f"    {tag}\n  </head>", 1)
 
 
 def _meta_content(source: str, key: str, *, attribute: str = "property") -> str:
@@ -42,6 +77,25 @@ def _ensure_meta(source: str, attribute: str, key: str, content: str) -> str:
         f'<meta {attribute}="{html.escape(key, quote=True)}" '
         f'content="{html.escape(content, quote=True)}">'
     )
+    return source.replace("</head>", f"    {tag}\n  </head>", 1)
+
+
+def _set_meta(source: str, attribute: str, key: str, content: str) -> str:
+    """Like _ensure_meta, but replaces an existing tag's content instead of
+    leaving it alone. Used for og:url, which updateWordMetadata()/
+    updateStoryMetadata() set to this word/story's query-string lookup URL
+    (see this module's docstring) -- the captured copy's social metadata
+    must point at itself instead."""
+    existing = re.compile(
+        rf'<meta\s+[^>]*{attribute}=["\']{re.escape(key)}["\'][^>]*>',
+        re.IGNORECASE,
+    )
+    tag = (
+        f'<meta {attribute}="{html.escape(key, quote=True)}" '
+        f'content="{html.escape(content, quote=True)}">'
+    )
+    if existing.search(source):
+        return existing.sub(tag, source, count=1)
     return source.replace("</head>", f"    {tag}\n  </head>", 1)
 
 
@@ -109,6 +163,12 @@ def enrich_word_html(source: str, *, word: str, canonical: str) -> str:
     page_title = _title(source)
     description = _meta_content(source, "description", attribute="name")
     image = _meta_content(source, "og:image")
+    # renderWordDefinition() -> updateWordMetadata() set canonical/og:url to
+    # this word's query-string lookup URL (deliberately, for the live SPA —
+    # see this module's docstring); the captured copy must point at itself
+    # instead.
+    source = set_canonical_link(source, canonical)
+    source = _set_meta(source, "property", "og:url", canonical)
     term_id = f"{canonical}#term"
     graph: list[dict[str, object]] = [
         _website_node(),
@@ -159,6 +219,11 @@ def enrich_story_html(
     page_title = _title(source)
     description = _meta_content(source, "description", attribute="name")
     image = _meta_content(source, "og:image")
+    # displayStory() -> updateStoryMetadata() set canonical/og:url to this
+    # story's query-string lookup URL (deliberately, for the live SPA — see
+    # this module's docstring); the captured copy must point at itself.
+    source = set_canonical_link(source, canonical)
+    source = _set_meta(source, "property", "og:url", canonical)
     resource_id = f"{canonical}#learning-resource"
     resource: dict[str, object] = {
         "@type": "LearningResource",

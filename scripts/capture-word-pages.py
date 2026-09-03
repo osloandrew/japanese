@@ -74,7 +74,14 @@ def load_all_primary_words(csv_path: Path) -> list[str]:
         for row in csv.DictReader(f):
             if not (row.get("English") or "").strip():
                 continue
-            primary = (row.get("word") or "").split(",")[0].strip()
+            # Alternative spellings in this CSV are separated by either an
+            # ASCII comma or the ideographic comma "、" (e.g. "あ、あっ") —
+            # scripts.js splits on the same /[,、]/ pattern everywhere it
+            # reads this column (see e.g. its updateWordMetadata()). A
+            # plain "," split misses the ideographic form entirely, leaving
+            # the whole unsplit string as "the word" — renderWordDefinition()
+            # then finds no matching entry for it at all.
+            primary = re.split(r"[,、]", row.get("word") or "")[0].strip()
             if primary and primary.lower() not in seen:
                 seen[primary.lower()] = primary
     return list(seen.values())

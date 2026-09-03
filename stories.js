@@ -499,7 +499,7 @@ function createStoryCardLink(story) {
   }
 
   const cefrDiv = document.createElement("div");
-  cefrDiv.classList.add("cefr-value", getCefrClass(story.CEFR));
+  cefrDiv.classList.add("cefr-value", getStoryCefrClass(story.CEFR));
   cefrDiv.textContent = story.CEFR || "N/A";
   if (story.CEFR) cefrDiv.title = getCefrTooltip(story.CEFR);
 
@@ -612,7 +612,7 @@ function parseStoryCSVData(data) {
 }
 
 // Helper function to determine CEFR class
-function getCefrClass(cefrLevel) {
+function getStoryCefrClass(cefrLevel) {
   if (!cefrLevel) return "cefr-unknown"; // Fallback for missing CEFR levels
   const level = cefrLevel.toUpperCase();
   if (["A1"].includes(level)) return "a1";
@@ -802,7 +802,7 @@ async function displayStoryList(
           }</span><span class="story-results-filter-name">${escapeHTML(formatStoryGenre(selectedGenre))}</span></span>`
         : "",
       selectedCEFR
-        ? `<span class="story-results-filter-summary story-results-cefr-filter" title="CEFR ${escapeHTML(selectedCEFR)}"><span class="cefr-value ${getCefrClass(selectedCEFR)}" aria-hidden="true">${escapeHTML(selectedCEFR)}</span><span class="story-results-filter-name">${escapeHTML(getCefrLabel(selectedCEFR) || selectedCEFR)}</span></span>`
+        ? `<span class="story-results-filter-summary story-results-cefr-filter" title="CEFR ${escapeHTML(selectedCEFR)}"><span class="cefr-value ${getStoryCefrClass(selectedCEFR)}" aria-hidden="true">${escapeHTML(selectedCEFR)}</span><span class="story-results-filter-name">${escapeHTML(getCefrLabel(selectedCEFR) || selectedCEFR)}</span></span>`
         : "",
     ]
       .filter(Boolean)
@@ -1152,7 +1152,7 @@ async function displayStory(titleJapanese, { userNavigation = false } = {}) {
     : "";
   // Build sticky header here, just before audio is constructed
   const genreIcon = genreIcons[selectedStory.genre.toLowerCase()] || "";
-  const cefrClass = getCefrClass(selectedStory.CEFR);
+  const cefrClass = getStoryCefrClass(selectedStory.CEFR);
 
   const sticky = document.getElementById("sticky-header");
   sticky.classList.remove("hidden");
@@ -1355,7 +1355,7 @@ async function displayStory(titleJapanese, { userNavigation = false } = {}) {
       const titleNode = document.createElement("div");
       titleNode.className = "sticky-title-container";
       titleNode.innerHTML = `
-  <h2 class="sticky-title-japanese">${selectedStory.titleJapanese}</h2>
+  <h1 class="sticky-title-japanese">${selectedStory.titleJapanese}</h1>
   ${
     selectedStory.titleJapanese !== selectedStory.titleEnglish
       ? `<p class="sticky-title-english">${selectedStory.titleEnglish}</p>`

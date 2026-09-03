@@ -513,6 +513,30 @@
     return [...headwords, ...Object.values(computed.forms).filter(Boolean)];
   }
 
+  // Word forms to search the example-sentence corpus with and highlight in
+  // matches -- the definition page's Sentence Search fallback (see
+  // fetchAndRenderSentences in scripts.js). Mirrors Norwegian's
+  // getSentenceForms, but simpler: Japanese conjugation is derived purely
+  // from the headword's own spelling and class, so (unlike Bokmål nouns,
+  // which look up a shared paradigm keyed by lemma) two different dictionary
+  // entries never contend over the same computed forms.
+  async function getSentenceForms(entry) {
+    if (!entry?.ord) return [];
+    const wordClass = String(entry?.gender || "").trim();
+    if ((wordClass === "verb" || wordClass === "adjective") && !snapshot && !loadFailed) {
+      await loadSnapshot();
+    }
+    return collectAllSurfaceForms(entry);
+  }
+
+  // Norwegian's counterpart reallocates shared forms away from a homograph's
+  // competing noun-gender paradigm; no such reallocation is needed here (see
+  // getSentenceForms above), so this is a thin pass-through kept for call-site
+  // parity with the Norwegian-derived callers in scripts.js and wordGame.js.
+  async function getSupplementalSentenceForms(entry, _dictionaryEntries = []) {
+    return getSentenceForms(entry);
+  }
+
   function addReverseMapping(index, surface, lemmaKey) {
     if (!surface) return;
     const existing = index.get(surface);
@@ -725,6 +749,8 @@
     conjugateVerb,
     conjugateAdjective,
     getForms,
+    getSentenceForms,
+    getSupplementalSentenceForms,
     resolvePending,
     findLemmas,
     isReverseIndexReady,

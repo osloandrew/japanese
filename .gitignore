@@ -9,3 +9,21 @@ firebase-debug.log
 firestore-debug.log
 ui-debug.log
 /.firebase/
+
+# Disposable root-level GitHub Pages build output (Crawlable page builds —
+# see README.md and scripts/build-static-pages.py). The leading slashes are
+# intentional: an unanchored `sentences/` also hides Resources/Sentences on a
+# case-insensitive filesystem, preventing new source audio from being
+# committed. CI restores these generated pages from its validated render
+# cache.
+/word/
+/story/
+/stories/
+/sentences/
+/word-game/
+/pronunciation/
+/updates/
+/sitemap.xml
+/page-manifest.json
+/build/
+/.pages-cache/

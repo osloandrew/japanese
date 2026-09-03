@@ -1,0 +1,59 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  asset-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify cache-busted asset versions
+        run: python3 scripts/stamp-asset-versions.py --check
+
+  js-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm test
+
+  inflections-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check whether japaneseWords.csv changed
+        id: csv
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "$BASE_SHA" ] || ! git cat-file -e "$BASE_SHA" 2>/dev/null; then
+            # New branch, or no comparable base commit — verify unconditionally.
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          elif git diff --name-only "$BASE_SHA" "${{ github.sha }}" -- japaneseWords.csv | grep -qx "japaneseWords.csv"; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Regenerate inflections-data.json and check it's up to date
+        if: steps.csv.outputs.changed == 'true'
+        run: |
+          python3 scripts/build-inflections.py
+          if ! git diff --quiet -- inflections-data.json; then
+            echo "::error::japaneseWords.csv changed but inflections-data.json is stale. Run 'python3 scripts/build-inflections.py' and commit the result."
+            git diff --stat -- inflections-data.json
+            exit 1
+          fi
