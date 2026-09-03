@@ -8,19 +8,25 @@ auto-triggers a *specific* story on a plain ``?type=words`` navigation, so
 data loading is fully sequenced by this script rather than raced against the
 page's own init.
 
-Ported from norwegian/scripts/capture-story-pages.py, with two norwegian-only
-mechanisms removed because this app doesn't have them:
+Ported from norwegian/scripts/capture-story-pages.py, with one norwegian-only
+mechanism removed because this app doesn't have it:
 
-- storyQuizState / storyImageState dataset polling: this app has no
-  storyQuiz.js and displayStory() doesn't manage an async image slot -- it
-  builds the whole story body (including any <img>) synchronously inside one
-  async function and awaits it directly instead, which this script now does
-  too (Playwright's page.evaluate() awaits a returned Promise for us).
 - window.__PRELOADED_STORY__ injection: norwegian's DOMContentLoaded handler
   reads this to speed up a cold pretty-path load, but this app has no such
   handler (see the "no pretty-path rewriting" comment in index.html's
   #mode-nav) and never looks for that global, so injecting it here would be
   dead markup.
+
+storyQuizState polling is still needed and IS ported: displayStory() builds
+the synchronous story body (couplets, image) inside one async function that
+page.evaluate() awaits directly, but the comprehension quiz (storyQuiz.js)
+and the "Keep Reading" suggestion it's chained in front of are appended from
+a separate, un-awaited `.then()` off of renderStoryComprehensionQuiz's own
+fetch of storyQuestions.json -- by design, so a reader isn't blocked on that
+fetch (see stories.js). That means displayStory()'s own promise can resolve
+before the quiz/next-story markup exists, so this script polls
+storyContent.dataset.storyQuizState exactly like norwegian does. There is no
+separate storyImageState here -- the image slot isn't async in this app.
 
 Usage:
     python3 scripts/capture-story-pages.py --titles "あの日の花火"
@@ -185,10 +191,18 @@ def capture(titles: list[str], output_root: Path = ROOT) -> None:
                 # image/audio lookups before synchronously building and
                 # inserting the story body — page.evaluate() awaits that
                 # returned Promise, so by the time this call returns the
-                # content is fully rendered. No separate readiness-state
-                # polling is needed (this app has neither storyQuizState nor
-                # storyImageState).
+                # couplets/image are fully rendered. The comprehension quiz
+                # and "Keep Reading" suggestion are appended later still,
+                # from an un-awaited chain (see the module docstring), so a
+                # separate storyQuizState poll below is required for those.
                 page.evaluate("(t) => displayStory(t)", title)
+                page.wait_for_function(
+                    "document.getElementById('story-content')?.dataset."
+                    "storyQuizState === 'ready' || "
+                    "document.getElementById('story-content')?.dataset."
+                    "storyQuizState === 'empty'",
+                    timeout=15_000,
+                )
 
                 has_content = page.evaluate(
                     "document.getElementById('story-content').children.length > 0"
