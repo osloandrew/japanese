@@ -201,17 +201,25 @@ function handleKey(event) {
 
 function clearContainer() {
   const landingCard = document.getElementById("landing-card");
-  if (landingCard) {
-    // Temporarily remove the landing card from the container, then clear everything else
-    landingCard.parentNode.removeChild(landingCard);
+  const main = document.querySelector("main");
+
+  // Park the landing card as resultsContainer's sibling in <main> -- the
+  // same spot showLandingCard(true) itself puts it -- rather than inside
+  // resultsContainer. Parking it inside only works as long as every later
+  // render goes through a `+=`; the many spots that instead do a plain
+  // `resultsContainer.innerHTML = ...` (error messages, random-sentence
+  // rendering, ...) replace their *own* children, but a landing card
+  // sitting inside as one of those children was being replaced right along
+  // with them -- silently deleting it from the document for the rest of
+  // the session, with no code path left that ever re-creates it. That's
+  // what made switching to Words after Sentences render blank.
+  if (landingCard && main && landingCard.parentNode !== main) {
+    landingCard.remove();
+    main.insertBefore(landingCard, resultsContainer);
   }
 
   resultsContainer.innerHTML = ""; // Clear everything else in the container
-
-  // Restore the landing card
-  if (landingCard) {
-    resultsContainer.appendChild(landingCard);
-  }
+  clearVocabularyLoadingState();
 }
 
 function appendToContainer(content) {
@@ -1617,7 +1625,7 @@ function selectType(type) {
   // Set the dropdown value to match the selected type
   document.getElementById("type-select").value = type;
   // Call handleTypeChange with the type
-  handleTypeChange(type);
+  handleTypeChange(type, { userNavigation: true });
 }
 
 // Ported from Norwegian: the one place body.dataset.mode gets set, which
@@ -1658,6 +1666,14 @@ function syncModeNav(type) {
     "account-page-mode",
     type === "settings" || type === "about"
   );
+
+  // Every navigation path (mode-tab clicks, the dropdown, browser
+  // back/forward, a direct word URL) calls this function. displayStory()
+  // never calls it, so it's safe to unconditionally undo reader state here:
+  // stop its audio, hide the reader, drop html.reading -- otherwise leaving
+  // a story any way other than its own "Back to Stories" button leaves the
+  // whole reader (audio included) sitting on screen under the new tab.
+  window.resetStoryReaderView?.();
 }
 
 function isPlainLeftClick(event) {
@@ -2127,6 +2143,46 @@ function handleTypeChange(type, options = {}) {
       showLandingCard(true);
     }
   }
+
+  if (options.userNavigation) {
+    focusViewAfterNavigation();
+  }
+}
+
+// After a user-initiated navigation (nav tab, landing card, header link),
+// scroll to top and move keyboard focus to the new view's heading -- a
+// screen-reader/keyboard user shouldn't be left focused on an element that
+// just got replaced. Async views can pass a selector and call this again
+// once their content arrives.
+function focusViewAfterNavigation(selector = "") {
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => {
+      const main = document.getElementById("main-content");
+      if (!main) return;
+
+      const requestedTarget = selector ? document.querySelector(selector) : null;
+      const target =
+        requestedTarget ||
+        Array.from(main.querySelectorAll("h1, h2")).find(
+          (heading) => heading.getClientRects().length > 0,
+        ) ||
+        main;
+
+      const suppliedTabIndex = target.hasAttribute("tabindex");
+      if (!suppliedTabIndex) target.setAttribute("tabindex", "-1");
+      target.focus({ preventScroll: true });
+
+      if (!suppliedTabIndex) {
+        target.addEventListener(
+          "blur",
+          () => target.removeAttribute("tabindex"),
+          { once: true },
+        );
+      }
+    });
+  });
 }
 
 // Helper function to clear the URL of remnants from other types

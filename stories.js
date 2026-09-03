@@ -675,6 +675,35 @@ function handleGenreChange() {
   displayStoryList(filteredStories);
 }
 
+// Every navigation path away from the story reader OTHER than the in-page
+// "Back to Stories" button (storiesBackBtn) needs to call this too --
+// switching mode-nav tabs, the header, browser back/forward -- otherwise
+// the reader (audio included) is left sitting on screen under the new
+// view. See syncModeNav() in scripts.js, which calls this unconditionally
+// on every navigation.
+function resetStoryReaderView() {
+  const stickyHeader = document.getElementById("sticky-header");
+  if (stickyHeader) {
+    stickyHeader
+      .querySelectorAll("audio, .stories-audio-player")
+      .forEach((p) => {
+        if (typeof p.pause === "function") p.pause();
+        try {
+          p.currentTime = 0;
+        } catch (_) {}
+        p.remove();
+      });
+    stickyHeader.querySelector(".toggle-buttons-container")?.remove();
+    stickyHeader.classList.add("hidden");
+  }
+  const storyViewer = document.getElementById("story-viewer");
+  const storyContent = document.getElementById("story-content");
+  if (storyViewer) storyViewer.style.display = "none";
+  if (storyContent) storyContent.innerHTML = "";
+  document.documentElement.classList.remove("reading");
+}
+window.resetStoryReaderView = resetStoryReaderView;
+
 function storiesBackBtn() {
   // JP parity: stop and remove any playing audio from the sticky header
   const stickyHeader = document.getElementById("sticky-header");
