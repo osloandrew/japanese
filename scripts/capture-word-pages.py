@@ -216,13 +216,20 @@ def capture(words: list[str], output_root: Path = ROOT) -> None:
                 # by renderWordDefinition() itself, so without this wait the
                 # capture can serialize mid-fetch and miss the sentences
                 # section entirely, or catch it collapsed instead of the
-                # auto-opened state the live app settles into.
-                page.wait_for_function(
-                    "() => { const c = document.querySelector('.sentences-container'); "
-                    "return !c || (c.dataset.fetched === 'true' && "
-                    "c.dataset.supplementalLoading !== 'true'); }",
-                    timeout=15_000,
-                )
+                # auto-opened state the live app settles into. Best-effort:
+                # a handful of entries never set data-fetched at all (e.g.
+                # fetchAndRenderSentences's own no-matching-entry early
+                # return), so this must not abort the whole 9000+-word
+                # capture over one of those -- log and move on instead.
+                try:
+                    page.wait_for_function(
+                        "() => { const c = document.querySelector('.sentences-container'); "
+                        "return !c || (c.dataset.fetched === 'true' && "
+                        "c.dataset.supplementalLoading !== 'true'); }",
+                        timeout=5_000,
+                    )
+                except Exception:
+                    print(f"  (sentences still loading for {word!r} after 5s, capturing anyway)")
 
                 # ':not(.error-message)' matters: renderWordDefinition()'s
                 # "No Definition Found" box also carries the .definition
