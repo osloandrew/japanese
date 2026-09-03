@@ -147,6 +147,28 @@
           </div>
         </div>
 
+        <div id="streak-menu" class="streak-menu hidden">
+          <button
+            type="button"
+            id="streak-menu-btn"
+            class="streak-badge"
+            aria-haspopup="dialog"
+            aria-expanded="false"
+            aria-controls="streak-menu-panel"
+            aria-label="Day streak"
+            title="Day streak"
+          >
+            <i class="fas fa-fire" aria-hidden="true"></i>
+            <span id="streak-badge-count">0</span>
+          </button>
+          <div
+            id="streak-menu-panel"
+            class="streak-menu-panel hidden"
+            role="dialog"
+            aria-label="Day streak"
+          ></div>
+        </div>
+
         <div id="auth-container" class="auth-container">
           <button
             id="google-signin-btn"
@@ -842,6 +864,7 @@
     <script src="noRandom.js" defer></script>
     <script src="scripts.js" defer></script>
     <script src="wordGame.js" defer></script>
+    <script src="streak.js" defer></script>
     <script src="stories.js" defer></script>
     <script src="pronunciation.js"></script>
     <script src="https://unpkg.com/wavesurfer.js"></script>

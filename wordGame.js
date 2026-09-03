@@ -1451,6 +1451,7 @@ async function handleTranslationClick(
       true,
       { skill: getWordGameSkillForQuestionType(questionType) }
     );
+    window.StreakAPI?.recordActivity?.();
 
     if (questionType === "cloze") {
       const fullSentence =
@@ -1625,6 +1626,7 @@ async function handleListeningAnswer(selectedTranslation, wordObj) {
     window.WordStrengthAPI?.recordResult?.(wordObj, true, {
       skill: "listening",
     });
+    window.StreakAPI?.recordActivity?.();
 
     totalQuestions++;
     questionsAtCurrentLevel++;
