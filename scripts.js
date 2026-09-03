@@ -290,6 +290,37 @@ function clearInput() {
   }
 }
 
+// Click handler for the magnifying-glass search button: search when there's
+// a query, otherwise double as the random word/sentence generator the
+// standalone Random button used to be. Ported from Norwegian's
+// handleSearchButtonClick(), which removed that separate button entirely.
+function handleSearchButtonClick() {
+  const query = document.getElementById("search-bar").value.trim();
+
+  if (query) {
+    search();
+    return;
+  }
+
+  const type = getCurrentMode();
+
+  if (type === "word-list") {
+    // Nothing to search or randomize here when the field is empty.
+    return;
+  }
+
+  if (type === "stories") {
+    // Same as clicking the clear (X) button: reset the filters and
+    // reshuffle the story list, rather than searching for a word.
+    clearInput();
+    return;
+  }
+
+  randomWord();
+  popChime.currentTime = 0;
+  popChime.play();
+}
+
 // Fetch the dictionary data from the file or server
 async function fetchAndLoadDictionaryData() {
   try {
@@ -1079,7 +1110,8 @@ function generateInexactMatches(query) {
   return Array.from(variations);
 }
 // Perform a search based on the input query and selected POS
-async function search(queryOverride = null) {
+async function search(queryOverride = null, options = {}) {
+  const { updateHistory = true, sentenceResultSubtitle = "" } = options;
   const originalQuery =
     queryOverride ||
     document.getElementById("search-bar").value.toLowerCase().trim();
@@ -1137,7 +1169,9 @@ async function search(queryOverride = null) {
   cleanURL(type);
 
   // Update the URL with the search parameters
-  updateURL(query, type, selectedPOS); // <--- Trigger URL update
+  if (updateHistory) {
+    updateURL(query, type, selectedPOS); // <--- Trigger URL update
+  }
 
   // Show the spinner at the start of the search
   showSpinner();
@@ -1262,16 +1296,19 @@ async function search(queryOverride = null) {
       });
     }
 
-    // Top-N cap (10 like your current UI), exact matches first, within each CEFR-ordered
+    // Exact matches first, then partials, each CEFR-ordered. Rendering caps
+    // how many show at once (SEARCH_RESULTS_BATCH_SIZE) behind a "Show More
+    // Results" button rather than capping the match set itself here.
     let combined = [];
     if (exact.length) {
       combined = sortByCEFR(exact).concat(sortByCEFR(partial));
     } else {
       combined = sortByCEFR(partial);
     }
-    combined = combined.slice(0, 10);
 
-    renderSentenceMatchesFromCorpus(combined, query);
+    renderSentenceMatchesFromCorpus(combined, query, terms, {
+      sentenceResultSubtitle,
+    });
 
     console.timeEnd("[Sentences] query");
     hideSpinner();
@@ -1564,6 +1601,22 @@ async function search(queryOverride = null) {
     displaySearchResults(matchingResults); // Render word-specific results
   }
   hideSpinner(); // Hide the spinner
+}
+
+// Sentence Search's empty-state landing (arriving with no query typed):
+// a real search for "apple" — English, so it reads regardless of how much
+// Japanese the visitor already knows — with a one-line explainer added into
+// the same "Sentence Results for ..." card. Deliberately not the visitor's
+// own search: updateHistory:false keeps the URL, title, and search bar
+// exactly as an untouched landing page, so this reads as "here's what the
+// feature does" rather than something the visitor appears to have typed
+// themselves. Ported from Norwegian's showSentencesSearchExample().
+async function showSentencesSearchExample() {
+  await search("apple", {
+    updateHistory: false,
+    sentenceResultSubtitle:
+      "Type any Japanese or English word to find sentences that use it.",
+  });
 }
 
 // Check if any sentences exist for a word or its variations
@@ -1965,7 +2018,6 @@ function handleTypeChange(type, options = {}) {
     "search-container-inner"
   ); // The container to update
   const searchBarWrapper = document.getElementById("search-bar-wrapper");
-  const randomBtn = document.getElementById("random-btn");
   const gameEnglishFilterContainer = document.querySelector(
     ".game-english-filter"
   );
@@ -2011,7 +2063,6 @@ function handleTypeChange(type, options = {}) {
 
     searchBarWrapper.style.display = "inline-flex"; // Hide search-bar-wrapper
     posFilterContainer.style.display = "none";
-    randomBtn.style.display = "none"; // Hide random button
     cefrLock.style.display = "none";
 
     searchContainerInner.classList.remove("word-game-active");
@@ -2035,24 +2086,23 @@ function handleTypeChange(type, options = {}) {
     }
   } else if (type === "sentences") {
     setEnglishVisible(true);
-    // Show POS and CEFR dropdowns, hide Genre dropdown
+    // Hide Genre dropdown
     genreFilterContainer.style.display = "none"; // Hide genre dropdown in sentences mode
     storyFavoritesFilterContainer.style.display = "none";
 
     searchBarWrapper.style.display = "inline-flex";
-    randomBtn.style.display = "block";
 
     searchContainerInner.classList.remove("word-game-active");
     gameActive = false;
 
-    // Disable the POS dropdown and gray it out
-    posFilterContainer.style.display = "inline-flex"; // Show POS dropdown
-    posSelect.disabled = true; // Disable POS dropdown
+    // Word class isn't a meaningful filter for sentence search, so hide it
+    // entirely rather than showing it grayed out.
+    posFilterContainer.style.display = "none";
+    posSelect.disabled = true;
     cefrLock.style.display = "none";
     posSelect.value = ""; // Reset to "Part of Speech" option
-    posFilterContainer.classList.add("disabled"); // Add the 'disabled' class
 
-    // Disable the CEFR dropdown and gray it out
+    // Enable the CEFR dropdown
     cefrSelect.disabled = false; // Enable CEFR filter when sentences are selected
     cefrSelect.value = ""; // Reset to "CEFR Level" option
     cefrFilterContainer.classList.remove("disabled"); // Visually enable the CEFR filter
@@ -2061,11 +2111,9 @@ function handleTypeChange(type, options = {}) {
 
     // If the search bar is not empty, perform a sentence search
     if (query) {
-      console.log("Searching for sentences with query:", query);
       search(); // This will trigger a search for sentences based on the search bar query
     } else {
-      console.log("Search bar empty, generating a random sentence.");
-      randomWord(); // Generate a random sentence if the search bar is empty
+      showSentencesSearchExample(); // Landing state: real "apple" results, not a random sentence
     }
   } else if (type === "word-game") {
     // Every explicit entry into the word game shows the mode-picker intro
@@ -2081,7 +2129,6 @@ function handleTypeChange(type, options = {}) {
     genreFilterContainer.style.display = "none";
     storyFavoritesFilterContainer.style.display = "none";
     searchBarWrapper.style.display = "none";
-    randomBtn.style.display = "none";
     posFilterContainer.style.display = "none";
     cefrFilterContainer.style.display = "none";
     cefrLock.style.display = "none";
@@ -2097,7 +2144,6 @@ function handleTypeChange(type, options = {}) {
     genreFilterContainer.style.display = "none";
     storyFavoritesFilterContainer.style.display = "none";
     searchBarWrapper.style.display = "none";
-    randomBtn.style.display = "none";
     posFilterContainer.style.display = "none";
     cefrLock.style.display = "none";
 
@@ -2115,7 +2161,6 @@ function handleTypeChange(type, options = {}) {
     genreFilterContainer.style.display = "none";
     storyFavoritesFilterContainer.style.display = "none";
     searchBarWrapper.style.display = "none";
-    randomBtn.style.display = "none";
     posFilterContainer.style.display = "none";
     cefrLock.style.display = "none";
 
@@ -2129,7 +2174,6 @@ function handleTypeChange(type, options = {}) {
     storyFavoritesFilterContainer.style.display = "none";
 
     searchBarWrapper.style.display = "inline-flex";
-    randomBtn.style.display = "none";
     enableSearchControls();
 
     searchContainerInner.classList.remove("word-game-active");
@@ -2167,7 +2211,6 @@ function handleTypeChange(type, options = {}) {
     storyFavoritesFilterContainer.style.display = "none";
 
     searchBarWrapper.style.display = "inline-flex"; // Show search-bar-wrapper
-    randomBtn.style.display = "block"; // Show random button
 
     cefrLock.style.display = "none";
     gameActive = false;
@@ -3215,44 +3258,91 @@ function generateWordVariationsForSentences(word, pos) {
   return Array.from(v);
 }
 
-function renderSentenceMatchesFromCorpus(rows, query) {
+// How many sentence rows render at once before "Show More Results" reveals
+// the next batch. Mirrors Norwegian's SEARCH_RESULTS_BATCH_SIZE.
+const SEARCH_RESULTS_BATCH_SIZE = 10;
+
+// "a1"/"a2"/.../"c1" (C maps to "c1" -- there's no separate C1/C2 split in
+// this app's CEFR data) for the badge color classes in 00-foundations-and-
+// game.css. Ported from Norwegian's getCefrBadgeClass().
+function getCefrBadgeClass(cefrLevel) {
+  const normalizedLevel = String(cefrLevel || "").toUpperCase();
+  if (normalizedLevel === "C") return "c1";
+  return ["A1", "A2", "B1", "B2", "C1", "C2"].includes(normalizedLevel)
+    ? normalizedLevel.toLowerCase()
+    : "cefr-unknown";
+}
+
+// Keep the active Level filter visible in the sentence results header once
+// the search toolbar has scrolled away -- an informational summary rather
+// than another control. Ported from Norwegian's
+// getSearchResultFilterSummaryHTML(); Word Class isn't included since
+// sentences search hides that filter entirely (see handleTypeChange's
+// "sentences" branch).
+function getSearchResultFilterSummaryHTML() {
+  const cefrSelect = document.getElementById("cefr-select");
+  const selectedCEFR = String(cefrSelect?.value || "").toUpperCase().trim();
+
+  const activeFilters = selectedCEFR
+    ? `<span class="search-results-filter-summary search-results-cefr-filter" title="CEFR ${escapeHTML(selectedCEFR)}"><span class="cefr-value ${getCefrBadgeClass(selectedCEFR)}" aria-hidden="true">${escapeHTML(selectedCEFR)}</span><span class="search-results-filter-name">${escapeHTML(getCefrLabel(selectedCEFR) || selectedCEFR)}</span></span>`
+    : "";
+
+  return activeFilters
+    ? `<div class="search-results-filters">${activeFilters}</div>`
+    : "";
+}
+
+function renderSentenceMatchesFromCorpus(
+  rows,
+  query,
+  highlightTerms = null,
+  { visibleCount = SEARCH_RESULTS_BATCH_SIZE, sentenceResultSubtitle = "" } = {}
+) {
   clearContainer();
+  const safeQuery = escapeHTML(query);
+  const matcher = window.SentenceFormMatching.createMatcher(
+    highlightTerms && highlightTerms.length ? highlightTerms : [query]
+  );
 
   if (!rows.length) {
     document.getElementById("results-container").innerHTML = `
       <div class="definition error-message">
         <h2 class="word-gender">Error <span class="gender">No Matching Sentences</span></h2>
-        <p>No sentences found containing "${query}".</p>
+        <p>No sentences found containing "${safeQuery}".</p>
       </div>`;
     return;
   }
 
   let html = `
-    <div class="result-header">
-      <h2>Sentence Results for "${query}"</h2>
+    <div class="result-header sentence-results-header">
+      <div class="sentence-results-header-copy">
+        <p class="sentence-results-eyebrow">Sentence Search</p>
+        <h2>Results for <span class="sentence-results-query">"${safeQuery}"</span></h2>
+        ${
+          sentenceResultSubtitle
+            ? `<p class="result-header-subtitle">${escapeHTML(sentenceResultSubtitle)}</p>`
+            : ""
+        }
+        ${getSearchResultFilterSummaryHTML()}
+      </div>
+      <div class="sentence-results-header-side">
+        <strong class="sentence-results-count">${rows.length} example${rows.length === 1 ? "" : "s"}</strong>
+        <div class="sentence-results-actions">
+          <button class="sentence-btn english-toggle-btn" onclick="toggleEnglishTranslations()">
+            ${isEnglishVisible ? "Hide English" : "Show English"}
+          </button>
+        </div>
+      </div>
     </div>
-    <button class="sentence-btn english-toggle-btn" onclick="toggleEnglishTranslations()">
-      ${isEnglishVisible ? "Hide English" : "Show English"}
-    </button>
   `;
 
-  for (const row of rows) {
-    const cefr = row.cefr;
-    const cefrLabel =
-      cefr === "A1"
-        ? '<div class="sentence-cefr-label easy">A1</div>'
-        : cefr === "A2"
-        ? '<div class="sentence-cefr-label easy">A2</div>'
-        : cefr === "B1"
-        ? '<div class="sentence-cefr-label medium">B1</div>'
-        : cefr === "B2"
-        ? '<div class="sentence-cefr-label medium">B2</div>'
-        : cefr === "C"
-        ? '<div class="sentence-cefr-label hard">C</div>'
-        : "";
+  const visibleRows = rows.slice(0, visibleCount);
 
-    const noHTML = highlightQuery(row.no, query);
-    const enHTML = row.en ? highlightQuery(row.en, query) : "";
+  for (const row of visibleRows) {
+    const cefrLabel = getSentenceCefrLabelHTML(row.cefr);
+
+    const noHTML = matcher.highlight(row.no);
+    const enHTML = row.en ? matcher.highlight(row.en) : "";
 
     html += `
       <div class="sentence-container">
@@ -3264,7 +3354,7 @@ function renderSentenceMatchesFromCorpus(rows, query) {
               ${cefrLabel}
               ${
                 row.audio
-                  ? `<i class="fas fa-volume-up sentence-audio-icon" data-sentence="${row.no
+                  ? `<i class="fas fa-volume-up sentence-audio-icon" role="button" tabindex="0" aria-label="Play sentence audio" data-sentence="${row.no
                       .replace(/<[^>]*>/g, "")
                       .trim()}"></i>`
                   : ""
@@ -3285,7 +3375,27 @@ function renderSentenceMatchesFromCorpus(rows, query) {
     `;
   }
 
+  if (visibleRows.length < rows.length) {
+    html += `
+      <div class="search-results-load-more">
+        <button type="button" class="search-results-load-more-button">Show More Results</button>
+      </div>
+    `;
+  }
+
   document.getElementById("results-container").innerHTML = html;
+
+  const loadMoreButton = resultsContainer.querySelector(
+    ".search-results-load-more-button"
+  );
+  if (loadMoreButton) {
+    loadMoreButton.addEventListener("click", () => {
+      renderSentenceMatchesFromCorpus(rows, query, highlightTerms, {
+        visibleCount: visibleRows.length + SEARCH_RESULTS_BATCH_SIZE,
+        sentenceResultSubtitle,
+      });
+    });
+  }
 }
 
 // Highlight search query in text, accounting for Japanese characters (å, æ, ø) and verb variations
@@ -4073,11 +4183,30 @@ function loadStateFromURL() {
   const storyTitle = url.searchParams.get("story"); // Check for a specific story parameter
   const word = url.searchParams.get("word"); // Check for a specific word entry
 
+  // A captured /story/<slug>/ page embeds this one story's full data
+  // directly (window.__PRELOADED_STORY__ — see
+  // scripts/capture-story-pages.py) since that pretty-path URL carries no
+  // ?story= param for the check above to read. Without this, the page would
+  // fall through to the default words-mode branch below once the
+  // dictionary loads, which clears out the story content this script just
+  // rendered (syncModeNav("words") -> resetStoryReaderView()).
+  const preloadedStory = window.__PRELOADED_STORY__;
+
   // If there's a story in the URL, display that story and exit
-  if (storyTitle) {
-    document.title = `${decodeURIComponent(storyTitle)} - Japanese Story`;
+  if (storyTitle || preloadedStory) {
+    const titleJapanese = storyTitle
+      ? decodeURIComponent(storyTitle)
+      : preloadedStory.titleJapanese;
+    document.title = `${titleJapanese} - Japanese Story`;
     syncModeNav("stories");
-    displayStory(decodeURIComponent(storyTitle)); // Display the specific story
+    if (
+      preloadedStory &&
+      !storyTitle &&
+      !storyResults.some((s) => s.titleJapanese === preloadedStory.titleJapanese)
+    ) {
+      storyResults = [preloadedStory, ...storyResults];
+    }
+    displayStory(titleJapanese); // Display the specific story
     return; // Exit function as story is being displayed
   }
 
@@ -4218,7 +4347,6 @@ function handleCardClick(event, word, pos, engelsk, definisjon) {
 window.onload = function () {
   // Check if the buttons exist in the DOM
   const searchBtn = document.getElementById("search-btn");
-  const randomBtn = document.getElementById("random-btn");
   const searchBar = document.getElementById("search-bar");
   const clearBtn = document.getElementById("clear-btn");
   const typeSelect = document.getElementById("type-select");
@@ -4230,14 +4358,12 @@ window.onload = function () {
 
   if (
     searchBtn &&
-    randomBtn &&
     searchBar &&
     clearBtn &&
     posSelect &&
     cefrSelect
   ) {
     searchBtn.disabled = true;
-    randomBtn.disabled = true;
     searchBar.disabled = true;
     clearBtn.disabled = true;
     posSelect.disabled = true;
@@ -4247,8 +4373,6 @@ window.onload = function () {
     // Apply the disabled styling
     searchBtn.style.color = "#ccc";
     searchBtn.style.cursor = "not-allowed";
-    randomBtn.style.color = "#ccc";
-    randomBtn.style.cursor = "not-allowed";
     searchBar.style.color = "#ccc";
     searchBar.style.cursor = "not-allowed";
     clearBtn.style.color = "#ccc";
@@ -4269,7 +4393,6 @@ window.onload = function () {
       // Enable the buttons once data is fully loaded
       // Enable the buttons and filters once data is fully loaded
       searchBtn.disabled = false;
-      randomBtn.disabled = false;
       searchBar.disabled = false;
       clearBtn.disabled = false;
       typeSelect.disabled = false;
@@ -4279,8 +4402,6 @@ window.onload = function () {
       // Restore original styling
       searchBtn.style.color = "";
       searchBtn.style.cursor = "pointer";
-      randomBtn.style.color = "";
-      randomBtn.style.cursor = "pointer";
       searchBar.style.color = "";
       searchBar.style.cursor = "text";
       clearBtn.style.color = "";

@@ -653,25 +653,12 @@
               <button
                 id="search-btn"
                 class="search-btn"
-                aria-label="Search for the word"
-                onclick="search()"
+                aria-label="Search, or generate a random word/sentence/story if the search field is empty"
+                onclick="handleSearchButtonClick()"
               >
                 <i class="fas fa-search" aria-hidden="true"></i>
               </button>
             </div>
-
-            <!-- Random Button -->
-            <button
-              id="random-btn"
-              class="random-btn"
-              aria-label="Generate a random word"
-              onclick="
-                (randomWord(), (popChime.currentTime = 0), popChime.play())
-              "
-              title="Generate a random word"
-            >
-              <i class="fas fa-dice" aria-hidden="true"></i>
-            </button>
           </div>
         </div>
       </section>
@@ -679,13 +666,10 @@
       <div id="loading-spinner" class="spinner" style="display: none"></div>
       <!-- Moved outside the results-container -->
       <div id="landing-card" class="definition">
-        <h2>
-          Welcome to the <br />
-          Japanese Dictionary
-        </h2>
-        <p style="text-align: center">
-          Explore Japanese vocabulary interactively. <br />
-          Click on one of the buttons below to get started.
+        <h2>Build Your Japanese Vocabulary</h2>
+        <p class="landing-hero-copy">
+          Look up words, hear pronunciations, read short stories, and
+          practice at your level.
         </p>
 
         <!-- Real counts from the loaded dictionary/story data (set by
@@ -737,7 +721,7 @@
             </ul>
           </a>
 
-          <a class="button-container" data-mode="sentences" href="?type=sentences">
+          <a class="button-container" data-mode="sentences" href="sentences/">
             <div class="landing-card-icon-chip">
               <img class="landing-card-image" src="Resources/Photos/sentences.svg" alt="" />
             </div>
@@ -749,7 +733,7 @@
             </ul>
           </a>
 
-          <a class="button-container" data-mode="stories" href="?type=stories">
+          <a class="button-container" data-mode="stories" href="stories/">
             <div class="landing-card-icon-chip">
               <img class="landing-card-image" src="Resources/Photos/stories.svg" alt="" />
             </div>
@@ -761,7 +745,7 @@
             </ul>
           </a>
 
-          <a class="button-container" data-mode="word-game" href="?type=word-game">
+          <a class="button-container" data-mode="word-game" href="word-game/">
             <div class="landing-card-icon-chip">
               <img class="landing-card-image" src="Resources/Photos/word-game.svg" alt="" />
             </div>

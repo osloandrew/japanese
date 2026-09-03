@@ -52,7 +52,7 @@ SITE_PATH = "/japanese/"
 VIEWPORT = {"width": 1280, "height": 900}
 SCREENSHOT_STYLE = (
     "*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}"
-    "#waveform,#user-waveform{display:none!important}"
+    ".story-quiz-section,#waveform,#user-waveform{display:none!important}"
 )
 STATIC_STORY_SHUFFLE_SEED = 20260824
 

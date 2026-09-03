@@ -8,14 +8,17 @@ auto-triggers a *specific* story on a plain ``?type=words`` navigation, so
 data loading is fully sequenced by this script rather than raced against the
 page's own init.
 
-Ported from norwegian/scripts/capture-story-pages.py, with one norwegian-only
-mechanism removed because this app doesn't have it:
+Ported from norwegian/scripts/capture-story-pages.py.
 
-- window.__PRELOADED_STORY__ injection: norwegian's DOMContentLoaded handler
-  reads this to speed up a cold pretty-path load, but this app has no such
-  handler (see the "no pretty-path rewriting" comment in index.html's
-  #mode-nav) and never looks for that global, so injecting it here would be
-  dead markup.
+window.__PRELOADED_STORY__ injection IS ported, unlike an earlier version of
+this script assumed: a captured /story/<slug>/ page has no ?story= query
+string for loadStateFromURL() (scripts.js) to read, so once the dictionary
+fetch resolves a moment later it falls through to the default words-mode
+branch, which calls syncModeNav("words"), which calls
+resetStoryReaderView(), which clears #story-content's innerHTML — wiping the
+very content this script just captured. The preloaded object lets
+loadStateFromURL() render the right story immediately instead. See
+stories.js's DOMContentLoaded handler for the matching read side.
 
 storyQuizState polling is still needed and IS ported: displayStory() builds
 the synchronous story body (couplets, image) inside one async function that
@@ -38,6 +41,7 @@ from __future__ import annotations
 
 import argparse
 import http.server
+import json
 import re
 import socket
 import sys
@@ -187,15 +191,25 @@ def capture(titles: list[str], output_root: Path = ROOT) -> None:
                     skipped.append(title)
                     continue
 
-                # displayStory() is itself an async function that awaits
-                # image/audio lookups before synchronously building and
-                # inserting the story body — page.evaluate() awaits that
-                # returned Promise, so by the time this call returns the
-                # couplets/image are fully rendered. The comprehension quiz
-                # and "Keep Reading" suggestion are appended later still,
-                # from an un-awaited chain (see the module docstring), so a
-                # separate storyQuizState poll below is required for those.
-                page.evaluate("(t) => displayStory(t)", title)
+                # Fire-and-forget rather than `page.evaluate("(t) => displayStory(t)", ...)`:
+                # awaiting displayStory()'s own promise here occasionally made
+                # Playwright raise "Resulting promise was garbage collected"
+                # on the *next* story's capture, once Keep Reading's heavier
+                # DOM churn (an extra card, image, favorite button) was added
+                # per render — evaluate() tracking a promise that resolves
+                # near-instantly is a known flaky interaction with CDP under
+                # GC pressure. Norwegian's script avoids the same class of
+                # bug the same way. Polling for content below replaces the
+                # awaited-promise guarantee.
+                page.evaluate("(t) => { displayStory(t); }", title)
+                page.wait_for_function(
+                    "document.getElementById('story-content')?.children.length > 0",
+                    timeout=15_000,
+                )
+                # The comprehension quiz and "Keep Reading" suggestion are
+                # appended later still, from an un-awaited chain (see the
+                # module docstring), so a separate storyQuizState poll is
+                # required for those.
                 page.wait_for_function(
                     "document.getElementById('story-content')?.dataset."
                     "storyQuizState === 'ready' || "
@@ -218,8 +232,20 @@ def capture(titles: list[str], output_root: Path = ROOT) -> None:
                 )
 
                 html = page.evaluate("document.documentElement.outerHTML")
+                # The exact object fetchAndLoadStoryData() would produce for
+                # this title — embedded so stories.js can render it
+                # immediately on load instead of waiting on the full stories
+                # CSV fetch (see loadStateFromURL()'s window.__PRELOADED_STORY__
+                # check). </script> inside the JSON (e.g. in story text)
+                # would otherwise terminate this script tag early.
+                preload_json = json.dumps(story_data, ensure_ascii=False).replace(
+                    "</", "<\\/"
+                )
                 html = html.replace(
-                    "<head>", f'<head>\n    <base href="{PAGE_BASE_HREF}">', 1
+                    "<head>",
+                    f'<head>\n    <base href="{PAGE_BASE_HREF}">'
+                    f'\n    <script>window.__PRELOADED_STORY__ = {preload_json};</script>',
+                    1,
                 )
                 html = html.replace(origin, PRODUCTION_ORIGIN)
 

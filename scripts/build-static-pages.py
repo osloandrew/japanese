@@ -7,13 +7,13 @@ not a second, simplified implementation of the UI. A compatible validated
 render cache can be updated from source-data diffs; renderer changes and cache
 misses always fall back to a complete capture.
 
-Ported from norwegian/scripts/build-static-pages.py. Two Norwegian-only data
-sources are deliberately not part of this build: storyQuestions.json (a
-story-quiz feature; this app has no storyQuiz.js and stories.js never
-references story questions) and japaneseSounds.csv (a client-side "minimal
-pairs" data file for the Word Game, loaded lazily by wordGame.js on demand —
-never touched by the page-capture pipeline in norwegian either, so nothing
-changes here).
+Ported from norwegian/scripts/build-static-pages.py. One Norwegian-only data
+source is deliberately not part of this build: japaneseSounds.csv (a
+client-side "minimal pairs" data file for the Word Game, loaded lazily by
+wordGame.js on demand — never touched by the page-capture pipeline in
+norwegian either, so nothing changes here). storyQuestions.json (the
+story-quiz feature, storyQuiz.js) now exists here too and is snapshotted and
+diffed exactly like norwegian does.
 """
 
 from __future__ import annotations
@@ -39,6 +39,7 @@ SNAPSHOT_VERSION = 2
 SNAPSHOT_FILENAMES = (
     "japaneseWords.csv",
     *STORY_CSV_NAMES,
+    "storyQuestions.json",
 )
 FEATURE_PAGE_FOLDERS = ("sentences", "word-game", "pronunciation")
 # Avoid exceeding the platform command-line limit after an unusually broad
@@ -73,6 +74,7 @@ class IncrementalPlan:
     stories: tuple[str, ...]
     words_changed: bool
     stories_changed: bool
+    questions_changed: bool
 
     @property
     def rebuild_features(self) -> bool:
@@ -141,6 +143,18 @@ def read_csv_dataset_or_empty(path: Path) -> CsvDataset:
     return read_csv_dataset(path)
 
 
+def read_questions(path: Path) -> dict[str, object]:
+    try:
+        questions = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as error:
+        raise BuildError(f"{path.name}: invalid JSON: {error}") from error
+    if not isinstance(questions, dict) or not all(
+        isinstance(key, str) for key in questions
+    ):
+        raise BuildError(f"{path.name}: expected an object keyed by Japanese story title")
+    return questions
+
+
 def row_signature(row: dict[str, str]) -> tuple[tuple[str, str], ...]:
     """Stable, conservative signature for everything the browser receives."""
     return tuple(sorted(row.items()))
@@ -199,6 +213,8 @@ def plan_incremental_build(
     new_words: CsvDataset,
     old_stories: tuple[CsvDataset, ...],
     new_stories: tuple[CsvDataset, ...],
+    old_questions: dict[str, object],
+    new_questions: dict[str, object],
 ) -> IncrementalPlan:
     """old_stories/new_stories are one CsvDataset per file in STORY_CSV_NAMES,
     same order, diffed independently and merged — see story_sources.py.
@@ -235,6 +251,12 @@ def plan_incremental_build(
         for title in set(old_story_rows) | set(new_story_rows)
         if old_story_rows.get(title, ()) != new_story_rows.get(title, ())
     }
+    changed_question_titles = {
+        title
+        for title in set(old_questions) | set(new_questions)
+        if old_questions.get(title) != new_questions.get(title)
+    }
+    affected_story_titles.update(changed_question_titles)
     affected_stories = tuple(
         sorted(
             (title for title in affected_story_titles if title in new_story_rows),
@@ -247,6 +269,7 @@ def plan_incremental_build(
         stories=affected_stories,
         words_changed=old_words.signature != new_words.signature,
         stories_changed=stories_changed,
+        questions_changed=old_questions != new_questions,
     )
 
 
@@ -416,6 +439,8 @@ def incremental_capture(site_root: Path, snapshot_dir: Path) -> IncrementalPlan:
         read_csv_dataset(ROOT / "japaneseWords.csv"),
         tuple(read_csv_dataset_or_empty(paths[name]) for name in STORY_CSV_NAMES),
         tuple(read_csv_dataset_or_empty(ROOT / name) for name in STORY_CSV_NAMES),
+        read_questions(paths["storyQuestions.json"]),
+        read_questions(ROOT / "storyQuestions.json"),
     )
     print(
         "Incremental plan: "
