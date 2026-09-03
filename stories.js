@@ -698,8 +698,13 @@ function resetStoryReaderView() {
   }
   const storyViewer = document.getElementById("story-viewer");
   const storyContent = document.getElementById("story-content");
+  const resultsContainer = document.getElementById("results-container");
   if (storyViewer) storyViewer.style.display = "none";
   if (storyContent) storyContent.innerHTML = "";
+  // displayStory() hides the shared results area while the reader is open.
+  // Every other core mode renders into it, so navigation away from a story
+  // must restore it before the destination view is drawn.
+  if (resultsContainer) resultsContainer.style.display = "block";
   document.documentElement.classList.remove("reading");
 }
 window.resetStoryReaderView = resetStoryReaderView;

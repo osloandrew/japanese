@@ -1,21 +1,8 @@
 // Day-streak tracking: how many consecutive calendar days in a row the
-// learner has answered at least one word-game question correctly. Ported
-// from Norwegian's streak.js, trimmed: that version's menu also shows a
-// gem wallet and lets a streak be protected by buying a "freeze" with
-// gems earned from a daily-quest system (DailyQuestAPI, defined in
-// Norwegian's wordGame.js) -- this app has no such gem economy, so a
-// wholesale port of that UI would show a permanently-empty, non-earnable,
-// non-spendable currency. Rather than ship that, renderStreakMenu() below
-// is a from-scratch, smaller version (count + status only); every other
-// function -- the actual streak math, storage, and sync-event handshake
-// with myWordsAuth.js -- is unchanged from Norwegian's.
-//
-// Norwegian's trigger point is "a completed/ended word-game round"
-// (showWordGameRoundSummary()); this app's word game has no round/summary
-// concept at all, just continuous play, so the equivalent trigger here is
-// simpler: every correct answer calls recordStreakActivity() (see
-// wordGame.js), and this file's own "already counted today" check
-// (below) makes repeat calls on the same day free no-ops.
+// learner has completed at least one word-game round (a bounded round
+// finishing, or an infinite round being manually ended — see
+// showWordGameRoundSummary() in wordGame.js, the single place that calls
+// recordStreakActivity()).
 //
 // Mirrors wordList.js's wordStrengths pattern: state lives in localStorage
 // (always, signed in or not), a CustomEvent fires on every save so
@@ -26,6 +13,11 @@
   "use strict";
 
   const STREAK_STORAGE_KEY = "japanese-dictionary-streak-v1";
+  const FREEZE_COSTS = Object.freeze({
+    emerald: 4,
+    ruby: 2,
+    sapphire: 1,
+  });
 
   function defaultStreakState() {
     return {
@@ -33,10 +25,8 @@
       longestCount: 0,
       lastActiveDate: null, // "YYYY-MM-DD", local date
       graceUsed: false, // the one free missed-day forgiveness, per streak
-      // Not settable yet (no gem economy to buy one with -- see file
-      // comment above), but kept in the state shape so recordStreakActivity's
-      // freeze-covered branch and a future gem economy don't need a data
-      // migration to start using it.
+      // A purchased freeze stays ready for this date and rolls forward on
+      // each day the learner practices, until it protects a missed day.
       freezeDate: null,
     };
   }
@@ -134,17 +124,16 @@
     }).format(new Date(year, month - 1, day, 12));
   }
 
-  // Called on every correct word-game answer (see wordGame.js). Safe to
-  // call more than once per day -- the "already-counted" branch below
-  // makes every call after the first a no-op. Returns what actually
-  // happened so a future caller could show an appropriate message (e.g.
-  // calling out that the grace day was just spent).
+  // Called once per completed/ended word-game round. Returns what actually
+  // happened so the caller (the round summary screen) can show an
+  // appropriate message — e.g. calling out that the grace day was just
+  // spent, rather than silently extending the streak.
   function recordStreakActivity() {
     const today = getLocalDateString();
 
     if (streakState.lastActiveDate === today) {
-      // Already counted today — nothing changes, just report where things
-      // stand.
+      // Already played today — nothing changes, just report where things
+      // stand (a second round in one day shouldn't double-count).
       return {
         status: "already-counted",
         count: streakState.count,
@@ -241,10 +230,13 @@
       countEl.textContent = String(streakState.count);
       menu.classList.remove("hidden");
       const today = getLocalDateString();
+      const protectedToday = streakState.freezeDate === today;
       const completeToday = streakState.lastActiveDate === today;
-      const label = completeToday
-        ? `${streakState.count}-day streak; practice complete for today`
-        : `${streakState.count}-day streak; study today to keep it`;
+      const label = protectedToday
+        ? `${streakState.count}-day streak; a freeze is ready for today`
+        : completeToday
+          ? `${streakState.count}-day streak; practice complete for today`
+          : `${streakState.count}-day streak; study today to keep it`;
       badge.setAttribute("aria-label", label);
       badge.title = label;
     } else {
@@ -254,22 +246,90 @@
 
   function getMenuStatus() {
     const today = getLocalDateString();
+    if (streakState.freezeDate === today) {
+      return `A freeze is ready for today. Return by ${formatStreakDate(dayAfter(today))} to keep your streak.`;
+    }
+    if (streakState.freezeDate === dayAfter(today)) {
+      return `A freeze is ready for tomorrow. Return by ${formatStreakDate(dayAfter(streakState.freezeDate))} to keep your streak.`;
+    }
     if (streakState.lastActiveDate === today) {
       return `Practice complete. Return by ${formatStreakDate(dayAfter(today))} to keep your streak.`;
     }
     return `Return by ${formatStreakDate(today)} to keep your ${streakState.count}-day streak.`;
   }
 
-  // Trimmed from Norwegian's version: count + status only, no gem wallet
-  // or freeze-purchase section -- see file comment for why.
+  function getGemPlural(reward) {
+    return { emerald: "Emeralds", ruby: "Rubies", sapphire: "Sapphires" }[
+      reward
+    ];
+  }
+
+  function getStreakMenuGemMarkup(reward) {
+    return window.getDailyQuestGemMarkup?.(
+      reward,
+      "streak-menu-gem-icon",
+    ) ?? `<span class="streak-menu-gem-fallback" aria-hidden="true">◆</span>`;
+  }
+
   function renderStreakMenu() {
     const panel = document.getElementById("streak-menu-panel");
     if (!panel) return;
 
+    const today = getLocalDateString();
+    const canBuyFreeze =
+      streakState.count > 0 &&
+      Boolean(streakState.lastActiveDate) &&
+      !streakState.freezeDate &&
+      (streakState.lastActiveDate === today ||
+        daysBetween(streakState.lastActiveDate, today) === 1);
+    const freezeTarget =
+      streakState.lastActiveDate === today ? dayAfter(today) : today;
+    const balance = (reward) => window.DailyQuestAPI?.getGemBalance?.(reward) ?? 0;
+    const optionMarkup = Object.entries(FREEZE_COSTS)
+      .map(([reward, cost]) => {
+        const available = balance(reward);
+        const disabled = !canBuyFreeze || available < cost;
+        const label = `Buy with ${cost} ${cost === 1 ? reward : getGemPlural(reward).toLowerCase()}`;
+        return `<button type="button" class="streak-menu-freeze-option streak-menu-freeze-option--${reward}" data-freeze-reward="${reward}" ${disabled ? "disabled" : ""}>${getStreakMenuGemMarkup(reward)}<span class="streak-menu-freeze-label">${label}</span><span class="streak-menu-freeze-available">${available} available</span></button>`;
+      })
+      .join("");
+
     panel.innerHTML = `
       <h2 class="streak-menu-heading">${streakState.count}-day streak</h2>
       <p class="streak-menu-status">${getMenuStatus()}</p>
+      <div class="streak-menu-wallet" aria-label="Gem balances">
+        ${Object.keys(FREEZE_COSTS)
+          .map((reward) => `<span class="streak-menu-gem streak-menu-gem--${reward}">${getStreakMenuGemMarkup(reward)}<span class="streak-menu-gem-count">${balance(reward)}</span>${getGemPlural(reward)}</span>`)
+          .join("")}
+      </div>
+      ${canBuyFreeze ? `<p class="streak-menu-freeze-heading">Buy a freeze for ${freezeTarget === today ? "today" : "tomorrow"}</p><div class="streak-menu-freeze-options">${optionMarkup}</div><p class="streak-menu-note">It stays ready for the next day you miss, so studying tomorrow will not waste it.</p>` : ""}
     `;
+
+    panel.querySelectorAll("[data-freeze-reward]").forEach((button) => {
+      button.addEventListener("click", () => buyFreeze(button.dataset.freezeReward));
+    });
+  }
+
+  function buyFreeze(reward) {
+    const cost = FREEZE_COSTS[reward];
+    const today = getLocalDateString();
+    if (
+      !cost ||
+      !streakState.lastActiveDate ||
+      streakState.freezeDate ||
+      (streakState.lastActiveDate !== today &&
+        daysBetween(streakState.lastActiveDate, today) !== 1) ||
+      !window.DailyQuestAPI?.spendGem?.(reward, cost)
+    ) {
+      renderStreakMenu();
+      return;
+    }
+
+    streakState.freezeDate =
+      streakState.lastActiveDate === today ? dayAfter(today) : today;
+    saveStreakState();
+    renderStreakMenu();
+    window.trackEvent?.("streak_freeze_bought", { reward, gem_cost: cost, streak_count: streakState.count });
   }
 
   function positionStreakMenuPanel(button, panel) {
@@ -333,6 +393,7 @@
   window.StreakAPI = Object.freeze({
     getState: () => ({ ...streakState }),
     recordActivity: recordStreakActivity,
+    buyFreeze,
     replaceState: replaceStreakState,
   });
 })();

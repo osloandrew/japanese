@@ -96,7 +96,7 @@
     <!-- Google Analytics -->
     <script
       async
-      src="https://www.googletagmanager.com/gtag/js?id=G-M5H81RF3DT"
+      src="https://www.googletagmanager.com/gtag/js?id=G-VN92KMZTZS"
     ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
@@ -104,7 +104,7 @@
         dataLayer.push(arguments);
       }
       gtag("js", new Date());
-      gtag("config", "G-M5H81RF3DT");
+      gtag("config", "G-VN92KMZTZS");
     </script>
   </head>
 
@@ -125,14 +125,10 @@
 
       <div class="header-top-row">
         <div id="auth-container" class="auth-container">
-          <!-- Single entry point for "about the app" pages that don't belong
-               in #mode-nav (that's for browsing modes -- see its own
-               comment). Just About for now; Norwegian's equivalent also has
-               My Stats/Settings/What's New, none of which exist here yet
-               (need backend this app doesn't have -- deferred earlier this
-               session). Grouped inside #auth-container (mirroring
-               Norwegian) so the opposite corner is free for
-               .story-report-issue-btn while reading. -->
+          <!-- Account and personal-report destinations live here rather than
+               in #mode-nav, which is reserved for browsing and practice
+               modes. Grouped inside #auth-container so the opposite corner
+               remains free for .story-report-issue-btn while reading. -->
           <div class="account-menu">
             <button
               type="button"
@@ -151,6 +147,15 @@
               class="account-menu-panel hidden"
               role="menu"
             >
+              <a
+                href="?type=my-stats"
+                class="account-menu-item"
+                data-mode="my-stats"
+                role="menuitem"
+              >
+                <i class="fas fa-chart-simple" aria-hidden="true"></i>
+                My Stats
+              </a>
               <a
                 href="?type=settings"
                 class="account-menu-item"
@@ -190,7 +195,7 @@
               id="streak-menu-panel"
               class="streak-menu-panel hidden"
               role="dialog"
-              aria-label="Day streak"
+              aria-label="Day streak and gems"
             ></div>
           </div>
 
@@ -260,11 +265,10 @@
     </header>
 
     <!-- Primary mode nav: a top tab strip on desktop, a fixed bottom tab bar
-         on mobile. Ported from norwegian/index.html's #mode-nav, trimmed to
-         the modes that exist here (no My Words/My Stats/Settings/About --
-         those need backend this app doesn't have yet; no Pronunciation --
-         it isn't in Norwegian's nav either, reached only via its own
-         landing-page card there too). Each tab carries a real href for
+         on mobile. My Words, My Stats, Settings, and About deliberately live
+         elsewhere because they are saved-data or account destinations rather
+         than browsing modes. Pronunciation is reached from its landing-page
+         card. Each tab carries a real href for
          crawlers/no-JS visitors/middle-click; a plain click is intercepted
          in initializeModeNav() (scripts.js) to call the existing
          selectType(), the same in-page transition the type-select dropdown
@@ -381,6 +385,10 @@
                 <option value="sentences">Sentences</option>
                 <option value="stories">Stories</option>
                 <option value="word-game">Word Game</option>
+                <option value="word-list">My Words</option>
+                <option value="my-stats">My Stats</option>
+                <option value="settings">Settings</option>
+                <option value="about">About</option>
               </select>
               <i class="fas fa-chevron-down"></i>
             </div>
@@ -661,248 +669,85 @@
              there too, see .coffee-btn) -- it isn't a browsing mode like
              the rest of this grid, matching Norwegian's own landing page,
              which doesn't give it a card here either. -->
+        <h3 class="landing-explore-heading">Explore More Ways to Learn</h3>
+
         <div class="landing-card-button-grid">
-          <!-- Dictionary Search Button -->
-          <div class="button-container">
-            <img
-              class="landing-card-image"
-              src="Resources/Photos/words.svg"
-              alt="Words"
-            />
-            <button class="landing-card-btn" onclick="selectType('words')">
-              Dictionary Search
-            </button>
+          <a
+            class="button-container"
+            href="?type=words"
+            data-navigation-action="sample-word"
+            data-sample-word="人"
+          >
+            <div class="landing-card-icon-chip">
+              <img class="landing-card-image" src="Resources/Photos/words.svg" alt="" />
+            </div>
+            <h3 class="landing-card-title">Words</h3>
             <ul class="landing-feature-list">
               <li>Japanese-English definitions and translations</li>
-              <li>Word class and CEFR difficulty level</li>
+              <li>Word class, reading, and CEFR difficulty level</li>
               <li>Audio pronunciation and example sentences</li>
             </ul>
-          </div>
+          </a>
 
-          <!-- Sentence Search Button -->
-          <div class="button-container">
-            <img
-              class="landing-card-image"
-              src="Resources/Photos/sentences.svg"
-              alt="Sentences"
-            />
-            <button class="landing-card-btn" onclick="selectType('sentences')">
-              Sentence Search
-            </button>
+          <a class="button-container" data-mode="sentences" href="?type=sentences">
+            <div class="landing-card-icon-chip">
+              <img class="landing-card-image" src="Resources/Photos/sentences.svg" alt="" />
+            </div>
+            <h3 class="landing-card-title">Sentence Search</h3>
             <ul class="landing-feature-list">
-              <li>Search real Japanese sentences by word</li>
+              <li>Search Japanese sentences by kanji, kana, or English</li>
               <li>English translations alongside every sentence</li>
-              <li>Audio playback to hear the word in context</li>
+              <li>Audio playback to hear words in context</li>
             </ul>
-          </div>
+          </a>
 
-          <!-- Japanese Stories Button -->
-          <div class="button-container">
-            <img
-              class="landing-card-image"
-              src="Resources/Photos/stories.svg"
-              alt="Stories"
-            />
-            <button class="landing-card-btn" onclick="selectType('stories')">
-              Japanese Stories
-            </button>
+          <a class="button-container" data-mode="stories" href="?type=stories">
+            <div class="landing-card-icon-chip">
+              <img class="landing-card-image" src="Resources/Photos/stories.svg" alt="" />
+            </div>
+            <h3 class="landing-card-title">Japanese Stories</h3>
             <ul class="landing-feature-list">
               <li>Graded reading from CEFR A1 to C</li>
               <li>Narrated audio with adjustable playback speed</li>
               <li>Save favorites to read again later</li>
             </ul>
-          </div>
+          </a>
 
-          <!-- Word Game Button -->
-          <div class="button-container">
-            <img
-              class="landing-card-image"
-              src="Resources/Photos/word-game.svg"
-              alt="Word Games"
-            />
-            <button class="landing-card-btn" onclick="selectType('word-game')">
-              Word Game
-            </button>
+          <a class="button-container" data-mode="word-game" href="?type=word-game">
+            <div class="landing-card-icon-chip">
+              <img class="landing-card-image" src="Resources/Photos/word-game.svg" alt="" />
+            </div>
+            <h3 class="landing-card-title">Word Game</h3>
             <ul class="landing-feature-list">
-              <li>Flashcard, cloze, listening, and reverse-recall questions</li>
-              <li>Automatically adjusts to your CEFR level</li>
-              <li>Missed words come back for review until you've got them</li>
+              <li>Multiple-choice, listening, typing, and cloze exercises</li>
+              <li>Difficulty adapts to your ability as you play</li>
+              <li>Daily quests and streaks build a learning habit</li>
             </ul>
-          </div>
+          </a>
 
-          <!-- Pronunciation Guide Button -->
-          <div class="button-container">
-            <img
-              class="landing-card-image"
-              src="Resources/Photos/pronunciation.svg"
-              alt="Pronunciation"
-            />
-            <button
-              class="landing-card-btn"
-              id="toggle-pronunciation"
-              onclick="togglePronunciationGuide()"
-            >
-              Pronunciation Guide
-            </button>
+          <a class="button-container" data-mode="word-list" href="?type=word-list">
+            <div class="landing-card-icon-chip">
+              <img class="landing-card-image" src="Resources/Photos/bookmark.svg" alt="" />
+            </div>
+            <h3 class="landing-card-title">My Words</h3>
             <ul class="landing-feature-list">
-              <li>IPA and Hepburn romanization reference</li>
-              <li>Vowel and consonant sound comparisons to English</li>
-              <li>Example words for each sound</li>
+              <li>Build a personal Japanese vocabulary list</li>
+              <li>Filter by word class, CEFR level, or strength</li>
+              <li>Sync your saved words across devices</li>
             </ul>
-          </div>
-        </div>
-        <div class="pronunciation-wrapper hidden">
-          <h3>Japanese Pronunciation Guide for English Speakers</h3>
-          <p>
-            Japanese has five steady vowel phonemes and a relatively small set
-            of consonant patterns. Vowels are short and even, without the
-            diphthong glides common in English. Consonant variation across
-            regions is minimal compared to Spanish, though pitch accent differs
-            by dialect. This guide uses IPA and examples in Hepburn romanization
-            and kana.
-          </p>
+          </a>
 
-          <table class="pronunciation-table">
-            <thead>
-              <tr>
-                <th>Japanese Sound</th>
-                <th>Pronunciation Symbol</th>
-                <th>Example (Japanese)</th>
-                <th>Similar English Sound</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- VOWELS -->
-              <tr>
-                <td data-label="Japanese Sound">a</td>
-                <td data-label="Pronunciation Symbol">/a/</td>
-                <td data-label="Example (Japanese)">さか saka</td>
-                <td data-label="Similar English Sound">
-                  Like the first vowel in "father" but shorter and steadier
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">i</td>
-                <td data-label="Pronunciation Symbol">/i/</td>
-                <td data-label="Example (Japanese)">いし ishi</td>
-                <td data-label="Similar English Sound">
-                  "ee" in "machine" but shorter
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">u</td>
-                <td data-label="Pronunciation Symbol">/ɯ/</td>
-                <td data-label="Example (Japanese)">ふゆ fuyu</td>
-                <td data-label="Similar English Sound">
-                  Close to "oo" in "food," but unrounded; lips are relaxed
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">e</td>
-                <td data-label="Pronunciation Symbol">/e/</td>
-                <td data-label="Example (Japanese)">てん ten</td>
-                <td data-label="Similar English Sound">
-                  Between "bet" and "bait" but without a glide
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">o</td>
-                <td data-label="Pronunciation Symbol">/o/</td>
-                <td data-label="Example (Japanese)">とき toki</td>
-                <td data-label="Similar English Sound">
-                  "o" in "story" but shorter and purer
-                </td>
-              </tr>
-
-              <!-- CONSONANTS -->
-              <tr>
-                <td data-label="Japanese Sound">r (らりるれろ)</td>
-                <td data-label="Pronunciation Symbol">/ɾ/ (tap)</td>
-                <td data-label="Example (Japanese)">らく raku</td>
-                <td data-label="Similar English Sound">
-                  A single flap, like the quick "tt" in American "butter"
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">f (ふ)</td>
-                <td data-label="Pronunciation Symbol">/ɸ/</td>
-                <td data-label="Example (Japanese)">ふじ Fuji</td>
-                <td data-label="Similar English Sound">
-                  Between English "f" and "h," lips lightly rounded
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">tsu (つ)</td>
-                <td data-label="Pronunciation Symbol">/t͡s/</td>
-                <td data-label="Example (Japanese)">つき tsuki</td>
-                <td data-label="Similar English Sound">"ts" in "cats"</td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">shi (し)</td>
-                <td data-label="Pronunciation Symbol">/ɕi/</td>
-                <td data-label="Example (Japanese)">しろ shiro</td>
-                <td data-label="Similar English Sound">
-                  Like "she" in English but softer, with spread lips
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">chi (ち)</td>
-                <td data-label="Pronunciation Symbol">/t͡ɕi/</td>
-                <td data-label="Example (Japanese)">ちいさい chiisai</td>
-                <td data-label="Similar English Sound">
-                  "chee" in "cheese" but with tongue closer to "sh"
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">g intervocalic</td>
-                <td data-label="Pronunciation Symbol">/ŋ/ ~ /ɡ/ variation</td>
-                <td data-label="Example (Japanese)">
-                  かぐ kagu → [kaŋɯ] in some dialects
-                </td>
-                <td data-label="Similar English Sound">
-                  "ng" in "song" or "g" in "go," depending on region
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">long consonants</td>
-                <td data-label="Pronunciation Symbol">[kk], [ss], etc.</td>
-                <td data-label="Example (Japanese)">がっこう gakkō</td>
-                <td data-label="Similar English Sound">
-                  Like holding the consonant slightly longer than in English
-                </td>
-              </tr>
-              <tr>
-                <td data-label="Japanese Sound">long vowels</td>
-                <td data-label="Pronunciation Symbol">
-                  [aa], [ii], [uu], [ee], [oo]
-                </td>
-                <td data-label="Example (Japanese)">おばあさん obāsan</td>
-                <td data-label="Similar English Sound">
-                  Simply prolong the vowel, no change in quality
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h4>Pitch Accent</h4>
-          <p>
-            Japanese does not use word stress like English or Spanish. Instead,
-            it has pitch accent: one syllable (or mora) is pronounced with a
-            higher pitch, and following syllables may drop. For example,
-            <strong>はし</strong> can mean "chopsticks" (HAshi, high–low) or
-            "bridge" (haSHI, low–high). Pitch accent patterns differ between
-            Tokyo and Kansai dialects.
-          </p>
-
-          <h4>Helpful Notes</h4>
-          <p>
-            Japanese is mora-timed: rhythm is based on equal units (morae)
-            rather than stress. Double consonants and long vowels count as extra
-            morae. The syllabic
-            <strong>ん</strong> /N/ can assimilate to [m], [n], [ŋ], or [ɴ]
-            depending on what follows. Geminate stops (っ) cause a pause before
-            the consonant.
-          </p>
+          <a class="button-container" data-mode="my-stats" href="?type=my-stats">
+            <div class="landing-card-icon-chip">
+              <img class="landing-card-image" src="Resources/Photos/stats.svg" alt="" />
+            </div>
+            <h3 class="landing-card-title">My Stats</h3>
+            <ul class="landing-feature-list">
+              <li>Track your daily and longest streaks</li>
+              <li>See your vocabulary strength profile</li>
+              <li>Review the words you have missed most</li>
+            </ul>
+          </a>
         </div>
       </div>
       <section id="story-viewer" style="display: none">
@@ -994,12 +839,13 @@
     <script src="myWordsAuth.js" defer></script>
     <script src="noRandom.js" defer></script>
     <script src="noRandomLetters.js" defer></script>
-    <script src="scripts.js" defer></script>
+    <script src="scripts.js?v=cb2aca39d1" defer></script>
     <script src="wordGamePolicy.js" defer></script>
     <script src="wordGame.js" defer></script>
     <script src="placementTest.js" defer></script>
-    <script src="streak.js" defer></script>
-    <script src="stories.js" defer></script>
+    <script src="streak.js?v=f1435732b0" defer></script>
+    <script src="stories.js?v=b9d635bea5" defer></script>
+    <script src="myStats.js?v=d0e4e44b8b" defer></script>
     <script src="pronunciation.js"></script>
     <script src="https://unpkg.com/wavesurfer.js"></script>
     <script src="https://unpkg.com/meyda/dist/web/meyda.min.js"></script>

@@ -242,11 +242,6 @@ function normalize(str) {
   return (str || "").toLowerCase().trim();
 }
 
-function togglePronunciationGuide() {
-  const pronunciationWrapper = document.querySelector(".pronunciation-wrapper"); // Target the wrapper div
-  pronunciationWrapper.classList.toggle("hidden"); // Toggle hidden class
-}
-
 // Filter results based on selected part of speech (POS). The CSV's
 // "gender" column actually holds the part of speech itself (noun, verb,
 // adjective, ...) for this Japanese data, not grammatical gender.
@@ -1176,8 +1171,22 @@ async function search(queryOverride = null) {
 
     let ids = null;
     for (const t of terms) {
-      const match = sentenceIndex.get(t) || [];
-      const asArray = ArrayBuffer.isView(match) ? Array.from(match) : match;
+      const indexedMatch = sentenceIndex.get(t) || [];
+      let asArray = ArrayBuffer.isView(indexedMatch)
+        ? Array.from(indexedMatch)
+        : indexedMatch;
+
+      // Japanese normally has no spaces between words, so the token index
+      // contains a whole sentence such as「あそこに立っている人」rather
+      // than a separate posting for「人」. Fall back to a lightweight
+      // substring scan when a term has no direct posting. This keeps English
+      // searches on the fast token index while making kanji, hiragana, and
+      // katakana searches behave as learners expect.
+      if (asArray.length === 0) {
+        asArray = sentenceCorpus
+          .filter((row) => row.noNorm.includes(t) || row.enNorm.includes(t))
+          .map((row) => row.id);
+      }
       ids =
         ids === null
           ? new Set(asArray)
@@ -1644,9 +1653,7 @@ function syncModeNav(type) {
   document.body.dataset.mode = type;
   document.body.classList.toggle("word-game-mode", type === "word-game");
   document.body.classList.toggle("stories-mode", type === "stories");
-  // Not reachable yet (My Stats isn't ported -- see this session's My
-  // Stats deferral), but harmless to set now: ready for when it exists
-  // rather than needing this function touched again then.
+  // My Stats uses a dedicated page layout with no search toolbar.
   document.body.classList.toggle("my-stats-mode", type === "my-stats");
   document.body.classList.toggle(
     "word-list-mode",
@@ -1704,7 +1711,9 @@ function initializeModeNav() {
     returnToLandingPage();
   });
 
-  document.querySelectorAll(".mode-tab[data-mode]").forEach((tab) => {
+  document
+    .querySelectorAll(".mode-tab[data-mode], .button-container[data-mode]")
+    .forEach((tab) => {
     tab.addEventListener("click", (event) => {
       if (!isPlainLeftClick(event)) return;
       event.preventDefault();
@@ -1718,14 +1727,26 @@ function initializeModeNav() {
         selectType(tab.dataset.mode);
       }
     });
-  });
+    });
+
+  // Match Norwegian's landing-page behavior: the Words card demonstrates a
+  // real Japanese lookup instead of opening an otherwise empty search view.
+  document
+    .querySelectorAll('[data-navigation-action="sample-word"]')
+    .forEach((link) => {
+      link.addEventListener("click", (event) => {
+        if (!isPlainLeftClick(event)) return;
+        event.preventDefault();
+        const searchBar = document.getElementById("search-bar");
+        if (searchBar) searchBar.value = link.dataset.sampleWord || "人";
+        selectType("words");
+      });
+    });
 }
 
 // Toggleable dropdown for the account menu (#account-menu-btn/
-// #account-menu-panel) -- just About for now. Ported from Norwegian's
-// initializeAccountMenu(), trimmed (no app-menu:open broadcast -- that
-// exists there to stay mutually exclusive with a streak menu that
-// doesn't exist here).
+// #account-menu-panel). It shares the compact header space with the streak
+// panel, so the app-menu:open event keeps the two mutually exclusive.
 function positionAccountMenuPanel(button, panel) {
   const viewportGutter = 8;
   panel.classList.remove("account-menu-panel--opens-right");
@@ -1762,6 +1783,9 @@ function initializeAccountMenu() {
     panel.classList.remove("hidden");
     positionAccountMenuPanel(button, panel);
     button.setAttribute("aria-expanded", "true");
+    document.dispatchEvent(
+      new CustomEvent("app-menu:open", { detail: { id: "account" } })
+    );
   };
 
   button.addEventListener("click", (event) => {
@@ -1782,6 +1806,10 @@ function initializeAccountMenu() {
       closeMenu();
       button.focus();
     }
+  });
+
+  document.addEventListener("app-menu:open", (event) => {
+    if (event.detail?.id !== "account") closeMenu();
   });
 
   window.addEventListener("resize", () => {
@@ -2021,22 +2049,23 @@ function handleTypeChange(type, options = {}) {
     wordGameRoundActive = false;
     resetGame();
     startWordGame(); // Call the word game function
-  } else if (type === "pronunciation") {
-    // Same UI adjustments you already had…
-    setEnglishVisible(true);
+  } else if (type === "my-stats") {
+    // My Stats is a personal report, so it has no search or filter controls.
     genreFilterContainer.style.display = "none";
     storyFavoritesFilterContainer.style.display = "none";
-    searchBarWrapper.style.display = "inline-flex";
-    randomBtn.style.display = "block";
-    posFilterContainer.style.display = "inline-flex";
-    posSelect.disabled = true;
+    searchBarWrapper.style.display = "none";
+    randomBtn.style.display = "none";
+    posFilterContainer.style.display = "none";
+    cefrFilterContainer.style.display = "none";
     cefrLock.style.display = "none";
-    cefrSelect.disabled = false;
-    cefrFilterContainer.classList.remove("disabled");
 
+    searchContainerInner.classList.remove("word-game-active");
+    gameActive = false;
+
+    clearInput();
     disableSearchControls();
-    // Now call the pronunciation module
-    initPronunciation();
+    document.title = "My Stats - Japanese Dictionary";
+    window.initMyStats?.();
   } else if (type === "about") {
     genreFilterContainer.style.display = "none";
     storyFavoritesFilterContainer.style.display = "none";
