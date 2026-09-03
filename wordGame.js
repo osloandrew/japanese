@@ -726,83 +726,22 @@ async function renderClozeQuestion(randomWordObj, uniqueDisplayedTranslations) {
   );
   const exampleText = matchingEntry?.eksempel || "";
   const firstSentence = exampleText.split(/(?<=[.!?])\s+/)[0];
-  const tokens = firstSentence.match(/\p{L}+/gu) || [];
+  const firstTranslation =
+    (matchingEntry?.sentenceTranslation || "").split(/(?<=[.!?])\s+/)[0] || "";
 
-  let clozedForm = null;
-  const baseWordTokens = baseWord.split(/\s+/);
+  const clozeMatch = findClozeSpan(
+    baseWord,
+    firstSentence,
+    randomWordObj.gender,
+    randomWordObj.uttale
+  );
 
-  // original nested search
-  for (let start = 0; start < tokens.length; start++) {
-    for (let end = start + 1; end <= tokens.length; end++) {
-      const group = tokens.slice(start, end);
-      const joinedWithSpace = group.join(" ").toLowerCase();
-      const joinedWithHyphen = group.join("-").toLowerCase();
-
-      // These return the matched span itself (e.g. "急いで"), not just a
-      // boolean — Japanese has no spaces, so `group` is often an entire
-      // clause with more text glued on after the word we're clozing, and
-      // only the matched prefix should become the blank.
-      const spaceMatch = matchesInflectedForm(
-        baseWord,
-        joinedWithSpace,
-        randomWordObj.gender,
-        randomWordObj.uttale
-      );
-      if (spaceMatch) {
-        clozedForm = group.join(" ").slice(0, spaceMatch.length);
-        break;
-      }
-      const hyphenMatch = matchesInflectedForm(
-        baseWord,
-        joinedWithHyphen,
-        randomWordObj.gender,
-        randomWordObj.uttale
-      );
-      if (hyphenMatch) {
-        clozedForm = group.join("-").slice(0, hyphenMatch.length);
-        break;
-      }
-    }
-    if (clozedForm) break;
+  if (!clozeMatch) {
+    // fallback to flashcard if cloze not possible
+    renderWordGameUI(randomWordObj, uniqueDisplayedTranslations, false);
+    return;
   }
-
-  if (!clozedForm) {
-    const cleanedTokens = tokens.map((t) =>
-      t.toLowerCase().replace(/[.,!?;:()"]/g, "")
-    );
-    const normalizedTokens = cleanedTokens;
-    const normalizedBase = baseWord;
-
-    let fallbackClozed = null;
-    for (let len = normalizedBase.length; len > 2; len--) {
-      const prefix = normalizedBase.slice(0, len);
-      const matchIndex = normalizedTokens.findIndex((t) =>
-        t.startsWith(prefix)
-      );
-      if (matchIndex !== -1) {
-        const endIndex = matchIndex + baseWordTokens.length - 1;
-        const matchedTokens = tokens.slice(matchIndex, endIndex + 1);
-
-        const restOfBase = baseWordTokens.slice(1).join(" ");
-        const restOfSentence = matchedTokens.slice(1).join(" ").toLowerCase();
-
-        if (restOfSentence === restOfBase) {
-          fallbackClozed = matchedTokens.join(" ");
-        } else {
-          fallbackClozed = tokens[matchIndex];
-        }
-        break;
-      }
-    }
-
-    if (fallbackClozed) {
-      clozedForm = fallbackClozed;
-    } else {
-      // fallback to flashcard if cloze not possible
-      renderWordGameUI(randomWordObj, uniqueDisplayedTranslations, false);
-      return;
-    }
-  }
+  const clozedForm = clozeMatch.form;
 
   const formatCase = (w) => w.charAt(0).toLowerCase() + w.slice(1);
   let formattedClozed = formatCase(clozedForm);
@@ -846,7 +785,10 @@ async function renderClozeQuestion(randomWordObj, uniqueDisplayedTranslations) {
     }
   }
 
-  await renderClozeGameUI(randomWordObj, uniqueWords, formattedClozed, false);
+  await renderClozeGameUI(randomWordObj, uniqueWords, formattedClozed, false, "", {
+    exampleSentence: firstSentence,
+    sentenceTranslation: firstTranslation,
+  });
 }
 
 async function serveNewWord() {
@@ -1161,10 +1103,6 @@ function pickRandom(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function escapeRegExp(str) {
-  return String(str).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
 function shortGenderLabel(gender = "") {
   const map = {
     noun: "Noun",
@@ -1360,37 +1298,49 @@ async function renderClozeGameUI(
   translations,
   clozedWordForm,
   isReintroduced = false,
-  englishTranslation = ""
+  englishTranslation = "",
+  sentenceOverride = null
 ) {
-  // 1) Get the best example sentence + its translation (if present)
+  // 1) Get the best example sentence + its translation (if present).
+  // When the caller already found (and blanked) a specific sentence —
+  // e.g. renderClozeQuestion, which detects the clozed span itself —
+  // sentenceOverride pins us to that exact sentence instead of letting
+  // fetchExampleSentence independently (and possibly randomly, if a word
+  // has more than one example sentence) pick a different one. Two
+  // independent lookups could otherwise disagree on which sentence to
+  // show, leaving clozedWordForm unrelated to the displayed sentence.
   const baseWord = wordObj.ord.split(",")[0].trim();
   let exampleSentence = "";
   let sentenceTranslation = "";
 
-  try {
-    const fetched = await fetchExampleSentence(wordObj); // returns { exampleSentence, sentenceTranslation }
-    if (fetched) {
-      exampleSentence = fetched.exampleSentence || "";
-      sentenceTranslation = fetched.sentenceTranslation || "";
+  if (sentenceOverride && sentenceOverride.exampleSentence) {
+    exampleSentence = sentenceOverride.exampleSentence;
+    sentenceTranslation = sentenceOverride.sentenceTranslation || "";
+  } else {
+    try {
+      const fetched = await fetchExampleSentence(wordObj); // returns { exampleSentence, sentenceTranslation }
+      if (fetched) {
+        exampleSentence = fetched.exampleSentence || "";
+        sentenceTranslation = fetched.sentenceTranslation || "";
+      }
+    } catch (e) {
+      // silently continue; we'll fall back below
     }
-  } catch (e) {
-    // silently continue; we'll fall back below
   }
 
-  // 2) Build the cloze sentence: prefer the actual clozed form; fall back to base lemma
+  // 2) Build the cloze sentence: prefer the actual clozed form; fall back to base lemma.
+  // Plain substring search, not anchored to non-letter boundaries — Japanese
+  // has no spaces, so an anchored search only ever matched a sentence-initial
+  // word (see findClozeSpan for the same reasoning).
   let sentenceWithBlank = "";
   if (exampleSentence) {
     const candidates = [clozedWordForm, baseWord].filter(Boolean);
     let s = exampleSentence;
 
     for (const c of candidates) {
-      // Match any inflected or hyphenated form containing the base
-      const re = new RegExp(
-        `(?<!\\p{L})${escapeRegExp(c)}\\p{L}*(?!\\p{L})`,
-        "iu"
-      );
-      if (re.test(s)) {
-        s = s.replace(re, "___");
+      const index = s.toLowerCase().indexOf(c.toLowerCase());
+      if (index !== -1) {
+        s = s.slice(0, index) + "___" + s.slice(index + c.length);
         break;
       }
     }
@@ -1411,13 +1361,6 @@ async function renderClozeGameUI(
     englishTranslation && englishTranslation.trim()
       ? englishTranslation
       : sentenceTranslation;
-
-  // ✅ Ensure sentenceWithBlank really contains the blank
-  if (sentenceWithBlank && !sentenceWithBlank.includes("___")) {
-    const base = clozedWordForm || wordObj.ord.split(",")[0].trim();
-    const re = new RegExp(`\\b${escapeRegExp(base)}\\b`, "i");
-    sentenceWithBlank = sentenceWithBlank.replace(re, "___");
-  }
 
   // 4) Make sure the evaluator compares Japanese→Japanese
   wordObj.clozeAnswer = clozedWordForm;
@@ -2286,46 +2229,58 @@ function guessJaAdjFormKey(token) {
   return "dict";
 }
 
-// Does `token` look like an inflected form of `base` (a verb or
-// adjective dictionary-form lemma)? Used to locate which token in an
-// example sentence corresponds to the vocab word being tested.
+// Finds where an inflected form of `base` (a verb or adjective
+// dictionary-form lemma, or the bare lemma for any other POS) occurs
+// inside `sentence`. Used to locate which span of an example sentence
+// corresponds to the vocab word being tested.
 //
-// Returns the matched span (a prefix of `token`) rather than a plain
-// boolean — Japanese has no spaces between words, so a "token" here is
-// often a whole clause with more text glued on after the word we care
-// about (e.g. base "急ぐ" against token "急いで駅に行きます"). Callers
-// that only need a yes/no can still use the result directly in an `if`,
-// since a real match is always a non-empty (truthy) string.
-function matchesInflectedForm(base, token, gender, reading) {
-  if (!base || !token) return false;
+// Searches for the form ANYWHERE in the sentence, not just as a prefix.
+// Japanese has no spaces between words, so a naive \p{L}+ tokenization
+// of a sentence usually collapses the whole clause into one "token" —
+// and since Japanese is SOV, a verb or predicate adjective normally
+// lands at the END of that clause, not the start. A prefix-only check
+// therefore only ever matched sentence-initial words. Returns the
+// matched span and its index in `sentence`, or null.
+//
+// Verb/adjective candidate forms shorter than 2 characters are skipped
+// to avoid false-positive matches from a lone conjugation ending (e.g.
+// "て") that happens to occur elsewhere in the clause; the plain noun
+// (or other invariant-POS) lemma has no such minimum, since real
+// single-kanji nouns (上, 中, 人, ...) are common and legitimate.
+function findClozeSpan(base, sentence, gender, reading) {
+  if (!base || !sentence) return null;
 
   const lowerBase = base.toLowerCase();
-  const lowerToken = token.toLowerCase();
-
-  if (lowerToken === lowerBase) return lowerBase;
-
+  const lowerSentence = sentence.toLowerCase();
   const pos = (gender || "").toLowerCase();
 
-  let forms = null;
+  const MIN_INFLECTED_FORM_LENGTH = 2;
+  let candidates;
   if (pos.startsWith("verb")) {
-    forms = jaVerbForms(lowerBase, (reading || "").toLowerCase());
+    candidates = Object.values(jaVerbForms(lowerBase, (reading || "").toLowerCase())).filter(
+      (form) => form && form.length >= MIN_INFLECTED_FORM_LENGTH
+    );
   } else if (pos.startsWith("adjective")) {
-    forms = jaAdjectiveForms(lowerBase);
+    candidates = Object.values(jaAdjectiveForms(lowerBase)).filter(
+      (form) => form && form.length >= MIN_INFLECTED_FORM_LENGTH
+    );
   } else {
     // Every other POS (noun, adverb, particle, ...) is invariant in
-    // Japanese, so exact match (checked above) is the only valid match.
-    return false;
+    // Japanese, so the dictionary form is the only candidate.
+    candidates = [lowerBase];
   }
 
   // Prefer the longest matching form so e.g. "ました" wins over a
-  // shorter form that happens to also be a prefix.
-  const candidates = Object.values(forms)
-    .filter(Boolean)
-    .sort((a, b) => b.length - a.length);
+  // shorter form ("た") that also happens to occur in the sentence.
+  candidates = [...new Set(candidates)].sort((a, b) => b.length - a.length);
+
   for (const form of candidates) {
-    if (lowerToken.startsWith(form)) return form;
+    const index = lowerSentence.indexOf(form);
+    if (index !== -1) {
+      return { form: sentence.slice(index, index + form.length), index };
+    }
   }
-  return false;
+  return null;
 }
 
 // Produces the inflected form of `base` that matches the grammatical

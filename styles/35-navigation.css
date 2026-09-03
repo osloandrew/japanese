@@ -617,6 +617,37 @@ body.word-game-mode.word-game-round-active .cefr-filter-group {
   margin: 0;
 }
 
+/* Freestanding sibling of .search-bar-wrapper (not attached to it), so
+   unlike .search-btn it gets a full pill radius on every corner. A fixed
+   height rather than 100%: .search-and-random-wrapper uses
+   align-items: center at some breakpoints, where percentage heights on
+   a flex item don't stretch to the container. 44px matches
+   .search-bar-wrapper's own (content-driven) height. */
+.random-btn {
+  align-items: center;
+  background-color: var(--color-ink);
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  height: 44px;
+  width: 44px;
+  justify-content: center;
+  transition: background-color 0.3s ease;
+}
+
+.random-btn:hover {
+  background-color: var(--color-accent);
+  box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.random-btn i {
+  color: var(--color-surface);
+  font-size: 16px;
+  margin: 0;
+}
+
 .search-and-random-wrapper {
   display: flex;
   gap: 10px;
