@@ -17,9 +17,11 @@ verified differences in this app (see comments at each adapted check):
   (renderWordDefinition()'s <h1 class="word-gender"> for words, confirmed
   the same way), so the "exactly one <h1>" requirement applies to both.
 - FEATURE_PAGES required_text values are the real default-view text/markup
-  observed in an actual capture (see capture-feature-pages.py), not
-  guessed: "Random Sentence" is the Sentences tab's default heading here
-  (norwegian's own default text differs).
+  observed in an actual capture (see capture-feature-pages.py), not guessed:
+  "Results for" is the Sentences tab's default heading here, same as
+  norwegian -- showSentencesSearchExample() (scripts.js) now renders a real
+  "apple" search result there instead of a random sentence, mirroring
+  norwegian's own landing state.
 """
 
 from __future__ import annotations
@@ -39,7 +41,7 @@ from story_sources import existing_story_csv_paths
 ROOT = Path(__file__).resolve().parent.parent
 SITE = "https://osloandrew.github.io/japanese"
 FEATURE_PAGES = {
-    "sentences": "Random Sentence",
+    "sentences": "Results for",
     "word-game": "Preparing Word Game",
     "pronunciation": "sentence-box-practice",
 }
