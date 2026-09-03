@@ -1,0 +1,68 @@
+{
+  "富士山": {
+    "questions": [
+      {
+        "prompt": "How tall is Mount Fuji?",
+        "options": ["3776 meters", "2775 meters", "4200 meters", "1500 meters"],
+        "correctIndex": 0,
+        "sourceSentence": "高さは3776メートルです。"
+      },
+      {
+        "prompt": "Where is Mount Fuji located?",
+        "options": ["Hokkaido", "Honshu", "Kyushu", "Okinawa"],
+        "correctIndex": 1,
+        "sourceSentence": "場所は本州にあります。"
+      },
+      {
+        "prompt": "What happens to Mount Fuji in winter?",
+        "options": ["It turns green", "It disappears in fog", "It turns white with snow", "It becomes a lake"],
+        "correctIndex": 2,
+        "sourceSentence": "冬には雪で白くなります。"
+      }
+    ]
+  },
+  "新幹線": {
+    "questions": [
+      {
+        "prompt": "What is the Shinkansen?",
+        "options": ["A slow bus", "A very fast train", "A type of airplane", "A boat"],
+        "correctIndex": 1,
+        "sourceSentence": "新幹線はとても早い電車です。"
+      },
+      {
+        "prompt": "Why are Shinkansen tickets popular even though they are a bit expensive?",
+        "options": ["Because they are free on weekends", "Because seats are unlimited", "Because they are very fast", "Because they are the cheapest option"],
+        "correctIndex": 2,
+        "sourceSentence": "新幹線のチケットは少し高いですが、とても速いので人気があります。"
+      },
+      {
+        "prompt": "What can you do while riding the Shinkansen?",
+        "options": ["Watch a movie in a theater", "See the scenery", "Ride a bicycle", "Go swimming"],
+        "correctIndex": 1,
+        "sourceSentence": "景色を見ることもできます。"
+      }
+    ]
+  },
+  "今日の天気": {
+    "questions": [
+      {
+        "prompt": "What is the weather like today?",
+        "options": ["Rainy", "Sunny", "Snowy", "Cloudy"],
+        "correctIndex": 1,
+        "sourceSentence": "今日は晴れです。"
+      },
+      {
+        "prompt": "What is the temperature like today?",
+        "options": ["About 0 degrees", "About 35 degrees", "About 20 degrees", "About 10 degrees"],
+        "correctIndex": 2,
+        "sourceSentence": "気温は20度ぐらいで、とても気持ちがいいです。"
+      },
+      {
+        "prompt": "What does the person do because the weather is so nice?",
+        "options": ["Stays home and sleeps", "Watches TV all day", "Goes outside for a walk", "Goes to work early"],
+        "correctIndex": 2,
+        "sourceSentence": "とてもいい天気なので、外で散歩をします。"
+      }
+    ]
+  }
+}

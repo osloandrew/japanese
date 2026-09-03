@@ -1,5 +1,13 @@
 let storyResults = []; // Global variable to store the stories
 let currentSpeed = 1.0; // default speed
+
+// Bumped on every displayStory() call. The "Keep Reading" suggestion is
+// appended from inside an async chain (after the comprehension quiz's own
+// fetch settles) -- if the reader hits Back or opens a different story
+// before that resolves, the stale callback would otherwise append "Keep
+// Reading" onto whatever story is on screen by then instead of no-op'ing.
+// Ported from Norwegian's stories.js.
+let storyRenderToken = 0;
 // isEnglishVisible/setEnglishVisible live in englishVisibility.js, shared
 // with scripts.js and pronunciation.js.
 
@@ -566,6 +574,110 @@ function createStoryRecommendationElement(story) {
   return createStoryPromoCard(story, labelHTML);
 }
 
+// One CEFR level of distance and a genre mismatch are treated as roughly
+// equally costly -- so an exact-genre pick one level off from the current
+// story and a same-level pick in a different genre score the same, and
+// either can win depending on what's actually available. Ported from
+// Norwegian's stories.js.
+const NEXT_STORY_GENRE_MISMATCH_PENALTY = 1;
+
+function normalizeStoryGenre(genre) {
+  return (genre || "").trim().toLowerCase();
+}
+
+// How good a fit `candidate` is as the next read right after
+// `currentStory` -- purely a function of the two stories' CEFR level and
+// genre distance from each other, nothing about the reader's own ability.
+// Lower is better; 0 is an exact CEFR + genre match.
+function scoreNextStoryCandidate(candidate, currentStory) {
+  const cefrDistance =
+    currentStory.CEFR && candidate.CEFR
+      ? Math.abs(
+          (CEFR_ORDER[candidate.CEFR] ?? 0) -
+            (CEFR_ORDER[currentStory.CEFR] ?? 0),
+        )
+      : 0;
+  const genreMismatch =
+    normalizeStoryGenre(candidate.genre) ===
+    normalizeStoryGenre(currentStory.genre)
+      ? 0
+      : NEXT_STORY_GENRE_MISMATCH_PENALTY;
+  return cefrDistance + genreMismatch;
+}
+
+function getNextStorySuggestion(currentStory) {
+  const isEligible = (story) =>
+    story.CEFR &&
+    story.titleJapanese &&
+    story.titleJapanese !== currentStory.titleJapanese;
+
+  const isUnread = (story) => !readStoryTitles.has(story.titleJapanese);
+  const recentlyVisited = new Set(recentStoryChain);
+  const isFresh = (story) => !recentlyVisited.has(story.titleJapanese);
+
+  const eligible = storyResults.filter(isEligible);
+
+  // Tried in order, most-preferred first -- an unread story the reader
+  // hasn't just come from is the goal, but each condition is relaxed in
+  // turn rather than giving up, so a heavily-filtered or mostly-read
+  // corpus still gets *something* rather than no suggestion at all.
+  const pools = [
+    eligible.filter((s) => isUnread(s) && isFresh(s)),
+    eligible.filter(isUnread),
+    eligible.filter(isFresh),
+    eligible,
+  ];
+  const candidates = pools.find((pool) => pool.length > 0);
+
+  if (!candidates || !candidates.length) {
+    return null;
+  }
+
+  candidates.sort((a, b) => {
+    const scoreDiff =
+      scoreNextStoryCandidate(a, currentStory) -
+      scoreNextStoryCandidate(b, currentStory);
+    return scoreDiff !== 0
+      ? scoreDiff
+      : getStoryCharCount(a) - getStoryCharCount(b);
+  });
+
+  return candidates[0];
+}
+
+/*
+ * Appends the "Keep Reading" section below the comprehension quiz (or, for
+ * a story with no quiz, in the same spot). No-ops if there's no other
+ * story to suggest. Returns whether a section was actually appended, so
+ * callers can tell a genuine "nothing to suggest" apart from
+ * "storyResults isn't loaded yet".
+ */
+function renderNextStorySuggestion(storyContent, currentStory) {
+  if (!storyContent) return false;
+
+  const nextStory = getNextStorySuggestion(currentStory);
+  if (!nextStory) return false;
+
+  const section = document.createElement("div");
+  section.className = "story-next-section";
+
+  const heading = document.createElement("h3");
+  heading.className = "story-next-heading";
+  heading.textContent = "Keep Reading";
+  section.appendChild(heading);
+
+  section.appendChild(
+    createStoryPromoCard(
+      nextStory,
+      `<i class="fas fa-arrow-right" aria-hidden="true"></i> Up Next`,
+      "story-next-card",
+    ),
+  );
+
+  storyContent.appendChild(section);
+  return true;
+}
+
 async function fetchAndLoadStoryData() {
   showSpinner();
   try {
@@ -1117,6 +1229,7 @@ async function displayStory(titleJapanese, { userNavigation = false } = {}) {
 
   markStoryAsRead(selectedStory.titleJapanese);
   recordStoryChainVisit(selectedStory.titleJapanese);
+  const renderToken = ++storyRenderToken;
 
   updateURL(null, "story", null, titleJapanese); // Update URL with story parameter
   updateStoryMetadata(selectedStory);
@@ -1375,6 +1488,22 @@ async function displayStory(titleJapanese, { userNavigation = false } = {}) {
     hideSpinner(); // Hide spinner after story content is displayed
     if (userNavigation) {
       focusViewAfterNavigation?.(".sticky-title-japanese");
+    }
+
+    if (storyContent && typeof renderStoryComprehensionQuiz === "function") {
+      // Chained rather than fired alongside -- renderStoryComprehensionQuiz
+      // awaits a fetch before it knows whether this story even has a quiz
+      // to append, so appending "Keep Reading" unconditionally right here
+      // could land it above the quiz, or before a quiz-less story has
+      // settled at all. Waiting for that promise guarantees "Keep Reading"
+      // always ends up last, quiz or no quiz. Ported from Norwegian's
+      // stories.js.
+      renderStoryComprehensionQuiz(storyContent, selectedStory).then(() => {
+        if (renderToken !== storyRenderToken) return;
+        renderNextStorySuggestion(storyContent, selectedStory);
+      });
+    } else if (storyContent) {
+      renderNextStorySuggestion(storyContent, selectedStory);
     }
   };
 
