@@ -1196,6 +1196,15 @@ function syncModeNav(type) {
     tab.classList.toggle("active", active);
     tab.setAttribute("aria-current", active ? "page" : "false");
   });
+  // Settings/About share the same "nothing to search or filter" toolbar
+  // treatment (the empty #search-container band, #results-container
+  // width, #mode-nav's own bottom border once that band is hidden — see
+  // body.account-page-mode in the adopted stylesheets) without being My
+  // Stats/Word List themselves, hence the separate class.
+  document.body.classList.toggle(
+    "account-page-mode",
+    type === "settings" || type === "about"
+  );
 }
 
 function isPlainLeftClick(event) {
@@ -1557,6 +1566,19 @@ function handleTypeChange(type, options = {}) {
 
     document.title = "About - Japanese Dictionary";
     renderAboutPage();
+  } else if (type === "settings") {
+    genreFilterContainer.style.display = "none";
+    storyFavoritesFilterContainer.style.display = "none";
+    searchBarWrapper.style.display = "none";
+    randomBtn.style.display = "none";
+    posFilterContainer.style.display = "none";
+    cefrLock.style.display = "none";
+
+    searchContainerInner.classList.remove("word-game-active");
+    gameActive = false;
+
+    document.title = "Settings - Japanese Dictionary";
+    window.initSettings?.();
   } else if (type === "word-list") {
     genreFilterContainer.style.display = "none";
     storyFavoritesFilterContainer.style.display = "none";
@@ -2651,8 +2673,7 @@ function fetchAndRenderSentences(word, pos, showEnglish = true) {
   const matchingWordEntry = results.find(
     (result) =>
       result.ord.toLowerCase() === trimmedWord &&
-      pos &&
-      result.gender.toLowerCase().includes(pos.toLowerCase())
+      result.gender.toLowerCase().includes((pos || "").toLowerCase())
   );
   if (!matchingWordEntry) {
     console.error(`No matching word found for "${trimmedWord}".`);
