@@ -174,12 +174,12 @@ function showLandingCard(show) {
   }
 }
 
-// Function to navigate back to the landing card when the H1 is clicked
+// Function to navigate back to the landing card when the site title is clicked
 function returnToLandingPage() {
-  // Update the URL to the base URL without any query parameters
-  const baseUrl = window.location.origin + window.location.pathname;
-  window.history.pushState({}, "", baseUrl);
-  window.location.reload();
+  const searchBar = document.getElementById("search-bar");
+  if (searchBar) searchBar.value = "";
+  selectType("words");
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
 }
 
 // Debounce function to limit how often search is triggered
@@ -1677,6 +1677,17 @@ function isPlainLeftClick(event) {
 // instant, no-reload selectType() transition the old type-select dropdown
 // always used, instead of a full page load.
 function initializeModeNav() {
+  // #site-title ships a real href="./" (see index.html) so crawlers/no-JS
+  // visitors/middle-click get a working destination directly from the
+  // attribute; a plain left-click is intercepted to run the same instant,
+  // no-reload transition every other nav link uses.
+  const siteTitle = document.getElementById("site-title");
+  siteTitle?.addEventListener("click", (event) => {
+    if (!isPlainLeftClick(event)) return;
+    event.preventDefault();
+    returnToLandingPage();
+  });
+
   document.querySelectorAll(".mode-tab[data-mode]").forEach((tab) => {
     tab.addEventListener("click", (event) => {
       if (!isPlainLeftClick(event)) return;
@@ -1907,10 +1918,15 @@ function handleTypeChange(type, options = {}) {
   const genreSelect = document.getElementById("genre-select");
   const cefrSelect = document.getElementById("cefr-select"); // Get the CEFR filter dropdown
   const cefrLock = document.getElementById("lock-icon");
+  const strengthFilterContainer = document.getElementById("strength-filter"); // Word List-only filter by word strength
+  const strengthSelect = document.getElementById("strength-select");
 
   removeStoryHeader();
   gameEnglishFilterContainer.style.display = "none";
   gameEnglishSelect.style.display = "none"; // Hide random button
+  // Word List is the only tab with a Strength filter — reset it to hidden
+  // before any type-specific branch runs, same as Genre/Favorites above.
+  if (strengthFilterContainer) strengthFilterContainer.style.display = "none";
 
   // Update the URL with the selected type, query, and POS
   updateURL(query, type, selectedPOS); // This ensures the type is reflected in the URL
@@ -2057,6 +2073,12 @@ function handleTypeChange(type, options = {}) {
     cefrSelect.value = "";
     cefrLock.style.display = "none";
 
+    // Show the Strength filter — the one filter that's only meaningful here.
+    if (strengthFilterContainer) {
+      strengthFilterContainer.style.display = "inline-flex";
+    }
+    if (strengthSelect) strengthSelect.value = "";
+
     showLandingCard(false);
 
     // Reaching this via the account menu's plain "My Words" entry, the
@@ -2092,13 +2114,17 @@ function handleTypeChange(type, options = {}) {
 
     enableSearchControls();
 
-    // Optionally, generate a random word if needed when switching back to words
     if (query) {
       console.log("Searching for words with query:", query);
+      showLandingCard(false);
       search(); // Trigger a word search if the search bar has a value
     } else {
-      console.log("Search bar empty, generating a random word.");
-      randomWord(); // Generate a random word if the search bar is empty
+      // Same landing experience a fresh visit to ?type=words gets (see
+      // loadStateFromURL's own "words" branch above) -- welcome message,
+      // daily quests, vocabulary profile, and the mode grid -- rather than
+      // dropping straight into an unexplained random word.
+      clearContainer();
+      showLandingCard(true);
     }
   }
 }

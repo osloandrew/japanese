@@ -82,7 +82,7 @@
    */
   function createWordListDefinitionURL(entry) {
     const primaryWord = String(entry.ord ?? "")
-      .split(",")[0]
+      .split(/[,、]/)[0]
       .trim();
 
     const entryPOS = getWordListEntryPOS(entry);
@@ -968,7 +968,7 @@
       resultsContainer.insertBefore(backButton, resultsContainer.firstChild);
     }
     const primaryWord = String(entry.ord ?? "")
-      .split(",")[0]
+      .split(/[,、]/)[0]
       .trim();
 
     const entryPOS = getWordListEntryPOS(entry);
@@ -1004,7 +1004,7 @@
     const japaneseLink = document.createElement("a");
     const wordTextBlock = document.createElement("span");
     const spellings = japaneseWord
-      .split(",")
+      .split(/[,、]/)
       .map((spelling) => spelling.trim())
       .filter(Boolean);
 

@@ -335,6 +335,25 @@ async function displayStory(titleJapanese) {
 
   clearContainer();
 
+  // This button lives permanently in the site header (shown/hidden via
+  // html.reading in CSS), not regenerated per story, so its handler is
+  // overwritten via assignment rather than addEventListener — otherwise
+  // navigating between stories would stack another listener bound to a
+  // now-stale story.
+  const reportIssueButton = document.getElementById("story-report-issue");
+  if (reportIssueButton) {
+    reportIssueButton.onclick = () => {
+      openFeedbackDialog({
+        source: "Story",
+        word: selectedStory.titleJapanese,
+        pos: selectedStory.genre,
+        cefr: selectedStory.CEFR,
+        categories: STORY_FEEDBACK_CATEGORIES,
+        triggerElement: reportIssueButton,
+      });
+    };
+  }
+
   // Check for the image (mirror JP: EN title only)
   const imageFileURL = await hasImageByEnglishTitle(selectedStory.titleEnglish);
 

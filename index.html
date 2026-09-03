@@ -109,76 +109,91 @@
   </head>
 
   <body>
+    <a href="#main-content" class="skip-link">Skip to Content</a>
     <header>
+      <!-- Only shown while reading an individual story, via html.reading in styles.css -->
+      <button
+        type="button"
+        id="story-report-issue"
+        class="story-report-issue-btn"
+        aria-label="Report an issue with this story"
+        title="Report an Issue"
+      >
+        <i class="fas fa-flag" aria-hidden="true"></i>
+        <span class="story-report-issue-btn-label">Report an Issue</span>
+      </button>
+
       <div class="header-top-row">
-        <!-- Single entry point for "about the app" pages that don't belong
-             in #mode-nav (that's for browsing modes -- see its own comment).
-             Just About for now; Norwegian's equivalent also has My
-             Stats/Settings/What's New, none of which exist here yet (need
-             backend this app doesn't have -- deferred earlier this
-             session). -->
-        <div class="account-menu">
-          <button
-            type="button"
-            id="account-menu-btn"
-            class="account-menu-btn"
-            aria-haspopup="menu"
-            aria-expanded="false"
-            aria-controls="account-menu-panel"
-            aria-label="Account menu"
-            title="Account menu"
-          >
-            <i class="fas fa-circle-user" aria-hidden="true"></i>
-          </button>
-          <div
-            id="account-menu-panel"
-            class="account-menu-panel hidden"
-            role="menu"
-          >
-            <a
-              href="?type=settings"
-              class="account-menu-item"
-              data-mode="settings"
-              role="menuitem"
-            >
-              <i class="fas fa-gear" aria-hidden="true"></i>
-              Settings
-            </a>
-            <a
-              href="?type=about"
-              class="account-menu-item"
-              data-mode="about"
-              role="menuitem"
-            >
-              <i class="fas fa-circle-info" aria-hidden="true"></i>
-              About
-            </a>
-          </div>
-        </div>
-
-        <div id="streak-menu" class="streak-menu hidden">
-          <button
-            type="button"
-            id="streak-menu-btn"
-            class="streak-badge"
-            aria-haspopup="dialog"
-            aria-expanded="false"
-            aria-controls="streak-menu-panel"
-            aria-label="Day streak"
-            title="Day streak"
-          >
-            <i class="fas fa-fire" aria-hidden="true"></i>
-            <span id="streak-badge-count">0</span>
-          </button>
-          <div
-            id="streak-menu-panel"
-            class="streak-menu-panel hidden"
-            role="dialog"
-            aria-label="Day streak"
-          ></div>
-        </div>
-
         <div id="auth-container" class="auth-container">
+          <!-- Single entry point for "about the app" pages that don't belong
+               in #mode-nav (that's for browsing modes -- see its own
+               comment). Just About for now; Norwegian's equivalent also has
+               My Stats/Settings/What's New, none of which exist here yet
+               (need backend this app doesn't have -- deferred earlier this
+               session). Grouped inside #auth-container (mirroring
+               Norwegian) so the opposite corner is free for
+               .story-report-issue-btn while reading. -->
+          <div class="account-menu">
+            <button
+              type="button"
+              id="account-menu-btn"
+              class="account-menu-btn"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              aria-controls="account-menu-panel"
+              aria-label="Account menu"
+              title="Account menu"
+            >
+              <i class="fas fa-circle-user" aria-hidden="true"></i>
+            </button>
+            <div
+              id="account-menu-panel"
+              class="account-menu-panel hidden"
+              role="menu"
+            >
+              <a
+                href="?type=settings"
+                class="account-menu-item"
+                data-mode="settings"
+                role="menuitem"
+              >
+                <i class="fas fa-gear" aria-hidden="true"></i>
+                Settings
+              </a>
+              <a
+                href="?type=about"
+                class="account-menu-item"
+                data-mode="about"
+                role="menuitem"
+              >
+                <i class="fas fa-circle-info" aria-hidden="true"></i>
+                About
+              </a>
+            </div>
+          </div>
+
+          <div id="streak-menu" class="streak-menu hidden">
+            <button
+              type="button"
+              id="streak-menu-btn"
+              class="streak-badge"
+              aria-haspopup="dialog"
+              aria-expanded="false"
+              aria-controls="streak-menu-panel"
+              aria-label="Day streak"
+              title="Day streak"
+            >
+              <i class="fas fa-fire" aria-hidden="true"></i>
+              <span id="streak-badge-count">0</span>
+            </button>
+            <div
+              id="streak-menu-panel"
+              class="streak-menu-panel hidden"
+              role="dialog"
+              aria-label="Day streak"
+            ></div>
+          </div>
+
           <button
             id="google-signin-btn"
             type="button"
@@ -236,10 +251,12 @@
         </div>
       </div>
 
-      <h1 id="site-title" onclick="returnToLandingPage()">
-        Japanese Dictionary
-      </h1>
-      <p id="site-subtitle">Search in Japanese or English</p>
+      <a id="site-title" aria-label="Japanese Dictionary, return to home" href="./">
+        <span class="site-wordmark-name">Japanese Dictionary</span>
+        <span class="site-wordmark-descriptor" aria-hidden="true"
+          >Words <span>·</span> Stories <span>·</span> Practice</span
+        >
+      </a>
     </header>
 
     <!-- Primary mode nav: a top tab strip on desktop, a fixed bottom tab bar
@@ -454,26 +471,107 @@
             </div>
 
             <!-- CEFR Level Selector -->
-            <div class="cefr-filter">
+            <div class="cefr-filter-group">
+              <div class="cefr-filter">
+                <select
+                  id="cefr-select"
+                  onchange="search()"
+                  aria-label="Filter by CEFR level"
+                >
+                  <option value="">Level</option>
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2">B2</option>
+                  <option value="C">C</option>
+                </select>
+                <i class="fas fa-chevron-down"></i>
+                <!-- Inert placeholder: several view-switch code paths in
+                     scripts.js unconditionally set this element's display
+                     style, a leftover from the old rise/fall level-lock
+                     feature (now removed). Kept in the DOM so those lookups
+                     don't throw; never shown. -->
+                <i id="lock-icon" style="display: none"></i>
+              </div>
+              <!-- Was a <details>/<summary> disclosure; both breakpoints
+                   now always flatten this into plain visible buttons
+                   whenever a round is active (see updateEndSessionToolbarButtonVisibility()
+                   in wordGame.js and the styles/35-navigation.css rules for
+                   .game-round-menu-panel), so there's no more collapsed
+                   state left to disclose — a plain div avoids <details>'
+                   own layout quirks (percentage widths on its content
+                   don't reliably resolve; non-summary content collapses to
+                   zero size without [open], even past its `display`
+                   override) that a real disclosure element still carries
+                   even when its native open/close behavior goes unused. -->
+              <div id="game-round-menu" class="game-round-menu hidden">
+                <div class="game-round-menu-panel">
+                  <button
+                    type="button"
+                    id="game-english-toggle-btn"
+                    class="game-english-toggle-btn hidden"
+                    aria-label="Show example translations"
+                    aria-pressed="false"
+                    title="Show example translations"
+                    onclick="toggleGameEnglishButton()"
+                  >
+                    <span aria-hidden="true">🇬🇧</span>
+                    <span class="game-english-toggle-label">Show Translations</span>
+                  </button>
+                  <button
+                    type="button"
+                    id="game-report-issue"
+                    class="toolbar-report-issue-btn hidden"
+                  >
+                    <i class="fas fa-flag" aria-hidden="true"></i>
+                    <span>Report Question</span>
+                  </button>
+                  <button
+                    type="button"
+                    id="game-end-session-btn"
+                    class="game-end-session-btn hidden"
+                    aria-label="Quit this round early and see your stats"
+                  >
+                    <i class="fas fa-chart-bar" aria-hidden="true"></i>
+                    <span>Quit &amp; See Stats</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <!-- Strength Selector: Word List only. Reuses .genre-filter's
+                 box styling (like .story-favorites-filter does for Stories)
+                 and lives inside .selectors-wrapper alongside it, so this
+                 row keeps the exact same three-pill measurements — and the
+                 same one-row wrapping on mobile — as the Stories filter
+                 row, instead of introducing its own sizing or its own
+                 line. Belongs up here rather than down by the My
+                 Words/All Words toggle because it actually narrows which
+                 rows show, the same as Word Class and Level beside it — the
+                 Frequency sort, which only reorders rows already showing,
+                 lives down there instead (see createWordListFrequencySortGroup
+                 in wordList.js). Options mirror wordGame.js's
+                 VOCAB_UNPRACTICED_TIER_ID/VOCAB_LADDER_TIERS; keep both in
+                 sync if that ladder ever changes. -->
+            <div
+              class="genre-filter strength-filter"
+              id="strength-filter"
+              aria-label="Filter by word strength"
+              style="display: none"
+            >
               <select
-                id="cefr-select"
+                id="strength-select"
                 onchange="search()"
-                aria-label="Filter by CEFR level"
+                aria-label="Filter by word strength"
               >
-                <option value="">Level</option>
-                <option value="A1">A1</option>
-                <option value="A2">A2</option>
-                <option value="B1">B1</option>
-                <option value="B2">B2</option>
-                <option value="C">C</option>
+                <option value="">Any Strength</option>
+                <option value="unpracticed">Not Practiced Yet</option>
+                <option value="learning">Learning</option>
+                <option value="developing">Developing</option>
+                <option value="strengthening">Strengthening</option>
+                <option value="strong">Strong</option>
+                <option value="mastered">Mastered</option>
               </select>
-              <i class="fas fa-chevron-down"></i>
-              <i
-                id="lock-icon"
-                class="fas fa-lock-open"
-                title="Toggle level lock"
-                onclick="toggleLevelLock()"
-              ></i>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </div>
           </div>
 
@@ -545,6 +643,19 @@
           class="landing-proof-line"
           style="text-align: center"
         ></p>
+
+        <section
+          id="landing-daily-quests"
+          class="landing-daily-quests"
+          aria-labelledby="landing-daily-quests-heading"
+        ></section>
+
+        <section
+          id="landing-progress-summary"
+          class="landing-progress-summary"
+          aria-labelledby="landing-progress-summary-heading"
+          hidden
+        ></section>
 
         <!-- Support the Project moved to the footer only (it already lives
              there too, see .coffee-btn) -- it isn't a browsing mode like
@@ -824,6 +935,15 @@
             class="coffee-img"
           />
         </a>
+        <button
+          type="button"
+          id="general-feedback-btn"
+          class="footer-control feedback-footer-btn"
+          onclick="openGeneralFeedbackDialog(this)"
+        >
+          <i class="fas fa-comment-dots" aria-hidden="true"></i>
+          <span>Feedback</span>
+        </button>
 
         <!-- Site switcher -->
         <select
