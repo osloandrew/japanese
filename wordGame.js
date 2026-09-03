@@ -1087,15 +1087,28 @@ function scheduleAdaptiveRecovery({
   return entry;
 }
 let wordDataStore = [];
-// The Japanese bundle currently has answer and pop cues. Higher-level events
-// use separate Audio instances backed by those existing files, which keeps
-// simultaneous playback safe without requesting missing Norwegian-only cues.
-let goodChime = new Audio("Resources/Audio/goodChime.wav");
-let badChime = new Audio("Resources/Audio/badChime.wav");
-let popChime = new Audio("Resources/Audio/popChime.wav");
-let streakChime = new Audio("Resources/Audio/popChime.wav");
-let queueClearedChime = new Audio("Resources/Audio/goodChime.wav");
-let roundCompleteChime = new Audio("Resources/Audio/goodChime.wav");
+// MP3s, not WAVs — encoded at LAME -V2 (~91% smaller with no audible
+// difference for a short UI chime), since all six are instantiated
+// unconditionally for every visitor on every page, not just word-game
+// players. goodChime/badChime/queueClearedChime/roundCompleteChime/
+// streakChime share one synthesized bell voice and a common C-major tonal
+// palette (goodChime/queueClearedChime/roundCompleteChime/streakChime all
+// resolve upward through the same family of intervals; badChime is the one
+// deliberately falling, duller motif) so they read as one cohesive kit.
+// popChime is the original pre-existing file — kept as-is by request after
+// a synthesized replacement was tried and rejected as too high and chirpy.
+let goodChime = new Audio("Resources/Audio/goodChime.mp3?v=cd9567be7c");
+let badChime = new Audio("Resources/Audio/badChime.mp3?v=b14562da64");
+let popChime = new Audio("Resources/Audio/popChime.mp3?v=e74ec8eaaa");
+// Milestone chimes: rarer, bigger moments (streak, queue cleared, round
+// complete) than the per-answer three above, but same voice and palette.
+let streakChime = new Audio("Resources/Audio/streakChime.mp3?v=abda44554f");
+let queueClearedChime = new Audio(
+  "Resources/Audio/queueClearedChime.mp3?v=9a05e08c72",
+);
+let roundCompleteChime = new Audio(
+  "Resources/Audio/roundCompleteChime.mp3?v=0a276b8d1c",
+);
 // These six live for the whole session instead of being recreated per play
 // (unlike playTrackedAudio's word/sentence clips). On iOS Safari a backgrounded
 // tab, a phone call, or a screen lock can silently push a long-lived
@@ -3251,7 +3264,7 @@ function getClozeSynonymForms(wordObj, clozeTarget) {
       const parts = getClozePatternTokens(normalizeGameAnswer(variant));
       if (parts.length !== 1 || parts[0] === "...") continue;
 
-      const paradigm = window.Inflections?.getParadigmForLemma(
+      const paradigm = window.Inflections?.getParadigmForLemma?.(
         parts[0],
         targetWordClass,
         targetWordClass === "noun" ? candidate.gender : "",
@@ -3395,7 +3408,7 @@ async function classifyTypedMorphologyNearMiss(
     for (const variant of getJapaneseEntryVariants(candidate)) {
       const parts = getClozePatternTokens(normalizeGameAnswer(variant));
       if (parts.length !== 1 || parts[0] === "...") continue;
-      const paradigm = window.Inflections.getParadigmForLemma(
+      const paradigm = window.Inflections?.getParadigmForLemma?.(
         parts[0],
         wordClass,
         wordClass === "noun" ? candidate.gender : "",
@@ -3699,7 +3712,7 @@ async function getContextualPredicateAdjectiveSynonymForms(
     for (const variant of getJapaneseEntryVariants(candidate)) {
       const parts = getClozePatternTokens(normalizeGameAnswer(variant));
       if (parts.length !== 1 || parts[0] === "...") continue;
-      const paradigm = window.Inflections?.getParadigmForLemma(parts[0], "adjective");
+      const paradigm = window.Inflections?.getParadigmForLemma?.(parts[0], "adjective");
       if (paradigm?.slots.some((forms) => forms.includes(selected))) {
         possibleCandidates.push(paradigm);
       }
@@ -3794,7 +3807,7 @@ function getClozePatternTokens(value) {
 }
 
 function getParadigmSlotsForLemma(lemma, surface, wordClass, gender = "") {
-  const paradigm = window.Inflections?.getParadigmForLemma(
+  const paradigm = window.Inflections?.getParadigmForLemma?.(
     normalizeGameAnswer(lemma),
     wordClass,
     gender,
@@ -7058,7 +7071,11 @@ function displayPronunciation(word) {
   const pronunciationContainer =
     document.querySelector("#game-pronunciation-slot") ||
     document.querySelector("#game-banner-placeholder");
-  if (pronunciationContainer && word.uttale) {
+  if (
+    pronunciationContainer &&
+    word.uttale &&
+    word.uttale.split(/[,、]/)[0].trim() !== getPrimaryJapaneseForm(word)
+  ) {
     const uttaleText = word.uttale.split(/[,、]/)[0].trim(); // Get the part before the first comma
     pronunciationContainer.innerHTML = `
       <p class="game-pronunciation">${uttaleText}</p>
@@ -10282,7 +10299,7 @@ function generatePhraseClozeDistractors(wordObj, clozeTarget) {
         descriptor.wordClass === "noun" && candidateWordClass === "noun"
           ? entry.gender
           : "";
-      const paradigm = window.Inflections?.getParadigmForLemma(
+      const paradigm = window.Inflections?.getParadigmForLemma?.(
         normalizeGameAnswer(tokens[componentIndex]),
         descriptor.wordClass,
         nounGender,
@@ -10411,7 +10428,7 @@ function generateClozeDistractors(wordObj, clozeTarget) {
     if (parts.length !== 1 || parts[0] === "...") return [];
     if (WordClass.getWordClass(entry.gender) !== targetWordClass) return [];
 
-    const paradigm = window.Inflections?.getParadigmForLemma(
+    const paradigm = window.Inflections?.getParadigmForLemma?.(
       parts[0],
       targetWordClass,
       entry.gender,

@@ -132,6 +132,9 @@ function deferUntilNeeded(loader) {
 let latestMultipleResults = null;
 const resultsContainer = document.getElementById("results-container");
 
+// Numeric rank for sorting/comparing CEFR levels -- lower is easier.
+const CEFR_ORDER = { A1: 1, A2: 2, B1: 3, B2: 4, C: 5 };
+
 // --- Sentences index globals ---
 let sentenceCorpus = []; // Flat array of { id, no, en, noNorm, enNorm, cefr, audio }
 let sentenceIndex = null; // Map<string, Uint32Array | number[]>
@@ -264,17 +267,25 @@ function formatGender(gender) {
 // Clear the search input field
 function clearInput() {
   const searchEl = document.getElementById("search-bar");
-  if (searchEl) searchEl.value = "";
+  if (searchEl) {
+    searchEl.value = "";
+    searchEl.dataset.submittedStoryQuery = "";
+  }
 
   const typeSelect = document.getElementById("type-select");
   if (typeSelect && typeSelect.value === "stories") {
-    // Reset CEFR and Genre filters too
+    // Reset CEFR, Genre, and Favorites filters too
     const cefrEl = document.getElementById("cefr-select");
     const genreEl = document.getElementById("genre-select");
+    const favoritesEl = document.getElementById("story-favorites-select");
     if (cefrEl) cefrEl.value = "";
     if (genreEl) genreEl.value = "";
+    if (favoritesEl) favoritesEl.value = "";
 
-    // Now re-render the full list (empty search, no filters)
+    // Clearing filters/search on the Stories tab is the deliberate "give
+    // me a fresh draw" gesture, so it's the one place that should actually
+    // reroll the weighted ordering rather than just re-filtering it.
+    reshuffleStoryOrder();
     displayStoryList();
   }
 }
@@ -460,9 +471,15 @@ const GENERAL_FEEDBACK_CATEGORIES = [
   "Something else",
 ];
 
+// The form/field above is shared with the Norwegian app (and any future
+// language sibling) — one inbox, every language's reports mixed together.
+// A leading language tag is the only thing that lets a reviewer tell them
+// apart in the responses sheet, so it's prepended here, at the single
+// point every report (missing-word flags and full feedback-dialog
+// submissions alike) funnels through, rather than in each caller.
 function submitUserFeedback(message) {
   const formData = new FormData();
-  formData.append(FEEDBACK_FORM_FIELD_ID, message);
+  formData.append(FEEDBACK_FORM_FIELD_ID, `JA - ${message}`);
 
   return fetch(FEEDBACK_FORM_URL, {
     method: "POST",
@@ -1131,6 +1148,11 @@ async function search(queryOverride = null) {
   let matchingResults;
 
   if (type === "stories") {
+    // Keep an explicit submitted value. The Stories input can hold a new
+    // query while the current list remains stable until Enter/search (see
+    // displayStoryList's searchText, stories.js).
+    document.getElementById("search-bar").dataset.submittedStoryQuery = query;
+
     // If query is empty, display all stories
     if (!query) {
       matchingResults = storyResults;
@@ -2282,72 +2304,56 @@ function handleCEFRChange() {
   }
 }
 
+// Renders `text` with every span Inflections found a dictionary entry for
+// (in whatever form it actually appears in -- a bare headword or an
+// inflected verb/adjective form) wrapped as a clickable link to that
+// entry's lemma; everything between spans (particles, punctuation, an
+// unindexed word) stays plain, escaped text. `spans` comes from
+// Inflections.segmentTextSync/segmentTextAsync -- see inflections.js for
+// how the matching itself works (forward maximum matching over the full
+// dictionary + conjugated-form index).
+// `className` defaults to the definition-card link style; stories.js
+// passes "story-word" instead -- a different class on purpose, not just a
+// different look: a story word opens an in-place popover (so a reader
+// never loses their place), while clickable-definition-word navigates the
+// whole results pane to the clicked word's own card, which is only right
+// when that pane is already what's on screen. Sharing one class would
+// make both click handlers (scripts.js's and stories.js's) fire for every
+// story click.
+function renderSegmentedText(text, spans, className = "clickable-definition-word") {
+  if (spans.length === 0) return escapeHTML(text);
+
+  let html = "";
+  let lastIndex = 0;
+  for (const span of spans) {
+    html += escapeHTML(text.slice(lastIndex, span.start));
+    html += `<span class="${className}" data-word="${escapeHTML(
+      span.lemma,
+    )}">${escapeHTML(span.text)}</span>`;
+    lastIndex = span.end;
+  }
+  html += escapeHTML(text.slice(lastIndex));
+  return html;
+}
+
+// Renders a single-word card's definition. Segmentation depends on
+// Inflections' reverse index, which takes a moment to build the first time
+// it's needed (see inflections.js) -- this sync path uses it if already
+// warm and otherwise renders plain text immediately, so the definition
+// never waits on it; upgradeDefinitionClickableWords (called right after
+// the initial render, see displaySearchResults) fills in the clickable
+// spans once the index resolves. Mirrors Norwegian's two-pass
+// makeDefinitionClickable/upgradeDefinitionExpressionSpans split, for the
+// same reason: Norwegian's version doesn't need this at all for a single
+// word (its whitespace-tokenized definitions are clickable synchronously),
+// only for the later async multi-word expression upgrade -- here, no
+// Japanese definition is clickable at all until segmentation is possible.
 function makeDefinitionClickable(defText) {
   if (!defText) return "";
 
-  function wrapToken(token) {
-    // Håndter sammensatte ord med parentes, som (språk)gruppe eller språk(gruppe)
-    const complexParenMatch = token.match(
-      /^([\p{L}\-']*)\(([\p{L}\-']+)\)([\p{L}\-']*)([.,;!?]*)$/u
-    );
-    if (complexParenMatch) {
-      const [, before, inside, after, punctuation] = complexParenMatch;
-      const parts = [];
-
-      if (before) {
-        parts.push(
-          `<span class="clickable-definition-word" data-word="${before}">${before}</span>`
-        );
-      }
-
-      parts.push("(");
-      parts.push(
-        `<span class="clickable-definition-word" data-word="${inside}">${inside}</span>`
-      );
-      parts.push(")");
-
-      if (after) {
-        parts.push(
-          `<span class="clickable-definition-word" data-word="${after}">${after}</span>`
-        );
-      }
-
-      parts.push(punctuation || "");
-      return parts.join("");
-    }
-
-    // Opprinnelig logikk for alt annet
-    const match = token.match(
-      /^(\()?(?<prefix>[\p{L}\-']+)?(\))?(?<base>[\p{L}\-']+)?([:.,;!?]*)$/u
-    );
-
-    if (!match || !match.groups) return token;
-
-    const { prefix, base } = match.groups;
-    const punctuationMatch = token.match(/[:.,;!?]+$/);
-    const punctuation = punctuationMatch ? punctuationMatch[0] : "";
-    const open = token.startsWith("(") ? "(" : "";
-    const close = token.includes(")") ? ")" : "";
-
-    const parts = [];
-
-    // 👇 Check for trailing hyphen outside the word
-    const endsWithHyphen = token.endsWith("-");
-
-    const word = (prefix || base || "").replace(/-$/, "");
-
-    if (word) {
-      parts.push(
-        `${open}<span class="clickable-definition-word" data-word="${word}">${word}</span>${
-          endsWithHyphen ? "-" : ""
-        }${close}`
-      );
-    } else if (open || close) {
-      parts.push(`${open}${close}`);
-    }
-
-    return parts.join("") + punctuation;
-  }
+  const spans = window.Inflections?.isReverseIndexReady()
+    ? window.Inflections.segmentTextSync(defText)
+    : [];
 
   if (defText.includes(";")) {
     const items = defText
@@ -2357,29 +2363,204 @@ function makeDefinitionClickable(defText) {
     return (
       `<ul class="definition-list">` +
       items
-        .map((item) => `<li>${item.split(/\s+/).map(wrapToken).join(" ")}</li>`)
+        .map((item) => `<li>${renderSegmentedText(item, spans.filter(
+          (span) => item.includes(span.text),
+        ))}</li>`)
         .join("") +
       `</ul>`
     );
   }
 
-  return defText
-    .split(/\s+/)
-    .map((token) => {
-      if (token.includes("/") && !token.startsWith("http")) {
-        return token
-          .split("/")
-          .map((subToken) => wrapToken(subToken))
-          .join("/");
-      } else {
-        return wrapToken(token);
-      }
+  return renderSegmentedText(defText, spans);
+}
+
+// Async upgrade pass: re-segments `defText` once Inflections' reverse
+// index is ready (building it on first call) and replaces `container`'s
+// content with the fully clickable version. A no-op if the container's
+// text no longer matches `defText` by the time this resolves (the learner
+// navigated away and a different definition is now showing there).
+async function upgradeDefinitionClickableWords(container, defText) {
+  if (!defText || !window.Inflections) return;
+  if (window.Inflections.isReverseIndexReady()) return; // already rendered clickable
+
+  const spans = await window.Inflections.segmentTextAsync(defText, results);
+  // No staleness re-check beyond this: if the learner has navigated away,
+  // `container` is simply a detached node by now and writing to it is
+  // harmless (mirrors Norwegian's upgradeDefinitionExpressionSpans, which
+  // has the same property for the same reason).
+  if (!container.isConnected) return;
+
+  if (defText.includes(";")) {
+    const items = defText
+      .split(";")
+      .map((item) => item.trim())
+      .filter(Boolean);
+    container.innerHTML =
+      `<ul class="definition-list">` +
+      items
+        .map(
+          (item) =>
+            `<li>${renderSegmentedText(
+              item,
+              spans.filter((span) => item.includes(span.text)),
+            )}</li>`,
+        )
+        .join("") +
+      `</ul>`;
+  } else {
+    container.innerHTML = renderSegmentedText(defText, spans);
+  }
+}
+
+// Above this length, a single-word card's definition gets clamped to a few
+// lines with an "Expand definition" toggle rather than shown in full.
+// Ported verbatim from Norwegian (character count, not word/token count --
+// the definitions themselves are the same kind of prose in either
+// language, unlike the tokenization makeDefinitionClickable needs above).
+const DEFINITION_TRUNCATE_THRESHOLD = 200;
+
+// Collapsed-by-default "Expand definition" toggle, rendered directly after
+// a clamped .definition-text paragraph so toggleDefinitionText can flip the
+// clamp on its previous sibling. Returns "" when the definition is short
+// enough to show in full already, so no empty toggle ever renders.
+function renderDefinitionToggleButton(definisjon) {
+  if (!definisjon || definisjon.length <= DEFINITION_TRUNCATE_THRESHOLD)
+    return "";
+  return `
+    <button
+      type="button"
+      class="definition-toggle-btn"
+      aria-expanded="false"
+      onclick="event.stopPropagation(); toggleDefinitionText(this)"
+      onkeydown="event.stopPropagation()"
+    ><i class="fas fa-chevron-down" aria-hidden="true"></i> Expand Definition</button>`;
+}
+
+// Collapsed-by-default "Word forms" toggle, sitting next to "Report an
+// issue" in .definition-actions-row. Returns "" when the word doesn't
+// conjugate (window.Inflections.getForms returned null -- e.g. a pre-noun
+// adjectival like この, which cannot predicate-conjugate at all), so no
+// empty toggle ever renders. Ported from Norwegian's equivalent.
+function renderInflectionsToggleButton(inflections) {
+  if (!inflections) return "";
+  return `
+    <button
+      type="button"
+      class="inflections-toggle-btn"
+      aria-expanded="false"
+      onclick="event.stopPropagation(); toggleInflectionsTable(this)"
+      onkeydown="event.stopPropagation()"
+    ><i class="fas fa-chevron-down" aria-hidden="true"></i> Word forms</button>`;
+}
+
+function renderInflectionRows(forms) {
+  return forms
+    .map((form) => {
+      const label = escapeHTML(form.label);
+      const value = escapeHTML(form.value);
+      return `
+        <tr>
+          <th>${label}</th>
+          <td data-label="${label}">${value}</td>
+        </tr>`;
     })
-    .join(" ");
+    .join("");
+}
+
+function renderInflectionsSource(inflections) {
+  if (inflections?.sourceType === "jmdict") {
+    return `<p class="inflections-hint">Conjugation class from <a href="https://www.edrdg.org/jmdict/j_jmdict.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">JMdict</a></p>`;
+  }
+  if (inflections?.sourceType === "estimated") {
+    return `<p class="inflections-hint">This entry's conjugation class could not be verified against JMdict; forms are regular estimates.</p>`;
+  }
+  return "";
+}
+
+function renderInflectionsTableWrapper(inflections) {
+  if (!inflections) return "";
+
+  const requestAttribute = inflections.pending
+    ? ` data-inflections-request-id="${escapeHTML(inflections.requestId)}"`
+    : "";
+  const rowsHTML = inflections.pending
+    ? `<tr><td colspan="2">Loading word forms…</td></tr>`
+    : renderInflectionRows(inflections.forms);
+
+  return `
+    <div class="inflections-table-wrapper hidden"${requestAttribute}>
+      <table class="inflections-table">
+        <tbody>${rowsHTML}</tbody>
+      </table>
+      <div class="inflections-source">${renderInflectionsSource(inflections)}</div>
+    </div>`;
+}
+
+async function loadPendingInflections(wrapper) {
+  const requestId = wrapper.dataset.inflectionsRequestId;
+  if (!requestId) return;
+
+  const inflections = await window.Inflections?.resolvePending(requestId);
+  delete wrapper.dataset.inflectionsRequestId;
+
+  const tableBody = wrapper.querySelector(".inflections-table tbody");
+  const source = wrapper.querySelector(".inflections-source");
+  if (!tableBody) return;
+
+  if (!inflections) {
+    tableBody.innerHTML = `<tr><td colspan="2">No word forms are available for this entry.</td></tr>`;
+    if (source) source.innerHTML = "";
+    return;
+  }
+
+  tableBody.innerHTML = renderInflectionRows(inflections.forms);
+  if (source) source.innerHTML = renderInflectionsSource(inflections);
+}
+
+// The toggle button and its table live in separate DOM positions (button
+// inside .definition-actions-row, table right after it) so the button can
+// sit next to "Report an issue" in its own column -- walk back up to the
+// shared row, then to its next sibling, rather than assuming adjacency.
+async function toggleInflectionsTable(button) {
+  const row = button.closest(".definition-actions-row");
+  const wrapper = row ? row.nextElementSibling : null;
+  if (!wrapper) return;
+  const isExpanded = button.getAttribute("aria-expanded") === "true";
+  button.setAttribute("aria-expanded", String(!isExpanded));
+  button.classList.toggle("inflections-toggle-expanded", !isExpanded);
+  wrapper.classList.toggle("hidden", isExpanded);
+
+  if (!isExpanded && wrapper.dataset.inflectionsRequestId) {
+    button.disabled = true;
+    try {
+      await loadPendingInflections(wrapper);
+    } finally {
+      button.disabled = false;
+    }
+  }
+}
+
+// The toggle button is the clamped .definition-text-block's next sibling,
+// so we flip the clamp on its previous sibling directly.
+function toggleDefinitionText(button) {
+  const wrapperEl = button.previousElementSibling;
+  if (!wrapperEl) return;
+  const isExpanded = button.getAttribute("aria-expanded") === "true";
+  const nowExpanded = !isExpanded;
+  button.setAttribute("aria-expanded", String(nowExpanded));
+  button.classList.toggle("definition-toggle-expanded", nowExpanded);
+  wrapperEl.classList.toggle("definition-text-expanded", nowExpanded);
+  button.innerHTML = `<i class="fas fa-chevron-down" aria-hidden="true"></i> ${
+    nowExpanded ? "Collapse Definition" : "Expand Definition"
+  }`;
 }
 
 // Render a list of results (words)
-function displaySearchResults(results, query = "") {
+function displaySearchResults(
+  results,
+  query = "",
+  { primaryHeading = false } = {},
+) {
   query = query.toLowerCase().trim(); // Ensure the query is lowercased and trimmed
   const defaultResult = results.length <= 1; // Determine if there are multiple results
   const multipleResults = results.length > 1; // Determine if there are multiple results
@@ -2387,9 +2568,13 @@ function displaySearchResults(results, query = "") {
   let htmlString = "";
 
   // Limit to a maximum of 10 results
-  results.slice(0, 10).forEach((result) => {
+  results.slice(0, 10).forEach((result, resultIndex) => {
     result.gender = formatGender(result.gender);
     result.pos = (result.gender || "").toLowerCase();
+
+    // null for word classes that don't inflect (noun, adverb, particle, ...)
+    // or a pre-noun adjectival that cannot predicate-conjugate at all.
+    const inflections = window.Inflections?.getForms(result) || null;
 
     // Convert the word to lowercase and trim spaces when generating the ID
     const normalizedWord = result.ord.toLowerCase().trim();
@@ -2433,20 +2618,47 @@ function displaySearchResults(results, query = "") {
       .replace(/\r?\n|\r/g, ""); // Escapes single quotes, double quotes, and removes newlines
     const hasSentencesPlaceholder = `<button class="sentence-btn english-toggle-btn" style="display: none;" onclick="event.stopPropagation(); toggleEnglishTranslations('${normalizedWord}')">Show English</button>`;
 
+    const escapedGender = result.gender.replace(/'/g, "\\'").trim();
+    const escapedEngelsk = result.engelsk.replace(/'/g, "\\'").trim();
+    // Embedded directly rather than read back from the rendered DOM via
+    // .textContent (which is what this used to do): the multi-result
+    // summary can render semicolon-separated senses as separate <span>
+    // elements (see formatMultiResultDefinition), and .textContent
+    // concatenates them with no separator, which no longer matches
+    // result.definisjon and silently breaks handleCardClick's exact
+    // string match below.
+    const escapedDefinisjon = (result.definisjon || "")
+      .replace(/'/g, "\\'")
+      .replace(/"/g, "&quot;")
+      .replace(/\r?\n|\r/g, " ");
+    const handleCardClickArgs = `'${escapedWord}', '${escapedGender}', '${escapedEngelsk}', '${escapedDefinisjon}'`;
+    // A result card expands into a definition containing real controls
+    // (save and report buttons). Keep the card itself a neutral container
+    // and put its keyboard/click activation on the compact header only.
+    // Giving the outer card an onclick/role="button" would nest those
+    // controls inside an interactive ancestor, which is invalid and
+    // confusing to assistive technology. A single result is already open,
+    // so it needs no activator.
+    const cardActivationAttributes = multipleResults
+      ? `
+          tabindex="0"
+          role="button"
+          onclick="if (!window.getSelection().toString()) handleCardClick(event, ${handleCardClickArgs})"
+          onkeydown="if ((event.key === 'Enter' || event.key === ' ') && !window.getSelection().toString()) { event.preventDefault(); handleCardClick(event, ${handleCardClickArgs}) }"`
+      : "";
+
+    const headingTag = primaryHeading && resultIndex === 0 ? "h1" : "h2";
+
     htmlString += `
-<div 
-  class="definition ${multipleResultsDefinition}" 
-  data-word="${escapedWord}" 
-  data-pos="${result.pos}" 
-  data-engelsk="${result.engelsk}" 
-  onclick="if (!window.getSelection().toString()) handleCardClick(event, '${escapedWord}', '${result.gender
-      .replace(/'/g, "\\'")
-      .trim()}', '${result.engelsk
-      .replace(/'/g, "\\'")
-      .trim()}', this.querySelector('.${multipleResultsDefinitionText}')?.textContent?.trim() || '')">
-                <div class="${multipleResultsDefinitionHeader}">
-                <h2 class="word-gender ${multipleResultsWordgender}">
-                  <div class="word-text-block">
+<div
+  class="definition ${multipleResultsDefinition}"
+  data-word="${escapedWord}"
+  data-pos="${result.pos}"
+  data-engelsk="${result.engelsk}"
+>
+                <div class="${multipleResultsDefinitionHeader}"${cardActivationAttributes}>
+                <${headingTag} class="word-gender ${multipleResultsWordgender}">
+                  <div lang="ja" class="word-text-block">
                     ${
                       /[,、]/.test(result.ord)
                         ? (() => {
@@ -2473,30 +2685,44 @@ function displaySearchResults(results, query = "") {
                       result.CEFR
                         ? `<div class="game-cefr-label ${multipleResultsExposedContent} ${getCefrClass(
                             result.CEFR
-                          )}">${result.CEFR}</div>`
+                          )}" title="${getCefrTooltip(result.CEFR)}">${result.CEFR}</div>`
                         : ""
-                    } 
-                </h2>
+                    }
+                </${headingTag}>
                 ${
                   result.definisjon
-                    ? `<p class="${multipleResultsDefinitionText}">${
-                        defaultResult
-                          ? makeDefinitionClickable(result.definisjon)
-                          : result.definisjon
-                      }</p>`
+                    ? defaultResult
+                      ? // makeDefinitionClickable can render a multi-sense
+                        // definition as <ul class="definition-list">, which a
+                        // <p> can't contain -- the browser would auto-close
+                        // the <p> right before it, leaving the clamp on an
+                        // empty element. Clamping this wrapper div instead
+                        // works for both the plain-text and <ul> shapes it
+                        // can return.
+                        `<div class="definition-text-block${
+                          result.definisjon.length > DEFINITION_TRUNCATE_THRESHOLD
+                            ? " definition-text-clamped"
+                            : ""
+                        }"><p class="definition-text">${makeDefinitionClickable(
+                          result.definisjon,
+                        )}</p></div>${renderDefinitionToggleButton(result.definisjon)}`
+                      : `<p class="definition-text ${multipleResultsDefinitionText}">${formatMultiResultDefinition(
+                          result.definisjon,
+                        )}</p>`
                     : ""
                 }
                 </div>
                 <div class="definition-content ${multipleResultsHiddenContent}"> <!-- Apply the hidden class conditionally -->
                     ${
                       result.engelsk
-                        ? `<p class="english"><i class="fas fa-language"></i> ${result.engelsk}</p>`
+                        ? `<p class="english"><i class="fas fa-language" aria-hidden="true"></i> ${result.engelsk}</p>`
                         : ""
                     }
                     ${
                       result.wordAudio === "X"
                         ? `<p class="pronunciation">
                             <i class="fas fa-volume-up sentence-audio-icon"
+                        role="button" tabindex="0" aria-label="Play word pronunciation"
                         data-sentence="${result.ord
                           .split(",")[0]
                           .trim()}"></i>                            ${
@@ -2504,21 +2730,33 @@ function displaySearchResults(results, query = "") {
                           }
                           </p>`
                         : result.uttale
-                        ? `<p class="pronunciation"><i class="fas fa-volume-up"></i> ${result.uttale}</p>`
+                        ? `<p class="pronunciation"><i class="fas fa-volume-up" aria-hidden="true"></i> ${result.uttale}</p>`
                         : ""
                     }
                     ${
                       result.etymologi
-                        ? `<p class="etymology"><i class="fa-solid fa-flag"></i> ${result.etymologi}</p>`
+                        ? `<p class="etymology"><i class="fa-solid fa-flag" aria-hidden="true"></i> ${result.etymologi}</p>`
                         : ""
                     }
                     ${
                       result.CEFR
-                        ? `<p style="display: inline-flex; align-items: center; font-family: 'Noto Sans', sans-serif; font-weight: bold; text-transform: uppercase; font-size: 12px; color: #4F4F4F;"><i class="fa-solid fa-signal" style="margin-right: 5px;"></i><span style="text-align: center; min-width: 15px; display: inline-block; padding: 3px 7px; border-radius: 4px; background-color: ${getCefrColor(
+                        ? `<p style="display: inline-flex; align-items: center; font-family: 'Noto Sans', sans-serif; font-weight: bold; text-transform: uppercase; font-size: 12px; color: #4F4F4F;"><i class="fa-solid fa-signal" style="margin-right: 5px;" aria-hidden="true"></i><span style="text-align: center; min-width: 15px; display: inline-block; padding: 3px 7px; border-radius: 4px; background-color: ${getCefrColor(
                             result.CEFR
-                          )};">${result.CEFR}</span></p>`
+                          )};">${result.CEFR}</span><span style="margin-left: 6px; font-family: 'Noto Sans', sans-serif; font-size: 11px; font-weight: 500; letter-spacing: 0.03em; text-transform: uppercase; color: #6B6B6B;">${getCefrLabel(
+                            result.CEFR,
+                          )}</span></p>`
                         : ""
                     }
+                    <div class="definition-actions-row">
+                      <button
+                        type="button"
+                        class="report-issue-btn"
+                        onclick="event.stopPropagation(); openWordCardFeedbackDialog(this, '${escapedWord}', '${result.pos}', '${result.CEFR || ""}')"
+                        onkeydown="event.stopPropagation()"
+                      ><i class="fas fa-flag" aria-hidden="true"></i> Report an Issue</button>
+                      ${renderInflectionsToggleButton(inflections)}
+                    </div>
+                    ${renderInflectionsTableWrapper(inflections)}
                 </div>
                 <!-- OLD: Check if example sentence exists -->
                 <!-- <div class="${multipleResultsHiddenContent}">${
@@ -2528,17 +2766,29 @@ function displaySearchResults(results, query = "") {
           )}</p>`
         : ""
     }</div> -->
-     
+
                 </div>
                                 <!-- Show "Show Sentences" button only if sentences exist -->
                     <div class="${multipleResultsHiddenContent}">
                         ${hasSentencesPlaceholder}
-                    </div>       
+                    </div>
             <!-- Sentences container is now outside the definition block -->
             <div class="sentences-container" id="sentences-container-${normalizedWord}"></div>
         `;
   });
   appendToContainer(htmlString);
+
+  if (defaultResult && results[0]?.definisjon) {
+    const definitionEl = resultsContainer.querySelector(".definition-text");
+    if (definitionEl) {
+      upgradeDefinitionClickableWords(
+        definitionEl,
+        results[0].definisjon,
+      ).catch((error) => {
+        console.error("Could not resolve known words in definition.", error);
+      });
+    }
+  }
 
   if (
     defaultResult &&
@@ -3188,6 +3438,152 @@ function renderSentencesHTML(sentenceResults, wordVariations) {
   return htmlString;
 }
 
+function getWordClassForMetadata(pos = "") {
+  return WordClass.getWordClass(pos);
+}
+
+// Ported from Norwegian's findWordEntryForMetadata() -- used by updateURL()
+// below so a card-click navigation (not just a direct renderWordDefinition
+// call) picks the right homograph's metadata when a word has more than one
+// dictionary entry.
+function findWordEntryForMetadata(word, selectedPOS = "") {
+  const normalizedWord = String(word).trim().toLowerCase();
+  const normalizedSelectedPOS = WordClass.getWordClass(selectedPOS);
+
+  const wordMatches = results.filter((entry) =>
+    String(entry.ord || "")
+      .toLowerCase()
+      .split(/[,、]/)
+      .map((form) => form.trim())
+      .includes(normalizedWord),
+  );
+
+  if (!normalizedSelectedPOS) {
+    return wordMatches[0] || null;
+  }
+
+  const preciseMatch = wordMatches.find(
+    (entry) => WordClass.getWordClass(entry.gender) === normalizedSelectedPOS,
+  );
+
+  return preciseMatch || wordMatches[0] || null;
+}
+
+function setWordMetaTag(attributeName, attributeValue, content) {
+  let tag = document.head.querySelector(
+    `meta[${attributeName}="${attributeValue}"]`,
+  );
+
+  if (!tag) {
+    tag = document.createElement("meta");
+    tag.setAttribute(attributeName, attributeValue);
+    document.head.appendChild(tag);
+  }
+
+  tag.setAttribute("content", content);
+}
+
+function setWordCanonicalURL(url) {
+  let canonicalLink = document.head.querySelector('link[rel="canonical"]');
+
+  if (!canonicalLink) {
+    canonicalLink = document.createElement("link");
+    canonicalLink.setAttribute("rel", "canonical");
+    document.head.appendChild(canonicalLink);
+  }
+
+  canonicalLink.setAttribute("href", url);
+}
+
+// Ported from Norwegian's updateWordMetadata(), which points its canonical
+// URL at a captured static /word/<slug>/ page (see
+// norwegian/scripts/capture-word-pages.py). This app has no such
+// pretty-path pipeline -- the query-string lookup URL is the only real,
+// dereferenceable address for a given word, so that's the canonical target
+// here instead.
+function updateWordMetadata(entry) {
+  if (!entry) return;
+
+  const word = String(entry.ord || "")
+    .split(/[,、]/)[0]
+    .trim();
+
+  const wordClass = getWordClassForMetadata(entry.gender);
+
+  const englishTranslation = String(entry.engelsk || "")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const pageTitle =
+    `${word}${wordClass ? ` (${wordClass})` : ""} ` +
+    "– Japanese-English Dictionary";
+
+  const wordDescription = wordClass
+    ? `${wordClass} "${word}"`
+    : `word "${word}"`;
+
+  let description = englishTranslation
+    ? `Learn the Japanese ${wordDescription}, meaning ` +
+      `"${englishTranslation}" in English. See definitions, ` +
+      "pronunciation, CEFR level, and example sentences."
+    : `Learn the Japanese ${wordDescription}. See definitions, ` +
+      "pronunciation, CEFR level, and example sentences.";
+
+  if (description.length > 160) {
+    description =
+      description
+        .slice(0, 157)
+        .replace(/\s+\S*$/, "")
+        .trimEnd() + "...";
+  }
+
+  const canonicalURL = new URL(APP_ROOT_URL);
+  canonicalURL.search = "";
+  canonicalURL.hash = "";
+  canonicalURL.searchParams.set("type", "words");
+  canonicalURL.searchParams.set("word", word);
+
+  const socialImageURL = new URL(
+    "Resources/Icons/android-chrome-512x512.png",
+    APP_ROOT_URL,
+  ).href;
+
+  document.title = pageTitle;
+
+  setWordMetaTag("name", "description", description);
+  setWordMetaTag("property", "og:title", pageTitle);
+  setWordMetaTag("property", "og:description", description);
+  setWordMetaTag("property", "og:type", "website");
+  setWordMetaTag("property", "og:url", canonicalURL.href);
+  setWordMetaTag("property", "og:image", socialImageURL);
+
+  setWordCanonicalURL(canonicalURL.href);
+}
+
+// The multi-result summary definition renders inside a flex-item <p> that
+// participates in the card's row layout. makeDefinitionClickable's <ul>/<li>
+// output can't be nested inside a <p> -- browsers silently close the <p>
+// right before the <ul>, popping the list out of the flex row and breaking
+// its alignment with the word/POS column. This produces the same
+// semicolon-separated "one sense per line" look with inline-safe markup
+// instead, and deliberately isn't clickable: unlike the single-result view,
+// clicking anywhere on this card already opens that single-result view, so
+// per-word click targets here would only conflict with it. Ported from
+// Norwegian's formatMultiResultDefinition().
+function formatMultiResultDefinition(defText) {
+  if (!defText) return "";
+  if (!defText.includes(";")) return defText;
+
+  const items = defText
+    .split(";")
+    .map((item) => item.trim())
+    .filter(Boolean);
+
+  return items
+    .map((item) => `<span class="multiple-results-definition-item">${item}</span>`)
+    .join("");
+}
+
 function renderWordDefinition(word, selectedPOS = "") {
   const trimmedWord = word.trim().toLowerCase();
 
@@ -3201,19 +3597,42 @@ function renderWordDefinition(word, selectedPOS = "") {
   const posFilterContainer = document.querySelector(".pos-filter");
   posFilterContainer.classList.remove("disabled"); // Remove the 'disabled' class for visual effect
 
-  // Filter results based on both word and selected POS if provided
-  const matchingResults = results.filter((r) => {
-    const wordMatch = r.ord.toLowerCase().trim() === trimmedWord;
+  // Filter results based on both word and selected POS if provided.
+  const normalizedSelectedPOS = WordClass.getWordClass(selectedPOS);
 
-    const posMatch = selectedPOS
-      ? r.gender.toLowerCase().includes(selectedPOS)
-      : true;
+  const matchingResults = results
+    .filter((entry) => {
+      // Some CSV entries contain comma/読点-separated spelling variants. A
+      // direct lookup for any individual form must find the full entry.
+      const wordMatch = String(entry.ord || "")
+        .toLowerCase()
+        .split(/[,、]/)
+        .map((form) => form.trim())
+        .includes(trimmedWord);
 
-    return wordMatch && posMatch;
-  });
+      const posMatch = normalizedSelectedPOS
+        ? WordClass.getWordClass(entry.gender) === normalizedSelectedPOS
+        : true;
+
+      return wordMatch && posMatch;
+    })
+    .sort((left, right) => {
+      // A spelling can be both its own headword and an alternative spelling
+      // on an earlier CSV row. A direct lookup for a secondary spelling
+      // must still use the true headword's own row for its title and
+      // metadata. Keep all homographs visible; only put an exact primary
+      // headword ahead of rows where the requested spelling is secondary.
+      const isPrimary = (entry) =>
+        String(entry.ord || "")
+          .split(/[,、]/)[0]
+          .trim()
+          .toLowerCase() === trimmedWord;
+      return Number(isPrimary(right)) - Number(isPrimary(left));
+    });
 
   if (matchingResults.length > 0) {
-    displaySearchResults(matchingResults);
+    displaySearchResults(matchingResults, "", { primaryHeading: true });
+    updateWordMetadata(matchingResults[0]);
   } else {
     document.getElementById("results-container").innerHTML = `
             <div class="definition error-message">
@@ -3599,9 +4018,20 @@ function updateURL(query, type, selectedPOS, story = null, word = null) {
   // Set the word parameter if a specific word entry is clicked
   if (word) {
     url.searchParams.set("word", word);
-    document.title = `${word} - Japanese Dictionary`; // Set title to the word
     // Update the URL without reloading the page
     window.history.pushState({}, "", url);
+
+    // Apply the matching word's full SEO metadata (title, description, OG
+    // tags, canonical link) -- mirrors renderWordDefinition()'s own direct
+    // updateWordMetadata() call, so a card-click navigation into a
+    // definition gets the same treatment as a direct link into one.
+    // Ported from Norwegian's updateURL().
+    const metadataEntry = findWordEntryForMetadata(word, selectedPOS);
+    if (metadataEntry) {
+      updateWordMetadata(metadataEntry);
+    } else {
+      document.title = `${word} - Japanese Dictionary`; // Set title to the word
+    }
     return; // Stop further execution to keep this title
   }
 
@@ -3711,37 +4141,39 @@ function loadStateFromURL() {
   const checkDataLoaded = setInterval(displayWordIfLoaded, 100);
 }
 
+function normalizeResultCardMatchValue(value) {
+  return String(value ?? "")
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
 // Function to handle clicking on a search result card
 function handleCardClick(event, word, pos, engelsk, definisjon) {
-  console.log(`Word clicked: ${word}, POS: ${pos}`); // Log the clicked word and POS
-
-  // Filter to count only visible elements with the specific card class
-  const visibleCards = Array.from(resultsContainer.children).filter(
-    (child) =>
-      child.classList.contains("definition") && child.offsetParent !== null
-  );
-
-  // Log the count of visible cards
-  console.log(
-    "Number of visible cards in resultsContainer:",
-    visibleCards.length
-  );
+  // Filter to count only visible elements with the specific card class.
+  // Cards may be nested inside a wrapper, so search descendants, not just
+  // direct children.
+  const visibleCards = Array.from(
+    resultsContainer.querySelectorAll(".definition"),
+  ).filter((card) => card.offsetParent !== null);
 
   // Prevent activation if only one card is displayed
   if (visibleCards.length === 1) {
-    console.log("Only one card displayed, click action disabled.");
     return;
   }
 
   // Filter results by word, POS (part of speech), and the English translation
   const clickedResult = results.filter((r) => {
-    const wordMatch = r.ord.toLowerCase().trim() === word.toLowerCase().trim();
+    const wordMatch =
+      normalizeResultCardMatchValue(r.ord) === normalizeResultCardMatchValue(word);
     const genderMatch =
-      r.gender.toLowerCase().trim() === pos.toLowerCase().trim();
+      normalizeResultCardMatchValue(r.gender) === normalizeResultCardMatchValue(pos);
     const engelskMatch =
-      r.engelsk.toLowerCase().trim() === engelsk.toLowerCase().trim();
+      normalizeResultCardMatchValue(r.engelsk) ===
+      normalizeResultCardMatchValue(engelsk);
     const definisjonMatch =
-      r.definisjon.toLowerCase().trim() === definisjon.toLowerCase().trim();
+      normalizeResultCardMatchValue(r.definisjon) ===
+      normalizeResultCardMatchValue(definisjon);
 
     return wordMatch && genderMatch && engelskMatch && definisjonMatch;
   });
@@ -3759,6 +4191,8 @@ function handleCardClick(event, word, pos, engelsk, definisjon) {
   if (latestMultipleResults) {
     const backDiv = document.createElement("div");
     backDiv.className = "back-navigation";
+    backDiv.tabIndex = 0;
+    backDiv.setAttribute("role", "button");
 
     // Create the icon element
     const icon = document.createElement("i");
@@ -3885,7 +4319,19 @@ window.onload = function () {
   document.getElementById("search-bar").addEventListener("keyup", handleKey);
 
   document.addEventListener("click", (event) => {
-    if (event.target.matches(".back-navigation")) {
+    // closest(), not matches() -- the icon and text inside .back-navigation
+    // are themselves valid click targets, and matches() alone missed those.
+    if (event.target.closest(".back-navigation")) {
+      search(latestMultipleResults);
+    }
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (
+      (event.key === "Enter" || event.key === " ") &&
+      event.target.closest(".back-navigation")
+    ) {
+      event.preventDefault();
       search(latestMultipleResults);
     }
   });
@@ -3909,7 +4355,7 @@ document.addEventListener("click", (event) => {
       const exactMatches = results.filter((r) =>
         r.ord
           .toLowerCase()
-          .split(",")
+          .split(/[,、]/)
           .map((s) => s.trim())
           .includes(word)
       );
@@ -3937,25 +4383,42 @@ document.addEventListener("click", (event) => {
   }
 });
 
+function playSentenceAudioIcon(target) {
+  stopAllAudio();
+  const text = target.dataset.sentence;
+  let audioUrl;
+
+  // Decide if this is a word or a sentence based on where the icon lives
+  if (target.closest(".pronunciation")) {
+    // Word-level audio
+    audioUrl = buildWordAudioUrl(text);
+  } else {
+    // Sentence-level audio
+    audioUrl = buildPronAudioUrl(text);
+  }
+
+  const audio = new Audio(audioUrl);
+  activeAudio.push(audio);
+  audio.play().catch((err) => {
+    console.error("Audio playback failed:", err);
+  });
+}
+
 document.addEventListener("click", (event) => {
   if (event.target.classList.contains("sentence-audio-icon")) {
-    stopAllAudio();
-    const text = event.target.dataset.sentence;
-    let audioUrl;
+    playSentenceAudioIcon(event.target);
+  }
+});
 
-    // Decide if this is a word or a sentence based on where the icon lives
-    if (event.target.closest(".pronunciation")) {
-      // Word-level audio
-      audioUrl = buildWordAudioUrl(text);
-    } else {
-      // Sentence-level audio
-      audioUrl = buildPronAudioUrl(text);
-    }
-
-    const audio = new Audio(audioUrl);
-    activeAudio.push(audio);
-    audio.play().catch((err) => {
-      console.error("Audio playback failed:", err);
-    });
+// role="button" on these <i> icons makes them focusable (tabindex="0"),
+// but only a real <button>/<a> gets Enter/Space activation for free -- a
+// custom role needs it wired up by hand per the WAI-ARIA APG.
+document.addEventListener("keydown", (event) => {
+  if (
+    event.target.classList.contains("sentence-audio-icon") &&
+    (event.key === "Enter" || event.key === " ")
+  ) {
+    event.preventDefault();
+    playSentenceAudioIcon(event.target);
   }
 });

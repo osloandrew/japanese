@@ -35,6 +35,11 @@
   align-items: flex;
   color: var(--color-ink); /* Matches the headword, not a link */
   display: flex;
+  /* Overrides the h1/h2 element rule's Source Serif 4/Noto Serif — a
+     deliberate departure from Norwegian: dictionary headwords are always
+     sans-serif here, and neither serif webfont carries Japanese glyphs
+     anyway (see .sentence's comment in 20-results-and-story-quiz.css). */
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
   font-size: 30px;
   font-weight: bold;
   justify-content: space-between;
@@ -363,11 +368,12 @@
   outline-offset: 3px;
 }
 /*
- * Match .english and .multiple-results-english.
+ * Match .english and .multiple-results-english. Sans-serif here too — a
+ * deliberate departure from Norwegian; see .word-gender's comment above.
  */
 .word-list-english {
   color: var(--color-text-strong);
-  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
   font-size: 14px;
   font-weight: 450;
   line-height: 1.35;
@@ -506,7 +512,10 @@
 .word-text-block {
   display: flex;
   flex-direction: column;
-  font-family: "Source Serif 4", "Noto Serif", serif;
+  /* The headword itself (both the main result card and My Words rows) —
+     sans-serif is a deliberate departure from Norwegian; see .word-gender's
+     comment above. */
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
   font-weight: 500;
 }
 

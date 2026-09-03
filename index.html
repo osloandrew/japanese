@@ -78,20 +78,51 @@
       href="Resources/Icons/favicon-16x16.png"
     />
 
-    <!-- Google Fonts -->
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Serif:ital,wght@0,100..900&display=swap");
-      @import url("https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&display=swap");
-    </style>
+    <!--
+      Google Fonts, loaded without blocking first paint: the stylesheet is
+      requested as media="print" (so the browser fetches it but doesn't wait
+      on it to render) and switched to media="all" once it's actually
+      loaded. The `display=swap` in the URL already means text renders in a
+      fallback font immediately either way; this just stops the request
+      itself from delaying that first render.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,100..900&amp;family=Noto+Sans:wght@100..900&amp;family=Source+Sans+3:ital,wght@0,200..900;1,200..900&amp;family=Noto+Serif:wght@100..900&amp;family=Source+Serif+4:opsz,wght@8..60,200..900&amp;display=swap"
+      media="print"
+      onload="this.media = 'all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,100..900&amp;family=Noto+Sans:wght@100..900&amp;family=Source+Sans+3:ital,wght@0,200..900;1,200..900&amp;family=Noto+Serif:wght@100..900&amp;family=Source+Serif+4:opsz,wght@8..60,200..900&amp;display=swap"
+      />
+    </noscript>
 
     <!-- External Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
 
-    <!-- Font Awesome CDN -->
+    <!-- Font Awesome CDN, loaded non-blocking with the same media="print" ->
+         onload="all" swap used for Google Fonts above, plus a pinned SRI
+         hash since this is a third-party CDN serving executable CSS. -->
     <link
       rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+      integrity="sha384-PPIZEGYM1v8zp5Py7UjFb79S58UeqCL9pYVnVPURKEqvioPROaVAJKKLzvH2rDnI"
+      crossorigin="anonymous"
+      media="print"
+      onload="this.media = 'all'"
     />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+        integrity="sha384-PPIZEGYM1v8zp5Py7UjFb79S58UeqCL9pYVnVPURKEqvioPROaVAJKKLzvH2rDnI"
+        crossorigin="anonymous"
+      />
+    </noscript>
 
     <!-- Google Analytics -->
     <script
@@ -146,6 +177,7 @@
               id="account-menu-panel"
               class="account-menu-panel hidden"
               role="menu"
+              aria-label="Account"
             >
               <a
                 href="?type=my-stats"
@@ -203,7 +235,7 @@
             id="google-signin-btn"
             type="button"
             class="google-signin-btn"
-            title="Sign in to sync your preferences across devices"
+            title="Sign in to sync My Words across devices"
           >
             Sign In
           </button>
@@ -363,7 +395,12 @@
       </button>
     </div>
 
-    <div id="sticky-header" class="hidden">
+    <div
+      id="sticky-header"
+      class="hidden"
+      role="region"
+      aria-label="Story reading controls"
+    >
       <button id="back-button">← Back to Stories</button>
       <button id="toggle-english-btn" class="toggle-btn">Show English</button>
     </div>
@@ -379,7 +416,7 @@
               <select
                 id="type-select"
                 aria-label="Search by words or sentences"
-                onchange="handleTypeChange(this.value)"
+                onchange="handleTypeChange(this.value, { userNavigation: true })"
               >
                 <option value="words">Words</option>
                 <option value="sentences">Sentences</option>
@@ -390,7 +427,7 @@
                 <option value="settings">Settings</option>
                 <option value="about">About</option>
               </select>
-              <i class="fas fa-chevron-down"></i>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </div>
 
             <!-- POS Selector -->
@@ -411,39 +448,7 @@
                 <option value="interjection">Interjection</option>
                 <option value="pronoun">Pronoun</option>
               </select>
-              <i class="fas fa-chevron-down"></i>
-            </div>
-
-            <!-- Genre Selector -->
-            <div
-              class="genre-filter"
-              id="genre-filter"
-              aria-label="Filter by genre"
-              style="display: none"
-            >
-              <select id="genre-select" onchange="handleGenreChange()">
-                <option value="">GENRE</option>
-                <option value="biography">BIOGRAPHY</option>
-                <option value="culture">CULTURE</option>
-                <option value="dialogue">DIALOGUE</option>
-                <option value="drama">DRAMA</option>
-                <option value="fantasy">FANTASY</option>
-                <option value="food">FOOD</option>
-                <option value="health">HEALTH</option>
-                <option value="history">HISTORY</option>
-                <option value="horror">HORROR</option>
-                <option value="language">LANGUAGE</option>
-                <option value="manga and anime">MANGA & ANIME</option>
-                <option value="monologue">MONOLOGUE</option>
-                <option value="philosophy">PHILOSOPHY</option>
-                <option value="politics">POLITICS</option>
-                <option value="psychology">PSYCHOLOGY</option>
-                <option value="science">SCIENCE</option>
-                <option value="science fiction">SCIENCE FICTION</option>
-                <option value="technology">TECHNOLOGY</option>
-                <option value="travel">TRAVEL</option>
-              </select>
-              <i class="fas fa-chevron-down"></i>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </div>
 
             <!-- Favorite Stories Selector -->
@@ -461,21 +466,61 @@
                 <option value="">All Stories</option>
                 <option value="favorites">Favorites</option>
               </select>
-              <i class="fas fa-chevron-down"></i>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
+            </div>
+
+            <!-- Genre Selector -->
+            <div
+              class="genre-filter"
+              id="genre-filter"
+              aria-label="Filter by genre"
+              style="display: none"
+            >
+              <select
+                id="genre-select"
+                onchange="handleGenreChange()"
+                aria-label="Filter by genre"
+              >
+                <option value="">Genre</option>
+                <option value="biography">Biography</option>
+                <option value="culture">Culture</option>
+                <option value="dialogue">Dialogue</option>
+                <option value="drama">Drama</option>
+                <option value="fantasy">Fantasy</option>
+                <option value="food">Food</option>
+                <option value="health">Health</option>
+                <option value="history">History</option>
+                <option value="horror">Horror</option>
+                <option value="language">Language</option>
+                <option value="manga and anime">Manga &amp; Anime</option>
+                <option value="monologue">Monologue</option>
+                <option value="philosophy">Philosophy</option>
+                <option value="politics">Politics</option>
+                <option value="psychology">Psychology</option>
+                <option value="science">Science</option>
+                <option value="science fiction">Science Fiction</option>
+                <option value="technology">Technology</option>
+                <option value="travel">Travel</option>
+              </select>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </div>
 
             <!-- Game-English Selector -->
             <div
               class="game-english-filter"
               id="game-english-filter"
-              aria-label="Show or hide English"
+              aria-label="Show or hide example translations"
               style="display: none"
             >
-              <select id="game-english-select" onchange="toggleGameEnglish()">
-                <option value="show-english">Show English</option>
-                <option value="hide-english">Hide English</option>
+              <select
+                id="game-english-select"
+                onchange="toggleGameEnglish()"
+                aria-label="Show or hide example translations"
+              >
+                <option value="show-english">Show Translations</option>
+                <option value="hide-english">Hide Translations</option>
               </select>
-              <i class="fas fa-chevron-down"></i>
+              <i class="fas fa-chevron-down" aria-hidden="true"></i>
             </div>
 
             <!-- CEFR Level Selector -->
@@ -484,16 +529,17 @@
                 <select
                   id="cefr-select"
                   onchange="search()"
-                  aria-label="Filter by CEFR level"
+                  aria-label="Filter by level: A1 Beginner, A2 Elementary, B1 Intermediate, B2 Upper-Intermediate, C Advanced"
+                  title="A1 Beginner · A2 Elementary · B1 Intermediate · B2 Upper-Intermediate · C Advanced"
                 >
                   <option value="">Level</option>
-                  <option value="A1">A1</option>
-                  <option value="A2">A2</option>
-                  <option value="B1">B1</option>
-                  <option value="B2">B2</option>
-                  <option value="C">C</option>
+                  <option value="A1">A1 · Beginner</option>
+                  <option value="A2">A2 · Elementary</option>
+                  <option value="B1">B1 · Intermediate</option>
+                  <option value="B2">B2 · Upper-Intermediate</option>
+                  <option value="C">C · Advanced</option>
                 </select>
-                <i class="fas fa-chevron-down"></i>
+                <i class="fas fa-chevron-down" aria-hidden="true"></i>
                 <!-- Inert placeholder: several view-switch code paths in
                      scripts.js unconditionally set this element's display
                      style, a leftover from the old rise/fall level-lock
@@ -587,11 +633,13 @@
           <div class="search-and-random-wrapper">
             <!-- Search Bar -->
             <div id="search-bar-wrapper" class="search-bar-wrapper">
+              <label for="search-bar" class="sr-only"
+                >Search for Japanese or English words</label
+              >
               <input
                 type="text"
                 id="search-bar"
-                placeholder=" "
-                onkeydown="handleKey(event)"
+                placeholder="Search in Japanese or English"
                 aria-label="Search for Japanese or English words"
               />
               <button
@@ -600,7 +648,7 @@
                 aria-label="Clear search field"
                 onclick="clearInput()"
               >
-                <i class="fas fa-xmark"></i>
+                <i class="fas fa-xmark" aria-hidden="true"></i>
               </button>
               <button
                 id="search-btn"
@@ -608,7 +656,7 @@
                 aria-label="Search for the word"
                 onclick="search()"
               >
-                <i class="fas fa-search"></i>
+                <i class="fas fa-search" aria-hidden="true"></i>
               </button>
             </div>
 
@@ -622,7 +670,7 @@
               "
               title="Generate a random word"
             >
-              <i class="fas fa-dice"></i>
+              <i class="fas fa-dice" aria-hidden="true"></i>
             </button>
           </div>
         </div>
@@ -767,18 +815,23 @@
           target="_blank"
           rel="noopener noreferrer"
           class="footer-control linkedin-btn"
+          aria-label="Connect with me on LinkedIn"
         >
           <img
             src="Resources/Icons/linkedin-icon.png"
-            alt="LinkedIn Logo"
+            alt=""
             class="linkedin-icon"
-          /><span>Connect with me on LinkedIn</span>
+          /><span>LinkedIn</span>
         </a>
-        <a href="https://www.buymeacoffee.com/afeinberg4l" class="coffee-btn">
-          <img
-            src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=afeinberg4l&button_colour=0d3a69&font_colour=ffffff&font_family=Lato&outline_colour=ffffff&coffee_colour=FFDD00"
-            class="coffee-img"
-          />
+        <a
+          href="https://www.buymeacoffee.com/afeinberg4l"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="footer-control coffee-btn"
+          aria-label="Buy me a coffee"
+        >
+          <i class="fas fa-mug-hot" aria-hidden="true"></i>
+          <span>Buy Me a Coffee</span>
         </a>
         <button
           type="button"
@@ -796,7 +849,7 @@
           class="footer-control site-switcher-select"
           aria-label="Go to another site"
         >
-          <option value="">Other Languages</option>
+          <option value="">Languages</option>
           <option value="croatian">Croatian</option>
           <option value="german">German</option>
           <option value="hebrew">Hebrew</option>
@@ -809,7 +862,7 @@
           <option value="thai">Thai</option>
         </select>
       </div>
-      <p class="copyright">© 2025 Japanese Dictionary</p>
+      <p class="copyright">© 2026 Japanese Dictionary</p>
     </footer>
 
     <script>
@@ -830,6 +883,13 @@
       });
     </script>
     <script src="wordClass.js"></script>
+    <!--
+      Not deferred, same load-order reasoning as wordClass.js above:
+      defines the tiny window.Inflections lookup/loader used by the "Word
+      forms" section. Its classification snapshot is fetched later, after
+      the main dictionary is usable, so this script remains cheap.
+    -->
+    <script src="inflections.js?v=1"></script>
     <script src="sentenceFormMatching.js"></script>
     <script src="spacedRepetition.js"></script>
     <script src="englishVisibility.js" defer></script>
@@ -844,7 +904,7 @@
     <script src="wordGame.js?v=81dff5aa35" defer></script>
     <script src="placementTest.js" defer></script>
     <script src="streak.js?v=f1435732b0" defer></script>
-    <script src="stories.js?v=b9d635bea5" defer></script>
+    <script src="stories.js?v=b9d635bea2" defer></script>
     <script src="myStats.js?v=d0e4e44b8b" defer></script>
     <script src="pronunciation.js"></script>
     <script src="https://unpkg.com/wavesurfer.js"></script>

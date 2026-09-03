@@ -479,9 +479,15 @@ ul {
 
 /* Shared by Sentence Search, Pronunciation practice, and the example
    sentences embedded in a word definition — one reading-text component, so
-   one font change here covers all three. */
+   one font change here covers all three. Sans-serif rather than Norwegian's
+   Source Serif 4/Noto Serif: neither webfont carries Japanese glyphs, so
+   "serif" here was only ever choosing the browser's fallback CJK serif
+   (Mincho) over its sans (Gothic) — a real, and less legible, difference
+   for kanji/kana, unlike for Latin scripts. Deliberate departure from
+   Norwegian; see .definition-text and .game-word h2 below for the rest of
+   this app's word-content surfaces. */
 .sentence {
-  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
 }
 
 /* Definition examples teach one target form at a time. Keep that target
@@ -666,15 +672,16 @@ ul {
   transform: rotate(180deg);
 }
 
-/* Reading content (the dictionary gloss itself, including the clickable
-   cross-reference words makeDefinitionClickable wraps inside it — see
+/* The dictionary gloss itself, including the clickable cross-reference
+   words makeDefinitionClickable wraps inside it — see
    .clickable-definition-word, 00-foundations-and-game.css — which inherit
-   this rather than setting their own), so it matches the other reading-text
-   surfaces (story prose, .sentence) instead of falling through to body's
-   plain Noto Serif default. Covers both the single-result definition and
-   the compact multiple-results list, which share this class. */
+   this rather than setting their own. Covers both the single-result
+   definition and the compact multiple-results list, which share this
+   class. Sans-serif, unlike Norwegian's story prose treatment: this is a
+   dictionary word entry, not reading prose, and neither serif webfont
+   above carries Japanese glyphs anyway (see .sentence's comment). */
 .definition-text {
-  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
 }
 
 /* Collapsed-by-default clamp for a long single-word definition, lifted by

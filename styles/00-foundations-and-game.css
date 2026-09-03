@@ -392,6 +392,10 @@ button:disabled i {
   text-decoration-thickness: 1px;
   text-underline-offset: 4px;
   text-decoration-color: rgba(60, 136, 212, 0.4);
+  /* Adjacent segmented words butt up against each other since Japanese
+     text has no spaces -- this margin keeps neighboring underlines from
+     touching so one clickable word reads as distinct from the next. */
+  margin-inline: 1px;
   transition:
     color 0.2s ease,
     text-decoration-color 0.2s ease;
@@ -537,7 +541,10 @@ li {
 
 .english-sentence {
   color: var(--color-text-muted); /* Set a different color for English text */
-  font-family: "Source Serif 4", "Noto Serif", serif;
+  /* Sans-serif to match its paired Japanese teaching sentence — a
+     deliberate departure from Norwegian; see .sentence's comment in
+     20-results-and-story-quiz.css. */
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
 }
 
 .english-title {
@@ -740,7 +747,7 @@ li {
 /* Example Sentences */
 .game-cefr-spacer p {
   color: #413e3e;
-  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
   font-size: 14px !important;
   flex: 1; /* Makes each <p> element take up equal width */
   text-align: center;
@@ -990,7 +997,7 @@ li {
   cursor: pointer;
   display: block;
   flex: 0 0 auto;
-  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
   font-size: 15px;
   line-height: 1.35;
   margin: 2px 0 0;
@@ -1247,7 +1254,7 @@ li {
 }
 
 .game-pronunciation {
-  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
   font-size: 14px;
   font-weight: 400;
   letter-spacing: 0.02rem;
@@ -1513,7 +1520,7 @@ li {
 .game-typed-answer-row {
   display: grid;
   gap: 15px;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
 }
 
 .game-norwegian-letter-keys {
@@ -1691,12 +1698,16 @@ li {
 .game-word h2 {
   /* Higher specificity than the shared h2{font-size:30px} rule, so this
      wins without needing !important — the tiers above still take over via
-     their extra class the moment a prompt stops being a short word. */
+     their extra class the moment a prompt stops being a short word. The
+     font-family override is for the same reason: the Word Game's prompt
+     word is dictionary word content, so it stays sans-serif here too —
+     see .word-gender's comment in 30-stories-and-word-lists.css for why
+     that's a deliberate departure from Norwegian's serif prompt. */
   font-size: clamp(20px, 3.4vw, 28px);
   line-height: 1.25;
   margin: 0;
   color: #173a5e;
-  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
   font-weight: 500 !important;
 }
 
