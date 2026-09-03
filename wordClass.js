@@ -33,6 +33,14 @@
     return normalizeWordClass(genderValue);
   }
 
+  // True if `genderValue` is a noun. Norwegian's version checks for en/
+  // et/ei article markers within a possibly-compound value; here the
+  // field is already the flat token "noun" itself, so this is just an
+  // equality check.
+  function isNounGender(genderValue) {
+    return normalizeWordClass(genderValue) === "noun";
+  }
+
   // True if `genderValue` belongs to the word class named by
   // `selectedPOS` (a token like "noun", "verb", "adjective", as used by
   // the Word Class filter dropdown). Anchored on the whole value, not a
@@ -59,6 +67,7 @@
 
   self.WordClass = Object.freeze({
     stripNounPrefix,
+    isNounGender,
     getWordClass,
     matchesWordClass,
     hasCompatibleGender,

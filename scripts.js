@@ -11,6 +11,76 @@ let results = [];
 // the time any of wordList.js's functions actually run (in response to
 // user interaction), the page has finished loading and this is already
 // defined.
+const VOCABULARY_LOADING_COPY = {
+  words: {
+    title: "Preparing Dictionary Results",
+    description: "Loading the vocabulary needed for this lookup…",
+  },
+  sentences: {
+    title: "Preparing Sentence Search",
+    description: "Loading the vocabulary needed to find examples…",
+  },
+  "word-game": {
+    title: "Preparing Word Game",
+    description: "Loading your vocabulary so practice can begin…",
+  },
+  "word-list": {
+    title: "Preparing My Words",
+    description: "Loading your vocabulary and saved words…",
+  },
+  pronunciation: {
+    title: "Preparing Pronunciation Practice",
+    description: "Loading the vocabulary used for listening practice…",
+  },
+};
+
+function routeNeedsVocabularyLoadingShell(type, url = new URL(window.location)) {
+  if (type !== "words") return Boolean(VOCABULARY_LOADING_COPY[type]);
+
+  // The ordinary dictionary landing page is already useful before the CSV
+  // arrives, so reserve this shell for a direct lookup or shared word link.
+  return Boolean(url.searchParams.get("query") || url.searchParams.get("word"));
+}
+
+function showVocabularyLoadingShell(type) {
+  const copy = VOCABULARY_LOADING_COPY[type] || VOCABULARY_LOADING_COPY.words;
+  const main = document.getElementById("main-content");
+
+  showLandingCard(false);
+  clearContainer();
+
+  const shell = document.createElement("section");
+  shell.id = "vocabulary-loading-shell";
+  shell.className = "definition vocabulary-loading-shell";
+  shell.setAttribute("role", "status");
+  shell.setAttribute("aria-live", "polite");
+  shell.setAttribute("aria-busy", "true");
+
+  const heading = document.createElement("h2");
+  heading.textContent = copy.title;
+
+  const description = document.createElement("p");
+  description.className = "vocabulary-loading-description";
+  description.textContent = copy.description;
+
+  const skeleton = document.createElement("div");
+  skeleton.className = "vocabulary-loading-skeleton";
+  skeleton.setAttribute("aria-hidden", "true");
+  for (let index = 0; index < 3; index += 1) {
+    const line = document.createElement("span");
+    line.className = "vocabulary-loading-skeleton-line";
+    skeleton.appendChild(line);
+  }
+
+  shell.append(heading, description, skeleton);
+  resultsContainer.appendChild(shell);
+  main?.setAttribute("aria-busy", "true");
+}
+
+function clearVocabularyLoadingState() {
+  document.getElementById("main-content")?.removeAttribute("aria-busy");
+}
+
 function escapeHTML(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -18,6 +88,44 @@ function escapeHTML(value) {
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#039;");
+}
+
+function prefersReducedData() {
+  const connection = navigator.connection;
+  if (!connection) return false;
+  if (connection.saveData) return true;
+  return ["slow-2g", "2g"].includes(connection.effectiveType);
+}
+
+// Used by wordGame.js to put off fetching vocabulary-frequency.json (a
+// large corpus-ranking file) until there's real reason to believe it'll
+// actually be used -- idle time, or the visitor interacting with search/
+// #mode-nav/the landing cards -- rather than on every single page load.
+function deferUntilNeeded(loader) {
+  let started = false;
+  const start = () => {
+    if (started) return;
+    started = true;
+    loader();
+  };
+
+  if (!prefersReducedData()) {
+    if ("requestIdleCallback" in window) {
+      window.requestIdleCallback(start, { timeout: 2000 });
+    } else {
+      window.setTimeout(start, 1000);
+    }
+  }
+
+  const searchBar = document.getElementById("search-bar");
+  searchBar?.addEventListener("focus", start, { once: true });
+  searchBar?.addEventListener("input", start, { once: true });
+  document
+    .getElementById("mode-nav")
+    ?.addEventListener("click", start, { once: true, capture: true });
+  document
+    .querySelector(".landing-card-button-grid")
+    ?.addEventListener("click", start, { once: true, capture: true });
 }
 // isEnglishVisible/setEnglishVisible live in englishVisibility.js, shared
 // with stories.js and pronunciation.js.
@@ -308,21 +416,113 @@ function buildSentenceIndex() {
   console.log(`[Sentences] index terms: ${idx.size}`);
 }
 
-function flagMissingWordEntry(word) {
-  // URL of your Google Form
-  const formUrl =
-    "https://docs.google.com/forms/d/e/1FAIpQLSdMpnbI2DyUo6SWBRR53ZnYucDPdAYXK9rksP3AhMrC7b91Dw/formResponse";
+// Shared feedback-form config -- exact same Google Form/field this app's
+// own flagMissingWordEntry (below) already used, before this ported,
+// larger system replaced its body. One shared inbox across every
+// language-app sibling, apparently by design (see noRandom.js's original
+// leftover-Spanish-list situation earlier this session for the flip side
+// of that convention -- copy/paste across siblings, not always kept in
+// sync -- but this specific form/field was already correct here).
+const FEEDBACK_FORM_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLSdMpnbI2DyUo6SWBRR53ZnYucDPdAYXK9rksP3AhMrC7b91Dw/formResponse";
+const FEEDBACK_FORM_FIELD_ID = "entry.279285583";
 
-  // Prepare the data to be sent
+const FEEDBACK_CATEGORIES = [
+  "Japanese word or spelling",
+  "English translation",
+  "Part of speech / word class",
+  "Word inflections",
+  "CEFR level seems wrong",
+  "Japanese example sentence",
+  "English sentence translation",
+  "Word audio",
+  "Sentence audio",
+  "Something else",
+];
+
+const STORY_FEEDBACK_CATEGORIES = [
+  "Japanese story text",
+  "English translation",
+  "Story audio",
+  "Story image",
+  "CEFR level seems wrong",
+  "Something else",
+];
+
+const GENERAL_FEEDBACK_CATEGORIES = [
+  "Bug or technical issue",
+  "Feature request or suggestion",
+  "Something is confusing",
+  "General feedback or compliment",
+  "Something else",
+];
+
+function submitUserFeedback(message) {
   const formData = new FormData();
-  formData.append("entry.279285583", word); // This is the field ID for the word entry
+  formData.append(FEEDBACK_FORM_FIELD_ID, message);
 
-  // Send the form data via POST request
-  fetch(formUrl, {
+  return fetch(FEEDBACK_FORM_URL, {
     method: "POST",
     body: formData,
     mode: "no-cors", // Necessary to avoid CORS issues
-  })
+  });
+}
+
+function buildFeedbackMessage({
+  source,
+  word,
+  pos,
+  cefr,
+  prompt,
+  category,
+  userAnswer,
+  details,
+}) {
+  const parts = [];
+
+  if (word) {
+    const attributes = [pos, cefr].filter(Boolean).join(", ");
+    // Reports tied to an existing entry start with its headword so they sort
+    // naturally in form responses. The -update marker distinguishes these
+    // reports from bare missing-word submissions.
+    const entryPrefix = source ? `${word}-update ${source}` : word;
+    parts.push(attributes ? `${entryPrefix} (${attributes})` : entryPrefix);
+  } else if (source) {
+    parts.push(source);
+  }
+
+  if (prompt) {
+    // What the learner actually saw and had to translate/complete — the
+    // English meaning for a reverse-typed question, or the sentence with
+    // its blank for a cloze one. "word" above is the target Japanese
+    // answer, which for a reverse question isn't itself what was shown, so
+    // a reviewer judging "should this answer have been accepted" needs
+    // this to know what prompted it in the first place.
+    parts.push(`— Shown: "${prompt}"`);
+  }
+
+  if (category) {
+    // "Category" rather than "Issue" — general feedback covers things
+    // like feature requests and compliments, not just problems.
+    parts.push(`— Category: ${category}`);
+  }
+
+  if (userAnswer) {
+    parts.push(`— Learner answered: "${userAnswer}"`);
+  }
+
+  if (details) {
+    parts.push(`— "${details}"`);
+  }
+
+  return parts.join(" ");
+}
+
+function flagMissingWordEntry(word) {
+  // Unlike every other report type, this goes to the form as the bare
+  // word — no brackets, category, or quoting — since the form's one
+  // field is otherwise treated as a simple "missing word" list.
+  submitUserFeedback(word)
     .then(() => {
       alert(`The word "${word}" has been flagged successfully!`);
     })
@@ -330,6 +530,249 @@ function flagMissingWordEntry(word) {
       console.error("Error flagging the word:", error);
       alert("There was an issue flagging this word. Please try again later.");
     });
+}
+
+function openWordCardFeedbackDialog(
+  triggerElement,
+  word,
+  pos,
+  cefr,
+  initialCategory,
+) {
+  openFeedbackDialog({
+    source: "Word Card",
+    word,
+    pos,
+    cefr,
+    initialCategory,
+    triggerElement,
+  });
+}
+
+// Site-wide feedback, not scoped to any one word/story/question — reachable
+// from the footer on every page.
+function openGeneralFeedbackDialog(triggerElement) {
+  openFeedbackDialog({
+    source: "General Feedback",
+    categories: GENERAL_FEEDBACK_CATEGORIES,
+    dialogTitle: "Share Your Feedback",
+    categoryQuestion: "What's This About?",
+    detailsPlaceholder: "Tell us more (optional)",
+    successMessage: "Thanks — your feedback was sent.",
+    triggerElement,
+  });
+}
+
+let feedbackDialogTriggerElement = null;
+
+function handleFeedbackDialogKeydown(event) {
+  if (event.key === "Escape") {
+    closeFeedbackDialog();
+    return;
+  }
+
+  // aria-modal="true" claims background content is inert to assistive tech,
+  // but nothing enforced that for a sighted keyboard user — Tab could walk
+  // straight past the dialog's own controls into the page behind it. Cycle
+  // focus between the dialog's first and last focusable elements instead.
+  if (event.key === "Tab") {
+    const dialog = document.querySelector(".feedback-dialog");
+    if (!dialog) return;
+
+    const focusable = dialog.querySelectorAll(
+      "button:not([disabled]), select, textarea, input, [tabindex]:not([tabindex='-1'])",
+    );
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+}
+
+function closeFeedbackDialog() {
+  const overlay = document.querySelector(".feedback-dialog-overlay");
+  if (!overlay) return;
+
+  overlay.remove();
+  document.removeEventListener("keydown", handleFeedbackDialogKeydown);
+
+  if (
+    feedbackDialogTriggerElement &&
+    typeof feedbackDialogTriggerElement.focus === "function"
+  ) {
+    feedbackDialogTriggerElement.focus();
+  }
+  feedbackDialogTriggerElement = null;
+}
+
+// One shared "report an issue" dialog, reused by the word card, the word
+// game, and individual stories. `source` identifies where the report came
+// from (e.g. "Word Card", "Word Game · Cloze", "Story") and, along with
+// `word`/`pos`/`cefr`, is folded into the single message string sent to
+// the form. `categories` lets each caller show issue types relevant to
+// its own content (a story has no "word audio" to report, for instance).
+function openFeedbackDialog({
+  source,
+  word,
+  pos,
+  cefr,
+  prompt,
+  showWordInTitle = true,
+  categories = FEEDBACK_CATEGORIES,
+  dialogTitle,
+  categoryQuestion = "What's the Issue?",
+  detailsPlaceholder = "What's wrong, exactly?",
+  successMessage = "Thanks — your report was sent.",
+  initialCategory,
+  userAnswer,
+  triggerElement,
+}) {
+  // Only one report dialog should ever be open at a time.
+  closeFeedbackDialog();
+
+  feedbackDialogTriggerElement = triggerElement || null;
+
+  const overlay = document.createElement("div");
+  overlay.className = "feedback-dialog-overlay";
+
+  const dialog = document.createElement("div");
+  dialog.className = "feedback-dialog";
+  dialog.setAttribute("role", "dialog");
+  dialog.setAttribute("aria-modal", "true");
+  dialog.setAttribute("aria-labelledby", "feedback-dialog-title");
+  dialog.tabIndex = -1;
+
+  const title = document.createElement("h3");
+  title.id = "feedback-dialog-title";
+  title.textContent =
+    dialogTitle ||
+    (word && showWordInTitle
+      ? `Report an Issue With "${word}"`
+      : "Report an Issue With This Question");
+  dialog.appendChild(title);
+
+  const categoryLabel = document.createElement("label");
+  categoryLabel.className = "feedback-dialog-label";
+  categoryLabel.htmlFor = "feedback-dialog-category";
+  categoryLabel.textContent = categoryQuestion;
+  dialog.appendChild(categoryLabel);
+
+  const categorySelect = document.createElement("select");
+  categorySelect.id = "feedback-dialog-category";
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category;
+    option.textContent = category;
+    categorySelect.appendChild(option);
+  });
+  if (initialCategory && categories.includes(initialCategory)) {
+    categorySelect.value = initialCategory;
+  }
+  dialog.appendChild(categorySelect);
+
+  const detailsLabel = document.createElement("label");
+  detailsLabel.className = "feedback-dialog-label";
+  detailsLabel.htmlFor = "feedback-dialog-details";
+  detailsLabel.textContent = "Details (Optional)";
+  dialog.appendChild(detailsLabel);
+
+  const detailsTextarea = document.createElement("textarea");
+  detailsTextarea.id = "feedback-dialog-details";
+  detailsTextarea.rows = 3;
+  detailsTextarea.placeholder = detailsPlaceholder;
+  dialog.appendChild(detailsTextarea);
+
+  const status = document.createElement("p");
+  status.className = "feedback-dialog-status";
+  dialog.appendChild(status);
+
+  const actions = document.createElement("div");
+  actions.className = "feedback-dialog-actions";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.type = "button";
+  cancelButton.className = "feedback-dialog-cancel";
+  cancelButton.textContent = "Cancel";
+  cancelButton.addEventListener("click", closeFeedbackDialog);
+
+  const submitButton = document.createElement("button");
+  submitButton.type = "button";
+  submitButton.className = "feedback-dialog-submit";
+  submitButton.textContent = "Send";
+
+  submitButton.addEventListener("click", () => {
+    const category = categorySelect.value;
+    const details = detailsTextarea.value.trim();
+
+    if (category === "Something else" && !details) {
+      status.textContent = "Please add a few details.";
+      status.classList.add("feedback-dialog-status-error");
+      detailsTextarea.focus();
+      return;
+    }
+
+    submitButton.disabled = true;
+    cancelButton.disabled = true;
+    status.classList.remove("feedback-dialog-status-error");
+    status.textContent = "Sending…";
+
+    submitUserFeedback(
+      buildFeedbackMessage({
+        source,
+        word,
+        pos,
+        cefr,
+        prompt,
+        category,
+        userAnswer,
+        details,
+      }),
+    )
+      .then(() => {
+        status.textContent = successMessage;
+        setTimeout(closeFeedbackDialog, 1400);
+      })
+      .catch((error) => {
+        console.error("Error sending feedback:", error);
+        status.textContent = "Something went wrong. Please try again.";
+        status.classList.add("feedback-dialog-status-error");
+        submitButton.disabled = false;
+        cancelButton.disabled = false;
+      });
+  });
+
+  actions.appendChild(cancelButton);
+  actions.appendChild(submitButton);
+  dialog.appendChild(actions);
+
+  overlay.appendChild(dialog);
+
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) {
+      closeFeedbackDialog();
+    }
+  });
+
+  document.body.appendChild(overlay);
+  document.addEventListener("keydown", handleFeedbackDialogKeydown);
+
+  // Programmatically focusing a native <select> can immediately open its
+  // full-screen picker on mobile, making the report button appear to skip
+  // past the dialog. Put initial focus on the dialog itself at the same
+  // compact breakpoint used by the Word Game toolbar; desktop keeps the
+  // convenient direct focus on the category field.
+  const usesCompactFeedbackDialog = window.matchMedia?.(
+    "(max-width: 1024px)",
+  ).matches;
+  (usesCompactFeedbackDialog ? dialog : categorySelect).focus();
 }
 
 // Generate and display a random word or sentence
@@ -1087,7 +1530,7 @@ async function search(queryOverride = null) {
 // Check if any sentences exist for a word or its variations
 function checkForSentences(word, pos) {
   const lowerCaseWord = word.trim().toLowerCase();
-  const wordParts = lowerCaseWord.split(",").map((w) => w.trim());
+  const wordParts = lowerCaseWord.split(/[,、]/).map((w) => w.trim());
   let sentenceFound = false;
 
   // Iterate through each part of the comma-separated list
@@ -1191,6 +1634,16 @@ window.getCurrentMode = getCurrentMode;
 // automatically instead of needing to be updated at each entry point.
 function syncModeNav(type) {
   document.body.dataset.mode = type;
+  document.body.classList.toggle("word-game-mode", type === "word-game");
+  document.body.classList.toggle("stories-mode", type === "stories");
+  // Not reachable yet (My Stats isn't ported -- see this session's My
+  // Stats deferral), but harmless to set now: ready for when it exists
+  // rather than needing this function touched again then.
+  document.body.classList.toggle("my-stats-mode", type === "my-stats");
+  document.body.classList.toggle(
+    "word-list-mode",
+    type === "word-list"
+  );
   document.querySelectorAll(".mode-tab").forEach((tab) => {
     const active = tab.dataset.mode === type;
     tab.classList.toggle("active", active);
@@ -1528,8 +1981,12 @@ function handleTypeChange(type, options = {}) {
       randomWord(); // Generate a random sentence if the search bar is empty
     }
   } else if (type === "word-game") {
-    // Handle "Word Game" type
-
+    // Every explicit entry into the word game shows the mode-picker intro
+    // again -- this is a fresh visit, not a continuation of whatever round
+    // (if any) was previously active. startWordGame() itself becomes a
+    // no-op past the "show the intro" gate until beginWordGameRound() sets
+    // this back to true.
+    wordGameRoundActive = false;
     resetGame();
     startWordGame(); // Call the word game function
   } else if (type === "pronunciation") {
@@ -1875,11 +2332,11 @@ function displaySearchResults(results, query = "") {
                 <h2 class="word-gender ${multipleResultsWordgender}">
                   <div class="word-text-block">
                     ${
-                      result.ord.includes(",")
+                      /[,、]/.test(result.ord)
                         ? (() => {
-                            const [first, ...rest] = result.ord.split(",");
+                            const [first, ...rest] = result.ord.split(/[,、]/);
                             return `${first.trim()}<br><span class="alt-spelling">${rest
-                              .join(", ")
+                              .join("、")
                               .trim()}</span>`;
                           })()
                         : result.ord
@@ -2068,6 +2525,25 @@ function getCefrClass(cefrLevel) {
     return "hard";
   }
   return "";
+}
+
+const CEFR_LEVEL_INFO = {
+  A1: { label: "Beginner", description: "Basic words and phrases for everyday needs" },
+  A2: { label: "Elementary", description: "Simple, familiar topics and routine information" },
+  B1: { label: "Intermediate", description: "Everyday topics, opinions, and plans" },
+  B2: { label: "Upper-Intermediate", description: "Complex topics and more abstract ideas" },
+  C: { label: "Advanced", description: "Nuanced, precise, and specialized language" },
+};
+
+function getCefrLabel(cefrLevel) {
+  return CEFR_LEVEL_INFO[cefrLevel]?.label || "";
+}
+
+// "Label (Code): description" — for use as a title tooltip on compact badges
+// that don't have room to show the plain label directly.
+function getCefrTooltip(cefrLevel) {
+  const info = CEFR_LEVEL_INFO[cefrLevel];
+  return info ? `${info.label} (${cefrLevel}): ${info.description}` : "";
 }
 
 function getCefrColor(cefrLevel) {
@@ -3192,7 +3668,7 @@ function handleCardClick(event, word, pos, engelsk, definisjon) {
   displaySearchResults(clickedResult); // This ensures only the clicked card remains
 
   // Update the URL to reflect the clicked entry
-  updateURL("", "words", pos, null, word.split(",")[0].trim());
+  updateURL("", "words", pos, null, word.split(/[,、]/)[0].trim());
 }
 
 // Initialization of the dictionary data and event listeners
