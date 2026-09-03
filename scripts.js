@@ -1848,6 +1848,11 @@ function renderAboutPage() {
       offers a "Flag Missing Word Entry" button. For anything else, reach
       out via the links in the footer below.
     </p>
+    <p>
+      Frequency-aware sorting and practice use the
+      <a href="https://clrd.ninjal.ac.jp/bccwj/en/freq-list.html" target="_blank" rel="noopener noreferrer">Balanced Corpus of Contemporary Written Japanese word list</a>
+      from the National Institute for Japanese Language and Linguistics.
+    </p>
   `;
   resultsContainer.appendChild(section);
 }

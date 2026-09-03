@@ -1087,28 +1087,15 @@ function scheduleAdaptiveRecovery({
   return entry;
 }
 let wordDataStore = [];
-// MP3s, not WAVs — encoded at LAME -V2 (~91% smaller with no audible
-// difference for a short UI chime), since all six are instantiated
-// unconditionally for every visitor on every page, not just word-game
-// players. goodChime/badChime/queueClearedChime/roundCompleteChime/
-// streakChime share one synthesized bell voice and a common C-major tonal
-// palette (goodChime/queueClearedChime/roundCompleteChime/streakChime all
-// resolve upward through the same family of intervals; badChime is the one
-// deliberately falling, duller motif) so they read as one cohesive kit.
-// popChime is the original pre-existing file — kept as-is by request after
-// a synthesized replacement was tried and rejected as too high and chirpy.
+// The Japanese bundle currently has answer and pop cues. Higher-level events
+// use separate Audio instances backed by those existing files, which keeps
+// simultaneous playback safe without requesting missing Norwegian-only cues.
 let goodChime = new Audio("Resources/Audio/goodChime.wav");
 let badChime = new Audio("Resources/Audio/badChime.wav");
 let popChime = new Audio("Resources/Audio/popChime.wav");
-// Milestone chimes: rarer, bigger moments (streak, queue cleared, round
-// complete) than the per-answer three above, but same voice and palette.
-let streakChime = new Audio("Resources/Audio/streakChime.wav");
-let queueClearedChime = new Audio(
-  "Resources/Audio/queueClearedChime.wav",
-);
-let roundCompleteChime = new Audio(
-  "Resources/Audio/roundCompleteChime.wav",
-);
+let streakChime = new Audio("Resources/Audio/popChime.wav");
+let queueClearedChime = new Audio("Resources/Audio/goodChime.wav");
+let roundCompleteChime = new Audio("Resources/Audio/goodChime.wav");
 // These six live for the whole session instead of being recreated per play
 // (unlike playTrackedAudio's word/sentence clips). On iOS Safari a backgrounded
 // tab, a phone call, or a screen lock can silently push a long-lived
@@ -5213,21 +5200,6 @@ function renderWordGameIntro() {
             </div>
           </section>
 
-          <!-- Minimal pairs is deliberately separate from spaced repetition:
-               it is a short listening drill and does not change progress. -->
-          <section class="game-secondary-drill" aria-labelledby="game-secondary-drill-heading">
-            <div class="game-option-heading-row">
-              <div>
-                <h3 id="game-secondary-drill-heading">Listening Drill</h3>
-                <p>Hear a word and choose between similar sounds.</p>
-              </div>
-              <button type="button" class="game-secondary-drill-btn" id="game-minimal-pairs-btn">
-                <i class="fas fa-headphones" aria-hidden="true"></i>
-                Minimal Pairs
-              </button>
-            </div>
-          </section>
-
           <button type="button" id="retake-placement-btn" class="placement-retake-link">
             Retake Placement Test
           </button>
@@ -5245,10 +5217,6 @@ function renderWordGameIntro() {
     ?.addEventListener("click", () => {
       window.PlacementTestAPI?.start?.();
     });
-
-  document
-    .getElementById("game-minimal-pairs-btn")
-    ?.addEventListener("click", startMinimalPairsGame);
 
   // A whole-screen re-render on click (rather than just toggling classes)
   // matches how every other choice on this screen behaves, and keeps the
@@ -9155,13 +9123,10 @@ const RECALL_NEED_WEIGHT_EXPONENT = 1.5;
 const RECALL_NEED_WEIGHT_FLOOR = 0.02;
 
 // Vocabulary usefulness metadata is a separate, generated sidecar rather than
-// another japaneseWords.csv column. It blends three registers — CLARINO
-// newspaper text, OpenSubtitles conversational text, and NB N-gram digibok
-// book text — so no single corpus's quirks (e.g. newspaper over-representing
-// politics/journalism vocabulary) dominate the signal; see
-// VOCABULARY_FREQUENCY_DATA.md for the blend method. Surface-form counts are
-// aggregated into entry records offline using unambiguous official Norsk
-// Ordbank inflections. Loading is kicked off unconditionally at script load
+// another japaneseWords.csv column. It uses exact primary-lemma matches from
+// NINJAL's Balanced Corpus of Contemporary Written Japanese long-unit list;
+// see VOCABULARY_FREQUENCY_DATA.md for source, terms, and build details.
+// Loading is kicked off unconditionally at script load
 // (see the bottom of this file) since it now also refines per-word
 // difficulty (getWordDifficultyAnchor) for the Elo-style ability rating on
 // every answer, not just new-word/placement selection — the two narrower

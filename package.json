@@ -5,6 +5,7 @@
   "description": "Japanese Dictionary — vanilla JS/HTML/CSS.",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
+    "build:frequency": "python3 scripts/build-japanese-frequency.py",
     "emulators": "PATH=\"/opt/homebrew/opt/openjdk@21/bin:$PATH\" firebase emulators:start --only firestore",
     "dev": "concurrently -n app,firestore -c blue,yellow \"python3 -m http.server 8936\" \"npm run emulators\""
   },
