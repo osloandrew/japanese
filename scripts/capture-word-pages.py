@@ -210,6 +210,20 @@ def capture(words: list[str], output_root: Path = ROOT) -> None:
                     word,
                 )
 
+                # A single-result render auto-loads its example sentences via
+                # a fire-and-forget setTimeout(0) inside displaySearchResults
+                # (see fetchAndRenderSentences in scripts.js) -- not awaited
+                # by renderWordDefinition() itself, so without this wait the
+                # capture can serialize mid-fetch and miss the sentences
+                # section entirely, or catch it collapsed instead of the
+                # auto-opened state the live app settles into.
+                page.wait_for_function(
+                    "() => { const c = document.querySelector('.sentences-container'); "
+                    "return !c || (c.dataset.fetched === 'true' && "
+                    "c.dataset.supplementalLoading !== 'true'); }",
+                    timeout=15_000,
+                )
+
                 # ':not(.error-message)' matters: renderWordDefinition()'s
                 # "No Definition Found" box also carries the .definition
                 # class, so a plain '.definition' count reports a match
