@@ -2851,14 +2851,17 @@ function displaySearchResults(
   // Automatically load sentences for a single result, regardless of whether sentences exist in `eksempel`
   if (defaultResult && results[0]) {
     console.log("Auto-loading sentences for:", results[0].ord);
-    setTimeout(() => {
-      const singleResult = results[0];
-      fetchAndRenderSentences(
-        singleResult.ord,
-        singleResult.pos,
-        isEnglishVisible
-      );
-    }, 0);
+    const singleResult = results[0];
+    // Exposed on window so scripts/capture-word-pages.py can await this
+    // fire-and-forget auto-load directly instead of polling DOM attributes
+    // for a heuristic "done" signal (data-fetched gets set true along more
+    // than one code path inside fetchAndRenderSentences, not all of which
+    // mean the sentences actually rendered).
+    window.__lastSentencesLoadPromise = fetchAndRenderSentences(
+      singleResult.ord,
+      singleResult.pos,
+      isEnglishVisible
+    );
   } else {
     console.log("No sentences to load for:", results[0]?.ord || "No results");
   }
