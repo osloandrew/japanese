@@ -700,6 +700,19 @@ function maybeServeFromRepairQueue() {
   return false;
 }
 
+// Maps a question type to one of SpacedRepetition's 4 tracked skills
+// (recognition/production/listening/context -- see spacedRepetition.js),
+// so WordStrengthAPI.recordResult() strengthens the right one instead of
+// conflating "recognized the word on a flashcard" with "recalled it from
+// just the English gloss" (reverse) or "used context to fill a blank"
+// (cloze). "listening" is handled at its own call site, since that
+// question type never reaches handleTranslationClick.
+function getWordGameSkillForQuestionType(questionType) {
+  if (questionType === "reverse") return "production";
+  if (questionType === "cloze") return "context";
+  return "recognition";
+}
+
 function pickQuestionType(cefr) {
   const questionWeights = {
     A1: { cloze: 0.2, listening: 0.25, reverse: 0.1 }, // matching 0.45
@@ -1433,6 +1446,11 @@ async function handleTranslationClick(
     updateRecentAnswers(true); // Track this correct answer
     // Add the word to the correctly answered words array to exclude it from future questions
     correctlyAnsweredWords.push(wordObj.ord);
+    window.WordStrengthAPI?.recordResult?.(
+      wordObj,
+      true,
+      { skill: getWordGameSkillForQuestionType(questionType) }
+    );
 
     if (questionType === "cloze") {
       const fullSentence =
@@ -1489,6 +1507,11 @@ async function handleTranslationClick(
     incorrectCount++; // Increment incorrect count
     correctStreak = 0; // Reset the streak
     updateRecentAnswers(false); // Track this correct answer
+    window.WordStrengthAPI?.recordResult?.(
+      wordObj,
+      false,
+      { skill: getWordGameSkillForQuestionType(questionType) }
+    );
 
     if (questionType === "cloze") {
       const fullSentence =
@@ -1599,6 +1622,9 @@ async function handleListeningAnswer(selectedTranslation, wordObj) {
     correctCount++;
     correctStreak++;
     updateRecentAnswers(true);
+    window.WordStrengthAPI?.recordResult?.(wordObj, true, {
+      skill: "listening",
+    });
 
     totalQuestions++;
     questionsAtCurrentLevel++;
@@ -1630,6 +1656,9 @@ async function handleListeningAnswer(selectedTranslation, wordObj) {
     incorrectCount++;
     correctStreak = 0;
     updateRecentAnswers(false);
+    window.WordStrengthAPI?.recordResult?.(wordObj, false, {
+      skill: "listening",
+    });
 
     totalQuestions++;
     questionsAtCurrentLevel++;

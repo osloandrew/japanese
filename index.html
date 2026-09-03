@@ -269,6 +269,17 @@
         ></span>
         <span class="mode-tab-label">Word Game</span>
       </a>
+      <a class="mode-tab" data-mode="word-list" href="?type=word-list">
+        <span
+          class="mode-tab-icon"
+          style="
+            mask-image: url(Resources/Photos/bookmark.svg);
+            -webkit-mask-image: url(Resources/Photos/bookmark.svg);
+          "
+          aria-hidden="true"
+        ></span>
+        <span class="mode-tab-label">My Words</span>
+      </a>
     </nav>
 
     <!-- Shown after a completed word-game round, if the visitor isn't
@@ -805,15 +816,6 @@
       <p class="copyright">© 2025 Japanese Dictionary</p>
     </footer>
 
-    <!-- Reserves scroll room below the footer so the fixed mobile bottom
-         tab bar (#mode-nav, styles/35-navigation.css) never covers it. A dedicated
-         element rather than margin/padding on footer or body: body's
-         height:100% column-flex layout doesn't reliably extend the page's
-         scrollable area for a trailing margin on its last flex item (a
-         real, measured browser quirk, not a guess -- margin-bottom on
-         footer computed correctly but contributed ~0 to scrollHeight). -->
-    <div id="mobile-nav-spacer" aria-hidden="true"></div>
-
     <script>
       // Language site switcher -> navigates to https://osloandrew.github.io/{slug}/
       document.addEventListener("DOMContentLoaded", () => {
@@ -831,8 +833,11 @@
         });
       });
     </script>
+    <script src="wordClass.js"></script>
+    <script src="spacedRepetition.js"></script>
     <script src="englishVisibility.js" defer></script>
     <script src="storyFavorites.js" defer></script>
+    <script src="wordList.js" defer></script>
     <script src="myWordsAuth.js" defer></script>
     <script src="noRandom.js" defer></script>
     <script src="scripts.js" defer></script>

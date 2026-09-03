@@ -1,5 +1,24 @@
 // Global Variables
+// Used by wordList.js for crawlable definition-URL construction, ported
+// from Norwegian. This app has no pretty-path/pushState navigation for
+// document.baseURI to drift from, so a plain APP_ROOT_URL constant is
+// safe here without Norwegian's anchorAppNavigationLinks() machinery.
+const APP_ROOT_URL = document.baseURI;
 let results = [];
+
+// Used by wordList.js's PDF export (ported from Norwegian). This file
+// runs after wordList.js at load time (non-deferred vs. deferred), but by
+// the time any of wordList.js's functions actually run (in response to
+// user interaction), the page has finished loading and this is already
+// defined.
+function escapeHTML(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 // isEnglishVisible/setEnglishVisible live in englishVisibility.js, shared
 // with stories.js and pronunciation.js.
 let latestMultipleResults = null;
@@ -1158,10 +1177,20 @@ function selectType(type) {
   handleTypeChange(type);
 }
 
+// Ported from Norwegian: the one place body.dataset.mode gets set, which
+// getCurrentMode() below reads and which wordList.js's renderWordList()/
+// reconcileMyWordsEntryIds() etc. check to decide whether the Word List
+// tab is the one currently visible.
+function getCurrentMode() {
+  return document.body.dataset.mode || "words";
+}
+window.getCurrentMode = getCurrentMode;
+
 // Marks the #mode-nav tab matching the current mode as active. Called from
 // handleTypeChange() itself, so every navigation path stays in sync
 // automatically instead of needing to be updated at each entry point.
 function syncModeNav(type) {
+  document.body.dataset.mode = type;
   document.querySelectorAll(".mode-tab").forEach((tab) => {
     const active = tab.dataset.mode === type;
     tab.classList.toggle("active", active);
@@ -1190,7 +1219,15 @@ function initializeModeNav() {
     tab.addEventListener("click", (event) => {
       if (!isPlainLeftClick(event)) return;
       event.preventDefault();
-      selectType(tab.dataset.mode);
+      // My Words goes through goToMyWords() (wordList.js) rather than a
+      // plain selectType(), matching its existing dedicated "My Words"
+      // default view -- see the comment at handleTypeChange's word-list
+      // branch. Every other tab just switches directly.
+      if (tab.dataset.mode === "word-list") {
+        window.goToMyWords?.();
+      } else {
+        selectType(tab.dataset.mode);
+      }
     });
   });
 }
@@ -1361,7 +1398,7 @@ function disableSearchControls() {
 }
 
 // Handle change in search type (words/sentences)
-function handleTypeChange(type) {
+function handleTypeChange(type, options = {}) {
   // If type is not passed in (e.g., called from dropdown), get it from the dropdown
   type = type || document.getElementById("type-select").value;
 
@@ -1520,6 +1557,37 @@ function handleTypeChange(type) {
 
     document.title = "About - Japanese Dictionary";
     renderAboutPage();
+  } else if (type === "word-list") {
+    genreFilterContainer.style.display = "none";
+    storyFavoritesFilterContainer.style.display = "none";
+
+    searchBarWrapper.style.display = "inline-flex";
+    randomBtn.style.display = "none";
+    enableSearchControls();
+
+    searchContainerInner.classList.remove("word-game-active");
+    gameActive = false;
+
+    posFilterContainer.style.display = "inline-flex";
+    posSelect.disabled = false;
+    posSelect.value = "";
+    posFilterContainer.classList.remove("disabled");
+
+    cefrFilterContainer.classList.remove("disabled");
+    cefrSelect.disabled = false;
+    cefrSelect.value = "";
+    cefrLock.style.display = "none";
+
+    showLandingCard(false);
+
+    // Reaching this via the account menu's plain "My Words" entry, the
+    // dropdown, or a bookmarked ?type=word-list link should default to
+    // the My Words tab, not the underlying All Words table.
+    // goToAllWords()/goToMyWords() (wordList.js, used by the two landing
+    // cards) pass an explicit override instead, so they aren't affected
+    // by this default.
+    window.WordListAPI?.setActiveView?.(options.wordListView ?? "my");
+    window.initWordList?.();
   } else {
     // Handle default case (e.g., "Words" type)
     genreFilterContainer.style.display = "none"; // Hide genre dropdown
@@ -1876,6 +1944,21 @@ function displaySearchResults(results, query = "") {
         `;
   });
   appendToContainer(htmlString);
+
+  if (
+    defaultResult &&
+    results[0] &&
+    typeof window.attachSingleResultMyWordsControls === "function"
+  ) {
+    window.attachSingleResultMyWordsControls(results[0]);
+  }
+
+  if (
+    multipleResults &&
+    typeof window.attachMultipleResultMyWordsStars === "function"
+  ) {
+    window.attachMultipleResultMyWordsStars(results.slice(0, 10));
+  }
 
   // Automatically load sentences for a single result, regardless of whether sentences exist in `eksempel`
   if (defaultResult && results[0]) {
