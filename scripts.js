@@ -4186,6 +4186,16 @@ function loadStateFromURL() {
   const storyTitle = url.searchParams.get("story"); // Check for a specific story parameter
   const word = url.searchParams.get("word"); // Check for a specific word entry
 
+  // The captured /stories/ page already contains the complete crawlable
+  // story index. Its own DOMContentLoaded path in stories.js loads the live
+  // story data and wires up the toolbar without calling handleTypeChange(),
+  // because that would replace the complete captured list with a fresh
+  // initial batch. Do not let this generic URL loader interpret the missing
+  // ?type= parameter as Words and clear that captured render.
+  if (/\/stories\/(?:index\.html)?$/.test(url.pathname)) {
+    return;
+  }
+
   // A captured /word/<slug>/ pretty-path page (see capture-word-pages.py)
   // already has its exact renderWordDefinition() output baked in, and
   // carries no ?word= param for the check below to recognize. Left alone,

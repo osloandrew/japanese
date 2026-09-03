@@ -1770,10 +1770,53 @@ function isStoriesTabActive() {
 
 // Initialization on page load
 window.addEventListener("DOMContentLoaded", async () => {
+  const currentURL = new URL(window.location.href);
+  // /stories/ (and /stories/index.html) is the pretty equivalent of
+  // ?type=stories. Preserve its complete captured story list instead of
+  // replacing it with displayStoryList()'s initial batch.
+  const isPrettyStoriesListPath = /\/stories\/(?:index\.html)?$/.test(
+    currentURL.pathname,
+  );
+
   // Load the story data and wait for it to complete
   await fetchAndLoadStoryData();
-  // Now that the data is loaded, check the URL and display based on the URL parameters
-  loadStateFromURL();
+
+  if (isPrettyStoriesListPath) {
+    const typeSelect = document.getElementById("type-select");
+    const genreFilterContainer = document.getElementById("genre-filter");
+    const genreSelect = document.getElementById("genre-select");
+    const storyFavoritesFilterContainer = document.getElementById(
+      "story-favorites-filter",
+    );
+    const storyFavoritesSelect = document.getElementById(
+      "story-favorites-select",
+    );
+    const searchBarWrapper = document.getElementById("search-bar-wrapper");
+    const posFilterContainer = document.querySelector(".pos-filter");
+    const cefrLock = document.getElementById("lock-icon");
+    const cefrSelect = document.getElementById("cefr-select");
+    const cefrFilterContainer = document.querySelector(".cefr-filter");
+
+    if (typeSelect) typeSelect.value = "stories";
+    if (typeof syncModeNav === "function") syncModeNav("stories");
+    if (genreFilterContainer) genreFilterContainer.style.display = "inline-flex";
+    if (genreSelect) genreSelect.value = "";
+    if (storyFavoritesFilterContainer)
+      storyFavoritesFilterContainer.style.display = "inline-flex";
+    if (storyFavoritesSelect) storyFavoritesSelect.value = "";
+    if (searchBarWrapper) searchBarWrapper.style.display = "inline-flex";
+    if (posFilterContainer) posFilterContainer.style.display = "none";
+    if (cefrLock) cefrLock.style.display = "none";
+    if (cefrSelect) {
+      cefrSelect.disabled = false;
+      cefrSelect.value = "";
+    }
+    if (cefrFilterContainer) cefrFilterContainer.classList.remove("disabled");
+    enableSearchControls();
+  } else {
+    // Now that the data is loaded, check the URL and display based on the URL parameters
+    loadStateFromURL();
+  }
 
   // The shared toolbar's Enter/search-button handlers submit Story search
   // (see search()'s "stories" branch in scripts.js). There is intentionally
