@@ -117,6 +117,11 @@ const genreIcons = {
 const CSV_URL = "japaneseStories.csv";
 const STORY_CACHE_KEY = "storyDataJa";
 const STORY_CACHE_TIME_KEY = "storyDataTimestampJa";
+// Dedups concurrent callers (the DOMContentLoaded prefetch and an early tap
+// on the Stories tab can both land before either has finished) onto the one
+// in-flight fetch, instead of firing a second full network request. Ported
+// from Norwegian's stories.js.
+let storyDataLoadPromise = null;
 
 // 74, not a rounder number: displayStoryList() below already subtracts one
 // slot when a recommended-story card is present (regularVisibleCount =
@@ -678,41 +683,83 @@ function renderNextStorySuggestion(storyContent, currentStory) {
   return true;
 }
 
-async function fetchAndLoadStoryData() {
-  showSpinner();
+// Reads the last successful catalog for the offline fallback below. Only
+// used if the network request fails -- never a freshness shortcut that
+// could hide a newly deployed story for hours. Ported from Norwegian's
+// stories.js.
+function readCachedStoryData() {
   try {
-    // 1) Always bypass caches: unique param + no-store
-    const bust = Date.now(); // guarantees a new URL each request
-    const response = await fetch(`${CSV_URL}?bust=${bust}`, {
-      cache: "no-store",
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const csvText = await response.text();
+    const cached = localStorage.getItem(STORY_CACHE_KEY);
+    if (!cached) return null;
 
-    // 2) Parse fresh CSV
-    const parsed = Papa.parse(csvText, {
-      header: true,
-      skipEmptyLines: true,
-    }).data;
-    storyResults = parsed.map((entry) => ({
+    const entries = JSON.parse(cached);
+    if (!Array.isArray(entries) || !entries.length) return null;
+
+    return entries.map((entry) => ({
       ...entry,
       titleJapanese: (entry.titleJapanese || "").trim(),
     }));
-
-    // 3) Optional: store for offline fallback (not used on next run)
-    localStorage.setItem(STORY_CACHE_KEY, JSON.stringify(storyResults));
-    localStorage.setItem(STORY_CACHE_TIME_KEY, String(Date.now()));
-  } catch (err) {
-    console.error("Live fetch failed, falling back to cache:", err);
-    const cached = localStorage.getItem(STORY_CACHE_KEY);
-    if (cached) {
-      storyResults = JSON.parse(cached);
-    } else {
-      storyResults = [];
-    }
-  } finally {
-    hideSpinner();
+  } catch (error) {
+    console.warn("Cached story data could not be read.", error);
+    return null;
   }
+}
+
+async function fetchAndLoadStoryData() {
+  // Already loaded (e.g. the DOMContentLoaded prefetch already resolved by
+  // the time the reader taps the Stories tab) -- no need to refetch.
+  if (storyResults.length) return storyResults;
+  // A fetch is already in flight (e.g. that same prefetch hasn't resolved
+  // yet) -- wait on it instead of firing a second, redundant request. This
+  // is also what used to leave the stories page stuck blank on a slow
+  // mobile connection: two concurrent cache-busting fetches competing for
+  // the same limited bandwidth, each taking longer to land than a single
+  // one would have. Ported from Norwegian's stories.js.
+  if (storyDataLoadPromise) return storyDataLoadPromise;
+
+  showSpinner();
+
+  const cached = readCachedStoryData();
+
+  storyDataLoadPromise = (async () => {
+    try {
+      // "no-cache" (not "no-store" with a cache-busting query param): still
+      // revalidates on every load so a successful production rollout is
+      // visible immediately, but lets the browser serve a cheap conditional
+      // (304) response when the deployed file hasn't changed, instead of
+      // forcing a full re-download every single time.
+      const response = await fetch(new URL(CSV_URL, APP_ROOT_URL), {
+        cache: "no-cache",
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const csvText = await response.text();
+
+      const parsed = Papa.parse(csvText, {
+        header: true,
+        skipEmptyLines: true,
+      }).data;
+      storyResults = parsed.map((entry) => ({
+        ...entry,
+        titleJapanese: (entry.titleJapanese || "").trim(),
+      }));
+
+      try {
+        localStorage.setItem(STORY_CACHE_KEY, JSON.stringify(storyResults));
+        localStorage.setItem(STORY_CACHE_TIME_KEY, String(Date.now()));
+      } catch (error) {
+        console.warn("Story data could not be cached.", error);
+      }
+    } catch (err) {
+      console.error("Live fetch failed, falling back to cache:", err);
+      storyResults = cached || [];
+    }
+    return storyResults;
+  })().finally(() => {
+    storyDataLoadPromise = null;
+    hideSpinner();
+  });
+
+  return storyDataLoadPromise;
 }
 // Parse the CSV data for stories
 function parseStoryCSVData(data) {

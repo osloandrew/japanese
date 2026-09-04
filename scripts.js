@@ -1376,7 +1376,10 @@ async function search(queryOverride = null, options = {}) {
         const englishMatch = englishValues.some(
           (eng) => exactRegex.test(eng) || partialRegex.test(eng)
         );
-        return wordMatch || englishMatch;
+        const readingMatch = Boolean(
+          window.JapaneseSearch?.matchesJapaneseQuery(r, variation)
+        );
+        return wordMatch || englishMatch || readingMatch;
       });
 
       // Handle POS filtering
@@ -1420,7 +1423,8 @@ async function search(queryOverride = null, options = {}) {
         const matchesInexact = inexactWordQueries.some(
           (inexactQuery) =>
             r.ord.toLowerCase().includes(inexactQuery) ||
-            r.engelsk.toLowerCase().includes(inexactQuery)
+            r.engelsk.toLowerCase().includes(inexactQuery) ||
+            Boolean(window.JapaneseSearch?.matchesJapaneseQuery(r, inexactQuery))
         );
         return (
           matchesInexact &&
@@ -2790,8 +2794,11 @@ function displaySearchResults(
                             <i class="fas fa-volume-up sentence-audio-icon"
                         role="button" tabindex="0" aria-label="Play word pronunciation"
                         data-sentence="${result.ord
-                          .split(",")[0]
-                          .trim()}"></i>                            ${
+                          .split(/[,、]/)[0]
+                          .trim()}"
+                        data-pronunciation="${escapeHTML(
+                          result.uttale || ""
+                        )}"></i>                            ${
                             result.uttale || ""
                           }
                           </p>`
@@ -4724,11 +4731,19 @@ function playSentenceAudioIcon(target) {
   stopAllAudio();
   const text = target.dataset.sentence;
   let audioUrl;
+  let fallbackUrl = null;
 
   // Decide if this is a word or a sentence based on where the icon lives
   if (target.closest(".pronunciation")) {
-    // Word-level audio
+    // Word-level audio. The word field's spelling is sometimes misread by
+    // the TTS that generated these clips (e.g. kanji with an ambiguous
+    // reading), so if that file doesn't exist, retry with the pronunciation
+    // field's spelling instead.
     audioUrl = buildWordAudioUrl(text);
+    const pronunciationText = target.dataset.pronunciation;
+    if (pronunciationText && pronunciationText !== text) {
+      fallbackUrl = buildWordAudioUrl(pronunciationText);
+    }
   } else {
     // Sentence-level audio
     audioUrl = buildPronAudioUrl(text);
@@ -4737,7 +4752,17 @@ function playSentenceAudioIcon(target) {
   const audio = new Audio(audioUrl);
   activeAudio.push(audio);
   audio.play().catch((err) => {
-    console.error("Audio playback failed:", err);
+    // Only report the fallback's own failure, not this one too -- logging
+    // both makes it look like two separate bugs instead of one exhausted
+    // retry.
+    if (fallbackUrl) {
+      audio.src = fallbackUrl;
+      audio.play().catch((fallbackErr) => {
+        console.error("Audio playback failed:", fallbackErr);
+      });
+    } else {
+      console.error("Audio playback failed:", err);
+    }
   });
 }
 

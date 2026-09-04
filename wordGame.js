@@ -1683,10 +1683,33 @@ function playTrackedAudio(url) {
   return audio;
 }
 
+// The word field's spelling is sometimes misread by the TTS that generated
+// these clips (e.g. kanji with an ambiguous reading), so if that file
+// doesn't exist, retry with the pronunciation field's spelling instead.
+// Built by hand rather than via playTrackedAudio, whose own .catch() would
+// otherwise log this attempt's failure as well as the fallback's -- making
+// one exhausted retry look like two separate bugs.
 function playWordAudio(wordObj) {
   if (!wordObj || !wordObj.ord) return;
   const cleanWord = getPrimaryJapaneseForm(wordObj);
-  playTrackedAudio(buildWordAudioUrl(cleanWord));
+  const pronunciation = (wordObj.uttale || "").trim();
+  const fallbackUrl =
+    pronunciation && pronunciation !== cleanWord
+      ? buildWordAudioUrl(pronunciation)
+      : null;
+
+  const audio = new Audio(buildWordAudioUrl(cleanWord));
+  activeAudio.push(audio);
+  audio.play().catch((err) => {
+    if (fallbackUrl) {
+      audio.src = fallbackUrl;
+      audio.play().catch((fallbackErr) =>
+        console.warn("Audio playback failed:", fallbackErr),
+      );
+    } else {
+      console.warn("Audio playback failed:", err);
+    }
+  });
 }
 
 function playSentenceAudio(exampleSentence) {

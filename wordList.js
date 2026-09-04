@@ -1181,7 +1181,13 @@
         const japanese = normalizeWordListText(entry.ord);
         const english = normalizeWordListText(entry.engelsk, "en");
 
-        return japanese.includes(searchText) || english.includes(searchText);
+        return (
+          japanese.includes(searchText) ||
+          english.includes(searchText) ||
+          Boolean(
+            window.JapaneseSearch?.matchesJapaneseQuery(entry, searchText),
+          )
+        );
       })
       .sort((firstEntry, secondEntry) => {
         if (

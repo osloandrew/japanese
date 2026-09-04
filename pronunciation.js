@@ -1,15 +1,22 @@
-function buildPronAudioUrl(sentenceText) {
-  const base = "/japanese"; // works both locally and on GitHub
+function pronAudioBase() {
+  // The local dev server serves the app rooted at the repo itself, so
+  // Resources/ is at "/"; GitHub Pages serves it under the repo name, so
+  // Resources/ is at "/japanese/". Pick the base from where we're running
+  // rather than hardcoding one, since a single string can't be right for both.
+  return window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+    ? ""
+    : "/japanese";
+}
 
-  return `${base}/Resources/Sentences/${sentenceText
+function buildPronAudioUrl(sentenceText) {
+  return `${pronAudioBase()}/Resources/Sentences/${sentenceText
     .trim()
     .replace(/\?$/, "")}.m4a`;
 }
 
 function buildWordAudioUrl(wordText) {
-  const base = "/japanese"; // works both locally and on GitHub
-
-  return `${base}/Resources/Words/${wordText.trim()}.m4a`;
+  return `${pronAudioBase()}/Resources/Words/${wordText.trim()}.m4a`;
 }
 
 async function computeSimilarity(nativeUrl, userUrl) {
