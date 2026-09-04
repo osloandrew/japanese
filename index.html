@@ -311,14 +311,21 @@
          on mobile. My Words, My Stats, Settings, and About deliberately live
          elsewhere because they are saved-data or account destinations rather
          than browsing modes. Pronunciation is reached from its landing-page
-         card. Each tab carries a real href for
-         crawlers/no-JS visitors/middle-click; a plain click is intercepted
-         in initializeModeNav() (scripts.js) to call the existing
-         selectType(), the same in-page transition the type-select dropdown
-         already used -- no pretty-path rewriting needed here since this
-         app has no captured static pages to anchor against (see
-         norwegian's anchorAppNavigationLinks() for why it needs that and
-         this app doesn't). -->
+         card. Each tab carries a real, correct href — crawlers, no-JS
+         visitors, and middle-click/ctrl-click (open in new tab) all get a
+         working destination straight from the attribute — but a plain
+         left-click is intercepted in initializeModeNav() (scripts.js) to run
+         the same instant, no-reload selectType() transition the type-select
+         dropdown already used, rather than doing a full page load.
+
+         These hrefs are relative, which only resolves correctly against the
+         site root on a freshly served page. Once the SPA has pushState'd to
+         a pretty path (a story, a word card, ...) there's no <base> tag here
+         to anchor them the way a captured static page has, so a
+         middle-click/ctrl-click taken at face value would open the wrong
+         page. scripts.js's anchorAppNavigationLinks() rewrites each href to
+         an absolute, APP_ROOT_URL-anchored URL once at load, before any
+         pushState can run -- see that function for why this matters. -->
     <nav id="mode-nav" aria-label="Primary">
       <a class="mode-tab" data-mode="words" href="?type=words">
         <span
@@ -331,7 +338,7 @@
         ></span>
         <span class="mode-tab-label">Words</span>
       </a>
-      <a class="mode-tab" data-mode="sentences" href="?type=sentences">
+      <a class="mode-tab" data-mode="sentences" href="sentences/">
         <span
           class="mode-tab-icon"
           style="
@@ -342,7 +349,7 @@
         ></span>
         <span class="mode-tab-label">Sentences</span>
       </a>
-      <a class="mode-tab" data-mode="stories" href="?type=stories">
+      <a class="mode-tab" data-mode="stories" href="stories/">
         <span
           class="mode-tab-icon"
           style="
@@ -353,7 +360,7 @@
         ></span>
         <span class="mode-tab-label">Stories</span>
       </a>
-      <a class="mode-tab" data-mode="word-game" href="?type=word-game">
+      <a class="mode-tab" data-mode="word-game" href="word-game/">
         <span
           class="mode-tab-icon"
           style="
@@ -896,12 +903,12 @@
     <script src="myWordsAuth.js" defer></script>
     <script src="noRandom.js" defer></script>
     <script src="noRandomLetters.js" defer></script>
-    <script src="scripts.js?v=f189eaf6e9" defer></script>
+    <script src="scripts.js?v=72d4db9839" defer></script>
     <script src="wordGamePolicy.js" defer></script>
     <script src="wordGame.js?v=52dff3b25f" defer></script>
     <script src="placementTest.js" defer></script>
     <script src="streak.js?v=f1435732b0" defer></script>
-    <script src="stories.js?v=6abed7ee3c" defer></script>
+    <script src="stories.js?v=c1aab21e0b" defer></script>
     <script src="storyQuiz.js" defer></script>
     <script src="myStats.js?v=d0e4e44b8b" defer></script>
     <script src="pronunciation.js"></script>

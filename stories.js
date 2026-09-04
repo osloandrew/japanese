@@ -903,6 +903,20 @@ async function displayStoryList(
     searchText || selectedCEFR || selectedGenre || showFavoritesOnly,
   );
 
+  // Prefer the real /stories/ page's URL for the plain, unfiltered list --
+  // same "use the pretty path when the address bar wouldn't be lying about
+  // what's on screen" rule as updateURL()'s prettyWordURL/prettyStoryURL
+  // (scripts.js). A *filtered* list intentionally keeps the query-string
+  // URL above: /stories/ reloaded would show the unfiltered static list,
+  // not this filtered one, so pointing there would be actively wrong, not
+  // just less pretty.
+  if (!hasActiveStoryFilter) {
+    const prettyStoriesURL = new URL("stories/", APP_ROOT_URL);
+    if (window.location.href !== prettyStoriesURL.href) {
+      window.history.pushState({}, "", prettyStoriesURL);
+    }
+  }
+
   if (hasActiveStoryFilter) {
     const activeFilterChips = [
       showFavoritesOnly

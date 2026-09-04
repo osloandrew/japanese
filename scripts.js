@@ -1200,8 +1200,6 @@ async function search(queryOverride = null, options = {}) {
     return result;
   });
 
-  cleanURL(type);
-
   // Update the URL with the search parameters
   if (updateHistory) {
     updateURL(query, type, selectedPOS); // <--- Trigger URL update
@@ -2040,9 +2038,6 @@ function handleTypeChange(type, options = {}) {
     .value.toLowerCase()
     .trim();
 
-  // Clear any remnants from other types in the URL
-  cleanURL(type);
-
   // Container to update and other UI elements
   const searchContainerInner = document.getElementById(
     "search-container-inner"
@@ -2321,27 +2316,6 @@ function focusViewAfterNavigation(selector = "") {
       }
     });
   });
-}
-
-// Helper function to clear the URL of remnants from other types
-function cleanURL(type) {
-  // Rebuilt from APP_ROOT_URL, not window.location directly: this now runs
-  // both from handleTypeChange() (immediately followed by the real
-  // updateURL() call, which corrects whatever this pushes) and from
-  // search()'s updateHistory:false path (where this is the only URL update
-  // that happens -- see showSentencesSearchExample()). On a pretty
-  // /word/<slug>/ or /sentences/ path (see updateURL()'s pushState
-  // navigation), window.location's own pathname is that pretty path, not
-  // root -- cloning it here would strand the new ?type= query param onto
-  // the previous page's path (e.g. "/sentences/?type=sentences" surviving
-  // past its own pretty route) instead of clearing back to a clean state.
-  const url = new URL(APP_ROOT_URL);
-  url.search = "";
-  url.hash = "";
-  url.searchParams.set("type", type);
-  if (window.location.href !== url.href) {
-    window.history.pushState({}, "", url);
-  }
 }
 
 // Handle change in CEFR filter
