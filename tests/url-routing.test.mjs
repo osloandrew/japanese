@@ -68,11 +68,20 @@ assert.notEqual(functionEnd, -1, "updateURL boundary should exist");
 // outgoing router must only ever produce a pretty URL for something this
 // file actually lists (see japaneseWords.csv/japaneseStories.csv for the
 // underlying entries the slugs below come from).
-const pageManifestJSON = JSON.parse(
-  fs.readFileSync(path.join(root, "page-manifest.json"), "utf8"),
-);
-assert.ok(pageManifestJSON.words.includes("cd"), "'cd' should be a captured word page");
-assert.ok(pageManifestJSON.words.includes("あ"), "'あ' should be a captured word page");
+//
+// This file is gitignored (it's a build artifact of the static-page
+// capture pipeline, not source), so it doesn't exist on a fresh checkout --
+// only the fixture-based tests below run in that case; the round-trip test
+// against real production data further down is skipped instead of crashing.
+const pageManifestPath = path.join(root, "page-manifest.json");
+const hasPageManifest = fs.existsSync(pageManifestPath);
+const pageManifestJSON = hasPageManifest
+  ? JSON.parse(fs.readFileSync(pageManifestPath, "utf8"))
+  : null;
+if (hasPageManifest) {
+  assert.ok(pageManifestJSON.words.includes("cd"), "'cd' should be a captured word page");
+  assert.ok(pageManifestJSON.words.includes("あ"), "'あ' should be a captured word page");
+}
 
 function createRoutingContext(manifestWords = [], manifestStories = []) {
   let pushedURL = null;
@@ -241,7 +250,7 @@ test("a captured story slug is preferred over the query-string story URL", () =>
 // the original text, for every real captured word/story -- not just the
 // handful of examples above. This is the actual production data, not
 // invented sample words.
-test("every captured word slug is produced by slugifying its real CSV primary spelling", () => {
+test("every captured word slug is produced by slugifying its real CSV primary spelling", { skip: !hasPageManifest && "page-manifest.json is a gitignored build artifact, not present on a fresh checkout" }, () => {
   const wordsCSV = fs.readFileSync(path.join(root, "japaneseWords.csv"), "utf8");
   const rows = parseCSV(wordsCSV, { columns: true, skip_empty_lines: true });
 
