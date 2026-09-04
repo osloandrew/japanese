@@ -716,27 +716,63 @@ ul {
   margin-top: 18px;
 }
 
+/* Two label/value pairs per line (4 equal-width grid columns) rather than
+   one -- the verb table alone now runs to 21 rows (see inflections.js's
+   verbFormsTable), and most values are only a few kana long, so a single
+   label|value column wastes most of its width on empty space and turns the
+   table into a long scroll. Equal-fr columns (not auto-sized to content)
+   keep a long label like "Causative-passive te-form" from stretching wider
+   than its Japanese value -- it wraps onto a second line instead. Plain
+   <span> children (not <tr>/<td>) are handed to this grid in
+   label,value,label,value... order by renderInflectionRows/
+   loadPendingInflections in scripts.js, so CSS grid's row-major
+   auto-placement alone is what pairs them up -- no wrapper markup per row
+   needed. Falls back to one pair per line under 640px, matching the
+   original single-column table on narrow screens. */
 .inflections-table {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   width: 100%;
-  border-collapse: collapse;
   font-size: 14px;
   text-align: left;
 }
 
-.inflections-table th,
-.inflections-table td {
+.inflections-label,
+.inflections-value,
+.inflections-message {
   border: 1px solid var(--color-border);
   padding: 8px 10px;
+  overflow-wrap: break-word;
 }
 
-.inflections-table th {
+.inflections-message {
+  grid-column: 1 / -1;
+}
+
+/* Smaller than the Japanese value text, and explicitly sans-serif (not
+   inherited) -- these are just row captions ("Causative-passive te-form"),
+   not content the learner is here to read, and the ambient font on this
+   element is otherwise unset (see .sentence's comment above on why
+   Japanese text needs its font-family stated explicitly rather than left
+   to fall back to the browser's CJK serif). */
+.inflections-label {
   background-color: var(--color-surface-subtle);
   color: var(--color-text-faint);
-  font-size: 14px;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+  font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  width: 45%;
+}
+
+.inflections-value {
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
+}
+
+@media (max-width: 640px) {
+  .inflections-table {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 /* A quiet but readable source note under the table. Doubled-up selector

@@ -86,6 +86,15 @@
         maintained by the National Institute for Japanese Language and Linguistics.
       </p>
       <p class="my-stats-danger-text">
+        Word definitions come from the
+        <a href="https://bond-lab.github.io/wnja/" target="_blank" rel="noopener noreferrer">Japanese WordNet</a>
+        (NICT, Francis Bond, and Takayuki Kuribayashi) and
+        <a href="https://ja.wiktionary.org/" target="_blank" rel="noopener noreferrer">Japanese Wiktionary</a>;
+        English glosses come from
+        <a href="https://www.edrdg.org/jmdict/j_jmdict.html" target="_blank" rel="noopener noreferrer">JMdict</a>,
+        property of the Electronic Dictionary Research and Development Group.
+      </p>
+      <p class="my-stats-danger-text">
         Stories adapted from third-party work retain their source, author, and licence credit on the individual story.
       </p>
     `;

@@ -1042,107 +1042,66 @@ async function randomWord() {
   hideSpinner(); // Hide the spinner
 }
 
-// Comprehensive Japanese inexact-match generator
-function generateInexactMatches(query) {
-  const q = query.toLowerCase().trim();
-  const variations = new Set([q]);
+// Resolves a search-bar query to the dictionary entry it should actually
+// open: an inflected verb/adjective form (e.g. される) resolves to its
+// dictionary headword (する) via Inflections' reverse index -- the same
+// index that powers clickable definition/story words (see
+// makeDefinitionClickable above and inflections.js). Mirrors Norwegian's
+// resolveWordSearchQuery.
+async function resolveWordSearchQuery(originalQuery) {
+  const query = originalQuery.toLowerCase().trim();
 
-  // --- 1. Inflectional suffixes (nouns, adjectives, verbs) ---
-  const suffixes = [
-    // singular noun/adjective endings
-    "a",
-    "e",
-    "i",
-    "o",
-    "u",
-    "om",
-    "em",
-    "u",
-    "om",
-    "omu",
-    "oga",
-    "ega",
-    // plural endings
-    "ama",
-    "ima",
-    "ovima",
-    "evima",
-    "ovima",
-    "ima",
-    "ovi",
-    "evi",
-    "i",
-    "e",
-    // genitive/locative endings
-    "ih",
-    "ama",
-    "ima",
-    "ima",
-    "ima",
-    "ama",
-    "ima",
-    // verb person/tense endings
-    "m",
-    "š",
-    "mo",
-    "te",
-    "ju",
-    "ći",
-    "la",
-    "lo",
-    "li",
-    "le",
-    "o",
-    "ao",
-    "eo",
-    "io",
-  ];
-  suffixes.forEach((suf) => {
-    if (q.endsWith(suf) && q.length > suf.length + 2) {
-      variations.add(q.slice(0, -suf.length));
-    }
-  });
+  const matchesQuery = (candidate) => {
+    const ordList = candidate.ord
+      .toLowerCase()
+      .split(/[,、]/)
+      .map((s) => s.trim());
+    const engelskList = candidate.engelsk
+      .toLowerCase()
+      .split(",")
+      .map((s) => s.trim());
+    return ordList.includes(query) || engelskList.includes(query);
+  };
 
-  // --- 2. Derivational adjective alternations ---
-  // Map of frequent adjectival endings → stem alternations
-  const alternations = [
-    // --- Adjective/adverb alternations ---
-    { from: "nih", to: "an" }, // spolnih → spolan, glavnih → glavan
-    { from: "ni", to: "an" }, // spolni → spolan
-    { from: "ni", to: "en" }, // javni → javen
-    { from: "no", to: "an" }, // sustavno → sustavan, glasno → glasan
-    { from: "no", to: "en" }, // mirno → miren
-    { from: "no", to: "in" }, // tiho → tih / tišin- (approximates)
-    // --- Other derivational adjective endings ---
-    { from: "ski", to: "ak" }, // ljudski → ljudak
-    { from: "ski", to: "an" }, // morski → moran
-    { from: "ški", to: "aš" }, // bošnjački → bošnjak
-    { from: "čki", to: "ak" }, // dječački → dječak
-    { from: "asti", to: "ast" }, // robustni → robustan
-    // --- Verb stems ---
-    { from: "ati", to: "" }, // raditi → rad
-    { from: "jeti", to: "je" }, // htjeti → htje
-    { from: "ći", to: "" }, // ići → i
-    { from: "oga", to: "" }, // genitive adjectives (novoga → nov)
-  ];
-  alternations.forEach(({ from, to }) => {
-    if (q.endsWith(from) && q.length > from.length + 2) {
-      variations.add(q.slice(0, -from.length) + to);
-    }
-  });
+  const hasExactMatch = results.some(matchesQuery);
 
-  // --- 3. Final vowel normalization (broad recall) ---
-  // Handles cases like "spoln" → "spolan", "glavn" → "glavan"
-  const withFinal = Array.from(variations);
-  withFinal.forEach((base) => {
-    if (base.endsWith("n")) variations.add(base + "an");
-    if (base.endsWith("r")) variations.add(base + "ar");
-    if (base.endsWith("v")) variations.add(base + "an");
-  });
+  // Resolved unconditionally, even when the query is already a headword in
+  // its own right -- otherwise an entry the query only reaches through
+  // inflection never enters the result set at all, headword or not. A
+  // lemma equal to the query itself is excluded: that's just the query,
+  // not a distinct inflection match worth surfacing separately.
+  const lemmaKeys = (await window.Inflections?.findLemmas(query, results)) || [];
+  const officialLemmas = Array.from(
+    new Set(
+      lemmaKeys.map((key) => {
+        const separator = String(key).indexOf(":");
+        return separator < 0 ? "" : key.slice(separator + 1);
+      }),
+    ),
+  ).filter(
+    (lemma) =>
+      lemma &&
+      lemma !== query &&
+      results.some((r) =>
+        r.ord
+          .toLowerCase()
+          .split(/[,、]/)
+          .map((s) => s.trim())
+          .includes(lemma),
+      ),
+  );
 
-  // --- 4. Deduplication and return ---
-  return Array.from(variations);
+  if (hasExactMatch) {
+    return { query, queries: [query, ...officialLemmas], reason: "exact" };
+  }
+
+  if (officialLemmas.length > 0) {
+    return { query: officialLemmas[0], queries: officialLemmas, reason: "word-form" };
+  }
+
+  return { query, queries: [query], reason: "none" };
 }
+
 // Perform a search based on the input query and selected POS
 async function search(queryOverride = null, options = {}) {
   const { updateHistory = true, sentenceResultSubtitle = "" } = options;
@@ -1151,26 +1110,16 @@ async function search(queryOverride = null, options = {}) {
     document.getElementById("search-bar").value.toLowerCase().trim();
 
   document.getElementById("search-bar").dataset.originalQuery = originalQuery; // 👈 this line
-  // Try to find a base form in the dataset
-  const variations = generateInexactMatches(originalQuery);
   const selector = document.getElementById("type-select").value;
-  const query =
+  // Resolved unconditionally (even for "sentences", where the raw query is
+  // still the right thing to search sentence text with) so an inflected
+  // form like される resolves to its dictionary headword (する) via
+  // Inflections' reverse index -- see resolveWordSearchQuery above.
+  const wordSearchResolution =
     selector === "sentences"
-      ? originalQuery
-      : variations.find((base) =>
-          results.some((r) => {
-            const ordList = r.ord
-              .toLowerCase()
-              .split(",")
-              .map((s) => s.trim());
-            const engelskList = r.engelsk
-              .toLowerCase()
-              .split(",")
-              .map((s) => s.trim());
-            return ordList.includes(base) || engelskList.includes(base);
-          })
-        ) || originalQuery;
-  const isInexactMatch = originalQuery !== query;
+      ? { query: originalQuery, queries: [originalQuery], reason: "exact" }
+      : await resolveWordSearchQuery(originalQuery);
+  const query = wordSearchResolution.query;
 
   console.log("Search triggered with query:", query);
   const selectedPOS = document.getElementById("pos-select")
@@ -1180,7 +1129,9 @@ async function search(queryOverride = null, options = {}) {
     ? document.getElementById("cefr-select").value.toUpperCase()
     : ""; // Fetch the selected CEFR level
   const type = document.getElementById("type-select").value; // Get the search type (words or sentences)
-  const normalizedQueries = [query.toLowerCase().trim()]; // Use only the base query for matching
+  const normalizedQueries = wordSearchResolution.queries.map((q) =>
+    q.toLowerCase().trim(),
+  );
 
   // Build the "No Matches" message based on filters
   const filterMessage = [];
@@ -1360,27 +1311,40 @@ async function search(queryOverride = null, options = {}) {
       return;
     }
 
+    // A word-form resolution (される -> する) is deliberately exact, not a
+    // substring guess -- する as a bare substring also occurs inside すると,
+    // 発する, 対する, etc., and matching those too would bury the actual
+    // resolved entry in unrelated results. Mirrors Norwegian's
+    // isInflectedForm branch in its own search filter.
+    const isInflectedForm = wordSearchResolution.reason === "word-form";
+
     // Filter results by query and selected POS for words
     matchingResults = cleanResults.filter((r) => {
-      // Exact and partial match logic
-      const matchesQuery = normalizedQueries.some((variation) => {
-        const exactRegex = new RegExp(`\\b${variation}\\b`, "i"); // Exact match regex for whole word
-        const partialRegex = new RegExp(variation, "i"); // Partial match for larger words like "bevegelsesfrihet"
-        const wordMatch =
-          exactRegex.test(r.ord.toLowerCase()) ||
-          partialRegex.test(r.ord.toLowerCase());
-        const englishValues = r.engelsk
-          .toLowerCase()
-          .split(",")
-          .map((e) => e.trim());
-        const englishMatch = englishValues.some(
-          (eng) => exactRegex.test(eng) || partialRegex.test(eng)
-        );
-        const readingMatch = Boolean(
-          window.JapaneseSearch?.matchesJapaneseQuery(r, variation)
-        );
-        return wordMatch || englishMatch || readingMatch;
-      });
+      const ordList = r.ord
+        .toLowerCase()
+        .split(/[,、]/)
+        .map((s) => s.trim());
+
+      const matchesQuery = isInflectedForm
+        ? normalizedQueries.some((variation) => ordList.includes(variation))
+        : normalizedQueries.some((variation) => {
+            const exactRegex = new RegExp(`\\b${variation}\\b`, "i"); // Exact match regex for whole word
+            const partialRegex = new RegExp(variation, "i"); // Partial match for larger words like "bevegelsesfrihet"
+            const wordMatch =
+              exactRegex.test(r.ord.toLowerCase()) ||
+              partialRegex.test(r.ord.toLowerCase());
+            const englishValues = r.engelsk
+              .toLowerCase()
+              .split(",")
+              .map((e) => e.trim());
+            const englishMatch = englishValues.some(
+              (eng) => exactRegex.test(eng) || partialRegex.test(eng)
+            );
+            const readingMatch = Boolean(
+              window.JapaneseSearch?.matchesJapaneseQuery(r, variation)
+            );
+            return wordMatch || englishMatch || readingMatch;
+          });
 
       // Handle POS filtering
       return (
@@ -1413,10 +1377,13 @@ async function search(queryOverride = null, options = {}) {
     const noExactMatches = matchingResults.length === 0;
 
     // If no exact matches are found, find inexact matches
-    if (noExactMatches || isInexactMatch) {
-      // Generate inexact matches based on transformations
-      const inexactWordQueries = generateInexactMatches(query);
-      console.log(`Inexact Queries Generated: ${inexactWordQueries}`);
+    if (noExactMatches) {
+      // resolveWordSearchQuery has already tried resolving `query` through
+      // both an exact headword/English match and Inflections' conjugation
+      // index (see above) -- reaching this fallback means neither found
+      // anything, so all that's left worth trying is a plain substring
+      // search on the query itself.
+      const inexactWordQueries = [query];
 
       // Now search for results using these inexact queries
       let inexactWordMatches = results.filter((r) => {
@@ -2421,9 +2388,13 @@ function renderSegmentedText(text, spans, className = "clickable-definition-word
 function makeDefinitionClickable(defText) {
   if (!defText) return "";
 
-  const spans = window.Inflections?.isReverseIndexReady()
-    ? window.Inflections.segmentTextSync(defText)
-    : [];
+  const isIndexReady = window.Inflections?.isReverseIndexReady();
+  // Segments each piece of text on its own -- a span's start/end are
+  // offsets into whatever string was actually passed to segmentTextSync,
+  // so segmenting the full defText once and then reusing those spans
+  // against a shorter per-clause substring (below) would slice with the
+  // wrong offsets and corrupt the rendered clause.
+  const segment = (text) => (isIndexReady ? window.Inflections.segmentTextSync(text) : []);
 
   if (defText.includes(";")) {
     const items = defText
@@ -2433,15 +2404,13 @@ function makeDefinitionClickable(defText) {
     return (
       `<ul class="definition-list">` +
       items
-        .map((item) => `<li>${renderSegmentedText(item, spans.filter(
-          (span) => item.includes(span.text),
-        ))}</li>`)
+        .map((item) => `<li>${renderSegmentedText(item, segment(item))}</li>`)
         .join("") +
       `</ul>`
     );
   }
 
-  return renderSegmentedText(defText, spans);
+  return renderSegmentedText(defText, segment(defText));
 }
 
 // Async upgrade pass: re-segments `defText` once Inflections' reverse
@@ -2453,31 +2422,32 @@ async function upgradeDefinitionClickableWords(container, defText) {
   if (!defText || !window.Inflections) return;
   if (window.Inflections.isReverseIndexReady()) return; // already rendered clickable
 
-  const spans = await window.Inflections.segmentTextAsync(defText, results);
-  // No staleness re-check beyond this: if the learner has navigated away,
-  // `container` is simply a detached node by now and writing to it is
-  // harmless (mirrors Norwegian's upgradeDefinitionExpressionSpans, which
-  // has the same property for the same reason).
-  if (!container.isConnected) return;
-
   if (defText.includes(";")) {
     const items = defText
       .split(";")
       .map((item) => item.trim())
       .filter(Boolean);
+    // Segmented per clause, not once over the full defText -- a span's
+    // start/end are offsets into whatever string was actually segmented,
+    // so reusing full-text spans against a shorter per-clause substring
+    // would slice with the wrong offsets and corrupt the rendered clause.
+    const itemSpans = await Promise.all(
+      items.map((item) => window.Inflections.segmentTextAsync(item, results)),
+    );
+    // No staleness re-check beyond this: if the learner has navigated away,
+    // `container` is simply a detached node by now and writing to it is
+    // harmless (mirrors Norwegian's upgradeDefinitionExpressionSpans, which
+    // has the same property for the same reason).
+    if (!container.isConnected) return;
     container.innerHTML =
       `<ul class="definition-list">` +
       items
-        .map(
-          (item) =>
-            `<li>${renderSegmentedText(
-              item,
-              spans.filter((span) => item.includes(span.text)),
-            )}</li>`,
-        )
+        .map((item, index) => `<li>${renderSegmentedText(item, itemSpans[index])}</li>`)
         .join("") +
       `</ul>`;
   } else {
+    const spans = await window.Inflections.segmentTextAsync(defText, results);
+    if (!container.isConnected) return;
     container.innerHTML = renderSegmentedText(defText, spans);
   }
 }
@@ -2523,16 +2493,18 @@ function renderInflectionsToggleButton(inflections) {
     ><i class="fas fa-chevron-down" aria-hidden="true"></i> Word forms</button>`;
 }
 
+// Each form renders as a label/value pair of grid items (not a <table> row)
+// so the CSS grid can lay two pairs side by side per line -- a 4-column
+// (label, value, label, value) layout that keeps the now-much-longer verb
+// table from turning into a tall single column of mostly-short entries.
 function renderInflectionRows(forms) {
   return forms
     .map((form) => {
       const label = escapeHTML(form.label);
       const value = escapeHTML(form.value);
       return `
-        <tr>
-          <th>${label}</th>
-          <td data-label="${label}">${value}</td>
-        </tr>`;
+        <span class="inflections-label">${label}</span>
+        <span class="inflections-value">${value}</span>`;
     })
     .join("");
 }
@@ -2554,14 +2526,12 @@ function renderInflectionsTableWrapper(inflections) {
     ? ` data-inflections-request-id="${escapeHTML(inflections.requestId)}"`
     : "";
   const rowsHTML = inflections.pending
-    ? `<tr><td colspan="2">Loading word forms…</td></tr>`
+    ? `<span class="inflections-message">Loading word forms…</span>`
     : renderInflectionRows(inflections.forms);
 
   return `
     <div class="inflections-table-wrapper hidden"${requestAttribute}>
-      <table class="inflections-table">
-        <tbody>${rowsHTML}</tbody>
-      </table>
+      <div class="inflections-table">${rowsHTML}</div>
       <div class="inflections-source">${renderInflectionsSource(inflections)}</div>
     </div>`;
 }
@@ -2573,17 +2543,17 @@ async function loadPendingInflections(wrapper) {
   const inflections = await window.Inflections?.resolvePending(requestId);
   delete wrapper.dataset.inflectionsRequestId;
 
-  const tableBody = wrapper.querySelector(".inflections-table tbody");
+  const table = wrapper.querySelector(".inflections-table");
   const source = wrapper.querySelector(".inflections-source");
-  if (!tableBody) return;
+  if (!table) return;
 
   if (!inflections) {
-    tableBody.innerHTML = `<tr><td colspan="2">No word forms are available for this entry.</td></tr>`;
+    table.innerHTML = `<span class="inflections-message">No word forms are available for this entry.</span>`;
     if (source) source.innerHTML = "";
     return;
   }
 
-  tableBody.innerHTML = renderInflectionRows(inflections.forms);
+  table.innerHTML = renderInflectionRows(inflections.forms);
   if (source) source.innerHTML = renderInflectionsSource(inflections);
 }
 
@@ -3999,9 +3969,14 @@ async function fetchAndRenderSentences(word, pos, showEnglish = true) {
   const primaryHighlightForms =
     await window.Inflections.getSentenceForms(matchingWordEntry);
   if (!sentenceContainer.isConnected) return;
-  const formMatcher = window.SentenceFormMatching.createMatcher(sentenceForms);
-  const primaryHighlightMatcher =
-    window.SentenceFormMatching.createMatcher(primaryHighlightForms);
+  const formMatcher = window.SentenceFormMatching.createMatcher(
+    sentenceForms,
+    results,
+  );
+  const primaryHighlightMatcher = window.SentenceFormMatching.createMatcher(
+    primaryHighlightForms,
+    results,
+  );
   const { primary: primaryResults, supplemental: supplementalResults } =
     window.SentenceFormMatching.collectExamples(
       matchingWordEntry,

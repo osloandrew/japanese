@@ -64,7 +64,57 @@
   // taru-/noun-prenominal classes do not predicate-conjugate at all --
   // "これはこのだ" is not a sentence. No Word Forms table is generated for
   // these; the CSV headword is the only form there is.
-  const NO_CONJUGATION_CLASSES = new Set(["adj-pn", "adj-t", "adj-f"]);
+  //
+  // な/の-adjectives (adj-na, adj-no) are grammatically nominal -- 穏やか
+  // never changes; だ/です/じゃない/だった are the copula attaching to it,
+  // exactly as they attach to any noun (学生だ/学生です/学生じゃない). A
+  // Word Forms table would misrepresent that copula conjugation as if it
+  // were the word inflecting the way a true い-adjective does, so these are
+  // treated the same as a noun: no table, no computed forms.
+  const NO_CONJUGATION_CLASSES = new Set(["adj-pn", "adj-t", "adj-f", "adj-na", "adj-no"]);
+
+  // Te-form of an already-ichidan-shaped derived form. Potential, passive,
+  // causative, and causative-passive all end in ~れる or ~せる regardless of
+  // the base verb's own class (a godan verb's derived forms conjugate as
+  // ichidan words even though the verb itself doesn't) -- so their te-form
+  // is the same drop-る/add-て rule as any ichidan verb's own te-form.
+  // 囲む -> passive 囲まれる -> 囲まれて; 書く -> causative 書かせる ->
+  // 書かせて.
+  function ichidanTe(form) {
+    return form ? `${form.slice(0, -1)}て` : form;
+  }
+
+  // Mutates `forms` in place, adding compound forms that aren't worth a
+  // dedicated branch in every conjugateVerb class since they're derived
+  // the same way regardless of class:
+  //
+  // - A `_te` sibling for each of the four derived voice/potential forms --
+  //   the compound continuative forms learners need for clauses like
+  //   "having been surrounded, ..." (囲まれて) that a bare voice-form table
+  //   can't show on its own.
+  // - The たい ("want to") desiderative and its plain negative. Every
+  //   class's `masu` is already the correct ren'youkei/masu-stem + ます,
+  //   irregularities (v5aru's い-stem, vk's き/来) included, so
+  //   stripping ます and appending たい is both simpler and more reliably
+  //   correct than re-deriving that stem per class. Only the plain
+  //   affirmative/negative are added -- たい itself conjugates exactly like
+  //   an い-adjective (たかった, たくて, ...), which would just duplicate
+  //   the い-adjective table's own pattern for no new information.
+  // - The ないで negative te-form ("without doing", "please don't" before
+  //   ください) -- unlike the plain te-form, this is not a sound change on
+  //   the verb stem at all, just で appended straight after the already-
+  //   computed `negative` (itself already correct per class, suppletive
+  //   ある included), so no per-class handling is needed here either.
+  function addDerivedForms(forms) {
+    forms.potential_te = ichidanTe(forms.potential);
+    forms.passive_te = ichidanTe(forms.passive);
+    forms.causative_te = ichidanTe(forms.causative);
+    forms.causative_passive_te = ichidanTe(forms.causative_passive);
+    forms.tai = `${forms.masu.slice(0, -2)}たい`;
+    forms.tai_negative = `${forms.tai.slice(0, -1)}くない`;
+    forms.negative_te = `${forms.negative}で`;
+    return forms;
+  }
 
   function conjugateVerb(word, cls) {
     if (cls === "vk") {
@@ -84,7 +134,7 @@
       const ki = isKanaOnly ? "き" : "";
       const ko = isKanaOnly ? "こ" : "";
       const ku = isKanaOnly ? "く" : "";
-      return {
+      return addDerivedForms({
         dictionary: word,
         masu: `${prefix}${stem}${ki}ます`,
         negative: `${prefix}${stem}${ko}ない`,
@@ -95,10 +145,14 @@
         polite_past_negative: `${prefix}${stem}${ki}ませんでした`,
         past_negative: `${prefix}${stem}${ko}なかった`,
         potential: `${prefix}${stem}${ko}られる`,
+        passive: `${prefix}${stem}${ko}られる`,
+        causative: `${prefix}${stem}${ko}させる`,
+        causative_passive: `${prefix}${stem}${ko}させられる`,
         volitional: `${prefix}${stem}${ko}よう`,
+        volitional_polite: `${prefix}${stem}${ki}ましょう`,
         conditional: `${prefix}${stem}${ku}れば`,
         imperative: `${prefix}${stem}${ko}い`,
-      };
+      });
     }
 
     if (cls === "vs-i" || cls === "vs-s") {
@@ -106,7 +160,7 @@
       if (word === "する") stem = "";
       else if (word.endsWith("する")) stem = word.slice(0, -2);
       else return null;
-      return {
+      return addDerivedForms({
         dictionary: word,
         masu: `${stem}します`,
         negative: `${stem}しない`,
@@ -117,10 +171,17 @@
         polite_past_negative: `${stem}しませんでした`,
         past_negative: `${stem}しなかった`,
         potential: `${stem}できる`,
+        // する's passive/causative are irregular (される/させる), not the
+        // godan -aRow formula -- both happen to be spelled exactly like an
+        // ichidan verb's passive/causative.
+        passive: `${stem}される`,
+        causative: `${stem}させる`,
+        causative_passive: `${stem}させられる`,
         volitional: `${stem}しよう`,
+        volitional_polite: `${stem}しましょう`,
         conditional: `${stem}すれば`,
         imperative: `${stem}しろ`,
-      };
+      });
     }
 
     if (cls === "vz") {
@@ -130,7 +191,7 @@
       // that's the actual CSV headword; every other row uses the じ-stem.
       if (!word.endsWith("ずる")) return null;
       const stem = `${word.slice(0, -2)}じ`;
-      return {
+      return addDerivedForms({
         dictionary: word,
         masu: `${stem}ます`,
         negative: `${stem}ない`,
@@ -141,16 +202,20 @@
         polite_past_negative: `${stem}ませんでした`,
         past_negative: `${stem}なかった`,
         potential: `${stem}られる`,
+        passive: `${stem}られる`,
+        causative: `${stem}させる`,
+        causative_passive: `${stem}させられる`,
         volitional: `${stem}よう`,
+        volitional_polite: `${stem}ましょう`,
         conditional: `${stem}れば`,
         imperative: `${stem}ろ`,
-      };
+      });
     }
 
     if (cls === "v1" || cls === "v1-s") {
       if (!word.endsWith("る")) return null;
       const stem = word.slice(0, -1);
-      return {
+      return addDerivedForms({
         dictionary: word,
         masu: `${stem}ます`,
         negative: `${stem}ない`,
@@ -160,14 +225,20 @@
         polite_negative: `${stem}ません`,
         polite_past_negative: `${stem}ませんでした`,
         past_negative: `${stem}なかった`,
+        // Potential and passive are homophonous for every ichidan verb
+        // (both stem+られる) -- context, not spelling, disambiguates them.
         potential: `${stem}られる`,
+        passive: `${stem}られる`,
+        causative: `${stem}させる`,
+        causative_passive: `${stem}させられる`,
         volitional: `${stem}よう`,
+        volitional_polite: `${stem}ましょう`,
         conditional: `${stem}れば`,
         // くれる (v1-s) has one genuine irregularity: the imperative is
         // the bare stem くれ, not the regular ichidan stem+ろ (くれろ is
         // not used).
         imperative: cls === "v1-s" ? stem : `${stem}ろ`,
-      };
+      });
     }
 
     if (GODAN_CLASSES.has(cls)) {
@@ -193,12 +264,14 @@
         forms.polite_past = `${stem}いました`;
         forms.polite_negative = `${stem}いません`;
         forms.polite_past_negative = `${stem}いませんでした`;
+        forms.volitional_polite = `${stem}いましょう`;
         forms.imperative = `${stem}い`;
       } else {
         forms.masu = `${stem}${iRow}ます`;
         forms.polite_past = `${stem}${iRow}ました`;
         forms.polite_negative = `${stem}${iRow}ません`;
         forms.polite_past_negative = `${stem}${iRow}ませんでした`;
+        forms.volitional_polite = `${stem}${iRow}ましょう`;
         forms.imperative = `${stem}${eRow}`;
       }
 
@@ -215,9 +288,12 @@
       forms.past = `${stem}${onbinSuffix}${da}`;
       forms.te = `${stem}${onbinSuffix}${teParticle}`;
       forms.potential = `${stem}${eRow}る`;
+      forms.passive = `${stem}${aRow}れる`;
+      forms.causative = `${stem}${aRow}せる`;
+      forms.causative_passive = `${stem}${aRow}せられる`;
       forms.volitional = `${stem}${oRow}う`;
       forms.conditional = `${stem}${eRow}ば`;
-      return forms;
+      return addDerivedForms(forms);
     }
 
     return null;
@@ -242,7 +318,9 @@
         te: `${stem}くて`,
         adverbial: `${stem}く`,
         polite_negative: `${stem}くないです`,
+        polite_past: `${stem}かったです`,
         past_negative: `${stem}くなかった`,
+        polite_past_negative: `${stem}くなかったです`,
         conditional: `${stem}ければ`,
       };
     }
@@ -257,24 +335,10 @@
         te: `${stem}くて`,
         adverbial: `${stem}く`,
         polite_negative: `${stem}くないです`,
+        polite_past: `${stem}かったです`,
         past_negative: `${stem}くなかった`,
+        polite_past_negative: `${stem}くなかったです`,
         conditional: `${stem}ければ`,
-      };
-    }
-
-    if (cls === "adj-na" || cls === "adj-no") {
-      const stem = word;
-      return {
-        dictionary: stem,
-        polite: `${stem}です`,
-        negative: `${stem}じゃない`,
-        past: `${stem}だった`,
-        te: `${stem}で`,
-        polite_negative: `${stem}じゃありません`,
-        past_negative: `${stem}じゃなかった`,
-        polite_past: `${stem}でした`,
-        adverbial: `${stem}に`,
-        attributive: `${stem}${cls === "adj-no" ? "の" : "な"}`,
       };
     }
 
@@ -283,6 +347,21 @@
 
   // ---- Labeled tables for the UI -------------------------------------
 
+  // Row order follows a beginner-to-advanced teaching progression rather
+  // than the order the forms were added to the engine in:
+  //  1. The plain/polite x non-past/past affirmative-negative paradigm
+  //     (8 rows) -- the first thing any course covers.
+  //  2. The te-form family: plain te, its negative ないで, then たい/
+  //     たくない -- all still core early material, built directly off the
+  //     masu-stem/te-form the learner already has by this point.
+  //  3. Volitional, conditional, imperative -- the other core "moods",
+  //     still beginner (N5) material but distinct enough from the above to
+  //     group on their own.
+  //  4. The four derived voice/potential forms (potential, passive,
+  //     causative, causative-passive) as a block at the end, each
+  //     immediately followed by its own te-form -- these are the most
+  //     grammatically advanced (N4-N3) forms in the table, and the ones
+  //     most likely to overwhelm if interleaved earlier.
   function verbFormsTable(forms) {
     return {
       wordClass: "verb",
@@ -290,18 +369,27 @@
         { label: "Dictionary form", value: forms.dictionary },
         { label: "Polite (ます)", value: forms.masu },
         { label: "Negative", value: forms.negative },
+        { label: "Polite negative (ません)", value: forms.polite_negative },
         { label: "Past", value: forms.past },
+        { label: "Polite past (ました)", value: forms.polite_past },
+        { label: "Past negative", value: forms.past_negative },
+        { label: "Polite past negative (ませんでした)", value: forms.polite_past_negative },
         { label: "Te-form", value: forms.te },
-      ],
-      hiddenForms: [
-        forms.polite_past,
-        forms.polite_negative,
-        forms.polite_past_negative,
-        forms.past_negative,
-        forms.potential,
-        forms.volitional,
-        forms.conditional,
-        forms.imperative,
+        { label: "Te-form negative (ないで)", value: forms.negative_te },
+        { label: "Want to (たい)", value: forms.tai },
+        { label: "Don't want to (たくない)", value: forms.tai_negative },
+        { label: "Volitional", value: forms.volitional },
+        { label: "Volitional (polite; ましょう)", value: forms.volitional_polite },
+        { label: "Conditional (ば)", value: forms.conditional },
+        { label: "Imperative", value: forms.imperative },
+        { label: "Potential", value: forms.potential },
+        { label: "Potential te-form", value: forms.potential_te },
+        { label: "Passive", value: forms.passive },
+        { label: "Passive te-form", value: forms.passive_te },
+        { label: "Causative", value: forms.causative },
+        { label: "Causative te-form", value: forms.causative_te },
+        { label: "Causative-passive", value: forms.causative_passive },
+        { label: "Causative-passive te-form", value: forms.causative_passive_te },
       ],
     };
   }
@@ -312,34 +400,14 @@
       forms: [
         { label: "Dictionary form", value: forms.dictionary },
         { label: "Negative", value: forms.negative },
+        { label: "Polite negative", value: forms.polite_negative },
         { label: "Past", value: forms.past },
+        { label: "Polite past", value: forms.polite_past },
+        { label: "Past negative", value: forms.past_negative },
+        { label: "Polite past negative", value: forms.polite_past_negative },
         { label: "Te-form", value: forms.te },
         { label: "Adverbial", value: forms.adverbial },
-      ],
-      hiddenForms: [
-        forms.polite_negative,
-        forms.past_negative,
-        forms.conditional,
-      ],
-    };
-  }
-
-  function naAdjectiveFormsTable(forms) {
-    return {
-      wordClass: "adjective",
-      forms: [
-        { label: "Dictionary form", value: forms.dictionary },
-        { label: "Polite (です)", value: forms.polite },
-        { label: "Negative", value: forms.negative },
-        { label: "Past", value: forms.past },
-        { label: "Te-form", value: forms.te },
-      ],
-      hiddenForms: [
-        forms.polite_negative,
-        forms.past_negative,
-        forms.polite_past,
-        forms.adverbial,
-        forms.attributive,
+        { label: "Conditional (ば)", value: forms.conditional },
       ],
     };
   }
@@ -397,11 +465,7 @@
     if (!forms) return null;
 
     const table =
-      wordClass === "verb"
-        ? verbFormsTable(forms)
-        : cls === "adj-na" || cls === "adj-no"
-          ? naAdjectiveFormsTable(forms)
-          : iAdjectiveFormsTable(forms);
+      wordClass === "verb" ? verbFormsTable(forms) : iAdjectiveFormsTable(forms);
 
     return { forms, table };
   }
@@ -678,52 +742,103 @@
     return Boolean(reverseIndex) || (loadFailed && !reverseIndexPromise);
   }
 
+  // Cost of leaving one character out of any dictionary match, relative to
+  // the flat cost of 1 per matched token below. Set well above any
+  // plausible token-count difference so the DP always prefers a
+  // segmentation that fully covers the text in known words over one that
+  // strands characters unmatched, even when the latter's matches are
+  // individually longer. See segmentText for why that matters.
+  const UNMATCHED_CHAR_PENALTY = 3;
+
   // Segments a run of Japanese text (a definition, a story sentence -- text
   // with no spaces between words) into known-word spans plus the plain
-  // text between them, using forward maximum matching: at each position,
-  // try the longest candidate substring first and only fall back to a
-  // shorter one if nothing longer is in the index. This is why it's safe
-  // in a way a plain substring scan would not be -- a real (if unindexed)
-  // compound like 見つける never gets split into a false match on its
-  // first character alone as long as *something* comparably long is
-  // indexed starting there, and an indexed compound is always preferred
-  // over any shorter word it happens to contain (尊重する is matched
-  // whole, never as unrelated する). It is still simple dictionary lookup,
-  // not real morphological analysis -- an unindexed compound can still
-  // fall back to whatever shorter known word starts at the same position.
+  // text between them.
+  //
+  // This is dictionary lookup, not real morphological analysis -- there's
+  // no POS grammar or trained cost model behind it (unlike MeCab and
+  // friends). But it's more than a greedy longest-match scan: greedy
+  // matching picks whatever candidate is longest *at the current
+  // position* with no regard for what that leaves behind, and a shorter
+  // but still real dictionary entry can straddle a word boundary and win
+  // by accident. E.g. in 時間がちょっと長い ("...the time is a little
+  // long"), が is the topic particle and ちょっと ("a little") is its own
+  // indexed word -- but がち is *also* a real indexed entry (a "tend to"
+  // suffix), and it's longer than が alone, so greedy matching takes it,
+  // consuming が's character and ちょっと's first character together and
+  // leaving ょっ behind as orphaned, unmatched, hint-less text.
+  //
+  // To avoid that, this runs a shortest-path DP over the string instead:
+  // every position is a node, every dictionary match starting there is an
+  // edge to (position + match length) costing 1, and every single
+  // unmatched character is a fallback edge costing UNMATCHED_CHAR_PENALTY.
+  // The lowest-cost path from 0 to text.length is the segmentation with
+  // the fewest leftover unmatched characters (checked first, since it
+  // dominates the cost), tie-broken by the fewest tokens -- which is what
+  // naturally prefers a real indexed compound (尊重する) over splitting it
+  // into unrelated shorter words it happens to contain. Because がち + [ょ]
+  // + [っ] + と leaves two characters unmatched while が + ちょっと leaves
+  // none, the DP takes the full-coverage path even though がち is the
+  // longer individual match. A real (if unindexed) compound like 見つける
+  // still degrades the same way it always did: if no full-coverage path
+  // exists, the DP falls back to whatever combination of shorter known
+  // words and unmatched characters minimizes the cost.
   //
   // Returns [{ start, end, text, wordClass, lemma }, ...] for each known
   // span, in left-to-right order. Callers render the gaps between spans
-  // (and before/after all of them) as plain text.
+  // (and before/after all of them, including every unmatched-character
+  // edge on the winning path) as plain text.
   function segmentText(text, index) {
-    const spans = [];
-    let i = 0;
-    while (i < text.length) {
-      let matchLength = 0;
-      const upperBound = Math.min(MAX_SURFACE_FORM_LENGTH, text.length - i);
+    const n = text.length;
+    // bestCost[i] / bestEdge[i]: cheapest way to reach position i from 0,
+    // and the edge taken into it ({ from, length }, length 0 = an
+    // unmatched-character skip). Filled in increasing order of i, so every
+    // edge out of i is only considered once bestCost[i] is final.
+    const bestCost = new Array(n + 1).fill(Infinity);
+    const bestEdge = new Array(n + 1).fill(null);
+    bestCost[0] = 0;
+
+    for (let i = 0; i < n; i++) {
+      if (bestCost[i] === Infinity) continue;
+      const upperBound = Math.min(MAX_SURFACE_FORM_LENGTH, n - i);
       for (let length = upperBound; length >= 1; length--) {
-        if (index.has(text.slice(i, i + length))) {
-          matchLength = length;
-          break;
+        if (!index.has(text.slice(i, i + length))) continue;
+        const target = i + length;
+        const cost = bestCost[i] + 1;
+        if (cost < bestCost[target]) {
+          bestCost[target] = cost;
+          bestEdge[target] = { from: i, length };
         }
       }
-      if (matchLength > 0) {
-        const matchedText = text.slice(i, i + matchLength);
-        const keys = readReverseMappings(index, matchedText);
-        const parsed = parseEntryKey(
-          Array.isArray(keys) ? keys[0] : keys,
-        );
-        spans.push({
-          start: i,
-          end: i + matchLength,
-          text: matchedText,
-          wordClass: parsed?.wordClass || "",
-          lemma: parsed?.lemma || "",
-        });
-        i += matchLength;
-      } else {
-        i += 1;
+      const skipCost = bestCost[i] + UNMATCHED_CHAR_PENALTY;
+      if (skipCost < bestCost[i + 1]) {
+        bestCost[i + 1] = skipCost;
+        bestEdge[i + 1] = { from: i, length: 0 };
       }
+    }
+
+    const path = [];
+    for (let pos = n; pos > 0; ) {
+      const edge = bestEdge[pos];
+      path.push(edge);
+      pos = edge.from;
+    }
+    path.reverse();
+
+    const spans = [];
+    for (const edge of path) {
+      if (edge.length === 0) continue;
+      const start = edge.from;
+      const end = edge.from + edge.length;
+      const matchedText = text.slice(start, end);
+      const keys = readReverseMappings(index, matchedText);
+      const parsed = parseEntryKey(Array.isArray(keys) ? keys[0] : keys);
+      spans.push({
+        start,
+        end,
+        text: matchedText,
+        wordClass: parsed?.wordClass || "",
+        lemma: parsed?.lemma || "",
+      });
     }
     return spans;
   }

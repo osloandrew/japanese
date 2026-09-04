@@ -31,3 +31,6 @@ ui-debug.log
 /page-manifest.json
 /build/
 /.pages-cache/
+
+# Coverage/QA report from scripts/build-definitions.py -- regenerate as needed.
+/scripts/build-definitions-report.txt

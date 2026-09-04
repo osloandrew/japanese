@@ -4508,7 +4508,7 @@ async function buildVariedGameContextTargets(wordObj) {
       homographs,
     );
     if (!forms?.length) return [];
-    matcher = window.SentenceFormMatching.createMatcher(forms);
+    matcher = window.SentenceFormMatching.createMatcher(forms, results);
   }
 
   const { supplemental } = window.SentenceFormMatching.collectExamples(
@@ -7644,7 +7644,7 @@ async function getTeachingSentenceHTML(wordObj, sentence, clozeTarget = null) {
     matcher = (await window.ExpressionPatterns?.getAnalysis(wordObj))?.matcher;
   } else {
     const forms = await window.Inflections?.getSentenceForms?.(wordObj);
-    matcher = window.SentenceFormMatching?.createMatcher(forms);
+    matcher = window.SentenceFormMatching?.createMatcher(forms, results);
   }
 
   const highlightedSentence = matcher?.highlight

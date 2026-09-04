@@ -11,6 +11,17 @@
 // mid-word inside romaji or a number while still allowing any Japanese
 // script character on either side, which is effectively a plain substring
 // test for kana/kanji forms.
+//
+// That substring test alone still over-matches real compounds: "夜" (night)
+// is a literal substring of "今夜" (tonight), so a sentence about tonight's
+// pizza would otherwise show up as an example for "night". createMatcher's
+// optional second argument -- the dictionary's own entries -- guards against
+// this: any match that is actually a proper substring of a longer known
+// headword ("今夜" containing "夜") is treated as shadowed and rejected,
+// while a genuine standalone occurrence ("夜から雪になるそうです") still
+// passes. This is a lexicon-driven stand-in for real segmentation, not a
+// general tokenizer -- it only catches compounds already in this app's word
+// list.
 (function () {
   "use strict";
 
@@ -18,23 +29,56 @@
     return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   }
 
+  function normalizeWord(value) {
+    return String(value ?? "")
+      .normalize("NFC")
+      .toLocaleLowerCase("ja-JP")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
   function normalizeForms(forms) {
     return [
-      ...new Set(
-        (forms || [])
-          .map((form) =>
-            String(form ?? "")
-              .normalize("NFC")
-              .toLocaleLowerCase("ja-JP")
-              .replace(/\s+/g, " ")
-              .trim(),
-          )
-          .filter(Boolean),
-      ),
+      ...new Set((forms || []).map(normalizeWord).filter(Boolean)),
     ].sort((a, b) => b.length - a.length || a.localeCompare(b, "ja"));
   }
 
-  function createMatcher(forms) {
+  // Pulls every headword out of a list of dictionary entries (or plain
+  // strings) to use as compound-shadowing guards -- see file header.
+  function collectGuardWords(guardSource) {
+    const words = new Set();
+    for (const item of guardSource || []) {
+      const raw = typeof item === "string" ? item : item?.ord;
+      for (const word of String(raw || "").split(/[,、]/)) {
+        const normalized = normalizeWord(word);
+        if (normalized) words.add(normalized);
+      }
+    }
+    return words;
+  }
+
+  // For each accepted form, finds every longer guard word that contains it,
+  // recording where within that word the form sits so a later match can be
+  // checked against the exact surrounding characters.
+  function buildShadowMap(acceptedForms, guardWords) {
+    if (!guardWords || guardWords.size === 0) return null;
+    const map = new Map();
+    for (const form of acceptedForms) {
+      const supersets = [];
+      for (const word of guardWords) {
+        if (word === form || word.length <= form.length) continue;
+        let index = word.indexOf(form);
+        while (index !== -1) {
+          supersets.push({ word, offset: index });
+          index = word.indexOf(form, index + 1);
+        }
+      }
+      if (supersets.length) map.set(form, supersets);
+    }
+    return map.size ? map : null;
+  }
+
+  function createMatcher(forms, guardSource) {
     const acceptedForms = normalizeForms(forms);
     if (acceptedForms.length === 0) {
       return Object.freeze({
@@ -44,24 +88,52 @@
       });
     }
 
+    const shadowsByForm = buildShadowMap(
+      acceptedForms,
+      guardSource ? collectGuardWords(guardSource) : null,
+    );
+
     const alternatives = acceptedForms
       .map((form) => escapeRegExp(form).replace(/ /g, "\\s+"))
       .join("|");
     const source = `(?<![A-Za-z0-9])(?:${alternatives})(?![A-Za-z0-9])`;
-    const testPattern = new RegExp(source, "iu");
-    const highlightPattern = new RegExp(source, "giu");
+    const pattern = new RegExp(source, "giu");
+
+    function isShadowed(text, index, matchedText) {
+      if (!shadowsByForm) return false;
+      const supersets = shadowsByForm.get(normalizeWord(matchedText));
+      if (!supersets) return false;
+      return supersets.some(({ word, offset }) => {
+        const start = index - offset;
+        const end = start + word.length;
+        if (start < 0 || end > text.length) return false;
+        return normalizeWord(text.slice(start, end)) === word;
+      });
+    }
+
+    function findFirstUnshadowedMatch(text) {
+      pattern.lastIndex = 0;
+      let match;
+      while ((match = pattern.exec(text))) {
+        if (!isShadowed(text, match.index, match[0])) return match;
+        if (match[0].length === 0) pattern.lastIndex++;
+      }
+      return null;
+    }
 
     return Object.freeze({
       forms: acceptedForms,
-      test: (text) => testPattern.test(String(text ?? "").normalize("NFC")),
-      highlight: (text) =>
-        String(text ?? "")
-          .normalize("NFC")
-          .replace(
-            highlightPattern,
-            (matchedText) =>
-              `<span style="color: var(--color-interactive);">${matchedText}</span>`,
-          ),
+      test: (text) =>
+        findFirstUnshadowedMatch(String(text ?? "").normalize("NFC")) !==
+        null,
+      highlight: (text) => {
+        const normalized = String(text ?? "").normalize("NFC");
+        return normalized.replace(pattern, (matchedText, offset) =>
+          isShadowed(normalized, offset, matchedText)
+            ? matchedText
+            : `<span style="color: var(--color-interactive);">${matchedText}</span>`,
+        );
+      },
     });
   }
 
