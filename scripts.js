@@ -4271,10 +4271,19 @@ function loadStateFromURL() {
         handleTypeChange(type);
       }
 
-      // Perform a search if a query is specified; otherwise, show the landing page
+      // Perform a search if a query is specified; otherwise, show the landing page.
+      // Guard: if a static page already has real content rendered (a
+      // captured /sentences/, /word-game/, or /pronunciation/ page -- none
+      // of which carry a ?type= param for the check above to recognize) and
+      // nothing in the URL explicitly asked for the landing page, leave it
+      // alone rather than wiping it. Mirrors norwegian's own
+      // hasRenderedContent guard. Safe for a genuine first visit to "/":
+      // resultsContainer is empty then, so this never blocks the real
+      // landing page from showing.
+      const hasRenderedContent = resultsContainer.children.length > 0;
       if (query) {
         search();
-      } else if (type === "words") {
+      } else if (type === "words" && !hasRenderedContent) {
         document.title = "Japanese Dictionary | Search in Japanese or English";
         clearContainer();
         showLandingCard(true);
