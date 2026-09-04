@@ -35,6 +35,17 @@
     />
     <meta property="og:url" content="https://osloandrew.github.io/Japanese/" />
 
+    <!-- PWA: installable to a home screen, see manifest.json and sw.js -->
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#0d3a69" />
+    <!-- Without this, iOS "Add to Home Screen" opens as a plain Safari
+         bookmark instead of a true standalone app: navigator.standalone and
+         the display-mode: standalone media query both stay false, so
+         myWordsAuth.js can't detect the context and route Google sign-in
+         away from signInWithPopup, which can't complete there. -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
     <!-- Stylesheets -->
     <link
       rel="stylesheet"
@@ -878,8 +889,10 @@
     <script src="spacedRepetition.js"></script>
     <script src="englishVisibility.js" defer></script>
     <script src="settings.js" defer></script>
+    <script src="about.js" defer></script>
     <script src="storyFavorites.js" defer></script>
     <script src="wordList.js" defer></script>
+    <script src="progressSharding.js" defer></script>
     <script src="myWordsAuth.js" defer></script>
     <script src="noRandom.js" defer></script>
     <script src="noRandomLetters.js" defer></script>
@@ -894,5 +907,38 @@
     <script src="pronunciation.js"></script>
     <script src="https://unpkg.com/wavesurfer.js"></script>
     <script src="https://unpkg.com/meyda/dist/web/meyda.min.js"></script>
+
+    <!--
+      Registered after "load" (not deferred alongside the app scripts
+      above) so it never competes with them for bandwidth/CPU during
+      initial page load — installability doesn't need to happen
+      immediately, just eventually.
+    -->
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          // register() resolves a relative scriptURL against the page's
+          // own location, not the document's <base href> the way normal
+          // relative URLs do (confirmed empirically in Chrome) — harmless
+          // here on the site root, but on a captured /word/<slug>/ or
+          // /story/<slug>/ page (each with its own directory-relative
+          // <base href> so its other relative asset references work) it registered a
+          // broken service worker scoped to that page's own nested path,
+          // 404ing on a sw.js that was never there.
+          //
+          // APP_ROOT_URL (scripts.js), not document.baseURI: on the plain
+          // app shell (no <base> tag) baseURI resolves to document.URL,
+          // and an in-app pushState upgrade can already have happened by
+          // the time "load" fires (e.g. landing on ?type=story&story=X
+          // auto-upgrades to its pretty path during DOMContentLoaded,
+          // which always completes before "load" does) — APP_ROOT_URL is
+          // captured once, before any pushState can run, and stays fixed.
+          const swURL = new URL("sw.js", APP_ROOT_URL).href;
+          navigator.serviceWorker.register(swURL).catch((error) => {
+            console.warn("Service worker registration failed.", error);
+          });
+        });
+      }
+    </script>
   </body>
 </html>

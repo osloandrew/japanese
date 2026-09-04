@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Import debug data</title>
+  </head>
+  <body>
+    <!--
+      Local-dev-only tool. Writes a production data export (see
+      debug-export-bookmarklet.js) into this browser's localStorage, then
+      redirects straight to the app — My Words renders from localStorage
+      regardless of sign-in state, so it shows up immediately with no click
+      needed. Signing in afterward is a separate, genuinely manual step
+      (real Google OAuth can't be scripted) — it's only needed if you want
+      this data pushed into the local Firestore emulator too, via
+      myWordsAuth.js's existing mergeRemoteData logic. On fetch/parse
+      failure this deliberately does NOT redirect, so the error stays
+      visible instead of silently vanishing.
+    -->
+    <pre id="status">Importing…</pre>
+    <script>
+      (function () {
+        var statusEl = document.getElementById("status");
+        fetch("/my-words-debug-export.json")
+          .then(function (response) {
+            if (!response.ok) {
+              throw new Error(
+                "my-words-debug-export.json not found at the app root. " +
+                  "Run scripts/import-production-data.sh first.",
+              );
+            }
+            return response.json();
+          })
+          .then(function (data) {
+            var imported = Object.keys(data);
+            imported.forEach(function (key) {
+              localStorage.setItem(key, data[key]);
+            });
+            statusEl.textContent =
+              "Imported " + imported.length + " key(s). Loading your words…";
+            window.location.replace("/");
+          })
+          .catch(function (error) {
+            statusEl.textContent = "Import failed: " + error.message;
+          });
+      })();
+    </script>
+  </body>
+</html>

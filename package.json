@@ -9,6 +9,7 @@
     "build:updates": "python3 scripts/build-updates-page.py",
     "build:frequency": "python3 scripts/build-japanese-frequency.py",
     "validate:pages": "python3 scripts/validate-static-pages.py",
+    "test:a11y": "python3 scripts/check-accessibility.py",
     "emulators": "PATH=\"/opt/homebrew/opt/openjdk@21/bin:$PATH\" firebase emulators:start --only firestore",
     "dev": "concurrently -n app,firestore -c blue,yellow \"python3 -m http.server 8936\" \"npm run emulators\""
   },
@@ -16,6 +17,7 @@
     "node": ">=18"
   },
   "devDependencies": {
+    "axe-core": "^4.13.0",
     "concurrently": "^10.0.5",
     "firebase-tools": "^15.28.2"
   }

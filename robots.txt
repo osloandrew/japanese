@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://osloandrew.github.io/japanese/sitemap.xml

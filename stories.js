@@ -1046,11 +1046,15 @@ async function upgradeStoryClickableWords(container) {
 // lose your place in the story. Reuses the .story-word-popover CSS already
 // shared with Norwegian (see styles/10-shell-landing-and-stats.css).
 //
-// Segmentation already resolved each story word to its dictionary lemma at
+// Segmentation already resolved each story word to a dictionary lemma at
 // render time (see renderSegmentedText/data-word above), so -- unlike
 // Norwegian's version, which can't presegment its space-delimited text and
-// so resolves each click's surface form lazily -- there's no async lookup
-// needed here at all: the entries are just an exact results filter away.
+// so resolves each click's surface form lazily -- the popover opens
+// instantly off a plain results filter, no lookup needed. But that
+// presegmented lemma is only segmentText's *first* reverse-index match for
+// an ambiguous surface form, so showStoryWordPopover below still follows
+// up with its own findLemmas call to catch any other lemma(s) the same
+// surface form could resolve to (see the comment there).
 let activeStoryWordPopover = null;
 
 function closeStoryWordPopover() {
@@ -1162,18 +1166,29 @@ function renderStoryWordPopoverContent(popover, entries, surfaceWord) {
   });
 }
 
-function showStoryWordPopover(wordSpan) {
+async function showStoryWordPopover(wordSpan) {
   const lemma = wordSpan.dataset.word;
   if (!lemma) return;
 
   closeStoryWordPopover();
 
-  const entries = results.filter((r) =>
-    String(r.ord || "")
-      .split(/[,、]/)
-      .map((form) => form.trim())
-      .includes(lemma),
-  );
+  const entries = [];
+  const addEntry = (entry) => {
+    if (!entries.includes(entry)) entries.push(entry);
+  };
+
+  // The instant path: segmentText (inflections.js) already resolved this
+  // span's surface form to `lemma` (its own reverse-index lookup) at
+  // render time, so every dictionary sense spelled that way is fair game
+  // regardless of word class.
+  results
+    .filter((r) =>
+      String(r.ord || "")
+        .split(/[,、]/)
+        .map((form) => form.trim())
+        .includes(lemma),
+    )
+    .forEach(addEntry);
 
   const popover = document.createElement("div");
   popover.className = "story-word-popover";
@@ -1188,6 +1203,52 @@ function showStoryWordPopover(wordSpan) {
 
   window.addEventListener("scroll", closeStoryWordPopover, true);
   window.addEventListener("resize", closeStoryWordPopover);
+
+  // A clicked surface form can be genuinely ambiguous -- shared by more
+  // than one dictionary entry's paradigm (e.g. the transitive/intransitive
+  // pairs 入れる/入る, 立てる/立つ, 割れる/割る -- ~140 such collisions
+  // exist in the reverse index) -- but segmentText only ever kept the
+  // *first* reverse-index match when it resolved this span's `lemma` at
+  // render time (see segmentText in inflections.js). findLemmas walks
+  // every match instead of just the first, so this follow-up check
+  // surfaces whatever that first-match shortcut left out -- mirroring how
+  // Norwegian's resolveStoryWordEntries (stories.js) checks findLemmas
+  // independently of its own exact match, to catch a word that's *both* a
+  // standalone headword and an inflected form of some other entry.
+  // The reverse index is already built by the time a .story-word span
+  // exists at all (segmentText's own synchronous pass already consulted
+  // it to produce `lemma` above), so this resolves effectively instantly
+  // -- but it's still async, so bail if the learner closed this popover or
+  // opened a different one before it resolves.
+  const surfaceWord = wordSpan.textContent;
+  const keys = surfaceWord
+    ? await window.Inflections?.findLemmas(surfaceWord, results)
+    : [];
+  if (activeStoryWordPopover !== popover) return;
+
+  let addedNew = false;
+  for (const key of keys || []) {
+    const separator = key.indexOf(":");
+    if (separator < 0) continue;
+    const wordClass = key.slice(0, separator);
+    const otherLemma = key.slice(separator + 1);
+
+    for (const entry of results) {
+      if (String(entry.gender || "").trim() !== wordClass) continue;
+      const headwords = String(entry.ord || "")
+        .split(/[,、]/)
+        .map((form) => form.trim());
+      if (!headwords.includes(otherLemma)) continue;
+      if (!entries.includes(entry)) {
+        entries.push(entry);
+        addedNew = true;
+      }
+    }
+  }
+
+  if (addedNew) {
+    renderStoryWordPopoverContent(popover, entries, lemma);
+  }
 }
 
 document.addEventListener("click", (event) => {
@@ -1404,13 +1465,18 @@ async function displayStory(titleJapanese, { userNavigation = false } = {}) {
       player.controls = true;
       player.className = "stories-audio-player";
       player.preload = "metadata";
-      player.src = `Resources/Audio/${enc}.m4a`;
+      // Anchored to APP_ROOT_URL, not a bare relative string: once updateURL()
+      // has pushState'd to a pretty /story/<slug>/ path, a plain
+      // "Resources/Audio/..." would resolve against that path instead of the
+      // site root (there's no <base> tag here to correct it, unlike a
+      // freshly served captured page -- see capture-story-pages.py).
+      player.src = new URL(`Resources/Audio/${enc}.m4a`, APP_ROOT_URL).href;
       player.onerror = () => {
         // try mp3, then give up quietly
         if (player.src.endsWith(".m4a")) {
           player.onerror = () =>
             console.warn("[AUDIO]", "mp3 also missing for:", rawTitle);
-          player.src = `Resources/Audio/${enc}.mp3`;
+          player.src = new URL(`Resources/Audio/${enc}.mp3`, APP_ROOT_URL).href;
         }
       };
       slot.innerHTML = "";
@@ -1708,12 +1774,18 @@ function restoreSearchContainerInner() {
   searchContainerInner.style.display = "";
 }
 
-// Check if an audio file exists based on the English title
+// Check if an audio file exists based on the English title. Anchored to
+// APP_ROOT_URL, not bare relative strings: once updateURL() has pushState'd
+// to a pretty /story/<slug>/ path, a plain "Resources/Audio/..." would
+// resolve (both for the HEAD probe below and the <audio src> callers build
+// from the return value) against that path instead of the site root --
+// there's no <base> tag here to correct it, unlike a freshly served
+// captured page (see capture-story-pages.py).
 async function hasAudio(titleEnglish) {
   const encodedTitleEnglish = encodeURIComponent(titleEnglish);
   const audioFileURLs = [
-    `Resources/Audio/${encodedTitleEnglish}.m4a`,
-    `Resources/Audio/${encodedTitleEnglish}.mp3`,
+    new URL(`Resources/Audio/${encodedTitleEnglish}.m4a`, APP_ROOT_URL).href,
+    new URL(`Resources/Audio/${encodedTitleEnglish}.mp3`, APP_ROOT_URL).href,
   ];
 
   for (const audioFileURL of audioFileURLs) {
@@ -1736,7 +1808,8 @@ async function hasAudio(titleEnglish) {
   return null; // Return null if no audio file is found
 }
 
-// Check if an image exists based on the EN title (mirror JP logic)
+// Check if an image exists based on the EN title (mirror JP logic). Anchored
+// to APP_ROOT_URL for the same reason as hasAudio() above.
 async function hasImageByEnglishTitle(titleEnglish) {
   const sanitized = titleEnglish.endsWith("?")
     ? titleEnglish.slice(0, -1)
@@ -1749,7 +1822,9 @@ async function hasImageByEnglishTitle(titleEnglish) {
 
   const imageExtensions = ["webp", "jpg", "jpeg", "avif", "png", "gif"];
   const imagePaths = encodedTitles.flatMap((encoded) =>
-    imageExtensions.map((ext) => `Resources/Images/${encoded}.${ext}`)
+    imageExtensions.map(
+      (ext) => new URL(`Resources/Images/${encoded}.${ext}`, APP_ROOT_URL).href
+    )
   );
 
   for (const path of imagePaths) {

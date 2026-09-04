@@ -10,6 +10,10 @@ firestore-debug.log
 ui-debug.log
 /.firebase/
 
+# Real personal data pulled from production for local testing — see
+# scripts/import-production-data.sh. Must never be committed.
+/my-words-debug-export.json
+
 # Disposable root-level GitHub Pages build output (Crawlable page builds —
 # see README.md and scripts/build-static-pages.py). The leading slashes are
 # intentional: an unanchored `sentences/` also hides Resources/Sentences on a
