@@ -45,6 +45,7 @@ from pathlib import Path
 
 from PIL import Image, ImageChops
 from playwright.sync_api import Browser, Page, sync_playwright
+from playwright.sync_api import TimeoutError as PlaywrightTimeoutError
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -353,8 +354,11 @@ def behavior_smoke_check(browser: Browser, base_url: str, word: str, story: str)
         english_sentence = page.locator("#story-content .english-sentence").first
         was_visible = english_sentence.is_visible()
         toggle.click()
-        page.wait_for_timeout(80)
-        if english_sentence.is_visible() == was_visible:
+        try:
+            english_sentence.first.wait_for(
+                state="hidden" if was_visible else "visible", timeout=5_000
+            )
+        except PlaywrightTimeoutError:
             raise AssertionError("Captured story page's English toggle is not interactive")
 
         page.goto(f"{base_url}stories/", wait_until="load")
