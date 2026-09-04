@@ -4178,10 +4178,34 @@ function capitalizeType(type) {
 }
 
 // Load the state from the URL and trigger the appropriate search or display
+// Captured /sentences/, /word-game/, and /pronunciation/ pages (see
+// capture-feature-pages.py) carry no ?type= query string for
+// loadStateFromURL() to recognize -- the route segment itself is the only
+// signal. Ported from norwegian's STATIC_FEATURE_ROUTES/parsePathState:
+// without deriving `type` from the path too, these pretty pages always fell
+// through to the words-mode default `type`, so branches keyed on the real
+// type (e.g. startWordGame() below) never ran on a fresh load of one.
+const STATIC_FEATURE_ROUTES = Object.freeze({
+  sentences: "sentences",
+  "word-game": "word-game",
+  pronunciation: "pronunciation",
+});
+
+function parsePrettyFeatureType(pathname) {
+  const normalized = pathname.replace(/\/index\.html$/, "/");
+  for (const [type, segment] of Object.entries(STATIC_FEATURE_ROUTES)) {
+    if (normalized.endsWith(`/${segment}/`) || normalized.endsWith(`/${segment}`)) {
+      return type;
+    }
+  }
+  return null;
+}
+
 function loadStateFromURL() {
   const url = new URL(window.location);
   const query = url.searchParams.get("query") || ""; // Default to an empty query if not present
-  const type = url.searchParams.get("type") || "words"; // Default to 'words' if not specified
+  const type =
+    url.searchParams.get("type") || parsePrettyFeatureType(url.pathname) || "words"; // Default to 'words' if not specified
   const selectedPOS = url.searchParams.get("pos") || ""; // Default to empty POS if not present
   const storyTitle = url.searchParams.get("story"); // Check for a specific story parameter
   const word = url.searchParams.get("word"); // Check for a specific word entry
@@ -4266,7 +4290,13 @@ function loadStateFromURL() {
       if (type === "word-game") {
         startWordGame();
       } else if (type === "pronunciation") {
-        handleTypeChange("pronunciation"); // 👈 ensure pronunciation tab is restored
+        // Not handleTypeChange("pronunciation"): this route has no
+        // #mode-nav tab, no type-select option, and no landing-page card,
+        // so nothing in handleTypeChange() actually mentions
+        // "pronunciation" either -- a real, pre-existing gap in this app
+        // (see capture-feature-pages.py's own matching comment). Call the
+        // same initPronunciation() that route is directly wired to instead.
+        initPronunciation();
       } else if (type !== "words") {
         handleTypeChange(type);
       }
