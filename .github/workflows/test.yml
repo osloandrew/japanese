@@ -57,3 +57,35 @@ jobs:
             git diff --stat -- inflections-data.json
             exit 1
           fi
+
+  definitions-data:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check whether japaneseWords.csv changed
+        id: csv
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          if [ -z "$BASE_SHA" ] || ! git cat-file -e "$BASE_SHA" 2>/dev/null; then
+            # New branch, or no comparable base commit — verify unconditionally.
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          elif git diff --name-only "$BASE_SHA" "${{ github.sha }}" -- japaneseWords.csv | grep -qx "japaneseWords.csv"; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Regenerate japaneseWords.csv's definition column and check it's up to date
+        if: steps.csv.outputs.changed == 'true'
+        run: |
+          python3 scripts/build-definitions.py
+          if ! git diff --quiet -- japaneseWords.csv; then
+            echo "::error::japaneseWords.csv changed but its definition column is stale. Run 'python3 scripts/build-definitions.py' and commit the result."
+            git diff --stat -- japaneseWords.csv
+            exit 1
+          fi
