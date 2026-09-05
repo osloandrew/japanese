@@ -112,9 +112,19 @@ def build_jmdict_index(jmdict: dict) -> tuple[dict, dict]:
     for word in jmdict["words"]:
         kanji_list = word.get("kanji", [])
         kana_list = word.get("kana", [])
-        pos = set()
+        # A plain set here would let classify()'s "first tag in sense order"
+        # tiebreak (below) silently depend on Python's per-process string
+        # hash randomization instead of JMdict's actual sense order --
+        # producing a different, non-deterministic pick on every run for any
+        # word tagged with more than one relevant class (e.g. flipping
+        # between adj-no and adj-na from run to run, which is exactly the
+        # kind of spurious diff the CI staleness check is meant to catch,
+        # not cause). A dict (insertion-ordered, O(1) membership) keeps
+        # JMdict's own first-seen order while still deduping.
+        pos: dict[str, None] = {}
         for sense in word.get("sense", []):
-            pos.update(sense.get("partOfSpeech", []))
+            for tag in sense.get("partOfSpeech", []):
+                pos.setdefault(tag, None)
         is_common = any(k.get("common") for k in kanji_list) or any(
             k.get("common") for k in kana_list
         )
@@ -182,7 +192,7 @@ def classify(gender: str, word_field: str, reading_field: str, entry) -> tuple[s
     """Returns (conjugationClass, sourceType)."""
     relevant = (VERB_CLASSES if gender == "verb" else ADJECTIVE_CLASSES)
     if entry:
-        pos = entry["pos"] & relevant
+        pos = {tag for tag in entry["pos"] if tag in relevant}
         if pos:
             # A handful of entries match more than one relevant class across
             # senses (e.g. an entry that is both a suru-verb and, in another
