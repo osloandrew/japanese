@@ -236,7 +236,7 @@
   function getEntryReadingHaystacks(entry) {
     const haystacks = new Set();
 
-    [entry?.ord, entry?.uttale].forEach((raw) => {
+    [entry?.word, entry?.pronunciation].forEach((raw) => {
       const value = normalizeSearchText(raw);
       if (!value) return;
       haystacks.add(value);

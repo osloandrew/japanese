@@ -42,27 +42,27 @@ runSection("const DAILY_PRACTICE_STORAGE_KEY", "let incorrectWordQueue");
 // placeholder checks below are language-agnostic guards against unrecorded
 // audio markers, not Japanese-specific content.
 assert.equal(
-  context.hasPlayableWordAudio({ ord: "こんにちは", wordAudio: "X" }),
+  context.hasPlayableWordAudio({ word: "こんにちは", wordAudio: "X" }),
   true,
 );
 assert.equal(
-  context.hasPlayableWordAudio({ ord: "あの... あの", wordAudio: "X" }),
+  context.hasPlayableWordAudio({ word: "あの... あの", wordAudio: "X" }),
   false,
 );
 assert.equal(
-  context.hasPlayableWordAudio({ ord: "あの … あの", wordAudio: "X" }),
+  context.hasPlayableWordAudio({ word: "あの … あの", wordAudio: "X" }),
   false,
 );
 assert.equal(
-  context.hasPlayableWordAudio({ ord: "hrmf", wordAudio: "X" }),
+  context.hasPlayableWordAudio({ word: "hrmf", wordAudio: "X" }),
   false,
 );
 assert.equal(
-  context.hasPlayableWordAudio({ ord: " HRMF ", wordAudio: "X" }),
+  context.hasPlayableWordAudio({ word: " HRMF ", wordAudio: "X" }),
   false,
 );
 assert.equal(
-  context.hasPlayableWordAudio({ ord: "こんにちは", wordAudio: "" }),
+  context.hasPlayableWordAudio({ word: "こんにちは", wordAudio: "" }),
   false,
 );
 

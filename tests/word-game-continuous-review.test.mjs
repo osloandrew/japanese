@@ -27,8 +27,8 @@ vm.runInContext(source.slice(start, end), context, {
   filename: "wordGame.js",
 });
 
-const fragile = { ord: "fragile" };
-const stable = { ord: "stable" };
+const fragile = { word: "fragile" };
+const stable = { word: "stable" };
 snapshots.set(fragile, { recallNeed: 0.8 });
 snapshots.set(stable, { recallNeed: 0.1 });
 // Deliberately give the fragile word a stronger coarse meter. Continuous

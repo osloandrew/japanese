@@ -1300,7 +1300,7 @@ function positionStoryWordPopover(popover, wordSpan) {
 }
 
 function updateStoryWordPopoverStar(button, entry, isSaved) {
-  const word = String(entry.ord || "").split(/[,、]/)[0].trim();
+  const word = String(entry.word || "").split(/[,、]/)[0].trim();
   const action = isSaved ? "Remove" : "Add";
   const destination = isSaved ? "from My Words" : "to My Words";
 
@@ -1410,7 +1410,7 @@ async function showStoryWordPopover(wordSpan) {
     // regardless of word class.
     results
       .filter((r) =>
-        String(r.ord || "")
+        String(r.word || "")
           .split(/[,、]/)
           .map((form) => form.trim())
           .includes(lemma),
@@ -1467,7 +1467,7 @@ async function showStoryWordPopover(wordSpan) {
 
     for (const entry of results) {
       if (String(entry.gender || "").trim() !== wordClass) continue;
-      const headwords = String(entry.ord || "")
+      const headwords = String(entry.word || "")
         .split(/[,、]/)
         .map((form) => form.trim());
       if (!headwords.includes(otherLemma)) continue;

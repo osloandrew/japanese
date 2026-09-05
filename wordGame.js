@@ -198,7 +198,7 @@ const BONUS_ROUND_SEQUENCE = Object.freeze([
 // quirks out of listening and dictation questions, where audio is the only
 // prompt.
 function hasPlayableWordAudio(wordObj) {
-  const word = String(wordObj?.ord ?? "").trim();
+  const word = String(wordObj?.word ?? "").trim();
   return (
     wordObj?.wordAudio === "X" &&
     word.length > 0 &&
@@ -890,13 +890,13 @@ const GAME_MODES = Object.freeze({
       }
 
       const incorrectJapaneseWords = fetchIncorrectJapaneseWords(
-        wordObj.ord,
+        wordObj.word,
         wordObj.CEFR,
         wordObj.gender,
         wordObj.engelsk,
       );
       const allJapaneseOptions = shuffleArray([
-        wordObj.ord,
+        wordObj.word,
         ...incorrectJapaneseWords,
       ]);
       const uniqueJapaneseOptions =
@@ -1690,9 +1690,9 @@ function playTrackedAudio(url) {
 // otherwise log this attempt's failure as well as the fallback's -- making
 // one exhausted retry look like two separate bugs.
 function playWordAudio(wordObj) {
-  if (!wordObj || !wordObj.ord) return;
+  if (!wordObj || !wordObj.word) return;
   const cleanWord = getPrimaryJapaneseForm(wordObj);
-  const pronunciation = (wordObj.uttale || "").trim();
+  const pronunciation = (wordObj.pronunciation || "").trim();
   const fallbackUrl =
     pronunciation && pronunciation !== cleanWord
       ? buildWordAudioUrl(pronunciation)
@@ -1918,8 +1918,8 @@ function normalizeGameAnswer(value) {
 // vulgar-word half, since a story needs "å"'s real senses (infinitive
 // marker, "ah", "stream"), just not its random-pick eligibility. See
 // resolveStoryWordEntries in stories.js.
-function isExcludedFromRandomSelection(ord) {
-  const normalized = normalizeGameAnswer(ord);
+function isExcludedFromRandomSelection(word) {
+  const normalized = normalizeGameAnswer(word);
   return noRandom.includes(normalized) || noRandomLetters.includes(normalized);
 }
 
@@ -2063,7 +2063,7 @@ function escapeGameHTML(value) {
 
 function getPrimaryJapaneseForm(entryOrValue) {
   const value =
-    typeof entryOrValue === "object" ? entryOrValue?.ord : entryOrValue;
+    typeof entryOrValue === "object" ? entryOrValue?.word : entryOrValue;
   return getDisplayedAnswer(value);
 }
 
@@ -2081,7 +2081,7 @@ function expandSlashVariant(variant) {
 function getJapaneseEntryVariants(entry) {
   return [
     ...new Set(
-      String(entry?.ord ?? "")
+      String(entry?.word ?? "")
         .split(/[,、]/)
         .flatMap(expandSlashVariant)
         .map(normalizeGameWhitespace)
@@ -2283,7 +2283,7 @@ function buildSynonymExercise(wordObj) {
     return (
       form &&
       !excluded.has(normalizeGameAnswer(form)) &&
-      !isExcludedFromRandomSelection(candidate.ord) &&
+      !isExcludedFromRandomSelection(candidate.word) &&
       WordClass.getWordClass(candidate.gender) === answerClass &&
       !sharesEnglishSenseWith(candidate, answerSenses) &&
       hasEstablishedRecognition(candidate)
@@ -4096,7 +4096,7 @@ async function buildVariedGameContextTargets(wordObj) {
   // perfectly matched sentence form is not evidence for the intended sense,
   // so variation stays disabled and the entry-owned sentence remains stable.
   if (
-    !wordObj?.ord ||
+    !wordObj?.word ||
     hasCompetingGameHomograph(wordObj) ||
     typeof window.SentenceFormMatching?.collectExamples !== "function"
   ) {
@@ -6122,7 +6122,7 @@ async function startWordGame() {
     playChime(popChime, CHIME_PRIORITY.pop);
 
     // Reintroduce the word
-    currentWord = firstWordInQueue.wordObj.ord;
+    currentWord = firstWordInQueue.wordObj.word;
     correctTranslation = firstWordInQueue.wordObj.engelsk;
     firstWordInQueue.shown = true;
     recordPresentedGameWord(firstWordInQueue.wordObj);
@@ -6269,14 +6269,14 @@ async function startWordGame() {
       const randomWordObj = firstWordInQueue.wordObj;
 
       const incorrectJapaneseWords = fetchIncorrectJapaneseWords(
-        randomWordObj.ord,
+        randomWordObj.word,
         randomWordObj.CEFR,
         randomWordObj.gender,
         randomWordObj.engelsk,
       );
 
       const allJapaneseOptions = shuffleArray([
-        randomWordObj.ord,
+        randomWordObj.word,
         ...incorrectJapaneseWords,
       ]);
 
@@ -6557,7 +6557,7 @@ function fetchIncorrectTranslations(gender, correctTranslation, currentCEFR) {
       displayedTranslation &&
       normalizeGameAnswer(displayedTranslation) !== correctIdentity &&
       startsWithUppercaseLetter(displayedTranslation) === isCapitalized &&
-      !isExcludedFromRandomSelection(entry.ord) &&
+      !isExcludedFromRandomSelection(entry.word) &&
       !sharesEnglishSenseWith(entry, correctVariants)
     );
   });
@@ -6644,7 +6644,7 @@ function fetchIncorrectJapaneseWords(correctWord, CEFR, gender, correctEnglish) 
   const seen = new Set([correctIdentity]);
   const incorrectWords = [];
   const eligible = getA0SafeJapaneseDistractorPool(results, {
-    ord: correctWord,
+    word: correctWord,
     CEFR,
     gender,
   }).filter((entry) => {
@@ -6652,7 +6652,7 @@ function fetchIncorrectJapaneseWords(correctWord, CEFR, gender, correctEnglish) 
     return (
       word &&
       normalizeGameAnswer(word) !== correctIdentity &&
-      !isExcludedFromRandomSelection(entry.ord) &&
+      !isExcludedFromRandomSelection(entry.word) &&
       !sharesEnglishSenseWith(entry, correctVariants)
     );
   });
@@ -6709,10 +6709,10 @@ function displayPronunciation(word) {
     document.querySelector("#game-banner-placeholder");
   if (
     pronunciationContainer &&
-    word.uttale &&
-    word.uttale.split(/[,、]/)[0].trim() !== getPrimaryJapaneseForm(word)
+    word.pronunciation &&
+    word.pronunciation.split(/[,、]/)[0].trim() !== getPrimaryJapaneseForm(word)
   ) {
-    const uttaleText = word.uttale.split(/[,、]/)[0].trim(); // Get the part before the first comma
+    const uttaleText = word.pronunciation.split(/[,、]/)[0].trim(); // Get the part before the first comma
     pronunciationContainer.innerHTML = `
       <p class="game-pronunciation">${uttaleText}</p>
     `;
@@ -6817,7 +6817,7 @@ function attachGameControls(wordObj, isCloze = false) {
       const missedTypedForm = document.querySelector(
         ".game-typed-answer-form.is-incorrect",
       );
-      // wordObj.ord is the target Japanese answer, not what was actually
+      // wordObj.word is the target Japanese answer, not what was actually
       // on screen — a reverse question shows the English meaning and a
       // cloze question shows a sentence with a blank, either of which a
       // reviewer needs to judge "should this answer have been accepted"
@@ -6832,7 +6832,7 @@ function attachGameControls(wordObj, isCloze = false) {
 
       openFeedbackDialog({
         source: isCloze ? "Word Game · Cloze" : "Word Game · Flashcard",
-        word: wordObj.ord,
+        word: wordObj.word,
         pos: wordObj.gender,
         cefr: wordObj.CEFR,
         prompt: missedPrompt,
@@ -8486,7 +8486,7 @@ async function fetchExampleSentence(
   preferredIndex = null,
   { preferredSentence = "", preferredTranslation = "" } = {},
 ) {
-  if (!wordObj || !wordObj.ord) {
+  if (!wordObj || !wordObj.word) {
     console.warn("Missing required fields for search:", wordObj);
     return { exampleSentence: "", sentenceTranslation: "" };
   }
@@ -8500,7 +8500,7 @@ async function fetchExampleSentence(
 
   // wordObj is already the exact dictionary entry the question was built
   // from — use its own example sentence directly. Re-deriving "the"
-  // matching entry by ord+gender+CEFR (as this used to) is ambiguous
+  // matching entry by word+gender+CEFR (as this used to) is ambiguous
   // whenever two senses of the same word share a gender and CEFR level
   // (e.g. "råk" meaning "trail" vs. "crack", both ei/B2): .find() would
   // silently return whichever row happens to come first in the data,
@@ -8596,7 +8596,7 @@ function getEligibleGameBasePool(
   if (cached) return cached;
 
   const pool = results.filter((entry) => {
-    const japaneseWord = String(entry?.ord ?? "").trim();
+    const japaneseWord = String(entry?.word ?? "").trim();
     const englishTranslation = String(entry?.engelsk ?? "").trim();
     const gender = String(entry?.gender ?? "").trim();
     const entryCEFR = String(entry?.CEFR ?? "")
@@ -9933,7 +9933,7 @@ function generatePhraseClozeDistractors(wordObj, clozeTarget) {
         !["noun", "adjective", "verb"].includes(
           candidateWordClass,
         )) &&
-      !isExcludedFromRandomSelection(entry.ord)
+      !isExcludedFromRandomSelection(entry.word)
     );
   });
 
@@ -10057,7 +10057,8 @@ function generateClozeDistractors(wordObj, clozeTarget) {
 
   const eligible = getA0SafeJapaneseDistractorPool(results, wordObj).filter(
     (entry) =>
-      entry?.ord &&
+      entry?.word &&
+      !isExcludedFromRandomSelection(entry.word) &&
       !BANNED_WORD_CLASSES.some((banned) =>
         entry.gender?.toLowerCase().startsWith(banned),
       ) &&

@@ -20,7 +20,7 @@ assert.match(
 );
 assert.match(
   startGameSource,
-  /currentWord = firstWordInQueue\.wordObj\.ord;[\s\S]*?recordPresentedGameWord\(firstWordInQueue\.wordObj\)/,
+  /currentWord = firstWordInQueue\.wordObj\.word;[\s\S]*?recordPresentedGameWord\(firstWordInQueue\.wordObj\)/,
 );
 assert.match(
   startGameSource,
@@ -43,10 +43,10 @@ const fillerEnd = source.indexOf("function getFillerReviewCandidates", fillerSta
 const fillerSource = source.slice(fillerStart, fillerEnd);
 // Real dictionary headwords: 猫 (cat) and 犬 (dog) stand in for a filler
 // pool that must not immediately repeat the previous game word.
-const previous = { ord: "猫" };
-const different = { ord: "犬" };
+const previous = { word: "猫" };
+const different = { word: "犬" };
 const context = vm.createContext({
-  isPreviousGameWord: (entry) => entry?.ord === previous.ord,
+  isPreviousGameWord: (entry) => entry?.word === previous.word,
 });
 vm.runInContext(fillerSource, context, { filename: "wordGame.js" });
 

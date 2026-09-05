@@ -16,15 +16,15 @@ context.__JAPANESE_INFLECTIONS_DATA__ = JSON.parse(
 // shadow-guarding and tail lookup behave predictably and the test doesn't
 // depend on the live word list's exact contents.
 context.results = [
-  { ord: "くれる", gender: "verb", eksempel: "友達が誕生日に本をくれた。" },
-  { ord: "てくれる", gender: "expression", eksempel: "駅まで送ってくれてありがとう。" },
-  { ord: "について", gender: "expression", eksempel: "来年度の予算について話し合った。" },
+  { word: "くれる", gender: "verb", eksempel: "友達が誕生日に本をくれた。" },
+  { word: "てくれる", gender: "expression", eksempel: "駅まで送ってくれてありがとう。" },
+  { word: "について", gender: "expression", eksempel: "来年度の予算について話し合った。" },
   {
-    ord: "のだ、んだ",
+    word: "のだ、んだ",
     gender: "expression",
     eksempel: "明日の朝は始発に乗らないといけないから、今日は早く帰るんだ。",
   },
-  { ord: "仕方が無い", gender: "expression", eksempel: "" },
+  { word: "仕方が無い", gender: "expression", eksempel: "" },
 ];
 
 for (const file of [
@@ -87,6 +87,6 @@ assert.equal(
   await context.ExpressionPatterns.getAnalysis(teKureruEntry),
 );
 
-assert.equal(await context.ExpressionPatterns.getAnalysis({ ord: "" }), null);
+assert.equal(await context.ExpressionPatterns.getAnalysis({ word: "" }), null);
 
 console.log("expression-patterns.test.mjs passed");

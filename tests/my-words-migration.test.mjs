@@ -97,7 +97,7 @@ test("getMyWordsEntryId uses the CSV's stable id, not a content hash", () => {
   const { context } = createSandbox();
   const entry = {
     id: "abc123",
-    ord: "犬",
+    word: "犬",
     engelsk: "dog",
     gender: "noun",
     definisjon: "a domesticated animal",
@@ -127,7 +127,7 @@ test("migrateMyWordsEntryIds moves a legacy-keyed saved word onto its stable id"
   // it exactly like the original bug did.
   const entry = {
     id: "stable-1",
-    ord: "猫",
+    word: "猫",
     engelsk: "cat",
     gender: "noun",
     definisjon: "a small domesticated feline",
@@ -189,7 +189,7 @@ test("migrateMyWordsEntryIds drops a legacy id for a word no longer in the dicti
   );
 
   const { context } = createSandbox({
-    results: [{ id: "unrelated", ord: "他", engelsk: "other", gender: "noun" }],
+    results: [{ id: "unrelated", word: "他", engelsk: "other", gender: "noun" }],
     localStorageData: {
       "japanese-dictionary-my-words-v1": JSON.stringify({
         version: 2,
@@ -221,7 +221,7 @@ test("migrateMyWordsEntryIds drops a legacy id for a word no longer in the dicti
 test("migrateMyWordsEntryIds drops an already-orphaned legacy id (its content changed since saving)", () => {
   const entry = {
     id: "stable-3",
-    ord: "犬",
+    word: "犬",
     engelsk: "dog",
     gender: "noun",
     definisjon: "a regenerated, current definition",
@@ -250,7 +250,7 @@ test("migrateMyWordsEntryIds drops an already-orphaned legacy id (its content ch
 test("migrateMyWordsEntryIds moves word-strength records onto the stable id too", () => {
   const entry = {
     id: "stable-2",
-    ord: "話す",
+    word: "話す",
     engelsk: "to speak",
     gender: "verb",
     definisjon: "to communicate through speech",

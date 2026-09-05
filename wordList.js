@@ -81,7 +81,7 @@
    * Create a genuine, crawlable URL for a Word List entry.
    */
   function createWordListDefinitionURL(entry) {
-    const primaryWord = String(entry.ord ?? "")
+    const primaryWord = String(entry.word ?? "")
       .split(/[,、]/)[0]
       .trim();
 
@@ -151,7 +151,7 @@
   // this way before the `id` column existed.
   function getLegacyMyWordsEntryId(entry) {
     return [
-      entry.ord,
+      entry.word,
       entry.engelsk,
       getWordListClassLabel(entry),
       entry.definisjon,
@@ -632,7 +632,7 @@
     const button = document.createElement("button");
     const icon = document.createElement("i");
     const entryId = getMyWordsEntryId(entry);
-    const word = String(entry.ord ?? "").trim();
+    const word = String(entry.word ?? "").trim();
 
     button.type = "button";
     button.className = "word-list-favorite-button";
@@ -814,7 +814,7 @@
     const starButton = document.createElement("button");
     const starIcon = document.createElement("i");
     const entryId = getMyWordsEntryId(entry);
-    const word = String(entry.ord ?? "").trim();
+    const word = String(entry.word ?? "").trim();
 
     starButton.type = "button";
     starButton.className =
@@ -889,7 +889,7 @@
       const starButton = document.createElement("button");
       const starIcon = document.createElement("i");
       const entryId = getMyWordsEntryId(entry);
-      const word = String(entry.ord ?? "").trim();
+      const word = String(entry.word ?? "").trim();
 
       starButton.type = "button";
       starButton.className =
@@ -990,7 +990,7 @@
   }
 
   function openWordListDefinition(entry) {
-    const word = String(entry.ord ?? "").trim();
+    const word = String(entry.word ?? "").trim();
     const english = String(entry.engelsk ?? "").trim();
 
     if (!word) {
@@ -1109,7 +1109,7 @@
     } else {
       resultsContainer.insertBefore(backButton, resultsContainer.firstChild);
     }
-    const primaryWord = String(entry.ord ?? "")
+    const primaryWord = String(entry.word ?? "")
       .split(/[,、]/)[0]
       .trim();
 
@@ -1134,7 +1134,7 @@
 
     row.className = "word-list-row";
 
-    const japaneseWord = String(entry.ord ?? "").trim();
+    const japaneseWord = String(entry.word ?? "").trim();
     const englishTranslation = String(entry.engelsk ?? "").trim();
     const japaneseCell = createWordListCell(
       "",
@@ -1284,7 +1284,7 @@
     return results
       .filter((entry) => {
         // Do not display an entry without a Japanese word.
-        if (!normalizeWordListText(entry.ord)) {
+        if (!normalizeWordListText(entry.word)) {
           return false;
         }
 
@@ -1320,7 +1320,7 @@
           return true;
         }
 
-        const japanese = normalizeWordListText(entry.ord);
+        const japanese = normalizeWordListText(entry.word);
         const english = normalizeWordListText(entry.engelsk, "en");
 
         return (
@@ -1348,8 +1348,8 @@
         }
 
         const japaneseComparison = japaneseCollator.compare(
-          String(firstEntry.ord ?? ""),
-          String(secondEntry.ord ?? ""),
+          String(firstEntry.word ?? ""),
+          String(secondEntry.word ?? ""),
         );
 
         if (japaneseComparison !== 0) {
@@ -1642,7 +1642,7 @@
 
     entries.forEach((entry) => {
       rows.push([
-        entry.ord,
+        entry.word,
         entry.engelsk,
         getWordListClassLabel(entry),
         entry.CEFR,
@@ -1679,7 +1679,7 @@
 
     entries.forEach((entry) => {
       rows.push([
-        entry.ord,
+        entry.word,
         entry.engelsk,
         getWordListClassLabel(entry),
         entry.CEFR,
@@ -1937,7 +1937,7 @@
       .map(
         (entry) => `
         <tr>
-          <td>${escapeHTML(entry.ord)}</td>
+          <td>${escapeHTML(entry.word)}</td>
           <td>${escapeHTML(entry.engelsk)}</td>
           <td>${escapeHTML(getWordListClassLabel(entry))}</td>
           <td>${escapeHTML(entry.CEFR)}</td>
@@ -2179,8 +2179,8 @@
      * then fall back to a looser one that drops "engelsk".
      */
     const fieldTiers = [
-      ["ord", "engelsk", "gender", "CEFR"],
-      ["ord", "gender", "CEFR"],
+      ["word", "engelsk", "gender", "CEFR"],
+      ["word", "gender", "CEFR"],
     ];
 
     for (const fields of fieldTiers) {

@@ -22,17 +22,17 @@ vm.runInContext(fs.readFileSync(path.join(root, "inflections.js"), "utf8"), cont
 // resolveConjugationRecipe must still recognize via AUXILIARY_CLASSIFICATIONS
 // rather than the JMdict-derived snapshot (which only ever classifies
 // "verb"/"adjective" rows).
-const da = await context.Inflections.getSentenceForms({ ord: "だ", gender: "auxiliary" });
+const da = await context.Inflections.getSentenceForms({ word: "だ", gender: "auxiliary" });
 for (const form of ["だ", "じゃない", "ではない", "だった", "じゃなかった", "ではなかった"]) {
   assert.ok(da.includes(form), `だ forms should include ${form}`);
 }
 
-const desu = await context.Inflections.getSentenceForms({ ord: "です", gender: "auxiliary" });
+const desu = await context.Inflections.getSentenceForms({ word: "です", gender: "auxiliary" });
 for (const form of ["です", "ではありません", "じゃありません", "でした"]) {
   assert.ok(desu.includes(form), `です forms should include ${form}`);
 }
 
-const masu = await context.Inflections.getSentenceForms({ ord: "ます", gender: "auxiliary" });
+const masu = await context.Inflections.getSentenceForms({ word: "ます", gender: "auxiliary" });
 assert.deepEqual(
   Array.from(masu),
   ["ます", "ません", "ました", "ませんでした", "ましょう"],
@@ -42,16 +42,16 @@ assert.deepEqual(
 // -- AUXILIARY_CLASSIFICATIONS routes them through the *existing* engine
 // (no new conjugation code) even though their CSV row is tagged "auxiliary",
 // not "verb"/"adjective".
-const seru = await context.Inflections.getSentenceForms({ ord: "せる", gender: "auxiliary" });
+const seru = await context.Inflections.getSentenceForms({ word: "せる", gender: "auxiliary" });
 assert.ok(seru.includes("せない") && seru.includes("せた") && seru.includes("せます"));
 
-const tai = await context.Inflections.getSentenceForms({ ord: "たい", gender: "auxiliary" });
+const tai = await context.Inflections.getSentenceForms({ word: "たい", gender: "auxiliary" });
 assert.ok(tai.includes("たくない") && tai.includes("たかった"));
 
 // An auxiliary with no known recipe (それでは, ではない, ...) stays exactly
 // as before: its own literal spelling only, no attempted conjugation.
 const sore = await context.Inflections.getSentenceForms({
-  ord: "それでは",
+  word: "それでは",
   gender: "auxiliary",
 });
 assert.deepEqual(Array.from(sore), ["それでは"]);
@@ -59,7 +59,7 @@ assert.deepEqual(Array.from(sore), ["それでは"]);
 // The Word Forms table (getForms/createForms) renders a two-alternative
 // slot (じゃない/ではない) as one joined display string, while
 // getSentenceForms above still sees both as separately searchable forms.
-const daTable = context.Inflections.getForms({ ord: "だ", gender: "auxiliary" });
+const daTable = context.Inflections.getForms({ word: "だ", gender: "auxiliary" });
 assert.equal(daTable.wordClass, "auxiliary");
 assert.equal(daTable.sourceType, "estimated");
 const negativeRow = daTable.forms.find((form) => form.label === "Negative");
@@ -68,11 +68,54 @@ assert.equal(negativeRow.value, "じゃない / ではない");
 // Regression: ordinary verbs, adjectives, and last session's multi-spelling
 // fix (いる、居る) are unaffected by routing everything through
 // resolveConjugationRecipe.
-const taberu = await context.Inflections.getSentenceForms({ ord: "食べる", gender: "verb" });
+const taberu = await context.Inflections.getSentenceForms({ word: "食べる", gender: "verb" });
 assert.ok(taberu.includes("食べた") && taberu.length > 15);
 
-const iru = await context.Inflections.getSentenceForms({ ord: "いる、居る", gender: "verb" });
+const iru = await context.Inflections.getSentenceForms({ word: "いる、居る", gender: "verb" });
 assert.ok(iru.includes("いた") && iru.includes("居た"));
+
+// Sentence-search matching needs far more surface forms than the Word Forms
+// table displays: a voice/potential form (限る -> passive/potential 限られる)
+// is itself shaped like an ichidan verb and takes a full paradigm of its own
+// -- 限られた (a plain passive/potential past) is completely ordinary
+// sentence material, not some rare edge case, but the table intentionally
+// stops at each voice form's dictionary spelling + te-form (see
+// verbFormsTable) rather than adding a full sub-table for each of the four
+// voice forms.
+const kagiru = await context.Inflections.getSentenceForms({ word: "限る", gender: "verb" });
+for (const form of ["限られた", "限られない", "限られて"]) {
+  assert.ok(kagiru.includes(form), `限る forms should include ${form}`);
+}
+
+// たい likewise conjugates as a full い-adjective (食べたかった, 食べたくて,
+// ...) when attached to a verb, not just the plain affirmative/negative the
+// table shows.
+const taberuTai = await context.Inflections.getSentenceForms({ word: "食べる", gender: "verb" });
+assert.ok(taberuTai.includes("食べたかった") && taberuTai.includes("食べたくて"));
+
+// Causative + たい ("want to make/let someone do") is ordinary, common
+// Japanese (行かせたい "want to make [someone] go").
+const iku = await context.Inflections.getSentenceForms({ word: "行く", gender: "verb" });
+assert.ok(iku.includes("行かせたい"));
+
+// The Word Forms table itself must stay exactly as limited as before --
+// these extra surface forms are for matching only, never new table rows.
+const kagiruTable = context.Inflections.getForms({ word: "限る", gender: "verb" });
+assert.equal(kagiruTable.forms.length, 24);
+
+// A kanji headword's pronunciation conjugates exactly the same way the
+// headword itself does (conjugation only ever rewrites the trailing kana,
+// and a reading is already all kana), so an all-kana surface form built off
+// the *reading* -- むずかしかった for 難しい/むずかしい, not just 難しかった --
+// is also a findable surface form. This is what lets a story sentence
+// written in hiragana still link back to the kanji headword's definition.
+const muzukashii = await context.Inflections.getSentenceForms({
+  word: "難しい",
+  pronunciation: "むずかしい",
+  gender: "adjective",
+});
+assert.ok(muzukashii.includes("難しかった"));
+assert.ok(muzukashii.includes("むずかしかった"));
 
 // getParadigmForLemma feeds the Word Game's cloze-distractor and typed-
 // answer-near-miss code (wordGame.js), which walks `.slots` by index and
@@ -121,9 +164,10 @@ assert.equal(context.Inflections.getParadigmForLemma("いわゆる", "adjective"
 // build the reverse index -- only needed on this first call, since the index
 // is cached for every findLemmas call after.
 const findLemmasEntries = [
-  { ord: "食べる", gender: "verb" },
-  { ord: "test1", gender: "noun" },
-  { ord: "test1", gender: "adjective" },
+  { word: "食べる", gender: "verb" },
+  { word: "test1", gender: "noun" },
+  { word: "test1", gender: "adjective" },
+  { word: "難しい", pronunciation: "むずかしい", gender: "adjective" },
 ];
 
 // findLemmas runs inside the vm context above, so its return values are
@@ -152,6 +196,20 @@ assert.deepEqual(
   new Set(["noun", "adjective"]),
 );
 assert.equal(homographResolution.matchType, "exact");
+
+// A story hint resolves the same way as a definition's clickable words --
+// both go through this same reverse index. An all-kana inflected surface
+// form written off the reading (むずかしかった) must resolve to the kanji
+// headword's own lemma (難しい), not just its kanji-spelled equivalent
+// (難しかった).
+const muzukashikattaResolution = plain(
+  await context.Inflections.findLemmas("むずかしかった", findLemmasEntries),
+);
+assert.deepEqual(muzukashikattaResolution.lemmas, ["難しい"]);
+assert.deepEqual(muzukashikattaResolution.matches, [
+  { lemma: "難しい", wordClass: "adjective" },
+]);
+assert.equal(muzukashikattaResolution.matchType, "exact");
 
 // No dictionary entry has this surface form at all.
 assert.deepEqual(plain(await context.Inflections.findLemmas("存在しない単語探索")), {

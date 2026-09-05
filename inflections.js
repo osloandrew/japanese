@@ -528,7 +528,7 @@
 
   function getClassification(entry) {
     const wordClass = String(entry?.gender || "").trim();
-    const fullOrdKey = String(entry?.ord || "").trim();
+    const fullOrdKey = String(entry?.word || "").trim();
     const primaryWord = fullOrdKey.split(/[,、]/)[0].trim();
     if (!primaryWord) return null;
     return resolveConjugationRecipe(wordClass, primaryWord, fullOrdKey);
@@ -543,7 +543,7 @@
   // would otherwise collide on their first letter.
   function entryKey(entry) {
     const wordClass = String(entry?.gender || "").trim();
-    const primaryWord = String(entry?.ord || "").split(/[,、]/)[0].trim();
+    const primaryWord = String(entry?.word || "").split(/[,、]/)[0].trim();
     if (!wordClass || !primaryWord) return "";
     return `${wordClass}:${primaryWord}`;
   }
@@ -558,7 +558,7 @@
   }
 
   function computeFormsAndTable(entry, classification) {
-    const primaryWord = String(entry?.ord || "").split(/[,、]/)[0].trim();
+    const primaryWord = String(entry?.word || "").split(/[,、]/)[0].trim();
     if (!primaryWord || !classification) return null;
     const cls = classification.class;
     if (NO_CONJUGATION_CLASSES.has(cls)) return null;
@@ -594,7 +594,7 @@
 
     return {
       ...computed.table,
-      lemma: String(entry.ord || "").split(/[,、]/)[0].trim(),
+      lemma: String(entry.word || "").split(/[,、]/)[0].trim(),
       isAuthoritative: classification.source === "jmdict",
       source: classification.source === "jmdict" ? "JMdict" : "estimated",
       sourceType: classification.source === "jmdict" ? "jmdict" : "estimated",
@@ -643,7 +643,7 @@
       return null;
     }
     const computed = computeFormsAndTable(
-      { ord: normalizedLemma },
+      { word: normalizedLemma },
       classification,
     );
     if (!computed) return null;
@@ -690,8 +690,9 @@
   function rememberPendingEntry(entry) {
     const requestId = String(nextRequestId++);
     pendingEntries.set(requestId, {
-      ord: entry.ord,
+      word: entry.word,
       gender: entry.gender,
+      pronunciation: entry.pronunciation,
     });
     while (pendingEntries.size > MAX_PENDING_ENTRIES) {
       pendingEntries.delete(pendingEntries.keys().next().value);
@@ -700,9 +701,21 @@
   }
 
   function getForms(entry) {
-    if (!entry?.ord) return null;
+    if (!entry?.word) return null;
     const wordClass = String(entry.gender || "").trim();
-    const primaryWord = String(entry.ord).split(/[,、]/)[0].trim();
+    // Expression forms (お腹が空く -> お腹が空いた, ...) come from
+    // ExpressionPatterns, which needs to resolve the expression's own
+    // inflecting tail component -- always routed through the pending path
+    // below rather than computed here, same as Norwegian's counterpart.
+    if (wordClass === "expression") {
+      return {
+        wordClass,
+        pending: true,
+        requestId: rememberPendingEntry(entry),
+        forms: [],
+      };
+    }
+    const primaryWord = String(entry.word).split(/[,、]/)[0].trim();
     const conjugatable =
       wordClass === "verb" ||
       wordClass === "adjective" ||
@@ -724,6 +737,9 @@
     pendingEntries.delete(String(requestId));
     if (!entry) return null;
     await loadSnapshot();
+    if (String(entry.gender || "").trim() === "expression") {
+      return window.ExpressionPatterns?.getForms(entry) || null;
+    }
     return createForms(entry);
   }
 
@@ -735,6 +751,71 @@
   // same way Norwegian's clickable words already work. Built lazily, off
   // the main thread when possible -- see inflectionsWorker.js.
 
+  // Base paradigm keys pulled from a voice/potential form's own conjugation
+  // (see extraVerbSurfaceForms below) -- deliberately excludes that
+  // sub-paradigm's own potential/passive/causative/causative_passive keys,
+  // since conjugateVerb("v1") computes those the same as it would for any
+  // other ichidan verb, but a double derivation like 読まれられる (potential
+  // of the passive 読まれる) is not a real Japanese form.
+  const VOICE_SUB_FORM_KEYS = [
+    "masu", "negative", "past", "te",
+    "polite_past", "polite_negative", "polite_past_negative", "past_negative",
+    "volitional", "volitional_polite", "conditional", "imperative",
+    "negative_te", "tai", "tai_negative",
+  ];
+  const VOICE_FORM_KEYS = ["potential", "passive", "causative", "causative_passive"];
+
+  // Sentence-search surface forms beyond what a verb's own conjugateVerb()
+  // result already carries. The Word Forms table stops at each voice form's
+  // dictionary spelling plus its te-form (see verbFormsTable) -- intentional,
+  // since a full sub-table for every one of the four voice forms would
+  // roughly quadruple the table for forms whose *shape* the existing rows
+  // already teach. But a passive/potential past like 限られた (限る -> 限ら
+  // れる -> 限られた), or a causative wanting-to like 行かせたい, is completely
+  // ordinary sentence material -- so for matching purposes only, each voice
+  // form still gets its own full paradigm, since it conjugates exactly like
+  // any other ichidan verb (see ichidanTe's comment for the same reasoning
+  // applied to just the te-form). たい itself likewise conjugates as a plain
+  // い-adjective (食べたかった, 行きたくて, ...), covered here the same way.
+  function extraVerbSurfaceForms(paradigm) {
+    const extra = [];
+    for (const key of VOICE_FORM_KEYS) {
+      const voiceForm = paradigm[key];
+      if (!voiceForm || !voiceForm.endsWith("る")) continue;
+      const subParadigm = conjugateVerb(voiceForm, "v1");
+      if (!subParadigm) continue;
+      for (const subKey of VOICE_SUB_FORM_KEYS) {
+        const value = subParadigm[subKey];
+        if (value) extra.push(value);
+      }
+    }
+    if (paradigm.tai && paradigm.tai.endsWith("い")) {
+      const taiParadigm = conjugateAdjective(paradigm.tai, "adj-i");
+      if (taiParadigm) {
+        for (const value of Object.values(taiParadigm)) {
+          if (value) extra.push(value);
+        }
+      }
+    }
+    return extra;
+  }
+
+  // Flattens one conjugated paradigm's forms into `targetSet`, plus (for
+  // verbs) the extra voice-form/たい sub-paradigms extraVerbSurfaceForms
+  // derives from it -- shared by collectAllSurfaceForms's per-spelling loop
+  // and its reading pass below so the two don't drift.
+  function addParadigmSurfaceForms(targetSet, paradigm, wordClass) {
+    if (!paradigm) return;
+    for (const form of Object.values(paradigm).flat()) {
+      if (form) targetSet.add(form);
+    }
+    if (wordClass === "verb") {
+      for (const form of extraVerbSurfaceForms(paradigm)) {
+        targetSet.add(form);
+      }
+    }
+  }
+
   // Every literal surface form a given entry can appear as: for a verb,
   // adjective, or conjugatable auxiliary (see AUXILIARY_CLASSIFICATIONS),
   // its full conjugated paradigm -- for *each* accepted spelling, not just
@@ -743,21 +824,41 @@
   // turn up inflected in a real sentence; for every other class (which has
   // no conjugation), just its own headword(s) -- still a real word a story
   // or definition can cite verbatim.
+  //
+  // A kanji headword's pronunciation conjugates exactly the same way the
+  // headword itself does -- conjugation only ever rewrites the trailing
+  // kana, and a reading is already all kana -- so an all-kana surface form
+  // written off the *reading* (むずかしかった for 難しい/むずかしい, not just
+  // 難しかった) is included too, the same reasoning as entryMatchesWordLink
+  // in scripts.js applied to inflected forms instead of exact ones.
   function collectAllSurfaceForms(entry) {
-    const headwords = String(entry?.ord || "")
+    const headwords = String(entry?.word || "")
       .split(/[,、]/)
       .map((word) => word.trim())
       .filter(Boolean);
+    const reading = String(entry?.pronunciation || "").trim();
 
     const wordClass = String(entry?.gender || "").trim();
-    const fullOrdKey = String(entry?.ord || "").trim();
+    const fullOrdKey = String(entry?.word || "").trim();
     const isConjugatable =
       wordClass === "verb" ||
       wordClass === "adjective" ||
       headwords.some((word) => AUXILIARY_CLASSIFICATIONS[word]);
-    if (!isConjugatable) return headwords;
+    if (!isConjugatable) {
+      return reading && !headwords.includes(reading)
+        ? [...headwords, reading]
+        : headwords;
+    }
 
     const forms = new Set(headwords);
+    if (reading) forms.add(reading);
+
+    // Classifications are keyed by kanji spelling in the JMdict snapshot --
+    // there's no looking one up by reading directly, so the first variant's
+    // classification (conjugation class is shared across every accepted
+    // spelling) is reused to conjugate the reading below instead.
+    let readingClassification = null;
+
     for (const variant of headwords) {
       const classification = resolveConjugationRecipe(
         wordClass,
@@ -767,17 +868,26 @@
       if (!classification || NO_CONJUGATION_CLASSES.has(classification.class)) {
         continue;
       }
+      if (!readingClassification) readingClassification = classification;
       const variantForms =
         classification.wordClass === "auxiliary"
           ? conjugateCopula(variant, classification.class)
           : classification.wordClass === "verb"
             ? conjugateVerb(variant, classification.class)
             : conjugateAdjective(variant, classification.class);
-      if (!variantForms) continue;
-      for (const form of Object.values(variantForms).flat()) {
-        if (form) forms.add(form);
-      }
+      addParadigmSurfaceForms(forms, variantForms, classification.wordClass);
     }
+
+    if (reading && readingClassification && !headwords.includes(reading)) {
+      const readingForms =
+        readingClassification.wordClass === "auxiliary"
+          ? conjugateCopula(reading, readingClassification.class)
+          : readingClassification.wordClass === "verb"
+            ? conjugateVerb(reading, readingClassification.class)
+            : conjugateAdjective(reading, readingClassification.class);
+      addParadigmSurfaceForms(forms, readingForms, readingClassification.wordClass);
+    }
+
     return [...forms];
   }
 
@@ -789,7 +899,7 @@
   // which look up a shared paradigm keyed by lemma) two different dictionary
   // entries never contend over the same computed forms.
   async function getSentenceForms(entry) {
-    if (!entry?.ord) return [];
+    if (!entry?.word) return [];
     const wordClass = String(entry?.gender || "").trim();
     if ((wordClass === "verb" || wordClass === "adjective") && !snapshot && !loadFailed) {
       await loadSnapshot();

@@ -48,7 +48,7 @@
   function collectGuardWords(guardSource) {
     const words = new Set();
     for (const item of guardSource || []) {
-      const raw = typeof item === "string" ? item : item?.ord;
+      const raw = typeof item === "string" ? item : item?.word;
       for (const word of String(raw || "").split(/[,、]/)) {
         const normalized = normalizeWord(word);
         if (normalized) words.add(normalized);

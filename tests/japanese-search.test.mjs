@@ -59,31 +59,31 @@ test("buildQueryVariants includes phrase-final は spoken as \"wa\"", () => {
 });
 
 test("matchesJapaneseQuery finds a kanji entry by its hiragana reading", () => {
-  const entry = { ord: "食べる", uttale: "たべる" };
+  const entry = { word: "食べる", pronunciation: "たべる" };
   assert.equal(JapaneseSearch.matchesJapaneseQuery(entry, "たべる"), true);
 });
 
 test("matchesJapaneseQuery finds a kanji entry by romaji", () => {
-  const entry = { ord: "食べる", uttale: "たべる" };
+  const entry = { word: "食べる", pronunciation: "たべる" };
   assert.equal(JapaneseSearch.matchesJapaneseQuery(entry, "taberu"), true);
 });
 
 test("matchesJapaneseQuery finds an entry by katakana even when the reading is stored in hiragana", () => {
-  const entry = { ord: "食べる", uttale: "たべる" };
+  const entry = { word: "食べる", pronunciation: "たべる" };
   assert.equal(JapaneseSearch.matchesJapaneseQuery(entry, "タベル"), true);
 });
 
 test("matchesJapaneseQuery finds a katakana loanword reading by hiragana or romaji", () => {
-  const entry = { ord: "CD", uttale: "シーディー" };
+  const entry = { word: "CD", pronunciation: "シーディー" };
   assert.equal(JapaneseSearch.matchesJapaneseQuery(entry, "しーでぃー"), true);
 });
 
 test("matchesJapaneseQuery matches on kanji itself, unaffected by kana conversion", () => {
-  const entry = { ord: "食べる", uttale: "たべる" };
+  const entry = { word: "食べる", pronunciation: "たべる" };
   assert.equal(JapaneseSearch.matchesJapaneseQuery(entry, "食べる"), true);
 });
 
 test("matchesJapaneseQuery returns false for unrelated queries", () => {
-  const entry = { ord: "食べる", uttale: "たべる" };
+  const entry = { word: "食べる", pronunciation: "たべる" };
   assert.equal(JapaneseSearch.matchesJapaneseQuery(entry, "miru"), false);
 });

@@ -175,12 +175,12 @@ let sentenceIndex = null; // Map<string, Uint32Array | number[]>
 
 // Map incoming CSV headers to the app’s canonical keys
 const SCHEMA_MAP = {
-  ord: "word",
+  word: "word",
   wordAudio: "wordAudio",
   engelsk: "English",
   CEFR: "CEFR",
   gender: "gender",
-  uttale: "pronunciation",
+  pronunciation: "pronunciation",
   etymologi: "region",
   definisjon: "definition",
   eksempel: "example",
@@ -408,11 +408,11 @@ function parseCSVData(data) {
 
         // Base object in canonical shape the rest of the app expects
         const entry = {
-          ord: get("ord"),
+          word: get("word"),
           engelsk: get("engelsk"),
           CEFR: get("CEFR").toUpperCase(),
           gender: get("gender"), // will be formatted later
-          uttale: get("uttale"), // empty for ES
+          pronunciation: get("pronunciation"), // empty for ES
           etymologi: get("etymologi"), // empty for ES
           definisjon: get("definisjon"),
           eksempel: get("eksempel"),
@@ -424,7 +424,7 @@ function parseCSVData(data) {
         };
 
         // Defensive trims
-        entry.ord = entry.ord.trim();
+        entry.word = entry.word.trim();
 
         return entry;
       });
@@ -939,7 +939,7 @@ async function randomWord() {
 
     // Exclude certain words here
     filteredResults = filteredResults.filter(
-      (r) => !noRandom.includes(r.ord.toLowerCase())
+      (r) => !noRandom.includes(r.word.toLowerCase())
     );
   }
 
@@ -1043,9 +1043,9 @@ async function randomWord() {
     return; // ✅ stop here, pronunciation handles itself
   } else {
     // Update the URL to include the random word's info
-    updateURL("", type, randomResult.gender, null, randomResult.ord);
+    updateURL("", type, randomResult.gender, null, randomResult.word);
     // If it's a word, render it with highlighting (if needed)
-    displaySearchResults([randomResult], randomResult.ord);
+    displaySearchResults([randomResult], randomResult.word);
   }
   hideSpinner(); // Hide the spinner
 }
@@ -1060,7 +1060,7 @@ async function resolveWordSearchQuery(originalQuery) {
   const query = originalQuery.toLowerCase().trim();
 
   const matchesQuery = (candidate) => {
-    const ordList = candidate.ord
+    const ordList = candidate.word
       .toLowerCase()
       .split(/[,、]/)
       .map((s) => s.trim());
@@ -1084,7 +1084,7 @@ async function resolveWordSearchQuery(originalQuery) {
       lemma &&
       lemma !== query &&
       results.some((r) =>
-        r.ord
+        r.word
           .toLowerCase()
           .split(/[,、]/)
           .map((s) => s.trim())
@@ -1219,7 +1219,7 @@ async function search(queryOverride = null, options = {}) {
     const expressionEntry =
       typeof getExpressionEntries === "function"
         ? getExpressionEntries().find((entry) =>
-            String(entry.ord || "")
+            String(entry.word || "")
               .split(/[,、]/)
               .some((variant) => normalize(variant) === normalizedQuery),
           )
@@ -1364,7 +1364,7 @@ async function search(queryOverride = null, options = {}) {
 
     // Filter results by query and selected POS for words
     matchingResults = cleanResults.filter((r) => {
-      const ordList = r.ord
+      const ordList = r.word
         .toLowerCase()
         .split(/[,、]/)
         .map((s) => s.trim());
@@ -1375,8 +1375,8 @@ async function search(queryOverride = null, options = {}) {
             const exactRegex = new RegExp(`\\b${variation}\\b`, "i"); // Exact match regex for whole word
             const partialRegex = new RegExp(variation, "i"); // Partial match for larger words like "bevegelsesfrihet"
             const wordMatch =
-              exactRegex.test(r.ord.toLowerCase()) ||
-              partialRegex.test(r.ord.toLowerCase());
+              exactRegex.test(r.word.toLowerCase()) ||
+              partialRegex.test(r.word.toLowerCase());
             const englishValues = r.engelsk
               .toLowerCase()
               .split(",")
@@ -1398,12 +1398,12 @@ async function search(queryOverride = null, options = {}) {
       );
     });
 
-    matchingResults = prioritizeResults(matchingResults, query, "ord");
+    matchingResults = prioritizeResults(matchingResults, query, "word");
 
     if (matchingResults.length === 1) {
       // Update URL and title for a single result
       const singleResult = matchingResults[0];
-      updateURL(null, type, selectedPOS, null, singleResult.ord); // Set word parameter with the result's Japanese term
+      updateURL(null, type, selectedPOS, null, singleResult.word); // Set word parameter with the result's Japanese term
       // Display this single result directly
       displaySearchResults([singleResult]); // Display only this single result
       hideSpinner(); // Hide the spinner
@@ -1433,7 +1433,7 @@ async function search(queryOverride = null, options = {}) {
       let inexactWordMatches = results.filter((r) => {
         const matchesInexact = inexactWordQueries.some(
           (inexactQuery) =>
-            r.ord.toLowerCase().includes(inexactQuery) ||
+            r.word.toLowerCase().includes(inexactQuery) ||
             r.engelsk.toLowerCase().includes(inexactQuery) ||
             Boolean(window.JapaneseSearch?.matchesJapaneseQuery(r, inexactQuery))
         );
@@ -1445,7 +1445,7 @@ async function search(queryOverride = null, options = {}) {
       });
 
       // 🧠 Sort the inexact matches using the same prioritization logic
-      inexactWordMatches = prioritizeResults(inexactWordMatches, query, "ord");
+      inexactWordMatches = prioritizeResults(inexactWordMatches, query, "word");
 
       // ✂️ Limit to 10 results after sorting
       inexactWordMatches = inexactWordMatches.slice(0, 10);
@@ -1529,7 +1529,7 @@ async function search(queryOverride = null, options = {}) {
 
       // 1. Prioritize exact match in the Japanese or English term
       const isExactMatchA =
-        a.ord
+        a.word
           .toLowerCase()
           .split(",")
           .map((str) => str.trim())
@@ -1540,7 +1540,7 @@ async function search(queryOverride = null, options = {}) {
           .map((str) => str.trim())
           .includes(queryLower);
       const isExactMatchB =
-        b.ord.toLowerCase() === queryLower ||
+        b.word.toLowerCase() === queryLower ||
         b.engelsk
           .toLowerCase()
           .split(",")
@@ -1582,18 +1582,18 @@ async function search(queryOverride = null, options = {}) {
       }
 
       // Check for identical Japanese words
-      if (a.ord.toLowerCase() === b.ord.toLowerCase()) {
+      if (a.word.toLowerCase() === b.word.toLowerCase()) {
         if (aCEFRValue !== bCEFRValue) {
           return aCEFRValue - bCEFRValue; // Lower CEFR value appears first
         }
       }
 
       // 3. Prioritize whole word match (even if part of a phrase or longer sentence)
-      const aWords = a.ord
+      const aWords = a.word
         .toLowerCase()
         .split(",")
         .map((s) => s.trim());
-      const bWords = b.ord
+      const bWords = b.word
         .toLowerCase()
         .split(",")
         .map((s) => s.trim());
@@ -1627,11 +1627,11 @@ async function search(queryOverride = null, options = {}) {
 
       // 5. Deprioritize compound words where the query appears in a larger word
       const aContainsInWord =
-        a.ord.toLowerCase().includes(queryLower) &&
-        a.ord.toLowerCase() !== queryLower;
+        a.word.toLowerCase().includes(queryLower) &&
+        a.word.toLowerCase() !== queryLower;
       const bContainsInWord =
-        b.ord.toLowerCase().includes(queryLower) &&
-        b.ord.toLowerCase() !== queryLower;
+        b.word.toLowerCase().includes(queryLower) &&
+        b.word.toLowerCase() !== queryLower;
       if (aContainsInWord && !bContainsInWord) {
         return 1;
       }
@@ -1640,8 +1640,8 @@ async function search(queryOverride = null, options = {}) {
       }
 
       // 6. Sort by the position of the query in the word (earlier is better)
-      const aIndex = a.ord.toLowerCase().indexOf(queryLower);
-      const bIndex = b.ord.toLowerCase().indexOf(queryLower);
+      const aIndex = a.word.toLowerCase().indexOf(queryLower);
+      const bIndex = b.word.toLowerCase().indexOf(queryLower);
       return aIndex - bIndex;
     });
 
@@ -1676,7 +1676,7 @@ function checkForSentences(word, pos) {
   wordParts.forEach((wordPart) => {
     // Find matching word entry by both word and POS
     const matchingWordEntry = results.find((result) => {
-      const wordMatch = result.ord.toLowerCase().includes(wordPart);
+      const wordMatch = result.word.toLowerCase().includes(wordPart);
       const posMatch = result.gender.toLowerCase().includes(pos.toLowerCase());
       return wordMatch && posMatch; // Ensure both word and POS match
     });
@@ -2530,7 +2530,7 @@ function mergeExpressionSpansForDefinition(wordSpans, expressionSpans) {
     start: span.start,
     end: span.end,
     text: span.matchedText,
-    lemma: String(span.entry.ord || "")
+    lemma: String(span.entry.word || "")
       .split(/[,、]/)[0]
       .trim(),
   }));
@@ -2648,6 +2648,17 @@ function renderInflectionsSource(inflections) {
   if (inflections?.sourceType === "estimated") {
     return `<p class="inflections-hint">This entry's conjugation class could not be verified against JMdict; forms are regular estimates.</p>`;
   }
+  if (inflections?.sourceType === "expression-jmdict") {
+    const head = escapeHTML(inflections.expressionHead || "");
+    return `<p class="inflections-hint">Component forms${head ? ` for ${head}` : ""} from <a href="https://www.edrdg.org/jmdict/j_jmdict.html" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()">JMdict</a></p>`;
+  }
+  if (inflections?.sourceType === "expression-estimated") {
+    const head = escapeHTML(inflections.expressionHead || "");
+    return `<p class="inflections-hint">Component forms${head ? ` for ${head}` : ""}; this entry's conjugation class could not be verified against JMdict, so forms are regular estimates.</p>`;
+  }
+  if (inflections?.sourceType === "expression-fixed") {
+    return `<p class="inflections-hint">No reliable inflecting component was found, so this is treated as a fixed expression.</p>`;
+  }
   return "";
 }
 
@@ -2749,11 +2760,11 @@ function displaySearchResults(
     const inflections = window.Inflections?.getForms(result) || null;
 
     // Convert the word to lowercase and trim spaces when generating the ID
-    const normalizedWord = result.ord.toLowerCase().trim();
+    const normalizedWord = result.word.toLowerCase().trim();
 
-    // Highlight the word being defined (result.ord) in the example sentence
+    // Highlight the word being defined (result.word) in the example sentence
     const highlightedExample = result.eksempel
-      ? highlightQuery(result.eksempel, query || result.ord.toLowerCase())
+      ? highlightQuery(result.eksempel, query || result.word.toLowerCase())
       : "";
 
     // Determine whether to initially hide the content for multiple results
@@ -2784,7 +2795,7 @@ function displaySearchResults(
       : "";
 
     // Safely escape the word in JavaScript by replacing special characters
-    const escapedWord = result.ord
+    const escapedWord = result.word
       .replace(/'/g, "\\'")
       .replace(/"/g, "&quot;")
       .replace(/\r?\n|\r/g, ""); // Escapes single quotes, double quotes, and removes newlines
@@ -2832,14 +2843,14 @@ function displaySearchResults(
                 <${headingTag} class="word-gender ${multipleResultsWordgender}">
                   <div lang="ja" class="word-text-block">
                     ${
-                      /[,、]/.test(result.ord)
+                      /[,、]/.test(result.word)
                         ? (() => {
-                            const [first, ...rest] = result.ord.split(/[,、]/);
+                            const [first, ...rest] = result.word.split(/[,、]/);
                             return `${first.trim()}<br><span class="alt-spelling">${rest
                               .join("、")
                               .trim()}</span>`;
                           })()
-                        : result.ord
+                        : result.word
                     }
                   </div>
 
@@ -2895,17 +2906,17 @@ function displaySearchResults(
                         ? `<p class="pronunciation">
                             <i class="fas fa-volume-up sentence-audio-icon"
                         role="button" tabindex="0" aria-label="Play word pronunciation"
-                        data-sentence="${result.ord
+                        data-sentence="${result.word
                           .split(/[,、]/)[0]
                           .trim()}"
                         data-pronunciation="${escapeHTML(
-                          result.uttale || ""
+                          result.pronunciation || ""
                         )}"></i>                            ${
-                            result.uttale || ""
+                            result.pronunciation || ""
                           }
                           </p>`
-                        : result.uttale
-                        ? `<p class="pronunciation"><i class="fas fa-volume-up" aria-hidden="true"></i> ${result.uttale}</p>`
+                        : result.pronunciation
+                        ? `<p class="pronunciation"><i class="fas fa-volume-up" aria-hidden="true"></i> ${result.pronunciation}</p>`
                         : ""
                     }
                     ${
@@ -2983,7 +2994,7 @@ function displaySearchResults(
 
   // Automatically load sentences for a single result, regardless of whether sentences exist in `eksempel`
   if (defaultResult && results[0]) {
-    console.log("Auto-loading sentences for:", results[0].ord);
+    console.log("Auto-loading sentences for:", results[0].word);
     const singleResult = results[0];
     // Exposed on window so scripts/capture-word-pages.py can await this
     // fire-and-forget auto-load directly instead of polling DOM attributes
@@ -2991,12 +3002,12 @@ function displaySearchResults(
     // than one code path inside fetchAndRenderSentences, not all of which
     // mean the sentences actually rendered).
     window.__lastSentencesLoadPromise = fetchAndRenderSentences(
-      singleResult.ord,
+      singleResult.word,
       singleResult.pos,
       isEnglishVisible
     );
   } else {
-    console.log("No sentences to load for:", results[0]?.ord || "No results");
+    console.log("No sentences to load for:", results[0]?.word || "No results");
   }
 }
 
@@ -3056,7 +3067,7 @@ function toggleEnglishTranslations(wordId = null) {
 // Function to find the gender of a word
 function getWordGender(word) {
   const matchingWord = results.find(
-    (result) => result.ord.toLowerCase() === word.toLowerCase()
+    (result) => result.word.toLowerCase() === word.toLowerCase()
   );
   return matchingWord ? matchingWord.gender : "unknown"; // Default to 'unknown' if not found
 }
@@ -3574,7 +3585,7 @@ function highlightQuery(sentence, query) {
 
   // Get part of speech (POS) for the query to pass into `generateWordVariationsForSentences`
   const matchingWordEntry = results.find((result) =>
-    result.ord.toLowerCase().includes(query)
+    result.word.toLowerCase().includes(query)
   );
   const pos = matchingWordEntry ? matchingWordEntry.gender.toLowerCase() : "";
 
@@ -3688,6 +3699,24 @@ function getWordClassForMetadata(pos = "") {
   return WordClass.getWordClass(pos);
 }
 
+// A definition link (the ?word= query param, a clicked definition/story
+// span, or a card click) must resolve the same entry however it names it:
+// by the entry's headword, any of its comma/読点-separated alternative
+// spellings, or its pronunciation. `normalizedWord` is expected already
+// trimmed/lowercased, matching every caller below.
+function entryMatchesWordLink(entry, normalizedWord) {
+  const ordForms = String(entry?.word || "")
+    .toLowerCase()
+    .split(/[,、]/)
+    .map((form) => form.trim());
+  if (ordForms.includes(normalizedWord)) return true;
+
+  const reading = String(entry?.pronunciation || "")
+    .toLowerCase()
+    .trim();
+  return Boolean(reading) && reading === normalizedWord;
+}
+
 // Ported from Norwegian's findWordEntryForMetadata() -- used by updateURL()
 // below so a card-click navigation (not just a direct renderWordDefinition
 // call) picks the right homograph's metadata when a word has more than one
@@ -3697,11 +3726,7 @@ function findWordEntryForMetadata(word, selectedPOS = "") {
   const normalizedSelectedPOS = WordClass.getWordClass(selectedPOS);
 
   const wordMatches = results.filter((entry) =>
-    String(entry.ord || "")
-      .toLowerCase()
-      .split(/[,、]/)
-      .map((form) => form.trim())
-      .includes(normalizedWord),
+    entryMatchesWordLink(entry, normalizedWord),
   );
 
   if (!normalizedSelectedPOS) {
@@ -3750,7 +3775,7 @@ function setWordCanonicalURL(url) {
 function updateWordMetadata(entry) {
   if (!entry) return;
 
-  const word = String(entry.ord || "")
+  const word = String(entry.word || "")
     .split(/[,、]/)[0]
     .trim();
 
@@ -3848,13 +3873,9 @@ function renderWordDefinition(word, selectedPOS = "") {
 
   const matchingResults = results
     .filter((entry) => {
-      // Some CSV entries contain comma/読点-separated spelling variants. A
-      // direct lookup for any individual form must find the full entry.
-      const wordMatch = String(entry.ord || "")
-        .toLowerCase()
-        .split(/[,、]/)
-        .map((form) => form.trim())
-        .includes(trimmedWord);
+      // A direct lookup by headword, alternative spelling, or pronunciation
+      // must all find the full entry -- see entryMatchesWordLink.
+      const wordMatch = entryMatchesWordLink(entry, trimmedWord);
 
       const posMatch = normalizedSelectedPOS
         ? WordClass.getWordClass(entry.gender) === normalizedSelectedPOS
@@ -3869,7 +3890,7 @@ function renderWordDefinition(word, selectedPOS = "") {
       // metadata. Keep all homographs visible; only put an exact primary
       // headword ahead of rows where the requested spelling is secondary.
       const isPrimary = (entry) =>
-        String(entry.ord || "")
+        String(entry.word || "")
           .split(/[,、]/)[0]
           .trim()
           .toLowerCase() === trimmedWord;
@@ -3907,13 +3928,13 @@ function getSentenceCefrLabelHTML(cefrLevel) {
 // double-counted as a supplemental match for this entry. Small dictionary,
 // so a direct scan over `results` is simpler than maintaining an index.
 function getHomographEntries(entry) {
-  const forms = String(entry?.ord || "")
+  const forms = String(entry?.word || "")
     .split(/[,、]/)
     .map((form) => form.trim().toLowerCase())
     .filter(Boolean);
   if (forms.length === 0) return [];
   return results.filter((candidate) =>
-    String(candidate?.ord || "")
+    String(candidate?.word || "")
       .split(/[,、]/)
       .map((form) => form.trim().toLowerCase())
       .some((form) => forms.includes(form)),
@@ -4057,7 +4078,7 @@ async function fetchAndRenderSentences(word, pos, showEnglish = true) {
 
   const matchingWordEntry = results.find(
     (result) =>
-      result.ord.toLowerCase() === trimmedWord &&
+      result.word.toLowerCase() === trimmedWord &&
       result.gender.toLowerCase().includes((pos || "").toLowerCase())
   );
   if (!matchingWordEntry) {
@@ -4078,7 +4099,7 @@ async function fetchAndRenderSentences(word, pos, showEnglish = true) {
   // (てくれる's example uses てくれて, not the bare citation form), so its
   // matcher has to come from ExpressionPatterns rather than the literal
   // headword split every other word class uses here.
-  const headwords = matchingWordEntry.ord
+  const headwords = matchingWordEntry.word
     .split(/[,、]/)
     .map((form) => form.trim())
     .filter(Boolean);
@@ -4180,12 +4201,12 @@ function prioritizeResults(results, query, key, pos) {
   // Define CEFR level order
   const CEFROrder = ["A1", "A2", "B1", "B2", "C"];
 
-  // Separate `direct examples` where both `ord` and `pos` match
+  // Separate `direct examples` where both `word` and `pos` match
   const directExamples = results.filter(
-    (r) => r.ord.toLowerCase() === query.toLowerCase() && r.pos === pos
+    (r) => r.word.toLowerCase() === query.toLowerCase() && r.pos === pos
   );
   const otherResults = results.filter(
-    (r) => r.ord.toLowerCase() !== query.toLowerCase() || r.pos !== pos
+    (r) => r.word.toLowerCase() !== query.toLowerCase() || r.pos !== pos
   );
 
   // Sort the other results with the usual criteria
@@ -4240,7 +4261,7 @@ function prioritizeResults(results, query, key, pos) {
   return [...directExamples, ...sortedOthers];
 }
 
-// A comma or ideographic-comma-separated ord ("あ、あっ") only ever has one
+// A comma or ideographic-comma-separated word ("あ、あっ") only ever has one
 // canonical spelling worth putting in the address bar -- the rest are
 // alternates the dictionary matches on but never displays as "the word".
 // Ported from Norwegian's getPrimaryWordForURL().
@@ -4544,7 +4565,7 @@ function loadStateFromURL() {
         const resolvedWord = queryWord
           ? word
           : resolveSlugToText(results, word, (entry) =>
-              String(entry.ord || "")
+              String(entry.word || "")
                 .split(/[,、]/)[0]
                 .trim(),
             );
@@ -4638,7 +4659,7 @@ function handleCardClick(event, word, pos, engelsk, definisjon) {
   // Filter results by word, POS (part of speech), and the English translation
   const clickedResult = results.filter((r) => {
     const wordMatch =
-      normalizeResultCardMatchValue(r.ord) === normalizeResultCardMatchValue(word);
+      normalizeResultCardMatchValue(r.word) === normalizeResultCardMatchValue(word);
     const genderMatch =
       normalizeResultCardMatchValue(r.gender) === normalizeResultCardMatchValue(pos);
     const engelskMatch =
@@ -4816,14 +4837,9 @@ document.addEventListener("click", (event) => {
       searchInput.value = "";
       clearInput();
 
-      // Find exact matches for the clicked word
-      const exactMatches = results.filter((r) =>
-        r.ord
-          .toLowerCase()
-          .split(/[,、]/)
-          .map((s) => s.trim())
-          .includes(word)
-      );
+      // Find exact matches for the clicked word (by headword, alternative
+      // spelling, or pronunciation -- see entryMatchesWordLink).
+      const exactMatches = results.filter((r) => entryMatchesWordLink(r, word));
 
       if (exactMatches.length === 1) {
         // Fully emulate the click-to-expand behavior for a single result

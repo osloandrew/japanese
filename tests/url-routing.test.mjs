@@ -124,7 +124,7 @@ function createRoutingContext(manifestWords = [], manifestStories = []) {
         .replace(/[^\p{L}\p{N}-]/gu, "")
         .replace(/-{2,}/g, "-")
         .replace(/^-+|-+$/g, ""),
-    findWordEntryForMetadata: (word) => ({ ord: word }),
+    findWordEntryForMetadata: (word) => ({ word: word }),
     updateWordMetadata: () => {},
     capitalizeType: (value) => value,
   });

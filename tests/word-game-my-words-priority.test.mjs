@@ -8,9 +8,9 @@ import { loadWordGamePolicy } from "./load-word-game-policy.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const source = fs.readFileSync(path.join(root, "wordGame.js"), "utf8");
 
-const savedDue = { ord: "saved due" };
-const savedNew = { ord: "saved new" };
-const ordinaryDue = { ord: "ordinary due" };
+const savedDue = { word: "saved due" };
+const savedNew = { word: "saved new" };
+const ordinaryDue = { word: "ordinary due" };
 const context = vm.createContext({ Math, Number, Set });
 context.window = context;
 loadWordGamePolicy(root, context);

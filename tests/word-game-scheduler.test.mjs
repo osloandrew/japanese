@@ -38,11 +38,11 @@ vm.runInContext(source.slice(start, end), context, {
   filename: "wordGame.js",
 });
 
-const relearning = { ord: "relearning" };
-const due = { ord: "due" };
-const fresh = { ord: "new" };
-const scheduled = { ord: "scheduled" };
-const approaching = { ord: "approaching" };
+const relearning = { word: "relearning" };
+const due = { word: "due" };
+const fresh = { word: "new" };
+const scheduled = { word: "scheduled" };
+const approaching = { word: "approaching" };
 
 queueByEntry.set(relearning, "relearning");
 queueByEntry.set(due, "due");

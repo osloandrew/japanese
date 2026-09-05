@@ -55,9 +55,13 @@
     return alternates;
   }
 
-  // headword -> its own dictionary entry, for every verb/adjective in the
-  // loaded word list. Rebuilt only when `results` itself changes (mirrors
-  // wordGame.js's getGameNounGendersByLemma caching).
+  // headword -> every verb/adjective dictionary entry spelled that way, for
+  // the loaded word list. Kept as an array per headword (not a single
+  // winner) because kanji headwords collide across readings -- 空く is both
+  // すく "get hungry" and あく "be vacant" -- and picking the wrong one
+  // would conjugate an expression's tail with the wrong reading's paradigm.
+  // Rebuilt only when `results` itself changes (mirrors wordGame.js's
+  // getGameNounGendersByLemma caching).
   let tailIndexSource = null;
   let tailIndexByHeadword = new Map();
 
@@ -69,8 +73,9 @@
     for (const entry of results) {
       const wordClass = String(entry?.gender ?? "").trim();
       if (wordClass !== "verb" && wordClass !== "adjective") continue;
-      for (const headword of splitVariants(entry.ord)) {
-        if (!nextIndex.has(headword)) nextIndex.set(headword, entry);
+      for (const headword of splitVariants(entry.word)) {
+        if (!nextIndex.has(headword)) nextIndex.set(headword, []);
+        nextIndex.get(headword).push(entry);
       }
     }
     tailIndexSource = results;
@@ -78,21 +83,44 @@
     return tailIndexByHeadword;
   }
 
+  // Among several dictionary entries that share a tail headword, prefer
+  // whichever one's own reading is actually the tail of the expression's
+  // declared reading -- お腹が空く (おなかが**すく**) must pick the "get
+  // hungry" すく entry, not the unrelated "be vacant" あく entry that
+  // happens to be spelled identically. Falls back to the first candidate
+  // (stable CSV order) when there's no reading to disambiguate with, same
+  // as before this distinction existed.
+  function pickTailCandidate(candidates, expressionReading) {
+    if (candidates.length === 1) return candidates[0];
+    const reading = String(expressionReading ?? "").trim();
+    if (reading) {
+      const byReading = candidates.find((candidate) => {
+        const tailReading = String(candidate.pronunciation ?? "").trim();
+        return tailReading && reading.endsWith(tailReading);
+      });
+      if (byReading) return byReading;
+    }
+    return candidates[0];
+  }
+
   // The longest dictionary verb/adjective headword that `variant` ends with
   // -- standing in for its inflecting component, e.g. くれる inside てくれる.
-  function findTailEntry(variant) {
+  function findTailEntry(variant, expressionReading) {
     let best = null;
-    for (const [headword, entry] of getTailIndex()) {
+    for (const [headword, candidates] of getTailIndex()) {
       if (headword.length >= variant.length) continue;
       if (!variant.endsWith(headword)) continue;
       if (!best || headword.length > best.headword.length) {
-        best = { headword, entry };
+        best = {
+          headword,
+          entry: pickTailCandidate(candidates, expressionReading),
+        };
       }
     }
     return best;
   }
 
-  async function buildSurfaceForms(baseVariants) {
+  async function buildSurfaceForms(baseVariants, expressionReading) {
     const forms = new Set();
     for (const variant of baseVariants) {
       forms.add(variant);
@@ -100,7 +128,7 @@
         forms.add(alternate);
       }
 
-      const tail = findTailEntry(variant);
+      const tail = findTailEntry(variant, expressionReading);
       if (!tail) continue;
       const prefix = variant.slice(0, variant.length - tail.headword.length);
       const tailForms = await window.Inflections?.getSentenceForms?.(
@@ -120,14 +148,14 @@
   const analysisCache = new Map();
 
   async function getAnalysis(entry) {
-    if (!entry?.ord) return null;
+    if (!entry?.word) return null;
     if (analysisCache.has(entry)) return analysisCache.get(entry);
 
     const analysisPromise = (async () => {
-      const baseVariants = splitVariants(entry.ord);
+      const baseVariants = splitVariants(entry.word);
       if (baseVariants.length === 0) return null;
 
-      const surfaceForms = await buildSurfaceForms(baseVariants);
+      const surfaceForms = await buildSurfaceForms(baseVariants, entry.pronunciation);
       if (surfaceForms.length === 0) return null;
 
       const guardSource = typeof results !== "undefined" ? results : [];
@@ -144,7 +172,59 @@
     return analysisPromise;
   }
 
+  // Builds the learner-facing "Word forms" table for an expression entry,
+  // reusing the same fixed-prefix + inflecting-tail model buildSurfaceForms
+  // uses for sentence matching -- but keeping each tail form's own label
+  // (Dictionary form, Past, Te-form, ...) instead of flattening them into a
+  // plain set of matchable strings. Falls back to a single "Fixed
+  // expression" row, mirroring Norwegian's uninflecting-expression
+  // fallback, when nothing in the dictionary conjugates the trailing edge.
+  function fixedExpressionForms(primaryVariant) {
+    return {
+      wordClass: "expression",
+      sourceType: "expression-fixed",
+      forms: [{ label: "Fixed expression", value: primaryVariant }],
+    };
+  }
+
+  async function buildFormsTable(entry) {
+    const baseVariants = splitVariants(entry.word);
+    const primaryVariant = baseVariants[0];
+    if (!primaryVariant) return null;
+
+    const tail = findTailEntry(primaryVariant, entry.pronunciation);
+    if (!tail) return fixedExpressionForms(primaryVariant);
+
+    const prefix = primaryVariant.slice(
+      0,
+      primaryVariant.length - tail.headword.length,
+    );
+    const tailForms = window.Inflections?.getForms?.(tail.entry);
+    if (!tailForms?.forms?.length) return fixedExpressionForms(primaryVariant);
+
+    return {
+      wordClass: "expression",
+      expressionHead: tail.entry.word,
+      isAuthoritative: tailForms.isAuthoritative,
+      sourceType:
+        tailForms.sourceType === "jmdict"
+          ? "expression-jmdict"
+          : "expression-estimated",
+      forms: tailForms.forms.map(({ label, value }) => ({
+        label,
+        value: value ? prefix + value : value,
+      })),
+    };
+  }
+
+  async function getForms(entry) {
+    if (!entry?.word) return null;
+    await window.Inflections?.preload?.();
+    return buildFormsTable(entry);
+  }
+
   window.ExpressionPatterns = Object.freeze({
     getAnalysis,
+    getForms,
   });
 })();
