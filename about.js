@@ -30,9 +30,9 @@
     card.innerHTML = `
       <p class="my-stats-danger-text">
         Japanese Dictionary is a free, browser-based tool for learning
-        Japanese — word and sentence search with audio, short stories at
-        every CEFR level, and a Word Game that adapts to your level as you
-        practice.
+        Japanese. It offers word and sentence search with audio, short
+        stories at every CEFR level, and a Word Game that adapts to your
+        level as you practice.
       </p>
       <p class="my-stats-danger-text">
         Found a word that's missing? A word search with no exact match
@@ -89,10 +89,7 @@
         Word definitions come from the
         <a href="https://bond-lab.github.io/wnja/" target="_blank" rel="noopener noreferrer">Japanese WordNet</a>
         (NICT, Francis Bond, and Takayuki Kuribayashi) and
-        <a href="https://ja.wiktionary.org/" target="_blank" rel="noopener noreferrer">Japanese Wiktionary</a>;
-        English glosses come from
-        <a href="https://www.edrdg.org/jmdict/j_jmdict.html" target="_blank" rel="noopener noreferrer">JMdict</a>,
-        property of the Electronic Dictionary Research and Development Group.
+        <a href="https://ja.wiktionary.org/" target="_blank" rel="noopener noreferrer">Japanese Wiktionary</a>.
       </p>
       <p class="my-stats-danger-text">
         Stories adapted from third-party work retain their source, author, and licence credit on the individual story.
