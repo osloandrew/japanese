@@ -349,12 +349,23 @@ def main() -> None:
     with CSV_PATH.open(encoding="utf-8-sig", newline="") as f:
         reader = csv.reader(f)
         header = next(reader)
-        rows = [row for row in reader if row and row[0].strip()]
+        raw_rows = list(reader)
 
     word_i = header.index("word")
     reading_i = header.index("pronunciation")
     gender_i = header.index("gender")
     definition_i = header.index("definition")
+
+    # Filtered on `word`, not `English` -- a real row's `word` is never
+    # blank, but its `English` gloss legitimately can be: this project
+    # stopped auto-generating English glosses (see the "Stop
+    # auto-generating English glosses" commit), so a newly-added word can
+    # sit with no English translation yet, pending a manual one. Filtering
+    # on English here used to silently drop every such row on the next
+    # regen -- not just fail the "up to date" CI check, but actually delete
+    # the word from japaneseWords.csv the moment anyone ran this script and
+    # committed the result.
+    rows = [row for row in raw_rows if row and len(row) > word_i and row[word_i].strip()]
 
     stats = {
         "definition_wnja": 0,
