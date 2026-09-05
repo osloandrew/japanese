@@ -503,10 +503,11 @@
   // is tagged gender "auxiliary", but its recipe says "verb", which is what
   // actually conjugates it correctly). Otherwise falls back to the
   // JMdict-derived snapshot, verb/adjective only, tried under `word`'s own
-  // key and, since a handful of entries with two accepted spellings
-  // ("いる、居る") were classified by build-inflections.py under the
-  // *unsplit* `ord` string instead (that script only splits on ",", not
-  // "、", unlike this file), under `fullOrdKey` too.
+  // key and, since build-inflections.py keys entries with two accepted
+  // spellings ("いる、居る") only by their primary spelling ("いる"), under
+  // that primary spelling (derived from `fullOrdKey` the same way it split
+  // there) too -- otherwise a secondary spelling like 居る would never find
+  // the shared recipe.
   function resolveConjugationRecipe(rawWordClass, word, fullOrdKey) {
     const override = AUXILIARY_CLASSIFICATIONS[word];
     if (override) return { ...override, source: "estimated" };
@@ -514,10 +515,11 @@
     if (rawWordClass !== "verb" && rawWordClass !== "adjective") return null;
     if (!snapshot?.classifications) return null;
     const prefix = rawWordClass[0];
+    const primaryWord = fullOrdKey ? fullOrdKey.split(/[,、]/)[0].trim() : "";
     const found =
       snapshot.classifications[`${prefix}:${word}`] ||
-      (fullOrdKey && fullOrdKey !== word
-        ? snapshot.classifications[`${prefix}:${fullOrdKey}`]
+      (primaryWord && primaryWord !== word
+        ? snapshot.classifications[`${prefix}:${primaryWord}`]
         : null);
     return found
       ? { wordClass: rawWordClass, class: found.class, source: found.source }
