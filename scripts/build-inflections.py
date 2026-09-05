@@ -73,6 +73,19 @@ def normalize_reading(value: str) -> str:
     return value.strip()
 
 
+# A CSV `word`/`pronunciation` field can list more than one accepted
+# spelling/reading, separated by either an ASCII "," or a full-width "、"
+# (e.g. "いい、良い、よい") -- inflections.js's own splitting (used to key
+# the classification lookup at runtime) treats both as separators, so
+# every split here must too. Splitting on "," alone leaves a "、"-joined
+# field as a single unmatched blob: neither a real JMdict headword lookup
+# nor the word-ending heuristics in estimate_class() below can make sense
+# of "いい、良い、よい" as one string, even though every individual spelling
+# in it is easy to classify on its own.
+def split_spellings(field: str) -> list[str]:
+    return [w.strip() for w in re.split(r"[,、]", field) if w.strip()]
+
+
 def load_jmdict(source: str | None) -> dict:
     if source:
         path = Path(source)
@@ -143,21 +156,32 @@ def build_jmdict_index(jmdict: dict) -> tuple[dict, dict]:
 
 
 def lookup_jmdict(by_kanji: dict, by_kana: dict, word_field: str, reading_field: str):
-    """Resolve one CSV entry's (possibly comma-separated) headword/reading
+    """Resolve one CSV entry's (possibly comma/、-separated) headword/reading
     against the JMdict index. Kanji matches are preferred over kana-only
     matches (more specific); ties are broken first by reading agreement,
     then by JMdict's own "common" flag -- without the common-flag
     tiebreak, an ordinary word can resolve to an obscure homograph that
     happens to sort first (e.g. plain kana "できる" also matches the rare
     verb 出切る before the intended, common 出来る -- see this script's
-    self-test)."""
-    forms = [w.strip() for w in word_field.split(",") if w.strip()]
-    readings = [w.strip() for w in reading_field.split(",") if w.strip()]
+    self-test).
 
-    def collect(index):
+    Only the *primary* spelling is searched first, and a secondary spelling
+    is consulted only if the primary one matches nothing on its own: our CSV
+    treats every accepted spelling of a row as the same word, but JMdict
+    doesn't always agree -- いい (kana-only, adj-ix) and 良い/よい (kanji,
+    adj-i) are genuinely separate JMdict entries, not kanji/kana variants of
+    one entry. Searching every spelling together up front let 良い's kanji
+    match outrank いい's own, correct one just because kanji beats kana --
+    wrong here, since いい is the row's actual headword. いる、居る has the
+    reverse shape (both spellings share one JMdict entry, or -- as here --
+    neither matches at all) and is unaffected either way."""
+    forms = split_spellings(word_field)
+    readings = split_spellings(reading_field)
+
+    def collect(index, candidate_forms):
         seen = set()
         result = []
-        for form in forms:
+        for form in candidate_forms:
             for candidate in index.get(form, []):
                 if candidate["id"] not in seen:
                     seen.add(candidate["id"])
@@ -179,13 +203,19 @@ def lookup_jmdict(by_kanji: dict, by_kana: dict, word_field: str, reading_field:
             pool = common_matched
         return pool[0]
 
-    kanji_candidates = collect(by_kanji)
-    if kanji_candidates:
-        return pick(kanji_candidates)
-    kana_candidates = collect(by_kana)
-    if kana_candidates:
-        return pick(kana_candidates)
-    return None
+    def resolve(candidate_forms):
+        kanji_candidates = collect(by_kanji, candidate_forms)
+        if kanji_candidates:
+            return pick(kanji_candidates)
+        kana_candidates = collect(by_kana, candidate_forms)
+        if kana_candidates:
+            return pick(kana_candidates)
+        return None
+
+    if not forms:
+        return None
+    primary_match = resolve(forms[:1])
+    return primary_match if primary_match else resolve(forms)
 
 
 def classify(gender: str, word_field: str, reading_field: str, entry) -> tuple[str, str]:
@@ -203,7 +233,8 @@ def classify(gender: str, word_field: str, reading_field: str, entry) -> tuple[s
                 if tag in pos:
                     return tag, "jmdict"
 
-    return estimate_class(gender, word_field.split(",")[0].strip()), "estimated"
+    forms = split_spellings(word_field)
+    return estimate_class(gender, forms[0] if forms else ""), "estimated"
 
 
 # Verbs ending in る whose 「い段/え段 + る」 shape is genuinely ambiguous
@@ -309,12 +340,13 @@ def main() -> None:
             if entry is None:
                 mismatched_data.append((word_field, reading_field, gender))
 
-        # inflections.js's classificationKey splits `ord` on both "," and
+        # inflections.js's classificationKey splits `word` on both "," and
         # the Japanese "、" to find the primary spelling; matching that here
         # (not just ",") matters for entries like "いる、居る" -- splitting
         # on "," alone leaves the whole string as one "primary_word", so the
         # runtime's lookup for "いる" alone never finds this key at all.
-        primary_word = re.split(r"[,、]", word_field)[0].strip()
+        forms = split_spellings(word_field)
+        primary_word = forms[0] if forms else ""
         key = f"{gender[0]}:{primary_word}"
         classifications[key] = {"class": cls, "source": source_type}
 
