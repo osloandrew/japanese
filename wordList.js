@@ -131,7 +131,25 @@
     return cell;
   }
 
+  // The CSV's `id` column is a stable, content-independent token generated
+  // once per row and never recomputed from other fields. Using it — rather
+  // than a hash of mutable fields — means editing a word's definition,
+  // translation, reading, or class can never change the key a saved
+  // word/strength record is stored under. Falls back to the legacy content
+  // hash only for an entry that somehow has no id (shouldn't happen once
+  // every CSV row has one).
   function getMyWordsEntryId(entry) {
+    const id = String(entry?.id ?? "").trim();
+    return id || getLegacyMyWordsEntryId(entry);
+  }
+
+  // Pre-migration key: a hash of mutable fields, including the definition —
+  // which CI regenerates from source dictionaries whenever the CSV changes
+  // (see scripts/build-definitions.py), so this silently orphaned any word
+  // saved before its definition was next regenerated. Kept only so
+  // migrateMyWordsEntryIds() below can recognize and remap ids computed
+  // this way before the `id` column existed.
+  function getLegacyMyWordsEntryId(entry) {
     return [
       entry.ord,
       entry.engelsk,
@@ -144,6 +162,14 @@
           .normalize("NFC"),
       )
       .join("\u001f");
+  }
+
+  // A legacy id joins 4 fields on U+001F, so it always contains that
+  // separator; a stable `id` column value (a short random hex token) never
+  // does. Cheap, reliable way to tell old-format keys apart from
+  // already-migrated ones.
+  function isLegacyMyWordsEntryId(id) {
+    return typeof id === "string" && id.includes("\u001f");
   }
 
   function loadMyWordsState() {
@@ -305,6 +331,122 @@
       entryIds: Array.from(myWordsEntryIds),
       entryTimestamps: myWordsEntryTimestamps,
     };
+  }
+
+  // One-time move of any My Words/word-strength records still keyed by the
+  // pre-`id`-column legacy hash onto the entry's stable id, dropping any
+  // that no longer match a word in the current dictionary at all (a word
+  // that was already orphaned under the old scheme — nothing legitimate to
+  // recover). Idempotent and cheap to call unconditionally: after the first
+  // run on a given browser/account, no stored id is legacy-shaped any more,
+  // so every later call is a same-tick no-op. Must run after `results` is
+  // populated and before anything else reads myWordsEntryIds/wordStrengths
+  // against it — see the call in scripts.js's parseCSVData.
+  function migrateMyWordsEntryIds() {
+    if (!Array.isArray(results) || results.length === 0) {
+      return;
+    }
+
+    const legacyIds = new Set();
+    myWordsEntryIds.forEach((id) => {
+      if (isLegacyMyWordsEntryId(id)) legacyIds.add(id);
+    });
+    Object.keys(myWordsEntryTimestamps).forEach((id) => {
+      if (isLegacyMyWordsEntryId(id)) legacyIds.add(id);
+    });
+    Object.keys(wordStrengths).forEach((id) => {
+      if (isLegacyMyWordsEntryId(id)) legacyIds.add(id);
+    });
+
+    if (legacyIds.size === 0) {
+      return;
+    }
+
+    const entriesByLegacyId = new Map(
+      results.map((entry) => [getLegacyMyWordsEntryId(entry), entry]),
+    );
+
+    const now = Date.now();
+    const touchedEntryIds = [];
+    const touchedStrengthIds = [];
+    let migratedCount = 0;
+    let orphanedCount = 0;
+
+    legacyIds.forEach((legacyId) => {
+      const matchedEntry = entriesByLegacyId.get(legacyId);
+      const newId = matchedEntry ? getMyWordsEntryId(matchedEntry) : null;
+
+      if (newId) {
+        migratedCount++;
+      } else {
+        orphanedCount++;
+      }
+
+      const wasSaved = myWordsEntryIds.has(legacyId);
+      const legacyTimestamp = myWordsEntryTimestamps[legacyId];
+
+      if (wasSaved || legacyTimestamp !== undefined) {
+        myWordsEntryIds.delete(legacyId);
+        // Tombstone the legacy id at "now" so a signed-in account's remote
+        // copy — still keyed by that id — is told unambiguously that it
+        // was removed. Without this, the next sign-in merge would just add
+        // it right back under an id nothing here recognizes any more (see
+        // getMergedMyWordsState: a key local doesn't know about at all
+        // defers entirely to remote).
+        myWordsEntryTimestamps[legacyId] = now;
+        touchedEntryIds.push(legacyId);
+
+        if (newId && wasSaved) {
+          const carriedTimestamp = Number.isFinite(legacyTimestamp)
+            ? legacyTimestamp
+            : now;
+          const existingTimestamp = myWordsEntryTimestamps[newId];
+
+          if (
+            !Number.isFinite(existingTimestamp) ||
+            carriedTimestamp > existingTimestamp
+          ) {
+            myWordsEntryIds.add(newId);
+            myWordsEntryTimestamps[newId] = carriedTimestamp;
+            touchedEntryIds.push(newId);
+          }
+        }
+      }
+
+      if (Object.prototype.hasOwnProperty.call(wordStrengths, legacyId)) {
+        if (newId) {
+          wordStrengths[newId] = wordStrengths[newId]
+            ? window.SpacedRepetition.mergeRecordValues(
+                wordStrengths[newId],
+                wordStrengths[legacyId],
+              )
+            : wordStrengths[legacyId];
+          touchedStrengthIds.push(newId);
+        }
+
+        delete wordStrengths[legacyId];
+        touchedStrengthIds.push(legacyId);
+      }
+    });
+
+    if (touchedEntryIds.length > 0) {
+      saveMyWordsEntryIds({ changedEntryIds: touchedEntryIds });
+    }
+
+    if (touchedStrengthIds.length > 0) {
+      saveWordStrengths({ changedEntryIds: touchedStrengthIds });
+    }
+
+    if (getCurrentMode() === "word-list") {
+      renderWordList();
+    }
+
+    console.info(
+      `My Words: moved ${migratedCount} saved word(s)/review record(s) to stable ids` +
+        (orphanedCount > 0
+          ? `; ${orphanedCount} no longer matched a word in the dictionary and were removed.`
+          : "."),
+    );
   }
 
   function loadWordStrengths() {
@@ -2092,6 +2234,7 @@
     getEntryIds: () => Array.from(myWordsEntryIds),
     getEntryTimestamps: () => ({ ...myWordsEntryTimestamps }),
     reconcileEntryIds: reconcileMyWordsEntryIds,
+    migrateEntryIds: migrateMyWordsEntryIds,
   });
   window.WordStrengthAPI = Object.freeze({
     STORAGE_KEY: WORD_STRENGTH_STORAGE_KEY,

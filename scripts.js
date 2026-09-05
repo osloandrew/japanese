@@ -187,6 +187,7 @@ const SCHEMA_MAP = {
   sentenceAudio: "sentenceAudio",
   sentenceTranslation: "sentenceTranslation",
   transliteration: "transliteration", // optional extra; stored for future use
+  id: "id",
 };
 
 // Function to show or hide the landing card
@@ -419,6 +420,7 @@ function parseCSVData(data) {
           wordAudio: get("wordAudio"),
           sentenceAudio: get("sentenceAudio"),
           region: get("region"),
+          id: get("id"),
         };
 
         // Defensive trims
@@ -426,6 +428,12 @@ function parseCSVData(data) {
 
         return entry;
       });
+      // One-time move of any My Words/word-strength records still keyed by
+      // the old content-derived id onto each entry's stable `id` column —
+      // see migrateMyWordsEntryIds in wordList.js. Must run before anything
+      // else reads myWordsEntryIds/wordStrengths against the freshly loaded
+      // `results`.
+      window.MyWordsAPI?.migrateEntryIds?.();
       buildSentenceCorpus();
       buildSentenceIndex();
       console.log("Parsed and cleaned data:", results);
@@ -1070,15 +1078,8 @@ async function resolveWordSearchQuery(originalQuery) {
   // inflection never enters the result set at all, headword or not. A
   // lemma equal to the query itself is excluded: that's just the query,
   // not a distinct inflection match worth surfacing separately.
-  const lemmaKeys = (await window.Inflections?.findLemmas(query, results)) || [];
-  const officialLemmas = Array.from(
-    new Set(
-      lemmaKeys.map((key) => {
-        const separator = String(key).indexOf(":");
-        return separator < 0 ? "" : key.slice(separator + 1);
-      }),
-    ),
-  ).filter(
+  const resolution = await window.Inflections?.findLemmas(query, results);
+  const officialLemmas = (resolution?.lemmas || []).filter(
     (lemma) =>
       lemma &&
       lemma !== query &&
@@ -1206,7 +1207,27 @@ async function search(queryOverride = null, options = {}) {
     }
 
     console.time("[Sentences] query");
-    const terms = normalize(query).split(/\s+/).filter(Boolean);
+    const normalizedQuery = normalize(query);
+    const terms = normalizedQuery.split(/\s+/).filter(Boolean);
+
+    // A query that's exactly an expression's own citation form (てくれる,
+    // について) needs its inflected occurrences (てくれた, てくれます) found
+    // too -- the plain substring scan below only ever finds the literal,
+    // unconjugated spelling. Only checked against the whole query, same as
+    // the exact-phrase check below, not per term: a multi-term query isn't
+    // how anyone searches for one of these.
+    const expressionEntry =
+      typeof getExpressionEntries === "function"
+        ? getExpressionEntries().find((entry) =>
+            String(entry.ord || "")
+              .split(/[,、]/)
+              .some((variant) => normalize(variant) === normalizedQuery),
+          )
+        : null;
+    const expressionMatcher = expressionEntry
+      ? (await window.ExpressionPatterns?.getAnalysis(expressionEntry))
+          ?.matcher
+      : null;
 
     let ids = null;
     for (const t of terms) {
@@ -1222,9 +1243,19 @@ async function search(queryOverride = null, options = {}) {
       // searches on the fast token index while making kanji, hiragana, and
       // katakana searches behave as learners expect.
       if (asArray.length === 0) {
-        asArray = sentenceCorpus
-          .filter((row) => row.noNorm.includes(t) || row.enNorm.includes(t))
-          .map((row) => row.id);
+        const substringIds = new Set(
+          sentenceCorpus
+            .filter((row) => row.noNorm.includes(t) || row.enNorm.includes(t))
+            .map((row) => row.id),
+        );
+        if (expressionMatcher && t === normalizedQuery) {
+          for (const row of sentenceCorpus) {
+            if (!substringIds.has(row.id) && expressionMatcher.test(row.no)) {
+              substringIds.add(row.id);
+            }
+          }
+        }
+        asArray = [...substringIds];
       }
       ids =
         ids === null
@@ -1254,8 +1285,14 @@ async function search(queryOverride = null, options = {}) {
     const partial = [];
     for (const r of rowsFiltered) {
       const inOrder =
-        r.noNorm.includes(normalize(query)) ||
-        r.enNorm.includes(normalize(query));
+        r.noNorm.includes(normalizedQuery) ||
+        r.enNorm.includes(normalizedQuery) ||
+        // An inflected occurrence (てくれます) doesn't literally contain the
+        // citation form the query matched on, but it's exactly what the
+        // learner searched for -- rank it with the literal matches, not
+        // dropped into "partial" (whose own all-terms check would also miss
+        // it) or lost entirely.
+        Boolean(expressionMatcher?.test(r.no));
       if (inOrder) {
         exact.push(r);
       } else {
@@ -1289,7 +1326,14 @@ async function search(queryOverride = null, options = {}) {
       combined = sortByCEFR(partial);
     }
 
-    renderSentenceMatchesFromCorpus(combined, query, terms, {
+    // The plain query term can't highlight an inflected occurrence
+    // (てくれます) on its own -- add the expression matcher's own full
+    // conjugated form list alongside it so those results get marked too.
+    const highlightTerms = expressionMatcher?.forms?.length
+      ? [...terms, ...expressionMatcher.forms]
+      : terms;
+
+    renderSentenceMatchesFromCorpus(combined, query, highlightTerms, {
       sentenceResultSubtitle,
     });
 
@@ -1945,7 +1989,7 @@ function updateLandingProofLine() {
     if (typeof storyResults === "undefined" || storyResults.length === 0) {
       return false;
     }
-    el.innerHTML = `${results.length.toLocaleString("en-US")} dictionary entries <span aria-hidden="true">·</span> ${storyResults.length.toLocaleString("en-US")} stories <span aria-hidden="true">·</span> Free to use`;
+    el.innerHTML = `10,000+ dictionary entries <span aria-hidden="true">·</span> ${storyResults.length.toLocaleString("en-US")} stories <span aria-hidden="true">·</span> Free to use`;
     return true;
   };
 
@@ -2452,6 +2496,94 @@ async function upgradeDefinitionClickableWords(container, defText) {
   }
 }
 
+// A component word's literal citation spelling is all makeDefinitionClickable
+// above links -- an inflected multi-word expression ("てくれます", inflected
+// from てくれる) isn't a headword itself, so segmenting it word-by-word either
+// links nothing or, worse, a same-spelling unrelated entry. stories.js's
+// findExpressionMatchesInSentence/getExpressionEntries already solve exactly
+// this (reused here rather than re-deriving that grammar -- same cross-file
+// reuse Norwegian's own upgradeDefinitionExpressionSpans has). Runs after the
+// initial synchronous render since resolving an expression's forms depends on
+// data that isn't guaranteed loaded yet, so it can't block the definition's
+// first paint.
+//
+// Unlike Norwegian's mergeDefinitionExpressionSpan (a DOM patch, safe there
+// because whitespace tokenization guarantees a node boundary at every
+// match's edge), Japanese's word spans have no such guarantee -- an
+// expression's start/end can fall mid-lemma-span or mid unsegmented run
+// (see stories.js's renderStorySentenceHTML for the full reasoning). This
+// re-renders from raw offsets instead, merging expression spans into the
+// same span shape renderSegmentedText already expects (a citation form as
+// `lemma`) rather than a new render path -- unlike a story span, a
+// definition span needs no separate registry: data-word set to the
+// expression's own citation form is all the existing exact-match click
+// handler needs to find it.
+function mergeExpressionSpansForDefinition(wordSpans, expressionSpans) {
+  const nonOverlappingWordSpans = wordSpans.filter(
+    (wordSpan) =>
+      !expressionSpans.some(
+        (exprSpan) =>
+          wordSpan.start < exprSpan.end && wordSpan.end > exprSpan.start,
+      ),
+  );
+  const expressionSpansAsWords = expressionSpans.map((span) => ({
+    start: span.start,
+    end: span.end,
+    text: span.matchedText,
+    lemma: String(span.entry.ord || "")
+      .split(/[,、]/)[0]
+      .trim(),
+  }));
+  return [...nonOverlappingWordSpans, ...expressionSpansAsWords].sort(
+    (a, b) => a.start - b.start,
+  );
+}
+
+async function upgradeDefinitionExpressionSpans(container, defText) {
+  if (!defText || typeof findExpressionMatchesInSentence !== "function") return;
+
+  if (defText.includes(";")) {
+    const items = defText
+      .split(";")
+      .map((item) => item.trim())
+      .filter(Boolean);
+    const itemExpressionSpans = await Promise.all(
+      items.map((item) => findExpressionMatchesInSentence(item)),
+    );
+    if (!itemExpressionSpans.some((spans) => spans.length > 0)) return;
+
+    const itemWordSpans = await Promise.all(
+      items.map((item) => window.Inflections.segmentTextAsync(item, results)),
+    );
+    if (!container.isConnected) return;
+    container.innerHTML =
+      `<ul class="definition-list">` +
+      items
+        .map(
+          (item, index) =>
+            `<li>${renderSegmentedText(
+              item,
+              mergeExpressionSpansForDefinition(
+                itemWordSpans[index],
+                itemExpressionSpans[index],
+              ),
+            )}</li>`,
+        )
+        .join("") +
+      `</ul>`;
+  } else {
+    const expressionSpans = await findExpressionMatchesInSentence(defText);
+    if (expressionSpans.length === 0) return;
+
+    const wordSpans = await window.Inflections.segmentTextAsync(defText, results);
+    if (!container.isConnected) return;
+    container.innerHTML = renderSegmentedText(
+      defText,
+      mergeExpressionSpansForDefinition(wordSpans, expressionSpans),
+    );
+  }
+}
+
 // Above this length, a single-word card's definition gets clamped to a few
 // lines with an "Expand definition" toggle rather than shown in full.
 // Ported verbatim from Norwegian (character count, not word/token count --
@@ -2824,12 +2956,13 @@ function displaySearchResults(
   if (defaultResult && results[0]?.definisjon) {
     const definitionEl = resultsContainer.querySelector(".definition-text");
     if (definitionEl) {
-      upgradeDefinitionClickableWords(
-        definitionEl,
-        results[0].definisjon,
-      ).catch((error) => {
-        console.error("Could not resolve known words in definition.", error);
-      });
+      upgradeDefinitionClickableWords(definitionEl, results[0].definisjon)
+        .then(() =>
+          upgradeDefinitionExpressionSpans(definitionEl, results[0].definisjon),
+        )
+        .catch((error) => {
+          console.error("Could not resolve known words in definition.", error);
+        });
     }
   }
 
@@ -3934,15 +4067,27 @@ async function fetchAndRenderSentences(word, pos, showEnglish = true) {
 
   sentenceContainer.innerHTML = ""; // Clear previous sentences
 
+  const isExpression =
+    WordClass.getWordClass(matchingWordEntry.gender) === "expression";
+
   // Every dictionary entry already carries its own example in the main CSV.
   // Render that immediately instead of holding it behind the word-forms
   // lookup needed only for supplemental examples, so a cold or slow
-  // connection still shows useful content right away.
+  // connection still shows useful content right away. An expression's own
+  // example almost always shows its inflecting tail already conjugated
+  // (てくれる's example uses てくれて, not the bare citation form), so its
+  // matcher has to come from ExpressionPatterns rather than the literal
+  // headword split every other word class uses here.
   const headwords = matchingWordEntry.ord
     .split(/[,、]/)
     .map((form) => form.trim())
     .filter(Boolean);
-  const citationMatcher = window.SentenceFormMatching.createMatcher(headwords);
+  const expressionAnalysis = isExpression
+    ? await window.ExpressionPatterns?.getAnalysis(matchingWordEntry)
+    : null;
+  const citationMatcher =
+    expressionAnalysis?.matcher ||
+    window.SentenceFormMatching.createMatcher(headwords);
   const { primary: immediatePrimaryResults } =
     window.SentenceFormMatching.collectExamples(
       matchingWordEntry,
@@ -3962,21 +4107,22 @@ async function fetchAndRenderSentences(word, pos, showEnglish = true) {
   sentenceContainer.setAttribute("data-supplemental-loading", "true");
 
   const homographEntries = getHomographEntries(matchingWordEntry);
-  const sentenceForms = await window.Inflections.getSupplementalSentenceForms(
-    matchingWordEntry,
-    homographEntries,
-  );
-  const primaryHighlightForms =
-    await window.Inflections.getSentenceForms(matchingWordEntry);
+  const sentenceForms = isExpression
+    ? []
+    : await window.Inflections.getSupplementalSentenceForms(
+        matchingWordEntry,
+        homographEntries,
+      );
+  const primaryHighlightForms = isExpression
+    ? []
+    : await window.Inflections.getSentenceForms(matchingWordEntry);
   if (!sentenceContainer.isConnected) return;
-  const formMatcher = window.SentenceFormMatching.createMatcher(
-    sentenceForms,
-    results,
-  );
-  const primaryHighlightMatcher = window.SentenceFormMatching.createMatcher(
-    primaryHighlightForms,
-    results,
-  );
+  const formMatcher =
+    expressionAnalysis?.matcher ||
+    window.SentenceFormMatching.createMatcher(sentenceForms, results);
+  const primaryHighlightMatcher =
+    expressionAnalysis?.matcher ||
+    window.SentenceFormMatching.createMatcher(primaryHighlightForms, results);
   const { primary: primaryResults, supplemental: supplementalResults } =
     window.SentenceFormMatching.collectExamples(
       matchingWordEntry,

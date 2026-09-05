@@ -3306,11 +3306,7 @@ function getClozeSynonymForms(wordObj, clozeTarget) {
       }, null);
 
       for (const form of compatibleForms || []) {
-        acceptedAnswers.add(
-          clozeTarget.nounCase === "genitive"
-            ? createNounGenitiveForm(form)
-            : form,
-        );
+        acceptedAnswers.add(form);
       }
     }
   }
@@ -3318,29 +3314,50 @@ function getClozeSynonymForms(wordObj, clozeTarget) {
   return [...acceptedAnswers];
 }
 
+// Indexed to match getParadigmForLemma's own slot order for each word class
+// (inflections.js:getParadigmForLemma), which in turn mirrors the row order
+// of that file's verbFormsTable/iAdjectiveFormsTable -- so a slot index
+// always names the same form here as it does in the learner-facing Word
+// Forms table. A noun has exactly one slot: Japanese nouns do not inflect.
 const MORPHOLOGY_SLOT_LABELS = Object.freeze({
-  noun: Object.freeze([
-    "indefinite singular",
-    "definite singular",
-    "indefinite plural",
-    "definite plural",
-  ]),
+  noun: Object.freeze(["the dictionary form"]),
   adjective: Object.freeze([
-    "masculine form",
-    "feminine form",
-    "neuter form",
-    "definite singular",
-    "plural",
-    "comparative",
-    "superlative",
-    "definite superlative",
+    "the dictionary form",
+    "the negative form",
+    "the polite negative form",
+    "the past form",
+    "the polite past form",
+    "the past negative form",
+    "the polite past negative form",
+    "the te-form",
+    "the adverbial form",
+    "the conditional form (ば)",
   ]),
   verb: Object.freeze([
-    "the infinitive",
-    "present tense",
-    "past tense",
-    "the present-perfect participle",
-    "the imperative",
+    "the dictionary form",
+    "the polite form (ます)",
+    "the negative form",
+    "the polite negative form (ません)",
+    "the past form",
+    "the polite past form (ました)",
+    "the past negative form",
+    "the polite past negative form (ませんでした)",
+    "the te-form",
+    "the negative te-form (ないで)",
+    "the たい form",
+    "the negative たい form (たくない)",
+    "the volitional form",
+    "the polite volitional form (ましょう)",
+    "the conditional form (ば)",
+    "the imperative form",
+    "the potential form",
+    "the potential te-form",
+    "the passive form",
+    "the passive te-form",
+    "the causative form",
+    "the causative te-form",
+    "the causative-passive form",
+    "the causative-passive te-form",
   ]),
 });
 
@@ -3369,18 +3386,14 @@ function getTypedMorphologyCandidateEntries(
   );
 }
 
-function getMorphologyRequiredForms(paradigm, slotIndexes, clozeTarget) {
+function getMorphologyRequiredForms(paradigm, slotIndexes) {
   const forms = slotIndexes.reduce((accepted, slotIndex) => {
     const slotForms = paradigm.slots[slotIndex] || [];
     if (accepted === null) return [...slotForms];
     const currentSlot = new Set(slotForms);
     return accepted.filter((form) => currentSlot.has(form));
   }, null);
-  return (forms || []).map((form) =>
-    clozeTarget?.nounCase === "genitive"
-      ? createNounGenitiveForm(form)
-      : form,
-  );
+  return forms || [];
 }
 
 async function classifyTypedMorphologyNearMiss(
@@ -3413,18 +3426,15 @@ async function classifyTypedMorphologyNearMiss(
     const wordClass = isCloze
       ? clozeTarget.wordClass
       : WordClass.getWordClass(candidate?.gender);
-    // A predicate adjective's clozeTarget.slotIndexes stays the full
-    // ambiguous set (e.g. masc/fem/neuter) the source word's own spelling
-    // fits — intersecting a synonym's forms across all of them comes back
-    // empty whenever that synonym's forms actually differ per slot, even
-    // though the caller may already know the one true slot (see
-    // resolvedPredicateAdjectiveSlot, set by attachTypedAnswerForm after
-    // getPredicateAdjectiveAgreementSlot resolves it).
+    // clozeTarget.slotIndexes can include more than one paradigm slot when
+    // an adjective's conjugated forms happen to be spelled identically
+    // across those slots (getParadigmSlotsForLemma matches by exact
+    // surface-form string, not by which conjugation the sentence actually
+    // intends) -- intersecting a synonym's forms across every one of those
+    // slots comes back empty whenever that synonym's own forms actually
+    // differ per slot.
     const requiredSlots = isCloze
-      ? wordClass === "adjective" &&
-        Number.isInteger(clozeTarget?.resolvedPredicateAdjectiveSlot)
-        ? [clozeTarget.resolvedPredicateAdjectiveSlot]
-        : [...new Set(clozeTarget?.slotIndexes || [])].filter(Number.isInteger)
+      ? [...new Set(clozeTarget?.slotIndexes || [])].filter(Number.isInteger)
       : [0];
     if (requiredSlots.length === 0) continue;
 
@@ -3446,11 +3456,7 @@ async function classifyTypedMorphologyNearMiss(
       ) {
         continue;
       }
-      const requiredForms = getMorphologyRequiredForms(
-        paradigm,
-        requiredSlots,
-        clozeTarget,
-      );
+      const requiredForms = getMorphologyRequiredForms(paradigm, requiredSlots);
       if (requiredForms.length === 0) continue;
       analyses.push({
         lemma: parts[0],
@@ -3578,178 +3584,6 @@ function getTypedAcceptedAnswers(
   return [...acceptedAnswers];
 }
 
-// Most adjective agreement is resolved while the cloze target is found (by
-// an article or following noun). Predicate adjectives are the exception:
-// "Været her er uforutsigelig" has neither beside the adjective, and the
-// source form is identical in several slots. Do not run a parser for every
-// question; this is a typed-answer fallback for a same-sense form that the
-// normal conservative intersection rejected.
-const PREDICATE_ADJECTIVE_LINKING_VERBS = new Set([
-  "er",
-  "var",
-  "blir",
-  "ble",
-  "virker",
-  "virket",
-  "føles",
-  "føltes",
-]);
-const PREDICATE_SUBJECT_PRONOUN_SLOTS = new Map([
-  ["det", 2],
-  ["dette", 2],
-  ["alt", 2],
-  ["de", 4],
-]);
-
-async function getPredicateSubjectAgreementSlot(surface) {
-  const normalizedSurface = normalizeGameAnswer(surface);
-  const pronounSlot = PREDICATE_SUBJECT_PRONOUN_SLOTS.get(normalizedSurface);
-  if (Number.isInteger(pronounSlot)) return pronounSlot;
-  if (typeof window.Inflections?.findLemmas !== "function") return null;
-
-  const resolution = await window.Inflections.findLemmas(surface, "noun");
-  if (resolution?.matchType !== "exact") return null;
-  const nounLemmas = new Set(
-    (resolution.matches || [])
-      .filter(({ wordClass }) => wordClass === "noun")
-      .map(({ lemma }) => normalizeGameAnswer(lemma)),
-  );
-  if (nounLemmas.size !== 1 || typeof results === "undefined") return null;
-
-  const [nounLemma] = nounLemmas;
-  const slots = new Set();
-  for (const entry of results) {
-    if (
-      WordClass.getWordClass(entry?.gender) !== "noun" ||
-      !getJapaneseEntryVariants(entry).some(
-        (form) => nounLemmas.has(normalizeGameAnswer(form)),
-      )
-    ) {
-      continue;
-    }
-    // A noun's dictionary gender only tells us its singular agreement
-    // (slot 0/1/2). A plural subject ("husene") takes plural predicate
-    // agreement (slot 4) regardless of gender, so check the noun's own
-    // paradigm for whether the surface form is actually a plural one
-    // before falling back to the gender-derived singular slots.
-    const nounParadigm = window.Inflections?.getParadigmForLemma?.(
-      nounLemma,
-      "noun",
-      entry.gender,
-    );
-    const isPluralOnly =
-      [2, 3].some((slot) =>
-        (nounParadigm?.slots?.[slot] || []).includes(normalizedSurface),
-      ) &&
-      ![0, 1].some((slot) =>
-        (nounParadigm?.slots?.[slot] || []).includes(normalizedSurface),
-      );
-    if (isPluralOnly) {
-      slots.add(4);
-    } else {
-      getAdjectiveAgreementSlotsFromNounGender(entry.gender).forEach((slot) =>
-        slots.add(slot),
-      );
-    }
-  }
-  return slots.size === 1 ? [...slots][0] : null;
-}
-
-async function getPredicateAdjectiveAgreementSlot(clozeTarget) {
-  if (
-    clozeTarget?.kind !== "lexical" ||
-    clozeTarget.wordClass !== "adjective" ||
-    new Set(clozeTarget.slotIndexes || []).size < 2
-  ) {
-    return null;
-  }
-
-  const tokens = getIndexedClozeTokens(clozeTarget.sentence);
-  const adjectiveIndex = tokens.findIndex(
-    (token) => token.start === clozeTarget.startIndex,
-  );
-  if (adjectiveIndex < 0) return null;
-  let verbIndex = -1;
-  for (
-    let index = adjectiveIndex - 1;
-    index >= 0 && adjectiveIndex - index <= 5;
-    index--
-  ) {
-    if (PREDICATE_ADJECTIVE_LINKING_VERBS.has(normalizeGameAnswer(tokens[index].text))) {
-      verbIndex = index;
-      break;
-    }
-  }
-  if (verbIndex < 0) return null;
-
-  // Inversion puts the subject after the verb ("I dag er været ..."); the
-  // usual order puts it before ("Været her er ..."). Try only nearby noun
-  // or pronoun candidates and require one unambiguous agreement result.
-  const candidateIndexes = [
-    ...Array.from(
-      { length: adjectiveIndex - verbIndex - 1 },
-      (_, offset) => verbIndex + 1 + offset,
-    ),
-    ...Array.from(
-      { length: Math.min(4, verbIndex) },
-      (_, offset) => verbIndex - 1 - offset,
-    ),
-  ];
-  for (const index of candidateIndexes) {
-    const slot = await getPredicateSubjectAgreementSlot(tokens[index]?.text);
-    if (Number.isInteger(slot)) return slot;
-  }
-  return null;
-}
-
-async function getContextualPredicateAdjectiveSynonymForms(
-  wordObj,
-  clozeTarget,
-  selectedAnswer,
-) {
-  const selected = normalizeGameAnswer(selectedAnswer);
-  if (!selected) return [];
-  // Cheap eligibility check first: this fallback only ever applies to a
-  // predicate adjective with an ambiguous slot set, so skip the full
-  // dictionary scan below for every other rejected typed-cloze answer.
-  if (
-    clozeTarget?.kind !== "lexical" ||
-    clozeTarget.wordClass !== "adjective" ||
-    new Set(clozeTarget.slotIndexes || []).size < 2
-  ) {
-    return [];
-  }
-  const targetEnglish = normalizeGameAnswer(getDisplayedAnswer(wordObj?.engelsk));
-  if (!targetEnglish || typeof results === "undefined") return [];
-
-  // Avoid building a reverse index unless the submitted text is actually an
-  // adjective synonym form in one of the source's ambiguous slots.
-  const possibleCandidates = [];
-  for (const candidate of results) {
-    if (
-      WordClass.getWordClass(candidate?.gender) !== "adjective" ||
-      !getEnglishEntryVariants(candidate).includes(targetEnglish)
-    ) {
-      continue;
-    }
-    for (const variant of getJapaneseEntryVariants(candidate)) {
-      const parts = getClozePatternTokens(normalizeGameAnswer(variant));
-      if (parts.length !== 1 || parts[0] === "...") continue;
-      const paradigm = window.Inflections?.getParadigmForLemma?.(parts[0], "adjective");
-      if (paradigm?.slots.some((forms) => forms.includes(selected))) {
-        possibleCandidates.push(paradigm);
-      }
-    }
-  }
-  if (possibleCandidates.length === 0) return [];
-
-  const slot = await getPredicateAdjectiveAgreementSlot(clozeTarget);
-  if (!Number.isInteger(slot) || !clozeTarget.slotIndexes.includes(slot)) {
-    return [];
-  }
-  return [...new Set(possibleCandidates.flatMap((paradigm) => paradigm.slots[slot] || []))];
-}
-
 function getGameSentenceTranslations(wordObj) {
   // sentenceTranslation always holds exactly one sentence.
   const translation = normalizeGameWhitespace(
@@ -3843,17 +3677,6 @@ function getParadigmSlotsForLemma(lemma, surface, wordClass, gender = "") {
     : [];
 }
 
-function getAdjectiveAgreementSlotsFromNounGender(gender) {
-  const articles = new Set(
-    WordClass.stripNounPrefix(gender).split("-").filter(Boolean),
-  );
-  const slots = [];
-  if (articles.has("en")) slots.push(0);
-  if (articles.has("ei")) slots.push(1);
-  if (articles.has("et")) slots.push(2);
-  return slots;
-}
-
 let gameNounGenderIndexSource = null;
 let gameNounGendersByLemma = new Map();
 
@@ -3895,51 +3718,6 @@ function hasCompetingAdjectiveEntry(wordObj, lemma) {
         (variant) => normalizeGameAnswer(variant) === normalizedLemma,
       ),
   );
-}
-
-function refineAdjectiveSlotIndexes(
-  slotIndexes,
-  sentenceTokens,
-  firstTokenIndex,
-  endTokenIndex,
-) {
-  if (slotIndexes.length < 2) return slotIndexes;
-
-  const precedingToken = normalizeGameAnswer(
-    sentenceTokens[firstTokenIndex - 1]?.text,
-  );
-  const determinerSlot = {
-    en: 0,
-    ei: 1,
-    et: 2,
-    den: 3,
-    det: 3,
-    de: 4,
-  }[precedingToken];
-  if (Number.isInteger(determinerSlot) && slotIndexes.includes(determinerSlot)) {
-    return [determinerSlot];
-  }
-
-  // An uninflected adjective can occupy several official singular slots
-  // (koreansk is identical in masculine, feminine, and neuter). When the
-  // following token is an exact dictionary noun lemma, its declared article
-  // resolves that agreement without suffix guessing. If several noun senses
-  // remain possible, retain all compatible slots and let distractor selection
-  // require a form that is valid for every one of them.
-  const followingToken = normalizeGameAnswer(sentenceTokens[endTokenIndex]?.text);
-  if (!followingToken || typeof results === "undefined") return slotIndexes;
-
-  const nounAgreementSlots = new Set();
-  const matchingNounGenders =
-    getGameNounGendersByLemma().get(followingToken) || [];
-  for (const nounGender of matchingNounGenders) {
-    for (const slot of getAdjectiveAgreementSlotsFromNounGender(nounGender)) {
-      nounAgreementSlots.add(slot);
-    }
-  }
-
-  const refinedSlots = slotIndexes.filter((slot) => nounAgreementSlots.has(slot));
-  return refinedSlots.length > 0 ? refinedSlots : slotIndexes;
 }
 
 function matchesClozePatternToken(patternToken, surfaceToken, wordObj, isSingle) {
@@ -4099,7 +3877,7 @@ function createClozeTarget(
     patternTokens[0] !== "..." &&
     ["noun", "adjective", "verb"].includes(wordClass);
   const targetLemma = patternTokens.find((token) => token !== "...") || "";
-  let slotIndexes = isLexical
+  const slotIndexes = isLexical
     ? getParadigmSlotsForLemma(
         targetLemma,
         surfaceForm,
@@ -4107,14 +3885,6 @@ function createClozeTarget(
         wordClass === "noun" ? wordObj.gender : "",
       )
     : [];
-  if (isLexical && wordClass === "adjective") {
-    slotIndexes = refineAdjectiveSlotIndexes(
-      slotIndexes,
-      sentenceTokens,
-      firstTokenIndex,
-      endTokenIndex,
-    );
-  }
   const matchedSentenceTokens = sentenceTokens.slice(
     firstTokenIndex,
     endTokenIndex,
@@ -4165,111 +3935,12 @@ function createClozeTarget(
   };
 }
 
-function refineExpressionVerbSlotIndexes(slotIndexes, sentence, startIndex) {
-  const accepted = [...new Set(slotIndexes || [])];
-  if (accepted.length <= 1) return accepted;
-  const precedingTokens = getIndexedClozeTokens(sentence.slice(0, startIndex));
-  const preceding = normalizeGameAnswer(
-    precedingTokens[precedingTokens.length - 1]?.text || "",
-  );
-  if (["har", "hadde"].includes(preceding) && accepted.includes(3)) {
-    return [3];
-  }
-  if (
-    ["å", "kan", "kunne", "må", "måtte", "skal", "skulle", "vil", "ville", "bør", "burde"].includes(
-      preceding,
-    ) &&
-    accepted.includes(0)
-  ) {
-    return [0];
-  }
-  if (["ble", "blir", "er", "var"].includes(preceding)) {
-    const participial = accepted.filter((slot) => [6, 7, 8, 9, 10].includes(slot));
-    if (participial.length > 0) return participial;
-  }
-  // With no auxiliary immediately before it, a surface shared by the weak
-  // past and participle paradigms is functioning as a finite past verb.
-  if (accepted.includes(2)) return [2];
-  return accepted;
-}
-
-function refineExpressionAdjectiveSlotIndexes(
-  slotIndexes,
-  sentence,
-  startIndex,
-  endIndex,
-) {
-  const sentenceTokens = getIndexedClozeTokens(sentence);
-  const firstTokenIndex = sentenceTokens.findIndex(
-    (token) => token.start === startIndex,
-  );
-  const endTokenIndex = sentenceTokens.findIndex(
-    (token) => token.end >= endIndex,
-  );
-  if (firstTokenIndex < 0 || endTokenIndex < firstTokenIndex) {
-    return [...new Set(slotIndexes || [])];
-  }
-  return refineAdjectiveSlotIndexes(
-    [...new Set(slotIndexes || [])],
-    sentenceTokens,
-    firstTokenIndex,
-    endTokenIndex + 1,
-  );
-}
-
-function createNounGenitiveForm(form) {
-  const value = String(form ?? "");
-  if (!value) return "";
-  return /[sxz]$/iu.test(value) ? `${value}'` : `${value}s`;
-}
-
-function getExpressionNounCase(anchorSpan, slotIndexes) {
-  if (anchorSpan?.node?.selected?.wordClass !== "noun") return "base";
-  const normalizeCaseForm = (value) =>
-    normalizeGameAnswer(value).replace(/’/gu, "'");
-  const surface = normalizeCaseForm(anchorSpan.surface);
-  const paradigm = anchorSpan.node.selected.paradigm;
-  const baseForms = [
-    ...new Set(
-      (slotIndexes || []).flatMap(
-        (slotIndex) => paradigm?.slots?.[slotIndex] || [],
-      ),
-    ),
-  ];
-  if (baseForms.some((form) => normalizeCaseForm(form) === surface)) {
-    return "base";
-  }
-  return baseForms.some(
-    (form) => normalizeCaseForm(createNounGenitiveForm(form)) === surface,
-  )
-    ? "genitive"
-    : "base";
-}
-
-function getExpressionAnchorSpan(match) {
-  const priority = { verb: 0, noun: 1, adjective: 2 };
-  return match.spans
-    .map((span, index) => ({
-      span,
-      index,
-      wordClass: span.node.selected?.wordClass || "",
-      changed:
-        normalizeGameAnswer(span.surface) !==
-        normalizeGameAnswer(span.node.selected?.lemma || span.node.text),
-    }))
-    .filter(
-      ({ span, wordClass }) =>
-        Number.isInteger(priority[wordClass]) &&
-        span.slotIndexes.some(Number.isInteger),
-    )
-    .sort(
-      (left, right) =>
-        priority[left.wordClass] - priority[right.wordClass] ||
-        Number(right.changed) - Number(left.changed) ||
-        left.index - right.index,
-    )[0]?.span;
-}
-
+// Unlike the general lexical/phrase cloze path above, there is no
+// per-component "anchor" to pick out here: expressionPatterns.js already
+// folds a conjugating tail (くれる in てくれる) into the matcher's own
+// surface-form list, so whatever it finds is matched and blanked as one
+// fixed unit -- there's no separate object/reflexive/case agreement for
+// Japanese's contiguous, non-declining expressions to preserve around it.
 async function findExpressionClozeTarget(wordObj, preferredForm = "") {
   const analysis = await window.ExpressionPatterns?.getAnalysis(wordObj);
   const exampleText = normalizeGameWhitespace(wordObj?.eksempel);
@@ -4284,85 +3955,27 @@ async function findExpressionClozeTarget(wordObj, preferredForm = "") {
     const match = analysis.matcher.find(sentence);
     if (!match) continue;
 
-    // Keep the expression's fixed words, objects, and reflexives in the
-    // sentence while blanking one recognized inflectable component. Its word
-    // class and exact paradigm slot then constrain every distractor. This is
-    // what turns "kastet henne til ulvene" into "___ henne til ulvene", and
-    // also supports noun- and adjective-headed expressions.
-    const anchorSpan = getExpressionAnchorSpan(match);
-    let target;
-    if (anchorSpan) {
-      const anchorWordClass = anchorSpan.node.selected.wordClass;
-      let slotIndexes = [...new Set(anchorSpan.slotIndexes)].filter(
-        Number.isInteger,
-      );
-      if (anchorWordClass === "verb") {
-        slotIndexes = refineExpressionVerbSlotIndexes(
-          slotIndexes,
-          sentence,
-          anchorSpan.start,
-        );
-      } else if (anchorWordClass === "adjective") {
-        slotIndexes = refineExpressionAdjectiveSlotIndexes(
-          slotIndexes,
-          sentence,
-          anchorSpan.start,
-          anchorSpan.end,
-        );
-      }
-      target = {
-        sentence,
-        sentenceIndex,
-        sentenceTranslation: getGameSentenceTranslation(wordObj, sentenceIndex),
-        surfaceForm: anchorSpan.surface,
-        startIndex: anchorSpan.start,
-        endIndex: anchorSpan.end,
-        startsSentence: /^[^\p{L}\p{N}]*$/u.test(
-          sentence.slice(0, anchorSpan.start),
-        ),
-        slotIndexes,
-        targetLemma: anchorSpan.node.selected.lemma,
-        targetGender:
-          anchorWordClass === "noun"
-            ? anchorSpan.node.selected.paradigm?.gender || ""
-            : anchorWordClass,
-        nounCase: getExpressionNounCase(anchorSpan, slotIndexes),
-        wordClass: anchorWordClass,
-        wordCount: 1,
-        kind: "expression-anchor",
-        template: anchorSpan.node.text,
-        templateTokens: [anchorSpan.node.text],
-        phraseSlot: null,
-        requiresInflectionAgreement: true,
-        expressionAnalysis: analysis,
-      };
-    } else {
-      const hasSelectedInflectableComponent = match.spans.some(
-        (span) => span.node.selected?.wordClass,
-      );
-      if (hasSelectedInflectableComponent) continue;
-      target = {
-        sentence,
-        sentenceIndex,
-        sentenceTranslation: getGameSentenceTranslation(wordObj, sentenceIndex),
-        surfaceForm: sentence.slice(match.start, match.end),
-        startIndex: match.start,
-        endIndex: match.end,
-        startsSentence: /^[^\p{L}\p{N}]*$/u.test(
-          sentence.slice(0, match.start),
-        ),
-        slotIndexes: [],
-        targetLemma: "",
-        wordClass: "expression",
-        wordCount: match.spans.length,
-        kind: "phrase",
-        template: match.pattern.display,
-        templateTokens: getClozePatternTokens(match.pattern.display),
-        phraseSlot: null,
-        requiresInflectionAgreement: false,
-        expressionAnalysis: analysis,
-      };
-    }
+    const target = {
+      sentence,
+      sentenceIndex,
+      sentenceTranslation: getGameSentenceTranslation(wordObj, sentenceIndex),
+      surfaceForm: match.matchedText,
+      startIndex: match.start,
+      endIndex: match.end,
+      startsSentence: /^[^\p{L}\p{N}]*$/u.test(
+        sentence.slice(0, match.start),
+      ),
+      slotIndexes: [],
+      targetLemma: "",
+      wordClass: "expression",
+      wordCount: 1,
+      kind: "phrase",
+      template: match.matchedText,
+      templateTokens: [match.matchedText],
+      phraseSlot: null,
+      requiresInflectionAgreement: false,
+      expressionAnalysis: analysis,
+    };
 
     if (
       normalizedPreferredForm &&
@@ -7501,49 +7114,6 @@ function attachTypedAnswerForm(
         correctTranslation,
         clozeTarget,
       );
-      // The normal set is intentionally strict for an adjective whose source
-      // spelling fits several slots. Only a submitted same-sense form can
-      // trigger the small predicate-agreement fallback.
-      if (
-        isCloze &&
-        !acceptedAnswers
-          .map(normalizeGameAnswer)
-          .includes(normalizeGameAnswer(selectedAnswer))
-      ) {
-        try {
-          const contextualForms =
-            await getContextualPredicateAdjectiveSynonymForms(
-              wordObj,
-              clozeTarget,
-              selectedAnswer,
-            );
-          acceptedAnswers.push(...contextualForms);
-        } catch (error) {
-          // This optional refinement must never prevent the ordinary answer
-          // path from grading a response.
-          console.warn("Could not resolve predicate adjective agreement.", error);
-        }
-
-        // Still not accepted: stash the one true agreement slot (if this is
-        // a predicate adjective) on clozeTarget so the near-miss diagnosis
-        // below can narrow its own ambiguous slot set to it. Without this,
-        // classifyTypedMorphologyNearMiss intersects a synonym's forms
-        // across the full, un-narrowed slotIndexes — which comes back empty
-        // (and silently drops the near-miss) whenever that synonym's forms
-        // actually vary across those slots, unlike the source word's.
-        if (
-          !acceptedAnswers
-            .map(normalizeGameAnswer)
-            .includes(normalizeGameAnswer(selectedAnswer))
-        ) {
-          try {
-            clozeTarget.resolvedPredicateAdjectiveSlot =
-              await getPredicateAdjectiveAgreementSlot(clozeTarget);
-          } catch (error) {
-            console.warn("Could not resolve predicate adjective agreement.", error);
-          }
-        }
-      }
     } finally {
       // Guaranteed even if getTypedAcceptedAnswers itself throws — an
       // ungraded submit must never leave the form permanently unable to
@@ -10464,11 +10034,6 @@ function generateClozeDistractors(wordObj, clozeTarget) {
       return accepted.filter((form) => currentSlot.has(form));
     }, null);
     return (compatibleForms || [])
-      .map((form) =>
-        clozeTarget.nounCase === "genitive"
-          ? createNounGenitiveForm(form)
-          : form,
-      )
       .map((form) => restoreDictionaryCase(form, displayExpression))
       .filter(
         (form) =>

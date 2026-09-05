@@ -1098,6 +1098,162 @@ async function upgradeStoryClickableWords(container) {
   }
 }
 
+// ---- Expression spans ---------------------------------------------------
+//
+// Multi-word expressions (てくれる, について, 仕方が無い) need to be treated
+// as one clickable unit rather than however segmentTextAsync above happened
+// to cut them up -- segmentation resolves each surface run to a single
+// verb/adjective/noun/etc. lemma, which has no way to reassemble "出して" +
+// "くれる" back into the expression てくれる, since expressions aren't part
+// of that per-word reverse index at all (see expressionPatterns.js). Mirrors
+// Norwegian's upgradeStoryExpressionSpans/expressionEntryRegistry, minus the
+// component-word reverse index Norwegian needs for its ~3,400 expression
+// entries -- with only a few dozen here, checking every one directly
+// against each sentence is cheap enough on its own.
+//
+// findExpressionMatchesInSentence/getExpressionEntries are also called from
+// scripts.js's upgradeDefinitionExpressionSpans, same cross-file reuse
+// Norwegian's own version has -- guarded there with a typeof check since
+// this file loads after scripts.js.
+
+let expressionEntriesSource = null;
+let expressionEntries = [];
+
+function getExpressionEntries() {
+  if (expressionEntriesSource === results) return expressionEntries;
+  expressionEntries = (results || []).filter(
+    (entry) => WordClass.getWordClass(entry?.gender) === "expression",
+  );
+  expressionEntriesSource = results;
+  return expressionEntries;
+}
+
+async function findExpressionMatchesInSentence(sentenceText) {
+  const spans = [];
+  for (const entry of getExpressionEntries()) {
+    const analysis = await window.ExpressionPatterns?.getAnalysis(entry);
+    const matcher = analysis?.matcher;
+    if (!matcher) continue;
+
+    // Mirrors ExpressionPatterns' own .highlight() cursor loop -- walk
+    // forward finding every non-overlapping occurrence in this sentence,
+    // not just the first.
+    let cursor = 0;
+    while (cursor < sentenceText.length) {
+      const match = matcher.find(sentenceText.slice(cursor));
+      if (!match) break;
+      spans.push({
+        start: match.start + cursor,
+        end: match.end + cursor,
+        matchedText: match.matchedText,
+        entry,
+      });
+      cursor += Math.max(match.end, 1);
+    }
+  }
+
+  // Longer matches win on overlap -- rare with only a few dozen entries,
+  // but two expressions could still share a stretch of text.
+  spans.sort((a, b) => b.end - b.start - (a.end - a.start));
+  const accepted = [];
+  for (const span of spans) {
+    const overlaps = accepted.some(
+      (existing) => span.start < existing.end && span.end > existing.start,
+    );
+    if (!overlaps) accepted.push(span);
+  }
+  accepted.sort((a, b) => a.start - b.start);
+  return accepted;
+}
+
+// Object identity can't survive a round trip through an HTML string /
+// dataset attribute, so a matched expression entry is kept here and
+// referenced from its span by a small numeric id instead. Mirrors
+// Norwegian's expressionEntryRegistry.
+const expressionEntryRegistry = new Map();
+let nextExpressionEntryId = 0;
+
+function registerExpressionEntry(entry) {
+  const id = String(nextExpressionEntryId++);
+  expressionEntryRegistry.set(id, entry);
+  return id;
+}
+
+// Unlike Norwegian's whitespace-delimited words, a word span here (see
+// segmentTextSync/renderSegmentedText) has no guaranteed boundary at an
+// expression's start/end -- an unsegmented run of plain text or even a
+// single lemma span can straddle it. Patching the existing DOM by replacing
+// "whatever node overlaps [start, end)" (Norwegian's approach) would then
+// swallow whichever whole node partially overlaps, not just the matched
+// characters. Rendering the sentence fresh from raw offsets sidesteps that
+// entirely -- there's no existing node boundary to reconcile with.
+function mergeExpressionAndWordSpans(wordSpans, expressionSpans) {
+  const wordSpansOutsideExpressions = wordSpans.filter(
+    (wordSpan) =>
+      !expressionSpans.some(
+        (exprSpan) =>
+          wordSpan.start < exprSpan.end && wordSpan.end > exprSpan.start,
+      ),
+  );
+  const merged = [
+    ...wordSpansOutsideExpressions.map((span) => ({ ...span, kind: "word" })),
+    ...expressionSpans.map((span) => ({ ...span, kind: "expression" })),
+  ];
+  merged.sort((a, b) => a.start - b.start);
+  return merged;
+}
+
+function renderStorySentenceHTML(text, mergedSpans) {
+  let html = "";
+  let lastIndex = 0;
+  for (const span of mergedSpans) {
+    html += escapeHTML(text.slice(lastIndex, span.start));
+    if (span.kind === "expression") {
+      html += `<span class="story-word story-word-expression" data-word="${escapeHTML(
+        span.matchedText,
+      )}" data-expr-id="${registerExpressionEntry(span.entry)}">${escapeHTML(
+        span.matchedText,
+      )}</span>`;
+    } else {
+      html += `<span class="story-word" data-word="${escapeHTML(
+        span.lemma,
+      )}">${escapeHTML(span.text)}</span>`;
+    }
+    lastIndex = span.end;
+  }
+  html += escapeHTML(text.slice(lastIndex));
+  return html;
+}
+
+// Merges expression occurrences into `container`'s story sentences,
+// replacing whatever segmentTextSync/upgradeStoryClickableWords rendered
+// there with a fresh render that gives expression spans priority over any
+// word span they overlap. Must run after the reverse index those word spans
+// depend on is warm -- i.e. after upgradeStoryClickableWords above resolves
+// (or immediately, if the sync segmentTextSync render already had it warm).
+async function upgradeStoryExpressionSpans(container) {
+  if (getExpressionEntries().length === 0) return;
+
+  const sentenceEls = container.querySelectorAll(
+    ".japanese-sentence[data-jp-text]",
+  );
+  for (const sentenceEl of sentenceEls) {
+    const rawText = sentenceEl.dataset.jpText;
+    if (!rawText) continue;
+    const expressionSpans = await findExpressionMatchesInSentence(rawText);
+    if (expressionSpans.length === 0) continue;
+    if (!sentenceEl.isConnected) return; // learner left mid-upgrade
+
+    const wordSpans = window.Inflections?.isReverseIndexReady()
+      ? window.Inflections.segmentTextSync(rawText)
+      : [];
+    sentenceEl.innerHTML = renderStorySentenceHTML(
+      rawText,
+      mergeExpressionAndWordSpans(wordSpans, expressionSpans),
+    );
+  }
+}
+
 // ---- Click-to-define popover -----------------------------------------
 //
 // Unlike scripts.js's clickable-definition-word (which replaces the whole
@@ -1233,23 +1389,34 @@ async function showStoryWordPopover(wordSpan) {
 
   closeStoryWordPopover();
 
+  // An expression span's entry was already resolved when the span itself
+  // was built -- see registerExpressionEntry/replaceStoryWordSpanWithExpression
+  // above -- rather than by segmentText's per-word reverse index, which
+  // doesn't know about expressions at all.
+  const isExpression = wordSpan.classList.contains("story-word-expression");
+
   const entries = [];
   const addEntry = (entry) => {
     if (!entries.includes(entry)) entries.push(entry);
   };
 
-  // The instant path: segmentText (inflections.js) already resolved this
-  // span's surface form to `lemma` (its own reverse-index lookup) at
-  // render time, so every dictionary sense spelled that way is fair game
-  // regardless of word class.
-  results
-    .filter((r) =>
-      String(r.ord || "")
-        .split(/[,、]/)
-        .map((form) => form.trim())
-        .includes(lemma),
-    )
-    .forEach(addEntry);
+  if (isExpression) {
+    const entry = expressionEntryRegistry.get(wordSpan.dataset.exprId);
+    if (entry) addEntry(entry);
+  } else {
+    // The instant path: segmentText (inflections.js) already resolved this
+    // span's surface form to `lemma` (its own reverse-index lookup) at
+    // render time, so every dictionary sense spelled that way is fair game
+    // regardless of word class.
+    results
+      .filter((r) =>
+        String(r.ord || "")
+          .split(/[,、]/)
+          .map((form) => form.trim())
+          .includes(lemma),
+      )
+      .forEach(addEntry);
+  }
 
   const popover = document.createElement("div");
   popover.className = "story-word-popover";
@@ -1264,6 +1431,10 @@ async function showStoryWordPopover(wordSpan) {
 
   window.addEventListener("scroll", closeStoryWordPopover, true);
   window.addEventListener("resize", closeStoryWordPopover);
+
+  // An expression's entry is already fully resolved via the registry --
+  // nothing slower left to check, unlike a plain word's surface form below.
+  if (isExpression) return;
 
   // A clicked surface form can be genuinely ambiguous -- shared by more
   // than one dictionary entry's paradigm (e.g. the transitive/intransitive
@@ -1590,7 +1761,12 @@ async function displayStory(titleJapanese, { userNavigation = false } = {}) {
 
     if (storyContent) {
       storyContent.innerHTML = contentHTML; // render story body into the reader pane
-      upgradeStoryClickableWords(storyContent);
+      // Expression spans must be merged after the word spans they splice
+      // exist, whether those came from the sync render above (index already
+      // warm) or from this async upgrade resolving.
+      upgradeStoryClickableWords(storyContent).then(() =>
+        upgradeStoryExpressionSpans(storyContent),
+      );
       // Insert the sticky title above the first child (mirror JP order)
       const titleNode = document.createElement("div");
       titleNode.className = "sticky-title-container";

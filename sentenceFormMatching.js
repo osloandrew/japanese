@@ -84,6 +84,7 @@
       return Object.freeze({
         forms: acceptedForms,
         test: () => false,
+        find: () => null,
         highlight: (text) => String(text ?? ""),
       });
     }
@@ -126,6 +127,20 @@
       test: (text) =>
         findFirstUnshadowedMatch(String(text ?? "").normalize("NFC")) !==
         null,
+      // Position of the first unshadowed occurrence, for callers (e.g. a
+      // Word Game cloze target) that need to slice the surrounding sentence
+      // rather than just know whether a form is present.
+      find: (text) => {
+        const normalized = String(text ?? "").normalize("NFC");
+        const match = findFirstUnshadowedMatch(normalized);
+        return match
+          ? {
+              start: match.index,
+              end: match.index + match[0].length,
+              matchedText: match[0],
+            }
+          : null;
+      },
       highlight: (text) => {
         const normalized = String(text ?? "").normalize("NFC");
         return normalized.replace(pattern, (matchedText, offset) =>

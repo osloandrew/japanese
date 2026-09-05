@@ -40,6 +40,7 @@ import csv
 import gzip
 import io
 import json
+import re
 import sys
 import tarfile
 import urllib.request
@@ -298,7 +299,12 @@ def main() -> None:
             if entry is None:
                 mismatched_data.append((word_field, reading_field, gender))
 
-        primary_word = word_field.split(",")[0].strip()
+        # inflections.js's classificationKey splits `ord` on both "," and
+        # the Japanese "、" to find the primary spelling; matching that here
+        # (not just ",") matters for entries like "いる、居る" -- splitting
+        # on "," alone leaves the whole string as one "primary_word", so the
+        # runtime's lookup for "いる" alone never finds this key at all.
+        primary_word = re.split(r"[,、]", word_field)[0].strip()
         key = f"{gender[0]}:{primary_word}"
         classifications[key] = {"class": cls, "source": source_type}
 

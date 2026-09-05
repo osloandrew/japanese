@@ -345,6 +345,89 @@
     return null;
   }
 
+  // The copula (だ/です) and the polite auxiliary ます each have their own
+  // small, closed, well-known paradigm -- unlike verb/adjective conjugation
+  // there's no productive spelling rule to derive it from, so each is
+  // simply spelled out rather than guessed at. A slot with two
+  // everyday-common forms (じゃない/ではない) returns both as an array;
+  // collectAllSurfaceForms flattens these for search, and copulaFormsTable
+  // joins them for display.
+  function conjugateCopula(word, kind) {
+    if (kind === "copula-plain" && word === "だ") {
+      return {
+        dictionary: "だ",
+        negative: ["じゃない", "ではない"],
+        past: "だった",
+        past_negative: ["じゃなかった", "ではなかった"],
+        te: "で",
+        presumptive: "だろう",
+        conditional: "なら",
+      };
+    }
+    if (kind === "copula-polite" && word === "です") {
+      return {
+        dictionary: "です",
+        negative: ["ではありません", "じゃありません"],
+        past: "でした",
+        past_negative: ["ではありませんでした", "じゃありませんでした"],
+        presumptive: "でしょう",
+      };
+    }
+    if (kind === "masu" && word === "ます") {
+      return {
+        dictionary: "ます",
+        negative: "ません",
+        past: "ました",
+        past_negative: "ませんでした",
+        volitional: "ましょう",
+      };
+    }
+    return null;
+  }
+
+  const COPULA_FORM_LABELS = {
+    dictionary: "Dictionary form",
+    negative: "Negative",
+    past: "Past",
+    past_negative: "Past negative",
+    te: "Te-form",
+    presumptive: "Presumptive (でしょう/だろう)",
+    conditional: "Conditional (なら)",
+    volitional: "Volitional (ましょう)",
+  };
+
+  function copulaFormsTable(forms) {
+    return {
+      wordClass: "auxiliary",
+      forms: Object.entries(forms)
+        .filter(([, value]) => value)
+        .map(([key, value]) => ({
+          label: COPULA_FORM_LABELS[key] || key,
+          value: Array.isArray(value) ? value.join(" / ") : value,
+        })),
+    };
+  }
+
+  // Known conjugation recipes for words the JMdict-derived snapshot never
+  // covers: either because they're tagged gender "auxiliary" in the CSV
+  // (build-inflections.py only classifies "verb"/"adjective" rows) even
+  // though some of them (せる, れる, たい) conjugate exactly like an
+  // ordinary ichidan verb or い-adjective, or because the copula/ます
+  // paradigm itself (だ, です, ます) doesn't fit either engine at all and
+  // needs conjugateCopula above instead. Keyed by the word's own primary
+  // spelling, independent of whatever `gender` the CSV has for it, so this
+  // keeps working whether or not that ever gets reclassified.
+  const AUXILIARY_CLASSIFICATIONS = {
+    だ: { wordClass: "auxiliary", class: "copula-plain" },
+    です: { wordClass: "auxiliary", class: "copula-polite" },
+    ます: { wordClass: "auxiliary", class: "masu" },
+    せる: { wordClass: "verb", class: "v1" },
+    させる: { wordClass: "verb", class: "v1" },
+    れる: { wordClass: "verb", class: "v1" },
+    られる: { wordClass: "verb", class: "v1" },
+    たい: { wordClass: "adjective", class: "adj-i" },
+  };
+
   // ---- Labeled tables for the UI -------------------------------------
 
   // Row order follows a beginner-to-advanced teaching progression rather
@@ -414,22 +497,43 @@
 
   // ---- Classification lookup + snapshot loading -----------------------
 
-  function classificationKey(entry) {
-    const wordClass = String(entry?.gender || "").trim();
-    if (wordClass !== "verb" && wordClass !== "adjective") return "";
-    const primaryWord = String(entry?.ord || "").split(/[,、]/)[0].trim();
-    if (!primaryWord) return "";
-    return `${wordClass[0]}:${primaryWord}`;
+  // A conjugation recipe for one specific spelling. AUXILIARY_CLASSIFICATIONS
+  // is tried first and, if it has an entry, wins outright -- it can name a
+  // *different* dispatch wordClass than `rawWordClass` (せる's own CSV row
+  // is tagged gender "auxiliary", but its recipe says "verb", which is what
+  // actually conjugates it correctly). Otherwise falls back to the
+  // JMdict-derived snapshot, verb/adjective only, tried under `word`'s own
+  // key and, since a handful of entries with two accepted spellings
+  // ("いる、居る") were classified by build-inflections.py under the
+  // *unsplit* `ord` string instead (that script only splits on ",", not
+  // "、", unlike this file), under `fullOrdKey` too.
+  function resolveConjugationRecipe(rawWordClass, word, fullOrdKey) {
+    const override = AUXILIARY_CLASSIFICATIONS[word];
+    if (override) return { ...override, source: "estimated" };
+
+    if (rawWordClass !== "verb" && rawWordClass !== "adjective") return null;
+    if (!snapshot?.classifications) return null;
+    const prefix = rawWordClass[0];
+    const found =
+      snapshot.classifications[`${prefix}:${word}`] ||
+      (fullOrdKey && fullOrdKey !== word
+        ? snapshot.classifications[`${prefix}:${fullOrdKey}`]
+        : null);
+    return found
+      ? { wordClass: rawWordClass, class: found.class, source: found.source }
+      : null;
   }
 
   function getClassification(entry) {
-    const key = classificationKey(entry);
-    if (!key || !snapshot?.classifications) return null;
-    return snapshot.classifications[key] || null;
+    const wordClass = String(entry?.gender || "").trim();
+    const fullOrdKey = String(entry?.ord || "").trim();
+    const primaryWord = fullOrdKey.split(/[,、]/)[0].trim();
+    if (!primaryWord) return null;
+    return resolveConjugationRecipe(wordClass, primaryWord, fullOrdKey);
   }
 
-  // Unlike classificationKey above (verb/adjective only -- the only classes
-  // with a conjugation to look up), this keys *any* dictionary entry, for
+  // Unlike getClassification above (conjugatable words only), this keys
+  // *any* dictionary entry, for
   // the word-linking reverse index below: a noun or particle has no
   // conjugation, but it's still a real headword a story or definition can
   // cite and a reader can click. Keyed by the full class name (not a
@@ -452,20 +556,30 @@
   }
 
   function computeFormsAndTable(entry, classification) {
-    const wordClass = String(entry?.gender || "").trim();
     const primaryWord = String(entry?.ord || "").split(/[,、]/)[0].trim();
     if (!primaryWord || !classification) return null;
     const cls = classification.class;
     if (NO_CONJUGATION_CLASSES.has(cls)) return null;
 
+    // Dispatches on the recipe's own wordClass, not the entry's raw CSV
+    // `gender` -- せる's row is tagged "auxiliary" but its recipe says
+    // "verb", which is what actually conjugates it correctly.
+    if (classification.wordClass === "auxiliary") {
+      const forms = conjugateCopula(primaryWord, cls);
+      if (!forms) return null;
+      return { forms, table: copulaFormsTable(forms) };
+    }
+
     const forms =
-      wordClass === "verb"
+      classification.wordClass === "verb"
         ? conjugateVerb(primaryWord, cls)
         : conjugateAdjective(primaryWord, cls);
     if (!forms) return null;
 
     const table =
-      wordClass === "verb" ? verbFormsTable(forms) : iAdjectiveFormsTable(forms);
+      classification.wordClass === "verb"
+        ? verbFormsTable(forms)
+        : iAdjectiveFormsTable(forms);
 
     return { forms, table };
   }
@@ -483,6 +597,63 @@
       source: classification.source === "jmdict" ? "JMdict" : "estimated",
       sourceType: classification.source === "jmdict" ? "jmdict" : "estimated",
       conjugationClass: classification.class,
+    };
+  }
+
+  // Norwegian's counterpart looks up a whole lexical paradigm and slices it
+  // into indexed "slots" (e.g. [masculine, feminine, neuter, ...]) that the
+  // Word Game's cloze-distractor and typed-answer-near-miss code walks by
+  // index. Japanese has no such lexical paradigm to look up -- conjugation
+  // is derived from the headword's own spelling and class -- so this builds
+  // the same {slots: [...]} shape from computeFormsAndTable's own table
+  // instead, one slot per row, in that table's existing display order (so a
+  // slot index always means the same form here as it does in the Word Forms
+  // table itself). A noun's only "slot" is its own unchanging spelling --
+  // Japanese nouns do not inflect at all, unlike Bokmål's four-way
+  // definite/indefinite x singular/plural noun paradigm. `gender` is
+  // accepted only for call-site parity with Norwegian's signature (and
+  // Japanese's own noun-vs-non-noun dispatch elsewhere); it plays no role
+  // here since a flat word-class token has no gender to key noun senses by.
+  function getParadigmForLemma(lemma, wordClass, _gender = "") {
+    const normalizedLemma = String(lemma ?? "").trim();
+    const normalizedWordClass = String(wordClass ?? "").trim();
+    if (!normalizedLemma) return null;
+
+    if (normalizedWordClass === "noun") {
+      return {
+        key: `noun:${normalizedLemma}`,
+        lemma: normalizedLemma,
+        wordClass: "noun",
+        gender: "",
+        slots: [[normalizedLemma]],
+      };
+    }
+    if (normalizedWordClass !== "verb" && normalizedWordClass !== "adjective") {
+      return null;
+    }
+
+    const classification = resolveConjugationRecipe(
+      normalizedWordClass,
+      normalizedLemma,
+      normalizedLemma,
+    );
+    if (!classification || classification.wordClass !== normalizedWordClass) {
+      return null;
+    }
+    const computed = computeFormsAndTable(
+      { ord: normalizedLemma },
+      classification,
+    );
+    if (!computed) return null;
+
+    return {
+      key: `${normalizedWordClass}:${normalizedLemma}`,
+      lemma: normalizedLemma,
+      wordClass: normalizedWordClass,
+      gender: "",
+      slots: computed.table.forms.map(({ value }) =>
+        (Array.isArray(value) ? value : [value]).filter(Boolean),
+      ),
     };
   }
 
@@ -527,9 +698,14 @@
   }
 
   function getForms(entry) {
-    const wordClass = String(entry?.gender || "").trim();
-    if (wordClass !== "verb" && wordClass !== "adjective") return null;
     if (!entry?.ord) return null;
+    const wordClass = String(entry.gender || "").trim();
+    const primaryWord = String(entry.ord).split(/[,、]/)[0].trim();
+    const conjugatable =
+      wordClass === "verb" ||
+      wordClass === "adjective" ||
+      Boolean(AUXILIARY_CLASSIFICATIONS[primaryWord]);
+    if (!conjugatable) return null;
 
     if (snapshot || loadFailed) return createForms(entry);
 
@@ -557,10 +733,14 @@
   // same way Norwegian's clickable words already work. Built lazily, off
   // the main thread when possible -- see inflectionsWorker.js.
 
-  // Every literal surface form a given entry can appear as: for a verb or
-  // adjective, its full conjugated paradigm; for every other class (which
-  // has no conjugation), just its own headword(s) -- still a real word a
-  // story or definition can cite verbatim.
+  // Every literal surface form a given entry can appear as: for a verb,
+  // adjective, or conjugatable auxiliary (see AUXILIARY_CLASSIFICATIONS),
+  // its full conjugated paradigm -- for *each* accepted spelling, not just
+  // the primary one, since two spellings of the same word share a
+  // conjugation class (居る conjugates exactly as いる does) and either can
+  // turn up inflected in a real sentence; for every other class (which has
+  // no conjugation), just its own headword(s) -- still a real word a story
+  // or definition can cite verbatim.
   function collectAllSurfaceForms(entry) {
     const headwords = String(entry?.ord || "")
       .split(/[,、]/)
@@ -568,13 +748,35 @@
       .filter(Boolean);
 
     const wordClass = String(entry?.gender || "").trim();
-    if (wordClass !== "verb" && wordClass !== "adjective") return headwords;
+    const fullOrdKey = String(entry?.ord || "").trim();
+    const isConjugatable =
+      wordClass === "verb" ||
+      wordClass === "adjective" ||
+      headwords.some((word) => AUXILIARY_CLASSIFICATIONS[word]);
+    if (!isConjugatable) return headwords;
 
-    const classification = getClassification(entry);
-    if (!classification) return headwords;
-    const computed = computeFormsAndTable(entry, classification);
-    if (!computed) return headwords;
-    return [...headwords, ...Object.values(computed.forms).filter(Boolean)];
+    const forms = new Set(headwords);
+    for (const variant of headwords) {
+      const classification = resolveConjugationRecipe(
+        wordClass,
+        variant,
+        fullOrdKey,
+      );
+      if (!classification || NO_CONJUGATION_CLASSES.has(classification.class)) {
+        continue;
+      }
+      const variantForms =
+        classification.wordClass === "auxiliary"
+          ? conjugateCopula(variant, classification.class)
+          : classification.wordClass === "verb"
+            ? conjugateVerb(variant, classification.class)
+            : conjugateAdjective(variant, classification.class);
+      if (!variantForms) continue;
+      for (const form of Object.values(variantForms).flat()) {
+        if (form) forms.add(form);
+      }
+    }
+    return [...forms];
   }
 
   // Word forms to search the example-sentence corpus with and highlight in
@@ -723,14 +925,36 @@
     return typeof value === "string" ? [value] : value;
   }
 
-  // Finds every dictionary entry (by its entryKey) whose surface forms
-  // include `surface`. `entries` is the full CSV dictionary (only needed
-  // the first time -- the index is cached after).
+  // Finds every dictionary entry whose surface forms include `surface`.
+  // `entries` is the full CSV dictionary (only needed the first time -- the
+  // index is cached after). Mirrors the shape of Norwegian's findLemmas
+  // ({ lemmas, matches, matchType }) since callers (wordGame.js's typed-
+  // answer near-miss and homograph-disambiguation checks) need to tell an
+  // exact reverse-index hit from no match at all, and need each match's
+  // word class alongside its lemma to avoid conflating homographs. Japanese
+  // has no keyboard-mistype or possessive reverse index like Norwegian's, so
+  // matchType is only ever "exact" or "none".
   async function findLemmas(surface, entries) {
     const normalizedSurface = String(surface ?? "").trim();
-    if (!normalizedSurface) return [];
+    if (!normalizedSurface) return { lemmas: [], matches: [], matchType: "none" };
     const index = await buildReverseIndex(entries);
-    return readReverseMappings(index, normalizedSurface);
+    const keys = readReverseMappings(index, normalizedSurface);
+
+    const parsedKeys = keys.map(parseEntryKey).filter((parsed) => parsed?.lemma);
+    const lemmas = [...new Set(parsedKeys.map((parsed) => parsed.lemma))].sort(
+      (a, b) => a.localeCompare(b, "ja"),
+    );
+
+    const seenMatches = new Set();
+    const matches = [];
+    for (const parsed of parsedKeys) {
+      const dedupeKey = `${parsed.wordClass}:${parsed.lemma}`;
+      if (seenMatches.has(dedupeKey)) continue;
+      seenMatches.add(dedupeKey);
+      matches.push({ lemma: parsed.lemma, wordClass: parsed.wordClass });
+    }
+
+    return { lemmas, matches, matchType: lemmas.length ? "exact" : "none" };
   }
 
   // True once the reverse index is already built and can be used
@@ -864,6 +1088,7 @@
     conjugateVerb,
     conjugateAdjective,
     getForms,
+    getParadigmForLemma,
     getSentenceForms,
     getSupplementalSentenceForms,
     resolvePending,
