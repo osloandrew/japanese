@@ -1553,7 +1553,7 @@ body.stories-mode .story-recommendation .cefr-value {
 
 .story-quiz-feedback-source {
   color: var(--color-text-muted);
-  font-family: "Source Serif 4", "Noto Serif", serif;
+  font-family: "Source Sans 3", "Noto Sans", sans-serif;
   margin: 0 0 1.25em 0;
 }
 
