@@ -385,10 +385,61 @@
     });
   }
 
+  // Mirrors recordStreakActivity()'s gap/grace/freeze rules, but runs
+  // without a completed round: if the deadline has already passed with
+  // nothing left to forgive it, the streak is broken whether or not the
+  // learner has opened the app since. Without this, streakState.count
+  // stays at its last value — displayed as still-alive — until the next
+  // round finally recomputes the gap and discovers it broke days ago.
+  function applyStreakExpiry() {
+    if (streakState.count <= 0 || !streakState.lastActiveDate) {
+      return;
+    }
+
+    const today = getLocalDateString();
+
+    if (streakState.lastActiveDate === today) {
+      return; // Already played today.
+    }
+
+    const gap = daysBetween(streakState.lastActiveDate, today);
+
+    if (gap <= 1) {
+      return; // Still within today — the deadline hasn't passed yet.
+    }
+    if (gap === 2 && streakState.freezeDate === dayBefore(today)) {
+      return; // A freeze covers the one missed day.
+    }
+    if (gap === 2 && !streakState.graceUsed) {
+      return; // The grace day is still available if they play today.
+    }
+
+    const brokenStreakLength = streakState.count;
+    streakState.count = 0;
+    streakState.graceUsed = false;
+    streakState.freezeDate = null;
+    saveStreakState();
+
+    window.trackEvent?.("streak_broken", {
+      streak_count: 0,
+      broken_streak_length: brokenStreakLength,
+    });
+  }
+
   // Deferred scripts run after the document is fully parsed, so the badge
   // markup in index.html is already present by the time this executes.
+  applyStreakExpiry();
   updateStreakBadge();
   initializeStreakMenu();
+
+  // Catches the case where the app is left open (or backgrounded) across
+  // the moment the streak actually lapses, so returning to the tab shows
+  // the break immediately rather than after the next reload.
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") {
+      applyStreakExpiry();
+    }
+  });
 
   window.StreakAPI = Object.freeze({
     getState: () => ({ ...streakState }),
