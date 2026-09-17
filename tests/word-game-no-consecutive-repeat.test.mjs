@@ -16,7 +16,7 @@ const startGameSource = source.slice(startGameStart, startGameEnd);
 
 assert.match(
   startGameSource,
-  /incorrectWordQueue\.find\([\s\S]*?!isPreviousGameWord\(queued\.wordObj\)/,
+  /pickReadyQueueEntry\(\s*incorrectWordQueue\.filter\(/,
 );
 assert.match(
   startGameSource,
@@ -58,6 +58,49 @@ assert.deepEqual(
 assert.deepEqual(
   Array.from(context.excludePreviousFillerWord([previous, different])),
   [different],
+);
+
+// The relearning ready-queue draw must not always hand back the same
+// (e.g. first-queued) ready entry the instant its own timer allows it — see
+// pickReadyQueueEntry's comment for why incorrectWordQueue.find() used to do
+// exactly that.
+const readyQueueStart = source.indexOf("const RELEARNING_RECENT_TURN_GAP");
+const readyQueueEnd = source.indexOf(
+  "// Bounded rounds use their selected size as the cap",
+  readyQueueStart,
+);
+const readyQueueSource = source.slice(readyQueueStart, readyQueueEnd);
+const readyQueueContext = vm.createContext({
+  isPreviousGameWord: (entry) => entry?.word === previous.word,
+  wordGameSessionWordLastShownTurn: new Map(),
+  wordGameSessionTurnCounter: 0,
+});
+vm.runInContext(readyQueueSource, readyQueueContext, {
+  filename: "wordGame.js",
+});
+
+const stale = { word: "鳥" }; // never shown this session
+readyQueueContext.wordGameSessionTurnCounter = 10;
+readyQueueContext.wordGameSessionWordLastShownTurn.set(different, 9); // shown last turn
+assert.equal(
+  readyQueueContext.pickReadyQueueEntry([
+    { wordObj: different },
+    { wordObj: stale },
+  ]).wordObj,
+  stale,
+  "a ready entry shown just now must lose to a ready entry that's waited longer",
+);
+
+readyQueueContext.wordGameSessionWordLastShownTurn.set(previous, 10);
+assert.equal(
+  readyQueueContext.pickReadyQueueEntry([{ wordObj: previous }]),
+  null,
+  "the literal previous word is never re-shown even as the only ready candidate",
+);
+assert.equal(
+  readyQueueContext.pickReadyQueueEntry([{ wordObj: different }]).wordObj,
+  different,
+  "a lone non-previous candidate still resolves even though it was recently shown",
 );
 
 const fetchStart = source.indexOf("async function fetchRandomWord");

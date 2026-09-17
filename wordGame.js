@@ -976,6 +976,43 @@ function recordPresentedGameWord(entry) {
   recordWordShownThisTurn(entry);
 }
 
+// How many of the most recent turns a relearning entry must sit out once it
+// becomes eligible again, before the ready-queue draw treats it the same as
+// any other ready word. Without this, a stubborn or simply first-in-queue
+// word gets shown the instant its own timer allows it, every time, even
+// while other ready words sit untouched — the same spacing-effect idea as
+// getStalestFillerCandidates below, generalized to the relearning queue.
+const RELEARNING_RECENT_TURN_GAP = 3;
+
+function getGameWordLastShownTurn(entryOrValue) {
+  return wordGameSessionWordLastShownTurn.get(entryOrValue) ?? -Infinity;
+}
+
+// Picks which ready relearning entry to show next: never the literal
+// previous word, and — among the rest — whichever has gone longest without
+// appearing this round, falling back to a recently-shown entry only when
+// nothing fresher is ready (a singleton queue must still resolve).
+function pickReadyQueueEntry(candidates) {
+  const eligible = candidates.filter(
+    (queued) => !isPreviousGameWord(queued.wordObj),
+  );
+  if (eligible.length === 0) return null;
+
+  const rested = eligible.filter(
+    (queued) =>
+      wordGameSessionTurnCounter - getGameWordLastShownTurn(queued.wordObj) >=
+      RELEARNING_RECENT_TURN_GAP,
+  );
+  const pool = rested.length > 0 ? rested : eligible;
+
+  return pool.reduce((stalest, queued) =>
+    getGameWordLastShownTurn(queued.wordObj) <
+    getGameWordLastShownTurn(stalest.wordObj)
+      ? queued
+      : stalest,
+  );
+}
+
 // Bounded rounds use their selected size as the cap on distinct words, while
 // Endless mode can keep discovering words after all currently due work is
 // clear. Failed words use this shorter scaled gap so retries remain feasible
@@ -4705,6 +4742,28 @@ function beginTodayPracticeRound() {
   });
 }
 
+// A compact, read-only echo of the level picker this screen used to have
+// (the #cefr-select toolbar control, now hidden for the word game — see
+// updateEndSessionToolbarButtonVisibility's neighboring reset of
+// cefrFilter.style.display). Deliberately the durable, accuracy-based
+// estimate from getVocabularyByCefrSummary, never the raw abilityScore —
+// see that function's own comment for why a number that can visibly dip
+// after one bad round doesn't belong on a screen the learner returns to
+// often. Omitted before a learner has any well-known words, the same
+// empty-state threshold My Stats' Proficiency card uses.
+function getWordGameLevelIndicatorHTML() {
+  const { estimatedLevel } = getVocabularyByCefrSummary();
+  if (!estimatedLevel) return "";
+
+  const level = estimatedLevel.level;
+  return `
+    <div class="game-level-indicator" title="${escapeHTML(`Estimated from your practice accuracy — ${getCefrTooltip(level)}`)}">
+      <span class="game-level-indicator-label">Your level</span>
+      ${getGameCefrLabelHTML(level)}
+      <span class="game-level-indicator-name">${escapeHTML(getCefrLabel(level))}</span>
+    </div>`;
+}
+
 function renderWordGameIntro() {
   // A summary-only sign-in nudge must not follow the visitor back to the
   // Practice Menu when they use the summary's secondary action.
@@ -4746,9 +4805,11 @@ function renderWordGameIntro() {
     wordGameMyWordsShare === 0
       ? "Off"
       : `${getMyWordsShareValueLabel(wordGameMyWordsShare)} · ${getMyWordsShareDescriptionLabel(wordGameMyWordsShare)}`;
+  const levelIndicatorHTML = getWordGameLevelIndicatorHTML();
 
   setGameContainerHTML(`
     <div class="game-intro-card">
+      ${levelIndicatorHTML}
       <section class="game-today-practice game-today-practice--${activeQuest?.reward ?? "complete"}" aria-labelledby="game-today-practice-heading">
         <div class="game-today-practice-heading-row">
           <div>
@@ -6097,10 +6158,11 @@ async function startWordGame() {
   // A miss enters an explicit short-term relearning queue. Its availability
   // is measured in intervening answered questions, while WordStrengthAPI's
   // timestamped record independently ensures it remains due across sessions.
-  const readyWordInQueue = incorrectWordQueue.find(
-    (queued) =>
-      !isPreviousGameWord(queued.wordObj) &&
-      wordGameSessionQuestionsAnswered >= queued.availableAfterQuestion,
+  const readyWordInQueue = pickReadyQueueEntry(
+    incorrectWordQueue.filter(
+      (queued) =>
+        wordGameSessionQuestionsAnswered >= queued.availableAfterQuestion,
+    ),
   );
   // Once every promised distinct word has been introduced, do not recycle an
   // already-successful word/mode pair merely to wait out a recovery timer.
@@ -6111,9 +6173,7 @@ async function startWordGame() {
     readyWordInQueue ??
     (wordGameMode === "session" &&
     wordGameSessionIntroducedWords.size >= wordGameSessionTarget
-      ? incorrectWordQueue.find(
-          (queued) => !isPreviousGameWord(queued.wordObj),
-        ) ?? null
+      ? pickReadyQueueEntry(incorrectWordQueue)
       : null);
 
   if (firstWordInQueue) {
