@@ -146,14 +146,24 @@
 
     if (!streakState.lastActiveDate) {
       streakState.count = 1;
-      streakState.graceUsed = false;
+      // A brand-new streak hasn't earned its grace day yet — it becomes
+      // available once the streak survives its first extension (see the
+      // gap === 1 branch below), not on day one itself.
+      streakState.graceUsed = true;
       status = "started";
     } else {
       const gap = daysBetween(streakState.lastActiveDate, today);
 
       if (gap === 1) {
         // Yesterday to today — the ordinary, consecutive case.
+        const wasFirstDayOfStreak = streakState.count === 1;
         streakState.count += 1;
+        // The grace day unlocks the first time a streak is extended past
+        // day one. Later extensions leave graceUsed alone, so it stays
+        // spent for the rest of the streak once actually used.
+        if (wasFirstDayOfStreak) {
+          streakState.graceUsed = false;
+        }
         // A freeze bought in advance is not wasted when the learner does
         // study. Keep it ready for the next day instead.
         if (streakState.freezeDate === today) {
@@ -178,7 +188,10 @@
         // Either more than one day was missed, or the grace day was
         // already used earlier in this streak — starts over.
         streakState.count = 1;
-        streakState.graceUsed = false;
+        // Same rule as the initial "started" case: the new streak has to
+        // earn its grace day by surviving one extension, not get one for
+        // free on day one.
+        streakState.graceUsed = true;
         streakState.freezeDate = null;
         status = "reset";
       }
