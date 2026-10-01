@@ -65,12 +65,14 @@ jobs:
           python -m pip install --requirement requirements-pages.txt
           python -m playwright install --with-deps chromium
 
+      - name: Capture the exact rendered application pages
+        run: python scripts/build-static-pages.py --incremental
+
+      # After capture: the restored cache's page-manifest.json is pruned and
+      # refreshed to match the current CSVs first, so stale slugs can't fail tests.
       - name: Run application tests
         run: |
           npm test
-
-      - name: Capture the exact rendered application pages
-        run: python scripts/build-static-pages.py --incremental
 
       - name: Verify representative rendered pages
         run: |

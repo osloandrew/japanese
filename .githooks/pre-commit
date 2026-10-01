@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Keeps CI-breaking states out of commits. Enabled with:
+#   git config core.hooksPath .githooks
+set -e
+cd "$(git rev-parse --show-toplevel)"
+python3 scripts/restore-word-ids.py
+python3 scripts/check-word-ids.py
+python3 scripts/stamp-asset-versions.py
+git add -u -- *Words.csv index.html wordGame.js
