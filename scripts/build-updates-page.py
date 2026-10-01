@@ -416,11 +416,14 @@ def render_page(updates: list[Update], site_root: Path) -> str:
         </a>
         <select id="site-switcher" class="footer-control site-switcher-select" aria-label="Go to another site">
           <option value="">Languages</option>
-          <option value="croatian">Croatian</option><option value="german">German</option>
-          <option value="hebrew">Hebrew</option><option value="italian">Italian</option>
-          <option value="japanese">Japanese</option><option value="latin">Latin</option>
-          <option value="norwegian">Norwegian</option><option value="persian">Persian</option>
-          <option value="spanish">Spanish</option><option value="thai">Thai</option>
+          <option value="chinese">Chinese</option>
+          <option value="croatian">Croatian</option>
+          <option value="german">German</option>
+          <option value="hebrew">Hebrew</option>
+          <option value="italian">Italian</option>
+          <option value="japanese">Japanese</option>
+          <option value="norwegian">Norwegian</option>
+          <option value="persian">Persian</option>
         </select>
       </div>
       <p class="copyright">© 2026 Japanese Dictionary</p>
