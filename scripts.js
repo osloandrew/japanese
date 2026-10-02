@@ -207,6 +207,9 @@ function showLandingCard(show) {
       );
     }
     landingCard.style.display = "block";
+    // Daily-quest progress is saved while the card is hidden, so refresh it
+    // each time the card is shown again.
+    window.DailyQuestAPI?.renderLanding?.();
   } else {
     landingCard.style.display = "none";
   }
